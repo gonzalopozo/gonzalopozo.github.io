@@ -1,0 +1,354 @@
+:root {    
+    /* Colores */
+    --batabit-azul: #35c8ff;
+    --gris: #333;
+    --blanco: #fff;
+    --rojo: #FF0000;
+    --verde: #00C28E;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+section {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    padding: 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;    
+    background: var(--blanco);
+}
+
+header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header .logo {
+    position: relative;   
+    max-height: 25px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+header ul {
+    position: relative;
+    display: flex;
+}
+
+header ul li {
+    list-style: none;
+}
+
+header ul li a {
+    display: inline-block;
+    color: var(--gris);
+    font-weight: 400;
+    margin-left: 40px;
+    text-decoration: none;
+}
+
+.contenedor-texto {
+    position: relative;
+    max-width: 600px;
+}
+
+.contenedor-texto h1 {
+    color: #333;
+    font-size: 4em;
+    line-height: 1.4em;
+    font-weight: 500;
+    padding-right: 20px;
+}
+
+.contenedor-texto h1 span {
+    color: var(--batabit-azul); 
+    font-size: 1.2em;
+    font-weight: 900;
+}
+
+.contenedor {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 500px 200px;
+    background-color: var(--gris);
+    width: 100%;
+    margin: auto;
+    border-radius: 100px;
+}
+
+#contenedor_img_1 {
+    background-color: var(--batabit-azul);
+    height: 70%;
+    width: 80%;
+    border-radius: 80px;    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#contenedor_img_2 {
+    background-color: var(--rojo);
+    height: 70%;
+    width: 80%;
+    border-radius: 80px;    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#contenedor_img_3 {
+    background-color: var(--verde);
+    height: 70%;
+    width: 80%;
+    border-radius: 80px;    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.contenedor .imagenes_criptos {
+    max-width: 80%;
+}
+
+.contenedor #nombre_1 {
+    text-align: center;
+    color: var(--batabit-azul);
+    font-size: 3em;
+    line-height: 1.4em;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.contenedor #nombre_2 {
+    text-align: center;
+    color: var(--rojo);
+    font-size: 3em;
+    line-height: 1.4em;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.contenedor #nombre_3 {
+    text-align: center;
+    color: var(--verde);
+    font-size: 3em;
+    line-height: 1.4em;
+    font-weight: 700;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.contenedor #texto_1 {
+    text-align: center;
+    color: var(--batabit-azul);
+    line-height: 1.4em;
+    font-weight: 300; 
+    margin: 10px;
+    padding: 15px;
+}
+
+.contenedor #texto_2 {
+    text-align: center;
+    color: var(--rojo);
+    line-height: 1.4em;
+    font-weight: 300; 
+    margin: 10px;
+    padding: 15px;
+}
+
+.contenedor #texto_3 {
+    text-align: center;
+    color: var(--verde);
+    line-height: 1.4em;
+    font-weight: 300; 
+    margin: 10px;
+    padding: 15px;
+}
+
+.abajo {
+    display: flex;
+    width: 100%;
+    height: 150px;
+    background-color: #77dbff;
+}
+
+.abajo .izquierda {
+    display: flex;    
+    width: 50%;
+    justify-content: center;
+    align-items: center;
+}
+
+.abajo .izquierda ul {
+    font-weight: 400;
+    line-height: 1.8rem;
+    list-style: none;
+}
+
+.abajo .izquierda a {
+    text-decoration: none;
+    color: var(--gris);
+}
+
+.abajo .derecha {    
+    margin: auto;
+
+}
+
+.abajo .derecha img {
+    max-height: 100px;
+}
+
+
+@media (max-width: 991px) {
+        
+    header {
+        padding: 20px;
+    }
+
+    header ul {
+        display: none;
+    }
+
+    .toggle {
+        position: relative;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        background: url('../assets/icons/menu.png');
+        background-size: 30px;
+        background-position: center;
+        background-repeat: no-repeat;
+        filter: invert(1);
+        z-index: 11;
+    }
+
+    .toggle.active {
+        position: fixed;
+        right: 20px;
+        margin-top: 20px;
+        background: url('../assets/icons/close.png');
+        background-size: 30px;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    header ul.navegacion.active {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        background-color: var(--blanco);
+        z-index: 10;
+    }
+    
+    header ul li a {
+        font-size: 1.5em;
+        margin: 5px 0;
+    }
+
+    .contenedor {
+        max-height: 600px;  
+        flex-direction: column;      
+    }
+
+    #contenedor_img_1 {
+        max-width: 100px;
+     }
+     
+     #contenedor_img_2 {
+         max-width: 100px;
+     }
+     
+     #contenedor_img_3 {
+         max-width: 100px;
+     }
+     
+     .contenedor .imagenes_criptos {
+         max-width: 110px;
+     }
+     
+     .contenedor #nombre_1 {
+         font-size: 2em;    
+     }
+     
+     .contenedor #nombre_2 {
+         font-size: 2em;
+     }
+     
+     .contenedor #nombre_3 {
+         font-size: 2em;
+     }
+     
+     .contenedor #texto_1 {
+         text-align: center;
+         color: var(--batabit-azul);
+         line-height: 1.4em;
+         font-weight: 300; 
+         margin: 10px;
+         padding: 15px;
+     }
+     
+     .contenedor #texto_2 {
+         text-align: center;
+         color: var(--rojo);
+         line-height: 1.4em;
+         font-weight: 300; 
+         margin: 10px;
+         padding: 15px;
+     }
+     
+     .contenedor #texto_3 {
+         text-align: center;
+         color: var(--verde);
+         line-height: 1.4em;
+         font-weight: 300; 
+         margin: 10px;
+         padding: 15px;
+     }
+
+    
+
+
+
+
+    /* .contenedor {
+        max-width: 500px;
+    } */
+}

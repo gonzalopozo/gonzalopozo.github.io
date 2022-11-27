@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Batatabit</title>
+    <meta name="description" content="Batatabit, el exchange del futuro de las criptomonedas">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="shortcut icon" href="./assets/icons/batata_icono.svg" type="image/x-icon">
+    <link rel="stylesheet" href="./style.css">
+    <script src="./script.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+</head>
+<body>
+    <section>
+        <div class="circulo"></div>
+        <header>
+            <a href="./index.html"><img src="./assets/imgs/batata_logo.png" class="logo" alt="Logotipo de Batatabit"></a>      
+            <div class="toggle" onclick="toggleMenu();"></div>
+            <ul class="navegacion">
+                <li><a href="./index.html">Home</a></li>
+                <li><a href="./html/criptomonedas.html">Criptomonedas</a></li>
+                <li><a href="./html/contacta.html">Contactanos</a></li>
+                <li><a href="./html/quiensoy.html">¿Quién soy?</a></li>
+            </ul>                  
+        </header>
+        <div class="contenido">
+            <div class="contenedor-texto">
+                <h1>La revolución digital impulsada por <span>Batatabit</span></h1>
+                <p>Desde Batatabit te ayudamos a navegar entre los diferentes precios y tendencias. Además, traemos información en tiempo real de las casas de cambio y las monedas más importantes del mundo.</p>
+                <a href="./html/contacta.html">Contáctanos</a>
+            </div>
+            <div class="contenedor-imagen">
+                <img src="./assets/imgs/sushiswap_sushi.png" class="sushiswap" alt="Logotipo de shushiswap">
+            </div>            
+        </div>
+        <ul class="pulsar">
+            <li><img src="./assets/icons/sushiswap_sushi_icono.png" onclick="imgSlider('./assets/imgs/sushiswap_sushi.png');changeCirculoColor('#35C8FF')" alt="Logotipo de Sushiswap"></li>
+            <li><img src="./assets/icons/naga_ngc_icono.png" onclick="imgSlider('./assets/imgs/naga_ngc_logo.png');changeCirculoColor('#FF0000')"  alt="Logotipo de Naga NGC"></li>
+            <li><img src="./assets/icons/bitcoin_cash_icono.png" onclick="imgSlider('./assets/imgs/bitcoin_cash.png');changeCirculoColor('#00C28E ')" alt="Logotipo DE Bitcoin Cash"></li>
+        </ul>
+        <ul class="redes-sociales">
+            <li><a href="https://github.com/gonzalopozo" target="_blank"><img src="./assets/icons/github_icono.png" alt="Logotipo de Github"></a></li>
+            <li><a href="https://www.linkedin.com/in/gonzalo-pozo-sánchez-88a874226" target="_blank"><img src="./assets/icons/linkedin_icono.png" alt="Logotipo de Linkedin"></a></li>
+            <li><a href="https://stackoverflow.com/users/20607143/gonzalo-pozo" target="_blank"><img src="./assets/icons/stack_overflow_icono.png" alt="Logotipo de Stack Overflow"></a></li>
+        </ul>
+    </section>
+</body>
+</html>
