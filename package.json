@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "migrate:generate": "drizzle-kit generate --config ./db/drizzle.config.ts",
+    "migrate:push": "drizzle-kit push --config ./db/drizzle.config.ts"
   },
   "dependencies": {
     "@libsql/client": "^0.15.15",
