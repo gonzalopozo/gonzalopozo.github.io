@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@libsql/client": "^0.15.15",
+    "better-auth": "^1.4.2",
     "drizzle-orm": "^0.44.7",
     "next": "16.0.3",
     "react": "19.2.0",
