@@ -4,7 +4,6 @@ import { db } from "@/db";                 // your Drizzle Turso client
 import * as authSchema from "@/db/schema/better-auth";
 
 export const auth = betterAuth({
-    secret: process.env.BETTER_AUTH_SECRET!,
     database: drizzleAdapter(db, {
         provider: "sqlite",                   // Turso/libSQL uses sqlite dialect
         schema: { ...authSchema, user: authSchema.users },
