@@ -1,3 +1,4 @@
+import { TestSession } from "@/components/test-session";
 import Image from "next/image";
 
 export default function Home() {
@@ -59,6 +60,7 @@ export default function Home() {
             Documentation
           </a>
         </div>
+        <TestSession />
       </main>
     </div>
   );
