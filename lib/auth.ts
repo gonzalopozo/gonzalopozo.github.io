@@ -1,13 +1,19 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { db } from "@/db";                 // your Drizzle Turso client
+import { db } from "@/db";
 import * as authSchema from "@/db/schema/better-auth";
 
 export const auth = betterAuth({
     database: drizzleAdapter(db, {
-        provider: "sqlite",                   // Turso/libSQL uses sqlite dialect
+        provider: "sqlite",
         schema: { ...authSchema, user: authSchema.users },
         usePlural: true,
     }),
-    emailAndPassword: { enabled: true },    // configure in step 6
+    emailAndPassword: { enabled: true },
+    session: {
+        cookieCache: {
+            enabled: true,
+            maxAge: 5 * 60, // 5 minutes - avoids DB hit on every getSession call
+        },
+    },
 });
