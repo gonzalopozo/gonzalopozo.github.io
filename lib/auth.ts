@@ -9,7 +9,10 @@ export const auth = betterAuth({
         schema: { ...authSchema, user: authSchema.users },
         usePlural: true,
     }),
-    emailAndPassword: { enabled: true },
+    emailAndPassword: {
+        enabled: true,
+        disableSignUp: true, // Only allow sign-in, no registration
+    },
     session: {
         cookieCache: {
             enabled: true,
