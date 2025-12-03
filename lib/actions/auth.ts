@@ -1,21 +1,31 @@
 "use server";
 
-import { getServerSession } from "@/lib/server-session";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
-// Quick test action to verify session is retrievable
-export async function testSessionAction() {
-    const session = await getServerSession();
+// import { getServerSession } from "@/lib/server-session";
 
-    if (!session) {
-        return { success: false, error: "Not authenticated" };
-    }
+export async function signInAction(formData: FormData) {
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
 
-    return {
-        success: true,
-        user: {
-            id: session.user.id,
-            email: session.user.email,
-            name: session.user.name,
-        },
-    };
+    console.log(email, password);
+    
+    await auth.api.signInEmail({
+        body: {
+            email,
+            password
+        }
+    })
+
+    redirect("/dashboard");
+}
+
+export async function signOutAction() {
+    await auth.api.signOut({
+        headers: await headers(),
+    })
+
+    redirect("/login")
 }
