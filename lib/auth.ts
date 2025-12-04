@@ -12,7 +12,7 @@ export const auth = betterAuth({
     }),
     emailAndPassword: {
         enabled: true,
-        // disableSignUp: true, // Only allow sign-in, no registration
+        disableSignUp: true, // Only allow sign-in, no registration
     },
     session: {
         cookieCache: {
