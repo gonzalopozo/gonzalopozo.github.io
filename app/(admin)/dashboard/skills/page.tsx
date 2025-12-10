@@ -11,16 +11,6 @@ import { deleteSkill } from "@/lib/actions/skills";
 export default async function SkillsDashboardPage() {
     const skillsData = await db.select().from(skills);
 
-    console.log(skillsData);
-
-    const skillsDataWithDeletingAction = skillsData.map(e => {
-        return {
-            ...e,
-            deleteAction: deleteSkill.bind(null, e.id)
-        }
-    })
-    
-
     const formatDate = (date: Date) => 
         new Date(date).toLocaleDateString("es-ES", { 
             year: "numeric", 
@@ -56,7 +46,7 @@ export default async function SkillsDashboardPage() {
             </div>
 
             {/* Content */}
-            {skillsDataWithDeletingAction.length === 0 ? (
+            {skillsData.length === 0 ? (
                 <Card className="border-dashed">
                     <CardContent className="flex flex-col items-center justify-center py-16">
                         <div className="rounded-full bg-muted p-4 mb-4">
@@ -78,7 +68,7 @@ export default async function SkillsDashboardPage() {
                     <CardHeader>
                         <CardTitle>Todas las Skills</CardTitle>
                         <CardDescription>
-                            {skillsDataWithDeletingAction.length} {skillsDataWithDeletingAction.length === 1 ? 'skill registrada' : 'skills registradas'}
+                            {skillsData.length} {skillsData.length === 1 ? 'skill registrada' : 'skills registradas'}
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -96,7 +86,7 @@ export default async function SkillsDashboardPage() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {skillsDataWithDeletingAction.map((skill) => (
+                                {skillsData.map((skill) => (
                                     <TableRow key={skill.id}>
                                         <TableCell className="font-mono text-xs text-muted-foreground">
                                             {skill.id}
