@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
@@ -15,7 +14,6 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
 import {
   Menu,
-  User,
   LayoutDashboard,
   FolderKanban,
   Briefcase,
@@ -110,7 +108,7 @@ export function AdminHeader({ user }: AdminHeaderProps) {
           </Link>
         </Button>
 
-        <DropdownMenu>
+        {/* <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
@@ -125,15 +123,15 @@ export function AdminHeader({ user }: AdminHeaderProps) {
               <p className="text-xs text-muted-foreground">{user.email}</p>
             </div>
             <DropdownMenuSeparator />
-            {/* <DropdownMenuItem asChild>
+            <DropdownMenuItem asChild>
             // TODO: logout button
               <Link href="/dashboard/settings">
                 <User className="mr-2 h-4 w-4" />
                 Logout
               </Link>
-            </DropdownMenuItem> */}
+            </DropdownMenuItem>
           </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu> */}
       </div>
     </header>
   )
