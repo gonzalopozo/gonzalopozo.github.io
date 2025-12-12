@@ -8,8 +8,8 @@ import { redirect } from "next/navigation";
 
 export async function createSocialLink(formData: FormData) {
     const name = formData.get('name') as string;
-    const url = formData.get('url') as string ?? undefined;
-    const icon = formData.get('icon') as string ?? undefined;
+    const url = formData.get('url') as string;
+    const icon = formData.get('icon') ? formData.get('icon') as string : undefined;
 
     const result = await db
     .select({ maxOrder: sql<number>`COALESCE(MAX(${socialLinks.order}), 0)` })			
@@ -28,8 +28,8 @@ export async function createSocialLink(formData: FormData) {
 
 export async function updateSocialLink(id: number, formData: FormData) {
     const name = formData.get('name') as string;
-    const url = formData.get('url') as string ?? undefined;
-    const icon = formData.get('icon') as string ?? undefined;
+    const url = formData.get('url') ? formData.get('url') as string : undefined;
+    const icon = formData.get('icon') ? formData.get('icon') as string : undefined;
     // TODO: el orden? 'order'
 
     await db.update(socialLinks).set({
@@ -44,5 +44,5 @@ export async function updateSocialLink(id: number, formData: FormData) {
 export async function deleteSocialLink(id: number) {
     await db.delete(socialLinks).where(eq(socialLinks.id, id));
 
-    revalidatePath("/dashboard/socail-links")
+    revalidatePath("/dashboard/social-links")
 }

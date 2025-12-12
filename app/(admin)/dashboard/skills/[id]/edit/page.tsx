@@ -15,6 +15,7 @@ export default async function UpdateSkillDashboardPage(props: { params: Promise<
 
     const skill = await db.select().from(skills).where(eq(skills.id, Number(id)));
     const skillResult = skill[0];
+    if (!skillResult) return (<p>Skill no encontrada</p>)
 
     // Bind the id as the first argument
     const updateSkillWithId = updateSkill.bind(null, Number(id));

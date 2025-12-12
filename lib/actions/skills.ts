@@ -10,8 +10,8 @@ import { redirect } from "next/navigation";
 export async function createSkill(formData: FormData) {
     const name = formData.get('name') as string;
     const type = formData.get('type') as SkillType;
-    const icon = formData.get('icon') as string ?? undefined;
-    const url = formData.get('url') as string ?? undefined;
+    const icon = formData.get('icon') ? formData.get('icon') as string : undefined;
+    const url = formData.get('url') ? formData.get('url') as string : undefined;
 
     await db.insert(skills).values({
         name,
@@ -26,8 +26,8 @@ export async function createSkill(formData: FormData) {
 export async function updateSkill(id: number, formData: FormData) {
     const name = formData.get('name') as string;
     const type = formData.get('type') as SkillType;
-    const icon = formData.get('icon') as string ?? undefined;
-    const url = formData.get('url') as string ?? undefined;
+    const icon = formData.get('icon') ? formData.get('icon') as string : undefined;
+    const url = formData.get('url') ? formData.get('url') as string : undefined;
 
     await db.update(skills).set({
         name,

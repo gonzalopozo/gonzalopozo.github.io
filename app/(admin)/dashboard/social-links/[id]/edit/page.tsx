@@ -15,6 +15,7 @@ export default async function UpdateSocialLinkDashboardPage(props: { params: Pro
 
     const socialLink = await db.select().from(socialLinks).where(eq(socialLinks.id, Number(id)))
     const socialLinkResult = socialLink[0];
+    if (!socialLinkResult) return (<p>Enlace social no encontrado</p>)
 
     return (
         <div className="space-y-6">
