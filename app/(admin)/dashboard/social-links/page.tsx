@@ -121,12 +121,10 @@ export default async function SocialLinksDashboardPage() {
                                                         Editar
                                                     </Link>
                                                 </Button>
-                                                <form action={deleteSocialLink.bind(null, socialLink.id)}>
-                                                    <Button variant="destructive" size="sm" type="submit" className="gap-1.5">
-                                                        <Trash className="size-3.5" />
-                                                        Eliminar
-                                                    </Button>
-                                                </form>
+                                                <Button onClick={deleteSocialLink.bind(null, socialLink.id)} variant="destructive" size="sm" type="submit" className="gap-1.5">
+                                                    <Trash className="size-3.5" />
+                                                    Eliminar
+                                                </Button>
                                             </div>
                                         </TableCell>
                                     </TableRow>
