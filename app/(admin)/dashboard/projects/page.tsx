@@ -1,13 +1,41 @@
 import { Button } from "@/components/ui/button";
 import { db } from "@/db";
-import { projects } from "@/db/schema/portfolio";
 import { LifeBuoyIcon } from "lucide-react";
 import Link from "next/link";
 
-export default async function ProjectsDashboardPage() {
-    const projectsData = await db.select().from(projects);
+interface Skill {
+    name: string;
+    id: number;
+}
+interface ProjectInfo {
+    id: number;
+    title: string;
+    description: string;
+    url: string | null;
+    repoUrl: string | null;
+    status: "active" | "archived" | "in-progress";
+    order: number;
+    createdAt: Date;
+    updatedAt: Date;
+    projectSkills: { skill: Skill }[];
+}
 
-    console.log(projectsData);
+export default async function ProjectsDashboardPage() {
+    const projectsData: ProjectInfo[] = await db.query.projects.findMany({
+        with: {
+            projectSkills: {
+                columns: {},
+                with: {
+                    skill: {
+                        columns: {
+                            id: true,
+                            name: true
+                        },
+                    }
+                }
+            }
+        }
+    })
 
     return (
         <>
@@ -33,12 +61,18 @@ export default async function ProjectsDashboardPage() {
                                 <li>{project.order}</li>
                                 <li>{project.createdAt.toISOString()}</li>
                                 <li>{project.updatedAt.toISOString()}</li>
+                                <h4>Skills:</h4>
+                                <ul>
+                                    {project.projectSkills.map(({ skill }) => (
+                                        <li key={`${project.id} - ${skill.id}`}>{skill.name}</li>
+                                    ))}
+                                </ul>
                                 <Button variant={"link"}>
                                     <Link href={`/dashboard/projects/${project.id}/edit`}>
                                         ¡Editar proyecto!
                                     </Link>
                                 </Button>
-                                <Button variant={"destructive"} onClick={() => console.log("Borrar proyecto")}>
+                                <Button variant={"destructive"} >
                                     ¡Borrar proyecto!
                                 </Button>
                             </ul>
