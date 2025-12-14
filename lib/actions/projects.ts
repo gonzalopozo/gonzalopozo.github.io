@@ -2,8 +2,7 @@
 
 import { db } from "@/db";
 import { projects, projectSkills } from "@/db/schema/portfolio";
-import { eq, sql } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { sql } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { ProjectStatus } from "@/lib/types";
 
@@ -15,8 +14,8 @@ interface ProjectSkillToInsert {
 export async function createProject(formData: FormData) {
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
-    const url = formData.get('url') as string ?? undefined;
-    const repoUrl = formData.get('repoUrl') as string ?? undefined;
+    const url = formData.get('url') ? formData.get('url') as string : undefined;
+    const repoUrl = formData.get('repoUrl') ? formData.get('repoUrl') as string : undefined;
     const status = formData.get('status') as ProjectStatus;
 
     const result = await db.select({ maxOrder: sql<number>`COALESCE(MAX(${projects.order}), 0)` }).from(projects);
