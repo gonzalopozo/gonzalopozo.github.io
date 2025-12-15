@@ -1,24 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { db } from "@/db";
+import { ProjectInfo } from "@/lib/types";
 import { LifeBuoyIcon } from "lucide-react";
 import Link from "next/link";
-
-interface Skill {
-    name: string;
-    id: number;
-}
-interface ProjectInfo {
-    id: number;
-    title: string;
-    description: string;
-    url: string | null;
-    repoUrl: string | null;
-    status: "active" | "archived" | "in-progress";
-    order: number;
-    createdAt: Date;
-    updatedAt: Date;
-    projectSkills: { skill: Skill }[];
-}
 
 export default async function ProjectsDashboardPage() {
     const projectsData: ProjectInfo[] = await db.query.projects.findMany({
