@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { db } from "@/db";
+import { deleteProject } from "@/lib/actions/projects";
 import { ProjectInfo } from "@/lib/types";
 import { LifeBuoyIcon } from "lucide-react";
 import Link from "next/link";
@@ -56,7 +57,7 @@ export default async function ProjectsDashboardPage() {
                                         ¡Editar proyecto!
                                     </Link>
                                 </Button>
-                                <Button variant={"destructive"} >
+                                <Button onClick={deleteProject.bind(null, project.id)} variant={"destructive"} >
                                     ¡Borrar proyecto!
                                 </Button>
                             </ul>

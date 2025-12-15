@@ -2,11 +2,12 @@
 
 import { db } from "@/db";
 import { projects, projectSkills } from "@/db/schema/portfolio";
-import { sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { ProjectStatus } from "@/lib/types";
+import { revalidatePath } from "next/cache";
 
-interface ProjectSkillToInsert {
+interface ProjectSkill {
     projectId: number,
     skillId: number
 }
@@ -35,7 +36,7 @@ export async function createProject(formData: FormData) {
     console.log("projectIdData", projectIdData);
     console.log("projectSkillsData", projectSkillsData);
 
-    const projectSkillsInsert: ProjectSkillToInsert[] = projectSkillsData.map(skill => {
+    const projectSkillsInsert: ProjectSkill[] = projectSkillsData.map(skill => {
         return { projectId: projectIdData[0].insertedId, skillId: skill }
     }) 
 
@@ -46,23 +47,63 @@ export async function createProject(formData: FormData) {
     redirect("/dashboard/projects")
 }
 
-// export async function updateSocialLink(id: number, formData: FormData) {
-//     const name = formData.get('name') as string;
-//     const url = formData.get('url') as string ?? undefined;
-//     const icon = formData.get('icon') as string ?? undefined;
-//     // TODO: el orden? 'order'
+export async function updateProject(id: number, formData: FormData) {
+    const title = formData.get('title') as string;
+    const description = formData.get('description') as string;
+    const url = formData.get('url') ? formData.get('url') as string : undefined;
+    const repoUrl = formData.get('repoUrl') ? formData.get('repoUrl') as string : undefined;
+    const status = formData.get('status') as ProjectStatus;
 
-//     await db.update(socialLinks).set({
-//         name,
-//         url,
-//         icon,
-//     }).where(eq(socialLinks.id, id));
+    const projectIdData = await db.update(projects).set({
+        title,
+        description,
+        url,
+        repoUrl,
+        status,
+    }).where(eq(projects.id, id)).returning({ insertedId: projects.id });
 
-//     redirect("/dashboard/social-links")
-// }
+    const projectSkillsData = formData.getAll('skillIds').map(Number);
 
-// export async function deleteSocialLink(id: number) {
-//     await db.delete(socialLinks).where(eq(socialLinks.id, id));
+    const projectSkillsToReview: ProjectSkill[] = projectSkillsData.map(skill => {
+        return { projectId: projectIdData[0].insertedId, skillId: skill }
+    })
 
-//     revalidatePath("/dashboard/socail-links")
-// }
+    const formerProjectSkills: ProjectSkill[] = await db.query.projectSkills.findMany({
+        where: eq(projectSkills.projectId, id),
+        columns: {
+            projectId: true,
+            skillId: true,
+        }
+    })
+
+    // Insert new skills that don't exist yet
+    for (const skillToReview of projectSkillsToReview) {
+        const alreadyExists = formerProjectSkills.some(
+            formerSkill => formerSkill.projectId === skillToReview.projectId && formerSkill.skillId === skillToReview.skillId
+        );
+
+        if (!alreadyExists) {
+            await db.insert(projectSkills).values(skillToReview);
+        } 
+    }
+
+    // Delete skills that were removed
+    for (const formerSkill of formerProjectSkills) {
+        const stillExists = projectSkillsToReview.some(
+            skillToReview => skillToReview.projectId === formerSkill.projectId && skillToReview.skillId === formerSkill.skillId
+        );
+
+        if (!stillExists) {
+            await db.delete(projectSkills).where(and(eq(projectSkills.projectId, id), eq(projectSkills.skillId, formerSkill.skillId)));
+        } 
+    }
+    
+
+    redirect("/dashboard/projects")
+}
+
+export async function deleteProject(id: number) {
+    await db.delete(projects).where(eq(projects.id, id));
+
+    revalidatePath("/dashboard/projects")
+}
