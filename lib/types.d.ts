@@ -18,3 +18,19 @@ export interface ProjectInfo {
     updatedAt: Date;
     projectSkills: { skill: Skill }[];
 }
+
+export interface ExperienceData {
+    id: number;
+    description: string;
+    order: number;
+    createdAt: Date;
+    updatedAt: Date;
+    role: string;
+    company: string;
+    companyUrl: string | null;
+    companyLogo: string | null;
+    startDate: Date | null;
+    endDate: Date | null;
+    location: string | null;
+    experienceSkills: { skill: Skill }[];
+}
