@@ -34,3 +34,11 @@ export interface ExperienceData {
     location: string | null;
     experienceSkills: { skill: Skill }[];
 }
+
+export interface Settings {
+    id: number
+    isEmployed: boolean | null
+    resumeUrl: string
+    statusMessage: string | null
+    updatedAt: Date
+}

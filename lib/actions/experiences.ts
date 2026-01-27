@@ -4,7 +4,6 @@ import { db } from "@/db";
 import { experiences, experienceSkills } from "@/db/schema/portfolio";
 import { and, eq, sql } from "drizzle-orm";
 import { redirect } from "next/navigation";
-import { ProjectStatus } from "@/lib/types";
 import { revalidatePath } from "next/cache";
 
 interface ExperienceSkill {

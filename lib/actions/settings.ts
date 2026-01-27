@@ -10,15 +10,19 @@ export async function updateSiteSettings(formData: FormData) {
     const resumeUrl = formData.get('resumeUrl') as string;
     const statusMessage = formData.get('statusMessage') ? formData.get('statusMessage') as string : undefined;
 
+    const [existingSettings] = await db.select().from(siteSettings).limit(1);
+
+    if (existingSettings.isEmployed !== Boolean(isEmployed)) {
+        await db.insert(employmentHistory).values({
+            isEmployed: Boolean(isEmployed),
+        })
+    }
+
     await db.update(siteSettings).set({
         isEmployed: Boolean(isEmployed),
         resumeUrl,
         statusMessage
-    }).where(eq(siteSettings.id, 1));
-
-    await db.insert(employmentHistory).values({
-        isEmployed: Boolean(isEmployed),
-    })
+    }).where(eq(siteSettings.id, existingSettings.id));
 
     revalidatePath("/dashboard/settings")
 

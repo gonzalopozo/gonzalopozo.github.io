@@ -14,13 +14,13 @@ export async function createSocialLink(formData: FormData) {
     const result = await db
     .select({ maxOrder: sql<number>`COALESCE(MAX(${socialLinks.order}), 0)` })			
     .from(socialLinks);
-    const newOrder = result[0].maxOrder + 1;
+    const order = result[0].maxOrder + 1;
 
     await db.insert(socialLinks).values({
         name,
         url,
         icon,
-        order: newOrder,
+        order,
     })
 
     redirect("/dashboard/social-links")
