@@ -39,4 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-.agents
+.agents/*
+!.agents/skills/
+.agents/skills/*
+!.agents/skills/tailwind-v4-shadcn/
+!.agents/skills/tailwind-v4-shadcn/**
