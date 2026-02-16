@@ -4,7 +4,7 @@ Security guidelines for the portfolio project. This document covers all security
 
 **Related coverage (do not duplicate):**
 
-- `better-auth-best-practices` skill — `trustedOrigins`, `useSecureCookies`, cookie cache strategies, `BETTER_AUTH_SECRET` requirements, rate limiting
+- `better-auth-best-practices` skill — `trustedOrigins`, `useSecureCookies`, cookie cache strategies, `BETTER_AUTH_SECRET` requirements, rate limiting config options
 - `drizzle-orm` skill — parameterized queries via `sql` template literal, prepared statements, SQL injection prevention
 - `vercel-react-best-practices` skill — Server Action auth/authorization patterns, Zod validation in actions
 - `next-best-practices` skill — `unauthorized()`/`forbidden()` error handling, secrets on server
@@ -341,8 +341,7 @@ export async function createProject(formData: FormData) {
     order: 0,
   });
 
-  // 4. REVALIDATE & REDIRECT
-  revalidatePath("/dashboard/projects");
+  // 4. REVALIDATE or REDIRECT (not both — see rules below)
   redirect("/dashboard/projects");
 }
 ```
@@ -354,6 +353,22 @@ export async function createProject(formData: FormData) {
 - **Step 3 (Execute) uses Drizzle ORM** — never concatenate strings into SQL. Drizzle's query builder and `sql` template literal produce parameterized queries automatically
 - **Never expose internal errors to the client** — catch Zod errors and return user-friendly messages. Log internal errors with `console.error` but return generic "Internal server error" to the client
 - **`formData.get()` returns `FormDataEntryValue | null`** — always handle `null` before passing to Zod
+
+### Step 4: Revalidate vs Redirect
+
+Choose **one** based on context — do not use both for the same path:
+
+| Scenario | Use | Why |
+| --- | --- | --- |
+| **Create** (user is on a `/new` sub-route or dialog) | `redirect("/dashboard/projects")` | Navigates back to the list; redirect implicitly fetches fresh data |
+| **Update** (user stays on the same page) | `revalidatePath("/dashboard/projects")` | Invalidates the cache and re-renders the current page in-place — no full navigation |
+| **Delete** (user stays on the same page) | `revalidatePath("/dashboard/projects")` | Same as update — seamless UI refresh without a disorienting page navigation |
+
+**Why not both?**
+
+- `redirect()` already triggers a fresh server render of the target page, so a preceding `revalidatePath()` to the same path is redundant overhead.
+- `redirect()` to the page you're already on causes a full navigation (Next.js throws a `NEXT_REDIRECT` internally), which is heavier and more disorienting than a simple `revalidatePath()` that updates the RSC tree in-place.
+- Use `redirect()` only when the user needs to land on a **different** route than where the action was triggered.
 
 ---
 
@@ -578,6 +593,151 @@ session: {
 
 ---
 
+## Rate Limiting
+
+Protect your APIs against abuse and DDoS attacks by limiting the number of requests per IP or user within a time period. This project uses a two-layer approach: Vercel WAF at the edge and better-auth's built-in rate limiting for auth endpoints.
+
+### Why Vercel WAF (Not In-Memory LRU Cache)
+
+An in-memory rate limiter (e.g., `LRUCache`) is **unreliable on Vercel's serverless infrastructure**:
+
+| Problem | Impact |
+| --- | --- |
+| **Instance isolation** | Each function invocation may run in a separate instance. The LRU cache lives in process memory, so different instances don't share rate-limit counters. A client can bypass limits by hitting different instances. |
+| **Cold starts** | When an instance cold-starts, all previous tracking is lost — the cache resets to zero. |
+| **Fluid Compute** | Shared instances help with concurrent requests, but there's no guarantee all requests route to the same instance, and instances still get recycled. |
+| **No global view** | In-memory caches have no cross-region or cross-instance coordination. |
+
+Vercel WAF operates **at the edge, before your application code runs**, with global state that accurately tracks requests per IP across all edge locations. It's the correct layer for rate limiting in a serverless deployment.
+
+> **Note:** `LRUCache` is excellent for *data caching* across requests (see `server-cache-lru` rule in the performance skill), but it is not suitable for *rate limiting* on serverless platforms.
+
+### Layer 1: Vercel WAF Rate Limiting (Edge)
+
+Vercel WAF rate limiting is available on all plans (Hobby: 1 rule, Pro: up to 40 rules). It protects at the network level with zero code changes.
+
+#### Setup via Vercel Dashboard
+
+1. Go to **Dashboard > Project > Firewall** tab
+2. Select **Configure** > **+ New Rule**
+3. Set **If** conditions (e.g., Request Path equals `/api/auth/*`)
+4. Set **Then** action to **Rate Limit**
+5. Configure the **Time Window** (e.g., 60s) and **Request Limit** (e.g., 100 requests)
+6. Select counting key(s): **IP** or **JA4 Digest**
+7. Set the action when limit is exceeded: **Deny (429)** or **Challenge**
+8. **Save Rule** > **Review Changes** > **Publish**
+
+#### Recommended Rules for This Project
+
+| Rule Name | Path Condition | Limit | Window | Action | Purpose |
+| --- | --- | --- | --- | --- | --- |
+| Auth endpoint protection | `/api/auth/*` | 20 requests | 60s | Deny (429) | Prevent brute-force login attempts |
+| General API protection | `/api/*` | 100 requests | 60s | Deny (429) | Protect all API routes from abuse |
+
+#### Application-Level Rate Limiting with `@vercel/firewall` SDK
+
+For cases where edge-level conditions are insufficient (e.g., rate limiting by authenticated user ID, not just IP), use the [`@vercel/firewall`](https://github.com/vercel/vercel/tree/main/packages/firewall/docs) SDK:
+
+```typescript
+import { checkRateLimit } from "@vercel/firewall";
+
+export async function POST(request: Request) {
+  const { rateLimited } = await checkRateLimit("api-mutation", {
+    request,
+  });
+
+  if (rateLimited) {
+    return new Response(
+      JSON.stringify({ error: "Rate limit exceeded" }),
+      {
+        status: 429,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
+
+  // Continue with request handling
+}
+```
+
+With a custom key (e.g., authenticated user):
+
+```typescript
+import { checkRateLimit } from "@vercel/firewall";
+import { getServerSession } from "@/lib/server-session";
+
+export async function POST(request: Request) {
+  const session = await getServerSession();
+
+  const { rateLimited } = await checkRateLimit("user-mutation", {
+    request,
+    rateLimitKey: session?.user.id ?? "anonymous",
+  });
+
+  if (rateLimited) {
+    return new Response(
+      JSON.stringify({ error: "Rate limit exceeded" }),
+      {
+        status: 429,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
+
+  // Continue with request handling
+}
+```
+
+> **Prerequisite:** The `@vercel/firewall` SDK requires a matching custom rule in the Vercel dashboard with `@vercel/firewall` as the **If** condition and the same Rate Limit ID used in `checkRateLimit()`.
+
+### Layer 2: better-auth Built-In Rate Limiting (Auth Endpoints)
+
+better-auth provides built-in rate limiting for all auth endpoints (login, sign-up, password reset, etc.). Configure in `lib/auth.ts`:
+
+```typescript
+export const auth = betterAuth({
+  // ... existing config ...
+  rateLimit: {
+    enabled: true,
+    window: 60,       // 60 seconds
+    max: 10,          // 10 requests per window per IP
+    storage: "memory", // "memory" | "database" | "secondary-storage"
+  },
+});
+```
+
+| Option | Default | Description |
+| --- | --- | --- |
+| `enabled` | `false` | Enable rate limiting for auth endpoints |
+| `window` | `60` | Time window in seconds |
+| `max` | `10` | Max requests per window |
+| `storage` | `"memory"` | Where to store counters. Use `"database"` for persistence across instances, or `"secondary-storage"` (Redis/KV) for production |
+
+> **Important:** `"memory"` storage has the same serverless isolation issues as LRU cache. For production, use `"database"` (Turso) or `"secondary-storage"` (Redis/KV) if available. For a single-admin portfolio with low traffic, `"memory"` is acceptable as a basic deterrent, with Vercel WAF as the real protection layer.
+
+### Rules
+
+- **Use Vercel WAF as the primary rate limiting layer** — it operates at the edge with global state, before your code runs
+- **Enable better-auth rate limiting** — adds defense in depth for auth endpoints specifically
+- **Do NOT rely on in-memory rate limiting alone** — LRU cache, Map-based counters, or better-auth's `"memory"` storage are all unreliable on serverless (see table above)
+- **Set stricter limits on auth endpoints** — login and password reset are the most targeted. Use 10-20 requests per minute per IP
+- **Set moderate limits on general API routes** — 100 requests per minute per IP is a reasonable starting point
+- **Return proper `429 Too Many Requests` responses** — include a `Retry-After` header when possible
+- **Use `@vercel/firewall` SDK** when you need rate limiting based on application-level context (user ID, organization, etc.) — requires a matching dashboard rule
+- **Monitor rate limit effectiveness** — check the Vercel Firewall overview page for traffic patterns and adjust limits as needed
+
+### Vercel WAF Rate Limiting Limits
+
+| Resource | Hobby | Pro | Enterprise |
+| --- | --- | --- | --- |
+| Number of rate limit rules | 1 per project | 40 per project | 1000 per project |
+| Counting keys | IP, JA4 Digest | IP, JA4 Digest | IP, JA4 Digest, User Agent, custom headers |
+| Counting algorithm | Fixed window | Fixed window | Fixed window, Token bucket |
+| Time window range | 10s – 10min | 10s – 10min | 10s – 1hr |
+| Included allowed requests | 1,000,000 | 1,000,000 | Custom |
+
+---
+
 ## Source Maps & Production Hardening
 
 ### Source Maps
@@ -692,9 +852,10 @@ Apply multiple security layers — no single layer is sufficient:
 | Layer | Protection | This Project |
 | --- | --- | --- |
 | Network | DDoS mitigation, HTTPS | Vercel (automatic) |
+| Edge | Rate limiting | Vercel WAF rate limiting rules |
 | Transport | HSTS, TLS | Security headers in `next.config.ts` |
 | Application | CSP, security headers | `proxy.ts` + `next.config.ts` |
-| Authentication | Session validation | better-auth + `getServerSession()` |
+| Authentication | Session validation, auth rate limiting | better-auth + `getServerSession()` + better-auth rate limiting |
 | Authorization | Permission checks | Server Action auth checks |
 | Input | Validation, sanitization | Zod schemas + Drizzle ORM |
 | Data | Parameterized queries | Drizzle ORM (automatic) |
@@ -749,6 +910,8 @@ Every piece of user-provided data is potentially malicious:
 - [ ] **Zod schemas**: Create Zod schemas for all entities (projects, experiences, skills, social links, settings)
 - [ ] **Server Action auth**: Add `getServerSession()` check to all existing Server Actions in `lib/actions/`
 - [ ] **Vercel**: Mark `TURSO_AUTH_TOKEN`, `BETTER_AUTH_SECRET`, `TURSO_DATABASE_URL` as Sensitive in Vercel dashboard
+- [ ] **Rate limiting (WAF)**: Add Vercel WAF rate limit rule for `/api/auth/*` (20 req/min) and `/api/*` (100 req/min)
+- [ ] **Rate limiting (auth)**: Enable `rateLimit` in `lib/auth.ts` better-auth configuration
 
 ---
 
@@ -771,3 +934,8 @@ Every piece of user-provided data is potentially malicious:
 - [pnpm update](https://pnpm.io/cli/update)
 - [npm-check-updates](https://www.npmjs.com/package/npm-check-updates)
 - [HSTS Preload List](https://hstspreload.org/)
+- [Vercel WAF](https://vercel.com/docs/vercel-firewall/vercel-waf)
+- [Vercel WAF Rate Limiting](https://vercel.com/docs/vercel-firewall/vercel-waf/rate-limiting)
+- [Vercel WAF Rate Limiting SDK](https://vercel.com/docs/vercel-firewall/vercel-waf/rate-limiting-sdk)
+- [Securing AI Apps with Rate Limiting (Vercel KB)](https://vercel.com/kb/guide/securing-ai-app-rate-limiting)
+- [better-auth Rate Limiting](https://www.better-auth.com/docs/concepts/rate-limit)
