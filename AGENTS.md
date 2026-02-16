@@ -77,6 +77,11 @@ Never use npm or npx. Always use pnpm and pnpm dlx
 | `pnpm migrate:push`      | Push migrations to Turso database                     |
 | `pnpm db:setup`          | Run both generate and push (full migration workflow)  |
 
+### Agent Skills Installation Policy
+
+- Every new skill installed via `skills.sh` CLI must also be added to the `skills:install` script in `package.json`.
+- Keep `skills:install` as the single source of truth for reproducible skill setup across environments.
+
 ## Project Structure
 
 ```
@@ -401,6 +406,7 @@ See [AGENTS-SECURITY.md](./AGENTS-SECURITY.md) for detailed security guidelines 
 - **Secure Environment Variables** — classification (`NEXT_PUBLIC_*` vs server-only), Vercel Sensitive Variables, CLI commands, auto-provided Vercel variables
 - **CSRF Protection** — better-auth `trustedOrigins` + `Origin` header check, Next.js Server Action built-in CSRF, SameSite cookies
 - **Secure Cookies & Sessions** — better-auth cookie flags (`httpOnly`, `secure`, `sameSite`), cookie cache tradeoff (5 min), session management
+- **Rate Limiting** — why Vercel WAF over in-memory LRU cache (serverless isolation), Vercel WAF dashboard setup, recommended rules for auth/API routes, `@vercel/firewall` SDK for application-level rate limiting, better-auth built-in rate limiting config, WAF plan limits
 - **Source Maps & Production Hardening** — `productionBrowserSourceMaps` (disabled by default), `removeConsole` compiler option, log hygiene
 - **Dependency Security** — `pnpm audit`, `pnpm audit --fix`, `npm-check-updates`, update workflow, audit scripts for `package.json`
 - **Vercel Security Features** — automatic HTTPS, DDoS mitigation, Sensitive Environment Variables, Attack Challenge Mode, Deployment Protection
@@ -724,3 +730,4 @@ See [AGENTS-ANIMATIONS.md](./AGENTS-ANIMATIONS.md) for detailed animation guidel
 - [Zod](https://zod.dev/)
 - [pnpm audit](https://pnpm.io/cli/audit)
 - [HSTS Preload](https://hstspreload.org/)
+- [Skills.sh](https://skills.sh/docs)
