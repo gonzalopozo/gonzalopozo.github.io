@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "vitest",
     "migrate:generate": "drizzle-kit generate --config ./db/drizzle.config.ts",
     "migrate:push": "drizzle-kit push --config ./db/drizzle.config.ts",
     "db:setup": "pnpm migrate:generate && pnpm migrate:push",
