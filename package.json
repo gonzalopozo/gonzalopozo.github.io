@@ -15,7 +15,7 @@
     "audit:fix": "pnpm audit --fix",
     "check-updates": "pnpm dlx npm-check-updates",
     "update:latest": "pnpm up --latest",
-    "skills:install": "pnpm dlx skills add vercel-labs/skills@find-skills -y && pnpm dlx skills add vercel-labs/next-skills@next-best-practices -y && pnpm dlx skills add vercel-labs/next-skills@next-cache-components -y && pnpm dlx skills add vercel-labs/agent-skills@vercel-composition-patterns -y && pnpm dlx skills add addyosmani/web-quality-skills@seo -y && pnpm dlx skills add addyosmani/web-quality-skills@accessibility -y && pnpm dlx skills add wshobson/agents@wcag-audit-patterns -y",
+    "skills:install": "pnpm dlx skills add vercel-labs/skills@find-skills -y && pnpm dlx skills add vercel-labs/next-skills@next-best-practices -y && pnpm dlx skills add vercel-labs/next-skills@next-cache-components -y && pnpm dlx skills add vercel-labs/agent-skills@vercel-composition-patterns -y && pnpm dlx skills add addyosmani/web-quality-skills@seo -y && pnpm dlx skills add addyosmani/web-quality-skills@accessibility -y && pnpm dlx skills add wshobson/agents@wcag-audit-patterns -y && pnpm dlx skills add antfu/skills@vitest -y && pnpm dlx skills add sickn33/antigravity-awesome-skills@playwright-skill -y",
     "skills:check": "pnpm dlx skills check",
     "skills:update": "pnpm dlx skills update -y",
     "skills:sync": "pnpm skills:check && pnpm skills:update"
