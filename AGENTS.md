@@ -16,7 +16,7 @@ When looking up documentation, APIs, or best practices, follow this priority ord
 | Priority | Source | What it contains |
 | --- | --- | --- |
 | 1 | `AGENTS.md` (this file) | Project-specific conventions, templates, and decisions |
-| 2 | Sub `AGENTS-*.md` files | Deep-dive guidelines (security, performance, accessibility, animations) |
+| 2 | Sub `AGENTS-*.md` files | Deep-dive guidelines (security, performance, accessibility, animations, testing) |
 | 3 | Agent Skills (`.agents/skills/`) | Framework and tool knowledge (Next.js, Drizzle, better-auth, shadcn, etc.) |
 | 4 | Indexed Docs (Cursor) | Official documentation indexed locally in Cursor |
 | 5 | MCP Servers | Live browsing and external tool integrations |
@@ -391,7 +391,42 @@ export async function createEntity(data: EntityData) {
 
 ## Testing
 
-Tests are located in `tests/` directory. Run with your preferred test runner.
+See [AGENTS-TESTING.md](./AGENTS-TESTING.md) for detailed testing guidelines covering:
+
+- **Testing Philosophy** — "TDD where it hurts" approach, when to use TDD vs Test-After, the Red-Green-Refactor cycle, what NOT to test
+- **Tool Setup** — Vitest config (`vitest.config.mts`), Playwright config (`playwright.config.ts`), package.json scripts
+- **Test File Location & Naming** — `tests/` for Vitest (`.test.ts`), `e2e/` for Playwright (`.spec.ts`), directory structure, naming rules
+- **Mocking Strategy** — Drizzle database (`@/db`), better-auth sessions (`getServerSession`), Next.js functions (`redirect`, `revalidatePath`), `FormData`
+- **What to Test Per Entity** — Vitest tests (schemas, actions, junction table sync) and Playwright tests (CRUD flows, auth, public page)
+- **Playwright E2E Patterns** — authentication setup, locator best practices, Page Object pattern
+- **Accessibility Testing** — axe-core integration with Playwright for WCAG 2.2 AA checks
+- **CI Integration** — GitHub Actions workflow for both Vitest and Playwright, environment variables, Playwright report artifacts
+- **Good Practices** — Vitest conventions (Arrange-Act-Assert, `it.each`, edge cases), Playwright conventions (auto-waiting, user-visible assertions)
+- **Testing Checklist** — pre-commit, pre-deployment, and one-time setup TODOs
+
+The following topics are fully covered by installed skills (no duplication needed):
+
+| Topic | Skill |
+| --- | --- |
+| Vitest core API, CLI, hooks, mocking, snapshots, coverage, environments | `vitest` |
+| Playwright browser automation, locators, assertions, screenshots, CI patterns | `playwright-skill` |
+
+### Quick Reference
+
+| Command | Description |
+| --- | --- |
+| `pnpm test` | Run Vitest unit tests in watch mode |
+| `pnpm test -- --run` | Run Vitest once (for CI) |
+| `pnpm test:e2e` | Run Playwright E2E tests headless |
+| `pnpm test:e2e:ui` | Run Playwright with interactive UI mode |
+| `pnpm test:e2e:report` | Open the Playwright HTML report |
+
+### Test Directories
+
+| Directory | Tool | Contents |
+| --- | --- | --- |
+| `tests/` | Vitest | Unit tests: schemas, actions, utils, components |
+| `e2e/` | Playwright | E2E tests: auth, CRUD flows, public page, accessibility |
 
 ## Security
 
