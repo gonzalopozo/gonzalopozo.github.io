@@ -729,6 +729,22 @@ See [AGENTS-ANIMATIONS.md](./AGENTS-ANIMATIONS.md) for detailed animation guidel
 - **Animation UX Guidelines** — timing table (100ms–750ms by animation type), easing guide (ease-out for enter, ease-in for exit), do's and don'ts
 - **Animation Checklist** — pre-deployment verification for performance, reduced motion, bundle size, accessibility, timing, easing, and purpose
 
+## Design Patterns
+
+See [AGENTS-PATTERNS.md](./AGENTS-PATTERNS.md) for detailed design pattern guidelines covering:
+
+- **Container-Presentational Pattern** — separate data fetching (page files) from UI rendering (extracted components), shared formatting utilities in `lib/utils.ts`
+- **Server Action Hardening (Strategy-like)** — 4-step template (authenticate, validate, execute, revalidate), Zod schemas per entity in `lib/schemas/`, consistent error return types
+- **Data Access Facade** — centralized query functions in `lib/queries/`, pages never import `db` directly, caching added in one place
+- **Error Boundaries** — `error.tsx` files for error recovery, `loading.tsx` for loading states, generic error UI with retry mechanism
+
+The following topics are fully covered by installed skills (no duplication needed):
+
+| Topic | Skill |
+| --- | --- |
+| Component architecture, compound components, state management | `vercel-composition-patterns` |
+| Server Action auth/authorization patterns, Zod validation | `vercel-react-best-practices` |
+
 ## Upcoming Features
 
 - Education section (courses, diplomas, certifications)
