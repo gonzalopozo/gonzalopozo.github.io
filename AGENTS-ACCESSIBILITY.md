@@ -584,7 +584,7 @@ Next.js includes a **built-in route announcer** that automatically announces pag
 
 ### What This Means for This Project
 
-- **Every page must have a unique, descriptive title** — this is already handled by the `metadata` export in each page or layout. The SEO metadata template in `AGENTS.md` uses a `title.template` of `"%s | Gonzalo Pozo"` which produces titles like "Projects | Gonzalo Pozo"
+- **Every page must have a unique, descriptive title** — this is already handled by the `metadata` export in each page or layout. The SEO metadata template in [AGENTS-SEO.md](./AGENTS-SEO.md) uses a `title.template` of `"%s | Gonzalo Pozo"` which produces titles like "Projects | Gonzalo Pozo"
 - **Every page must have an `<h1>`** — this is a fallback if the title is not set. The heading hierarchy section below covers this
 - **Use `<Link>` for all internal navigation** — the route announcer only works with Next.js client-side transitions, not plain `<a>` tags
 

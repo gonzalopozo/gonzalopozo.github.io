@@ -291,148 +291,42 @@ export const getServerSession = cache(async () => {
 
 ## Server Actions Security
 
-Every Server Action in `lib/actions/` that creates, updates, or deletes data must follow this security pattern:
+Every Server Action in `lib/actions/` must follow the **4-step pattern**: authenticate → validate → execute → revalidate. See [AGENTS-PATTERNS.md § Server Action Hardening](./AGENTS-PATTERNS.md#2-server-action-hardening-strategy-like-pattern) for the full template, Zod schemas, return types, and migration order.
 
-### Required Steps (in order)
+### Security Rules
 
-```typescript
-"use server";
+- **Step 1 (Auth) is mandatory** — every action must call `getServerSession()` first. If `null`, redirect to `/login`
+- **Step 2 (Validation) uses Zod `.safeParse()`** — never trust `formData.get()` directly
+- **Step 3 (Execute) uses Drizzle ORM** — never concatenate strings into SQL
+- **Never expose internal errors** — return user-friendly messages, log internals server-side only
+- **`formData.get()` returns `FormDataEntryValue | null`** — handle `null` before passing to Zod
+- **Remove all `console.log` statements** from production code
 
-import { db } from "@/db";
-import { projects } from "@/db/schema/portfolio";
-import { getServerSession } from "@/lib/server-session";
-import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
-import { z } from "zod";
+### Revalidate vs Redirect (Step 4)
 
-const CreateProjectSchema = z.object({
-  title: z.string().min(1).max(200),
-  description: z.string().min(1).max(5000),
-  url: z.string().url().optional().or(z.literal("")),
-  repoUrl: z.string().url().optional().or(z.literal("")),
-  status: z.enum(["active", "archived", "in-progress"]),
-});
-
-export async function createProject(formData: FormData) {
-  // 1. AUTHENTICATE — verify the user has a valid session
-  const session = await getServerSession();
-  if (!session) {
-    redirect("/login");
-  }
-
-  // 2. VALIDATE — parse and validate all inputs with Zod
-  const rawData = {
-    title: formData.get("title"),
-    description: formData.get("description"),
-    url: formData.get("url") || "",
-    repoUrl: formData.get("repoUrl") || "",
-    status: formData.get("status"),
-  };
-
-  const validatedData = CreateProjectSchema.parse(rawData);
-
-  // 3. EXECUTE — use Drizzle ORM (parameterized queries, no string concatenation)
-  await db.insert(projects).values({
-    title: validatedData.title,
-    description: validatedData.description,
-    url: validatedData.url || undefined,
-    repoUrl: validatedData.repoUrl || undefined,
-    status: validatedData.status,
-    order: 0,
-  });
-
-  // 4. REVALIDATE or REDIRECT (not both — see rules below)
-  redirect("/dashboard/projects");
-}
-```
-
-### Rules
-
-- **Step 1 (Auth) is mandatory** — never skip authentication in a Server Action. The current actions in `lib/actions/` are missing this step and need to be updated
-- **Step 2 (Validation) uses Zod** — never trust `formData.get()` values directly. Cast to the expected type through Zod schemas
-- **Step 3 (Execute) uses Drizzle ORM** — never concatenate strings into SQL. Drizzle's query builder and `sql` template literal produce parameterized queries automatically
-- **Never expose internal errors to the client** — catch Zod errors and return user-friendly messages. Log internal errors with `console.error` but return generic "Internal server error" to the client
-- **`formData.get()` returns `FormDataEntryValue | null`** — always handle `null` before passing to Zod
-
-### Step 4: Revalidate vs Redirect
-
-Choose **one** based on context — do not use both for the same path:
+Choose **one** — do not use both for the same path:
 
 | Scenario | Use | Why |
 | --- | --- | --- |
-| **Create** (user is on a `/new` sub-route or dialog) | `redirect("/dashboard/projects")` | Navigates back to the list; redirect implicitly fetches fresh data |
-| **Update** (user stays on the same page) | `revalidatePath("/dashboard/projects")` | Invalidates the cache and re-renders the current page in-place — no full navigation |
-| **Delete** (user stays on the same page) | `revalidatePath("/dashboard/projects")` | Same as update — seamless UI refresh without a disorienting page navigation |
+| **Create** (user on `/new` sub-route or dialog) | `redirect("/dashboard/entities")` | Navigates back to the list; redirect fetches fresh data |
+| **Update** (user stays on same page) | `revalidatePath("/dashboard/entities")` | Refreshes in-place — no disorienting navigation |
+| **Delete** (user stays on same page) | `revalidatePath("/dashboard/entities")` | Seamless UI refresh |
 
-**Why not both?**
-
-- `redirect()` already triggers a fresh server render of the target page, so a preceding `revalidatePath()` to the same path is redundant overhead.
-- `redirect()` to the page you're already on causes a full navigation (Next.js throws a `NEXT_REDIRECT` internally), which is heavier and more disorienting than a simple `revalidatePath()` that updates the RSC tree in-place.
-- Use `redirect()` only when the user needs to land on a **different** route than where the action was triggered.
+`redirect()` already triggers a fresh server render, so a preceding `revalidatePath()` to the same path is redundant.
 
 ---
 
 ## Input Validation with Zod
 
-Define Zod schemas for every entity in the project. Place schemas alongside the Server Actions or in a shared `lib/schemas/` directory.
+Zod schemas for all entities are defined in `lib/schemas/`. See [AGENTS-PATTERNS.md § Zod Schemas per Entity](./AGENTS-PATTERNS.md#zod-schemas-per-entity) for the full schema definitions and per-entity file structure.
 
-### Schema Patterns for This Project
-
-```typescript
-import { z } from "zod";
-
-// Projects
-export const ProjectSchema = z.object({
-  title: z.string().min(1, "Title is required").max(200),
-  description: z.string().min(1, "Description is required").max(5000),
-  url: z.string().url("Must be a valid URL").optional().or(z.literal("")),
-  repoUrl: z.string().url("Must be a valid URL").optional().or(z.literal("")),
-  status: z.enum(["active", "archived", "in-progress"]),
-});
-
-// Experiences
-export const ExperienceSchema = z.object({
-  role: z.string().min(1, "Role is required").max(200),
-  company: z.string().min(1, "Company is required").max(200),
-  companyUrl: z.string().url().optional().or(z.literal("")),
-  description: z.string().min(1, "Description is required").max(5000),
-  startDate: z.string().optional(),
-  endDate: z.string().optional(),
-  location: z.string().max(200).optional(),
-});
-
-// Skills
-export const SkillSchema = z.object({
-  name: z.string().min(1, "Name is required").max(100),
-  type: z.enum([
-    "fullstack", "frontend", "backend", "database",
-    "devops", "practices", "tools", "other",
-  ]),
-  icon: z.string().max(100).optional(),
-  url: z.string().url().optional().or(z.literal("")),
-});
-
-// Social Links
-export const SocialLinkSchema = z.object({
-  name: z.string().min(1, "Name is required").max(100),
-  url: z.string().url("Must be a valid URL").min(1),
-  icon: z.string().max(100).optional(),
-});
-
-// Site Settings
-export const SiteSettingsSchema = z.object({
-  isEmployed: z.boolean(),
-  resumeUrl: z.string().url("Must be a valid URL").min(1),
-  statusMessage: z.string().max(500).optional(),
-});
-```
-
-### Rules
+### Validation Rules
 
 - **Validate on the server** — client-side validation (HTML `required`, React Hook Form) is for UX only. The Server Action is the security boundary
-- **Use `.parse()` not `.safeParse()` for Server Actions** — let Zod throw a `ZodError`, catch it, and return a structured error response
-- **Set max lengths** — prevent denial-of-service via extremely long inputs. Match the database column constraints
+- **Use `.safeParse()`** — returns a result object for graceful error handling without try-catch
+- **Set max lengths** — prevent denial-of-service via extremely long inputs. Match database column constraints
 - **Use `.or(z.literal(""))` for optional URL fields** — empty strings from forms are not valid URLs, so allow empty string explicitly
+- **Transform empty strings to `undefined`** — form inputs submit `""` for empty optional fields; Zod `.transform()` handles this
 
 ---
 

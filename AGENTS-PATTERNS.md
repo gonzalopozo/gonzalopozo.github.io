@@ -4,14 +4,14 @@ Design pattern guidelines and Next.js file-system conventions for the portfolio 
 
 **Related coverage (do not duplicate):**
 
-- `AGENTS-SECURITY.md` > Server Actions Security — the 4-step authenticate/validate/execute/revalidate pattern
-- `AGENTS-SECURITY.md` > Input Validation with Zod — schema definitions and validation rules
+- `AGENTS-SECURITY.md` > Server Actions Security — references this file for the template; adds security-specific rules and revalidate-vs-redirect guidance
+- `AGENTS-SECURITY.md` > Input Validation with Zod — references this file for schema definitions; adds security-specific validation rules
 - `AGENTS-SECURITY.md` > Content Security Policy — `proxy.ts` nonce generation and CSP directives
 - `AGENTS-TESTING.md` > Testing Philosophy — TDD strategy for Zod schemas and server action logic
 - `AGENTS-PERFORMANCE.md` > Server vs Client Components — decision tree for component boundaries
 - `AGENTS-PERFORMANCE.md` > Loading Files & Streaming — `loading.tsx` skeleton UIs, granular `<Suspense>` boundaries
 - `AGENTS-ACCESSIBILITY.md` > Semantic Layout Structure — layout landmarks, heading hierarchy
-- `AGENTS.md` > SEO & Metadata — `metadata` export template, OG images, sitemap, robots
+- [AGENTS-SEO.md](./AGENTS-SEO.md) — metadata export template, OG images, sitemap, robots
 - `vercel-composition-patterns` skill — compound components, render props, context providers
 - `vercel-react-best-practices` skill — Server Action auth/authorization, bundle optimization
 - `next-best-practices` skill > `file-conventions.md` — detailed file convention reference
@@ -607,7 +607,7 @@ Reference: [Next.js File Conventions](https://nextjs.org/docs/app/api-reference/
 | [MDX Components](#mdx-components) | `mdx-components.tsx` | No | Not needed — no MDX content |
 | [Public Folder](#public-folder) | `public/` | Yes | Active |
 | [Src Folder](#src-folder) | `src/` | No | Not used — project uses root `app/` |
-| [Metadata Files](#metadata-files) | Various | Partially — templates in `AGENTS.md`, not yet created | **Needed** before deployment |
+| [Metadata Files](#metadata-files) | Various | Partially — templates in [AGENTS-SEO.md](./AGENTS-SEO.md), not yet created | **Needed** before deployment |
 
 ---
 
@@ -1100,17 +1100,17 @@ export function onRouterTransitionStart(
 
 Metadata files are special files placed in `app/` that generate SEO tags, favicons, sitemaps, and social sharing images.
 
-**Full templates provided in**: `AGENTS.md` > SEO & Metadata section.
+**Full templates provided in**: [AGENTS-SEO.md](./AGENTS-SEO.md).
 
 | File | Purpose | Status |
 | --- | --- | --- |
 | `favicon.ico` | Browser tab favicon | **Needed** — place in `app/` |
 | `icon.png` / `icon.svg` | App icon (multiple sizes) | **Needed** |
 | `apple-icon.png` | Apple touch icon | **Needed** |
-| `opengraph-image.tsx` or `.png` | Social sharing image (1200×630px) | **Needed** — template in `AGENTS.md` |
+| `opengraph-image.tsx` or `.png` | Social sharing image (1200×630px) | **Needed** — template in [AGENTS-SEO.md](./AGENTS-SEO.md) |
 | `twitter-image.tsx` or `.png` | Twitter card image (optional, falls back to OG) | Optional |
-| `sitemap.ts` / `sitemap.xml` | Sitemap for search engines | **Needed** — template in `AGENTS.md` |
-| `robots.ts` / `robots.txt` | Crawling directives | **Needed** — template in `AGENTS.md` |
+| `sitemap.ts` / `sitemap.xml` | Sitemap for search engines | **Needed** — template in [AGENTS-SEO.md](./AGENTS-SEO.md) |
+| `robots.ts` / `robots.txt` | Crawling directives | **Needed** — template in [AGENTS-SEO.md](./AGENTS-SEO.md) |
 | `manifest.ts` / `manifest.json` | Web app manifest (PWA) | Optional |
 
 **Project rules**:
@@ -1118,7 +1118,7 @@ Metadata files are special files placed in `app/` that generate SEO tags, favico
 - `opengraph-image.tsx` uses `next/og` (`ImageResponse`) to generate images at build time
 - `sitemap.ts` should disallow `/dashboard/`, `/login/`, and `/api/` routes
 - `robots.ts` should block crawlers from admin routes
-- See `AGENTS.md` > SEO & Metadata for complete implementation templates
+- See [AGENTS-SEO.md](./AGENTS-SEO.md) for complete implementation templates
 
 ---
 
