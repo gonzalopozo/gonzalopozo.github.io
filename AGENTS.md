@@ -83,10 +83,13 @@ lib/
 | --- | --- |
 | [Setup](./AGENTS-SETUP.md) | First-time setup, env vars, prerequisites |
 | [Conventions](./AGENTS-CONVENTIONS.md) | JSDoc style, when and how to document |
-| [Patterns](./AGENTS-PATTERNS.md) | Architecture — Container-Presentational, Server Action hardening, Data Access Facade, Error Boundaries, file conventions |
+| [Patterns](./AGENTS-PATTERNS.md) | Architecture — Container-Presentational, Server Action hardening, Data Access Facade, Error Boundaries |
+| [Patterns Reference](./AGENTS-PATTERNS-REFERENCE.md) | Full Next.js file-system conventions, detailed pattern implementations |
 | [Security](./AGENTS-SECURITY.md) | Auth, CSP, headers, input validation, CSRF, rate limiting |
+| [Security Reference](./AGENTS-SECURITY-REFERENCE.md) | Full proxy.ts/CSP implementation, header configs, SDK examples, audit commands |
 | [SEO](./AGENTS-SEO.md) | Metadata templates, OG images, sitemap, robots |
 | [Performance](./AGENTS-PERFORMANCE.md) | React Compiler, code splitting, loading states, bundle optimization, Core Web Vitals |
 | [Accessibility](./AGENTS-ACCESSIBILITY.md) | Landmarks, skip link, forms, images, contrast, motion preferences |
 | [Animations](./AGENTS-ANIMATIONS.md) | Tailwind animations, Motion, NumberFlow |
 | [Testing](./AGENTS-TESTING.md) | Vitest, Playwright, mocking, CI |
+| [Testing Reference](./AGENTS-TESTING-REFERENCE.md) | Full mock code blocks, CI workflow YAML, auth setup, axe-core patterns |
