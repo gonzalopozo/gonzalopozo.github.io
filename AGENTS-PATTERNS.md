@@ -1,15 +1,22 @@
 # AGENTS-PATTERNS.md
 
-Design pattern guidelines for the portfolio project. This document covers four patterns adopted to improve code organization, security, error resilience, and maintainability across the Next.js 16 application.
+Design pattern guidelines and Next.js file-system conventions for the portfolio project. This document covers four design patterns adopted to improve code organization, security, error resilience, and maintainability, plus a comprehensive reference of all Next.js 16 file-system conventions and how they apply to this project.
 
 **Related coverage (do not duplicate):**
 
 - `AGENTS-SECURITY.md` > Server Actions Security — the 4-step authenticate/validate/execute/revalidate pattern
 - `AGENTS-SECURITY.md` > Input Validation with Zod — schema definitions and validation rules
+- `AGENTS-SECURITY.md` > Content Security Policy — `proxy.ts` nonce generation and CSP directives
 - `AGENTS-TESTING.md` > Testing Philosophy — TDD strategy for Zod schemas and server action logic
 - `AGENTS-PERFORMANCE.md` > Server vs Client Components — decision tree for component boundaries
+- `AGENTS-PERFORMANCE.md` > Loading Files & Streaming — `loading.tsx` skeleton UIs, granular `<Suspense>` boundaries
+- `AGENTS-ACCESSIBILITY.md` > Semantic Layout Structure — layout landmarks, heading hierarchy
+- `AGENTS.md` > SEO & Metadata — `metadata` export template, OG images, sitemap, robots
 - `vercel-composition-patterns` skill — compound components, render props, context providers
 - `vercel-react-best-practices` skill — Server Action auth/authorization, bundle optimization
+- `next-best-practices` skill > `file-conventions.md` — detailed file convention reference
+- `next-best-practices` skill > `error-handling.md` — `forbidden()`, `unauthorized()`, error patterns
+- `next-best-practices` skill > `metadata.md` — metadata file conventions, OG image generation
 
 ---
 
@@ -568,6 +575,598 @@ export default function DashboardLoading() {
 
 ---
 
+## 5. Next.js File-System Conventions
+
+Next.js uses a file-system based router where specific file names inside the `app/` directory have special meaning. This section documents every convention, whether the project uses it, and project-specific guidance.
+
+Reference: [Next.js File Conventions](https://nextjs.org/docs/app/api-reference/file-conventions)
+
+### Quick Reference Table
+
+| Convention | File | Used in Project | Status |
+| --- | --- | --- | --- |
+| [Page](#page) | `page.tsx` | Yes — 9 pages across admin and public routes | Active |
+| [Layout](#layout) | `layout.tsx` | Yes — root, admin dashboard, public | Active |
+| [Loading](#loading) | `loading.tsx` | No | **Needed** — add per Error Boundaries pattern (section 4) |
+| [Error](#error) | `error.tsx` | No | **Needed** — add per Error Boundaries pattern (section 4) |
+| [Global Error](#global-error) | `global-error.tsx` | No | Optional — only if root layout can fail |
+| [Not Found](#not-found) | `not-found.tsx` | No | **Needed** — custom 404 for admin and public |
+| [Forbidden](#forbidden) | `forbidden.tsx` | No | Optional — experimental, not recommended for production yet |
+| [Unauthorized](#unauthorized) | `unauthorized.tsx` | No | Optional — experimental, not recommended for production yet |
+| [Route Handler](#route-handler) | `route.ts` | Yes — `app/api/auth/[...all]/route.ts`, `app/api/auth/clear-invalid-session/route.ts` | Active |
+| [Proxy](#proxy) | `proxy.ts` | Yes — root `proxy.ts` for auth redirects and CSP | Active |
+| [Template](#template) | `template.tsx` | No | Not needed for this project |
+| [Default](#default) | `default.tsx` | No | Not needed — no Parallel Routes |
+| [Route Groups](#route-groups) | `(folder)` | Yes — `(admin)`, `(public)` | Active |
+| [Dynamic Segments](#dynamic-segments) | `[param]`, `[...param]`, `[[...param]]` | Yes — `[id]` in dashboard, `[...all]` in auth | Active |
+| [Parallel Routes](#parallel-routes) | `@folder` | No | Not needed for this project |
+| [Intercepting Routes](#intercepting-routes) | `(.)`, `(..)`, `(..)(..)`  | No | Not needed for this project |
+| [Route Segment Config](#route-segment-config) | `export const dynamic`, etc. | No | May be useful for public page caching |
+| [Instrumentation](#instrumentation) | `instrumentation.ts` | No | Optional — for future observability |
+| [Instrumentation Client](#instrumentation-client) | `instrumentation-client.ts` | No | Optional — for future client-side monitoring |
+| [MDX Components](#mdx-components) | `mdx-components.tsx` | No | Not needed — no MDX content |
+| [Public Folder](#public-folder) | `public/` | Yes | Active |
+| [Src Folder](#src-folder) | `src/` | No | Not used — project uses root `app/` |
+| [Metadata Files](#metadata-files) | Various | Partially — templates in `AGENTS.md`, not yet created | **Needed** before deployment |
+
+---
+
+### Page
+
+**File**: `page.tsx` — Makes a route segment publicly accessible.
+
+**Used in project**: Yes.
+
+| Page | Path |
+| --- | --- |
+| Root redirect | `app/page.tsx` |
+| Public portfolio | `app/(public)/page.tsx` |
+| Login | `app/(admin)/login/page.tsx` |
+| Dashboard overview | `app/(admin)/dashboard/page.tsx` |
+| Projects list | `app/(admin)/dashboard/projects/page.tsx` |
+| New project | `app/(admin)/dashboard/projects/new/page.tsx` |
+| Edit project | `app/(admin)/dashboard/projects/[id]/edit/page.tsx` |
+| ... (same pattern for experiences, skills, social-links, settings) | |
+
+**Project rules**:
+- Pages are async Server Components — they fetch data and render content
+- After applying the Container-Presentational pattern (section 1), pages should be thin containers (~50 lines max)
+- Every admin page must call `getServerSession()` at the top
+- The `page.tsx` default export receives optional `params` and `searchParams` props (both are promises in Next.js 16)
+
+```typescript
+export default async function Page({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const { id } = await params;
+  // ...
+}
+```
+
+---
+
+### Layout
+
+**File**: `layout.tsx` — Shared UI that wraps a route segment and its children. Persists across navigations without re-rendering.
+
+**Used in project**: Yes.
+
+| Layout | Path | Purpose |
+| --- | --- | --- |
+| Root | `app/layout.tsx` | HTML shell, fonts, global styles, metadata |
+| Admin dashboard | `app/(admin)/dashboard/layout.tsx` | Sidebar, header, auth wrapper |
+| Public | `app/(public)/layout.tsx` | Public page shell with semantic landmarks |
+
+**Project rules**:
+- Root layout must include `<html>` and `<body>` tags
+- Layouts are Server Components by default — keep them as Server Components
+- The admin dashboard layout should eventually use real session data instead of the current `mockUser`
+- Layouts **cannot** access `searchParams` — only `params` and `children`
+- Do **not** add `"use client"` to layouts unless absolutely necessary
+
+```typescript
+export default async function Layout({
+  children,
+  params,
+}: {
+  children: React.ReactNode;
+  params: Promise<{ slug: string }>;
+}) {
+  return <section>{children}</section>;
+}
+```
+
+---
+
+### Loading
+
+**File**: `loading.tsx` — Instant loading UI shown while a route segment's content is being fetched. Wraps the sibling `page.tsx` in a `<Suspense>` boundary automatically.
+
+**Used in project**: No — **needs to be added**.
+
+See [Error Boundaries pattern (section 4)](#4-error-boundaries) for the implementation template and which route segments need `loading.tsx` files.
+
+**Key behaviors**:
+- Shown immediately on navigation — provides instant feedback before data arrives
+- Server Component by default — can render Skeleton components without JS
+- Shared layouts remain interactive while loading shows
+- Navigation is interruptible — user can navigate away before loading completes
+- Does **not** affect SEO — streaming is server-rendered
+
+**Where to add in this project**:
+
+| File | Why |
+| --- | --- |
+| `app/(admin)/dashboard/loading.tsx` | All dashboard pages fetch from DB — show skeleton while loading |
+| `app/(public)/loading.tsx` | Public page fetches all portfolio data — show skeleton on slow connections |
+
+---
+
+### Error
+
+**File**: `error.tsx` — Fallback UI when a runtime error occurs in a route segment. Must be a Client Component (`"use client"`).
+
+**Used in project**: No — **needs to be added**.
+
+See [Error Boundaries pattern (section 4)](#4-error-boundaries) for the full implementation, props reference, and placement strategy.
+
+**Props**:
+- `error: Error & { digest?: string }` — the error object. In production, server errors show a generic message; use `digest` to correlate with server logs
+- `reset: () => void` — re-renders the route segment to attempt recovery
+
+**Key behaviors**:
+- Wraps `page.tsx` in a React Error Boundary
+- Errors bubble up to the nearest parent `error.tsx` if not caught locally
+- Does **not** catch errors in the same-level `layout.tsx` — only in `page.tsx` and children
+- Root `app/error.tsx` does **not** catch root layout errors (use `global-error.tsx` for that)
+
+---
+
+### Global Error
+
+**File**: `global-error.tsx` — Catches errors in the root layout itself. Must include its own `<html>` and `<body>` tags because it replaces the entire root layout.
+
+**Used in project**: No.
+
+**Project guidance**: Not needed unless the root layout starts performing async operations that could fail. The root layout in this project only sets up fonts and global styles, which don't throw at runtime.
+
+```typescript
+// app/global-error.tsx
+"use client";
+
+export default function GlobalError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  return (
+    <html>
+      <body>
+        <h2>Something went wrong!</h2>
+        <button onClick={() => reset()}>Try again</button>
+      </body>
+    </html>
+  );
+}
+```
+
+---
+
+### Not Found
+
+**File**: `not-found.tsx` — UI shown when the `notFound()` function is called within a route segment.
+
+**Also**: `global-not-found.tsx` (experimental) — global 404 for unmatched URLs across the entire app.
+
+**Used in project**: No — **should be added**.
+
+**Where to add**:
+
+| File | Purpose |
+| --- | --- |
+| `app/not-found.tsx` | Root-level 404 for unmatched URLs. Shows a styled "page not found" with link back to home |
+| `app/(admin)/dashboard/not-found.tsx` | Shown when `notFound()` is called in dashboard pages (e.g., editing a project that doesn't exist) |
+
+**Implementation**:
+
+```typescript
+// app/not-found.tsx
+import Link from "next/link";
+
+export default function NotFound() {
+  return (
+    <div className="flex flex-col items-center justify-center min-h-[50vh]">
+      <h2 className="text-2xl font-bold mb-2">Página no encontrada</h2>
+      <p className="text-muted-foreground mb-6">
+        La página que buscas no existe.
+      </p>
+      <Link href="/" className="text-primary hover:underline">
+        Volver al inicio
+      </Link>
+    </div>
+  );
+}
+```
+
+**Using `notFound()` in pages** — call it when a resource doesn't exist:
+
+```typescript
+import { notFound } from "next/navigation";
+
+export default async function EditProjectPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const project = await getProjectById(Number(id));
+
+  if (!project) notFound();
+
+  return <ProjectForm project={project} />;
+}
+```
+
+**Key behaviors**:
+- `not-found.tsx` is a Server Component — can fetch data
+- Returns `200` status for streamed responses, `404` for non-streamed
+- Root `app/not-found.tsx` handles any unmatched URL in the app
+
+---
+
+### Forbidden
+
+**File**: `forbidden.tsx` — UI shown when the `forbidden()` function is called. Returns a `403` status code.
+
+**Status**: Experimental — not recommended for production yet.
+
+**Used in project**: No.
+
+**Project guidance**: Not needed now. The project uses `redirect("/login")` for unauthorized access, which is sufficient. When `forbidden()` stabilizes, it could replace the redirect pattern for cases where the user is authenticated but lacks permissions (e.g., non-admin user trying to access dashboard). Requires `experimental.authInterrupts: true` in `next.config.ts` to enable.
+
+---
+
+### Unauthorized
+
+**File**: `unauthorized.tsx` — UI shown when the `unauthorized()` function is called. Returns a `401` status code.
+
+**Status**: Experimental — not recommended for production yet.
+
+**Used in project**: No.
+
+**Project guidance**: Same as `forbidden.tsx`. When stable, `unauthorized()` could replace `redirect("/login")` in pages and server actions to show a login form in-place instead of redirecting. Requires `experimental.authInterrupts: true` in `next.config.ts` to enable.
+
+---
+
+### Route Handler
+
+**File**: `route.ts` — Custom request handlers using the Web Request/Response APIs. Replaces API Routes from the Pages Router.
+
+**Used in project**: Yes.
+
+| Route Handler | Path | Purpose |
+| --- | --- | --- |
+| Auth catch-all | `app/api/auth/[...all]/route.ts` | better-auth handles all auth endpoints |
+| Clear invalid session | `app/api/auth/clear-invalid-session/route.ts` | Clears stale session cookies |
+
+**Project rules**:
+- Prefer Server Actions over Route Handlers for data mutations — Route Handlers are only needed for third-party integrations (like better-auth) that require standard HTTP endpoints
+- Route Handlers support `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `HEAD`, `OPTIONS`
+- `params` is a promise in Next.js 16 — must be awaited
+- A `route.ts` in the same segment as `page.tsx` will conflict — they can't coexist at the same level
+
+```typescript
+// app/api/example/route.ts
+import { type NextRequest } from "next/server";
+
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  return Response.json({ data: "example" });
+}
+```
+
+---
+
+### Proxy
+
+**File**: `proxy.ts` — Runs on every matching request before the route is rendered. Used for redirects, rewrites, header modifications, and CSP nonce generation.
+
+**Used in project**: Yes — root `proxy.ts` handles auth redirects and CSP.
+
+**Documented in**: `AGENTS-SECURITY.md` > Content Security Policy, Auth Protection Pattern.
+
+**Key behaviors**:
+- Runs at the edge, before rendering
+- Can rewrite, redirect, or produce responses
+- Cannot access the request body
+- Keep logic fast — avoid heavy DB calls
+
+---
+
+### Template
+
+**File**: `template.tsx` — Like a layout, but **remounts on every navigation** (gives children a unique key). DOM is recreated, effects re-run, state resets.
+
+**Used in project**: No.
+
+**When to use (not currently needed)**:
+- To reset form state between navigations (e.g., a search input that should clear when changing pages)
+- To re-trigger `useEffect` on every navigation
+- To show a Suspense fallback on every navigation (layouts only show it on first load)
+
+**Layout vs Template**:
+
+| Behavior | `layout.tsx` | `template.tsx` |
+| --- | --- | --- |
+| Persists across navigations | Yes | No |
+| Preserves state | Yes | No — state resets |
+| Re-runs `useEffect` | No | Yes |
+| Suspense fallback | First load only | Every navigation |
+
+**Nesting order**: `layout.tsx` → `template.tsx` → `page.tsx`
+
+---
+
+### Default
+
+**File**: `default.tsx` — Fallback for Parallel Route slots when Next.js can't recover the active state after a full-page load (hard navigation).
+
+**Used in project**: No — the project does not use Parallel Routes.
+
+**When needed**: Only required when using `@slot` Parallel Routes. If a slot doesn't have a matching page for the current URL after a hard refresh, `default.tsx` renders instead. Without it, Next.js returns an error for named slots.
+
+---
+
+### Route Groups
+
+**Convention**: `(folder)` — Organize routes without affecting the URL path. Used for shared layouts and logical grouping.
+
+**Used in project**: Yes.
+
+| Route Group | Path | Purpose |
+| --- | --- | --- |
+| `(admin)` | `app/(admin)/` | Groups login and dashboard routes under a shared admin context |
+| `(public)` | `app/(public)/` | Groups the public portfolio page with its own layout |
+
+**Project rules**:
+- Route group names are stripped from the URL — `app/(admin)/dashboard/` maps to `/dashboard`
+- Each route group can have its own `layout.tsx`, `error.tsx`, `loading.tsx`, `not-found.tsx`
+- Never nest route groups unnecessarily — keep the hierarchy flat
+
+---
+
+### Dynamic Segments
+
+**Convention**: `[param]` for single, `[...param]` for catch-all, `[[...param]]` for optional catch-all.
+
+**Used in project**: Yes.
+
+| Segment | Path | Purpose |
+| --- | --- | --- |
+| `[id]` | `app/(admin)/dashboard/projects/[id]/edit/` | Edit a specific project by ID |
+| `[id]` | `app/(admin)/dashboard/experiences/[id]/edit/` | Edit a specific experience by ID |
+| `[id]` | `app/(admin)/dashboard/skills/[id]/edit/` | Edit a specific skill by ID |
+| `[...all]` | `app/api/auth/[...all]/` | Catch-all for better-auth endpoints |
+
+**Project rules**:
+- `params` is a **promise** in Next.js 16 — always `await params` before accessing properties
+- Validate `id` params before using them — parse as `Number(id)` and call `notFound()` if the entity doesn't exist
+
+```typescript
+const { id } = await params;
+const numericId = Number(id);
+if (isNaN(numericId)) notFound();
+```
+
+---
+
+### Parallel Routes
+
+**Convention**: `@folder` — Render multiple pages in the same layout simultaneously, each navigable independently.
+
+**Used in project**: No.
+
+**When useful (not currently needed)**: Dashboards with independent panels (e.g., `@analytics` and `@team` side by side), modals that preserve background content. This project's dashboard pages are sequential, not parallel.
+
+---
+
+### Intercepting Routes
+
+**Convention**: `(.)folder`, `(..)folder`, `(..)(..)folder`, `(...)folder` — Intercept a route and render it in the current layout while the URL changes.
+
+**Used in project**: No.
+
+**When useful (not currently needed)**: Modal patterns where clicking a link shows a modal overlay but direct URL access shows a full page (e.g., photo gallery modals). Could be useful if the project adds "quick edit" modals for projects/skills.
+
+---
+
+### Route Segment Config
+
+**Convention**: Named exports in `page.tsx`, `layout.tsx`, or `route.ts` that configure rendering behavior.
+
+**Used in project**: No.
+
+**Available options**:
+
+| Export | Type | Default | Purpose |
+| --- | --- | --- | --- |
+| `dynamic` | `'auto' \| 'force-dynamic' \| 'error' \| 'force-static'` | `'auto'` | Control static vs dynamic rendering |
+| `dynamicParams` | `boolean` | `true` | Allow dynamic segments not in `generateStaticParams` |
+| `revalidate` | `false \| 0 \| number` | `false` | Default revalidation time (seconds) |
+| `fetchCache` | `'auto' \| 'force-cache' \| ...` | `'auto'` | Override fetch cache behavior |
+| `runtime` | `'nodejs' \| 'edge'` | `'nodejs'` | Execution runtime |
+| `preferredRegion` | `'auto' \| 'global' \| 'home' \| string[]` | `'auto'` | Deployment region preference |
+| `maxDuration` | `number` | Platform default | Maximum execution time (seconds) |
+
+**Important**: These options are disabled when `cacheComponents: true` is set in `next.config.ts` (which this project uses). They will eventually be deprecated in favor of the `"use cache"` directive. Prefer the Data Access Facade pattern (section 3) with `"use cache"` and `cacheLife()` instead.
+
+**One relevant use case**: The public portfolio page could use `export const revalidate = 60` as a simple caching mechanism if not using `cacheComponents`.
+
+---
+
+### Instrumentation
+
+**File**: `instrumentation.ts` — Runs once when a new Next.js server instance starts. Used for observability tools (OpenTelemetry, error tracking, etc.).
+
+**Used in project**: No.
+
+**Exports**:
+- `register()` — Called once at server startup. Use to initialize monitoring SDKs
+- `onRequestError(error, request, context)` — Called when a server error occurs. Use to report errors to external services
+
+**When to add**: When the project is deployed to production and needs error tracking (e.g., Sentry) or performance monitoring (e.g., Vercel Analytics, OpenTelemetry).
+
+```typescript
+// instrumentation.ts
+import { type Instrumentation } from "next";
+
+export function register() {
+  // Initialize observability tools
+}
+
+export const onRequestError: Instrumentation.onRequestError = async (
+  err, request, context
+) => {
+  // Send error to tracking service
+};
+```
+
+---
+
+### Instrumentation Client
+
+**File**: `instrumentation-client.ts` — Runs on the client before React hydration. Used for client-side monitoring, analytics, polyfills.
+
+**Used in project**: No.
+
+**Exports**:
+- Top-level code runs before the app is interactive
+- `onRouterTransitionStart(url, navigationType)` — Called when client-side navigation begins
+
+**When to add**: When the project needs client-side analytics (page views, navigation tracking) or error monitoring (global error listeners).
+
+```typescript
+// instrumentation-client.ts
+export function onRouterTransitionStart(
+  url: string,
+  navigationType: "push" | "replace" | "traverse"
+) {
+  // Track navigation event
+}
+```
+
+---
+
+### MDX Components
+
+**File**: `mdx-components.tsx` — Required when using `@next/mdx` to render MDX content. Defines how MDX elements map to React components.
+
+**Used in project**: No — the project does not use MDX content.
+
+**When to add**: Only if adding a blog or documentation section written in MDX.
+
+---
+
+### Public Folder
+
+**Directory**: `public/` — Static files served at the root URL. Files are served as-is without processing.
+
+**Used in project**: Yes — `public/` exists for static assets (favicons, images, etc.).
+
+**Project rules**:
+- Reference files as `/filename.ext` (not `/public/filename.ext`)
+- Only put truly static assets here — don't store generated content
+- Metadata files (favicon, OG image, etc.) should use the metadata file conventions in `app/` instead of raw files in `public/` when possible
+
+---
+
+### Src Folder
+
+**Directory**: `src/` — Alternative to placing `app/` at the root. Separates application code from config files.
+
+**Used in project**: No — the project uses root-level `app/`.
+
+**Project guidance**: Do not adopt. The project is already structured with `app/` at the root. Migrating to `src/` would break imports and provide no benefit.
+
+---
+
+### Metadata Files
+
+Metadata files are special files placed in `app/` that generate SEO tags, favicons, sitemaps, and social sharing images.
+
+**Full templates provided in**: `AGENTS.md` > SEO & Metadata section.
+
+| File | Purpose | Status |
+| --- | --- | --- |
+| `favicon.ico` | Browser tab favicon | **Needed** — place in `app/` |
+| `icon.png` / `icon.svg` | App icon (multiple sizes) | **Needed** |
+| `apple-icon.png` | Apple touch icon | **Needed** |
+| `opengraph-image.tsx` or `.png` | Social sharing image (1200×630px) | **Needed** — template in `AGENTS.md` |
+| `twitter-image.tsx` or `.png` | Twitter card image (optional, falls back to OG) | Optional |
+| `sitemap.ts` / `sitemap.xml` | Sitemap for search engines | **Needed** — template in `AGENTS.md` |
+| `robots.ts` / `robots.txt` | Crawling directives | **Needed** — template in `AGENTS.md` |
+| `manifest.ts` / `manifest.json` | Web app manifest (PWA) | Optional |
+
+**Project rules**:
+- Prefer `.ts`/`.tsx` files over static files — they're type-safe and can generate content dynamically
+- `opengraph-image.tsx` uses `next/og` (`ImageResponse`) to generate images at build time
+- `sitemap.ts` should disallow `/dashboard/`, `/login/`, and `/api/` routes
+- `robots.ts` should block crawlers from admin routes
+- See `AGENTS.md` > SEO & Metadata for complete implementation templates
+
+---
+
+### Convention Nesting Order
+
+When multiple conventions exist in the same route segment, Next.js renders them in this order:
+
+```
+layout.tsx
+├── template.tsx
+│   ├── error.tsx (wraps in Error Boundary)
+│   │   ├── loading.tsx (wraps in Suspense)
+│   │   │   ├── not-found.tsx (shown on notFound() call)
+│   │   │   └── page.tsx
+│   │   └── (children route segments)
+│   └── (error fallback UI)
+└── (persists across navigations)
+```
+
+This means:
+- `error.tsx` catches errors from `page.tsx` and `loading.tsx`, but **not** from `layout.tsx` or `template.tsx`
+- `loading.tsx` shows while `page.tsx` is streaming/suspending
+- `template.tsx` re-renders on navigation; `layout.tsx` does not
+
+---
+
+### File Conventions This Project Needs (Summary)
+
+Files that should be created before production deployment:
+
+| Priority | File | Why |
+| --- | --- | --- |
+| **High** | `app/error.tsx` | Root error fallback |
+| **High** | `app/(admin)/dashboard/error.tsx` | Dashboard error recovery |
+| **High** | `app/(public)/error.tsx` | Public page error recovery |
+| **High** | `app/(admin)/dashboard/loading.tsx` | Dashboard loading skeletons |
+| **High** | `app/(public)/loading.tsx` | Public page loading skeleton |
+| **High** | `app/not-found.tsx` | Custom 404 page |
+| **Medium** | `app/sitemap.ts` | Search engine sitemap |
+| **Medium** | `app/robots.ts` | Crawling directives |
+| **Medium** | `app/(public)/opengraph-image.tsx` | Social sharing image |
+| **Medium** | `app/favicon.ico`, `app/icon.png`, `app/apple-icon.png` | Browser/app icons |
+| **Low** | `app/(admin)/dashboard/not-found.tsx` | 404 for missing entities in admin |
+| **Low** | `instrumentation.ts` | Error tracking for production |
+| **Low** | `app/manifest.ts` | PWA manifest |
+
+---
+
 ## Pattern Interaction
 
 The four patterns work together. Here is how a typical admin page looks after all patterns are applied:
@@ -623,5 +1222,22 @@ This order ensures each step builds on the previous one without breaking existin
 - [ ] Create `app/(admin)/dashboard/error.tsx`
 - [ ] Create `app/(public)/error.tsx`
 - [ ] Create `app/(admin)/dashboard/loading.tsx`
+- [ ] Create `app/(public)/loading.tsx`
+- [ ] Create `app/not-found.tsx` (custom 404)
+- [ ] Create `app/(admin)/dashboard/not-found.tsx` (admin 404 for missing entities)
 - [ ] Create shared `EntityEmptyState` component
 - [ ] Move `formatDate` and `formatDateRange` to `lib/utils.ts`
+
+### SEO & Metadata Files (before deployment)
+
+- [ ] Create `app/sitemap.ts`
+- [ ] Create `app/robots.ts`
+- [ ] Create `app/(public)/opengraph-image.tsx`
+- [ ] Add `app/favicon.ico`, `app/icon.png`, `app/apple-icon.png`
+- [ ] Add `metadata` export to root layout and public layout
+
+### Future (when needed)
+
+- [ ] Add `instrumentation.ts` for production error tracking
+- [ ] Add `instrumentation-client.ts` for client-side analytics
+- [ ] Evaluate `forbidden.tsx` / `unauthorized.tsx` when they stabilize

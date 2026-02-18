@@ -731,12 +731,13 @@ See [AGENTS-ANIMATIONS.md](./AGENTS-ANIMATIONS.md) for detailed animation guidel
 
 ## Design Patterns
 
-See [AGENTS-PATTERNS.md](./AGENTS-PATTERNS.md) for detailed design pattern guidelines covering:
+See [AGENTS-PATTERNS.md](./AGENTS-PATTERNS.md) for detailed design pattern guidelines and file convention reference covering:
 
 - **Container-Presentational Pattern** — separate data fetching (page files) from UI rendering (extracted components), shared formatting utilities in `lib/utils.ts`
 - **Server Action Hardening (Strategy-like)** — 4-step template (authenticate, validate, execute, revalidate), Zod schemas per entity in `lib/schemas/`, consistent error return types
 - **Data Access Facade** — centralized query functions in `lib/queries/`, pages never import `db` directly, caching added in one place
 - **Error Boundaries** — `error.tsx` files for error recovery, `loading.tsx` for loading states, generic error UI with retry mechanism
+- **Next.js File-System Conventions** — comprehensive reference of all 22+ file conventions (`page.tsx`, `layout.tsx`, `error.tsx`, `loading.tsx`, `not-found.tsx`, `route.ts`, `proxy.ts`, `template.tsx`, `default.tsx`, Route Groups, Dynamic Segments, Parallel Routes, Intercepting Routes, Route Segment Config, `instrumentation.ts`, metadata files, etc.), with project-specific guidance and priority list of files needed before deployment
 
 The following topics are fully covered by installed skills (no duplication needed):
 
@@ -744,6 +745,8 @@ The following topics are fully covered by installed skills (no duplication neede
 | --- | --- |
 | Component architecture, compound components, state management | `vercel-composition-patterns` |
 | Server Action auth/authorization patterns, Zod validation | `vercel-react-best-practices` |
+| File conventions detailed reference | `next-best-practices/file-conventions.md` |
+| Error handling (`forbidden()`, `unauthorized()`, patterns) | `next-best-practices/error-handling.md` |
 
 ## Upcoming Features
 
