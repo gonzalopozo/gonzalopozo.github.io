@@ -2,6 +2,14 @@
 
 First-time setup, environment configuration, and development prerequisites.
 
+> **Before making schema changes or running Drizzle migrations, execute the following skill** — read the SKILL.md and follow its instructions:
+>
+> 1. `.cursor/skills/drizzle-orm/SKILL.md`
+
+> **Before configuring Tailwind theme or CSS variables, execute the following skill** — read the SKILL.md and follow its instructions:
+>
+> 1. `.cursor/skills/tailwind-v4-shadcn/SKILL.md`
+
 ---
 
 ## Prerequisites

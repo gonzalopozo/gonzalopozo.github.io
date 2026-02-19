@@ -4,10 +4,13 @@ Testing strategy, conventions, and project-specific patterns for a Next.js 16 ap
 
 > Full mock code blocks, CI workflow YAML, and auth setup: [AGENTS-TESTING-REFERENCE.md](./AGENTS-TESTING-REFERENCE.md)
 
-**Related skills** (already installed — do not duplicate their content):
+> **Before writing Vitest unit tests, execute the following skill** — read the SKILL.md and follow its instructions:
+>
+> 1. `.cursor/skills/vitest/SKILL.md`
 
-- `vitest` — Core API (`test`, `describe`, `expect`), CLI, hooks, mocking (`vi.mock`, `vi.spyOn`, `vi.fn`), snapshots, coverage, concurrency, environments, type testing
-- `playwright-skill` — Browser automation, locators, assertions, screenshots, responsive testing, login flows, form interactions, CI patterns
+> **Before writing Playwright E2E tests, execute the following skill** — read the SKILL.md and follow its instructions:
+>
+> 1. `.cursor/skills/playwright-skill/SKILL.md`
 
 **Related coverage in other AGENTS files (do not duplicate):**
 

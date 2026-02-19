@@ -2,6 +2,8 @@
 
 Full implementation code extracted from [AGENTS-SECURITY.md](./AGENTS-SECURITY.md). Read this file when actively implementing a security feature — the main file has the rules and decision guidance.
 
+> **Skill directives apply here.** Follow the skill execution instructions at the top of [AGENTS-SECURITY.md](./AGENTS-SECURITY.md) before writing any code based on this reference.
+
 ---
 
 ## CSP Full Implementation

@@ -2,16 +2,26 @@
 
 Design patterns and architecture guidelines for the portfolio project.
 
-**Related coverage (do not duplicate):**
+> **Before refactoring component architecture or splitting components, execute the following skill** — read the SKILL.md and follow its instructions:
+>
+> 1. `.cursor/skills/vercel-composition-patterns/SKILL.md`
+
+> **Before implementing Next.js file-system conventions or App Router patterns, execute the following skills** — read each SKILL.md and follow its instructions:
+>
+> 1. `.cursor/skills/next-best-practices/SKILL.md`
+> 2. `.cursor/skills/nextjs-app-router-patterns/SKILL.md`
+
+> **Before optimizing Server Actions or React performance, execute the following skill** — read the SKILL.md and follow its instructions:
+>
+> 1. `.cursor/skills/vercel-react-best-practices/SKILL.md`
+
+**Related coverage in other AGENTS files (do not duplicate):**
 
 - `AGENTS-SECURITY.md` — Server Action auth/validation rules, CSP nonce in `proxy.ts`
 - `AGENTS-TESTING.md` — TDD for Zod schemas, Server Action test patterns
 - `AGENTS-PERFORMANCE.md` — Server vs Client decision tree, loading/streaming
 - `AGENTS-ACCESSIBILITY.md` — Semantic layout landmarks, heading hierarchy
 - [AGENTS-SEO.md](./AGENTS-SEO.md) — Metadata templates, OG images, sitemap, robots
-- `vercel-composition-patterns` skill — Compound components, render props, context providers
-- `vercel-react-best-practices` skill — Server Action auth/authorization, bundle optimization
-- `next-best-practices` skill — File conventions, error handling (`forbidden()`, `unauthorized()`), metadata
 
 ---
 

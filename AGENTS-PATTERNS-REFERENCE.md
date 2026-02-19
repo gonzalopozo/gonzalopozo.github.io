@@ -2,6 +2,8 @@
 
 Detailed Next.js file-system convention reference and full implementation templates extracted from [AGENTS-PATTERNS.md](./AGENTS-PATTERNS.md). Read this file when you need the full code for a specific convention or pattern — the main file has the rules and decision guidance.
 
+> **Skill directives apply here.** Follow the skill execution instructions at the top of [AGENTS-PATTERNS.md](./AGENTS-PATTERNS.md) before writing any code based on this reference.
+
 ---
 
 ## Next.js File-System Conventions

@@ -2,6 +2,8 @@
 
 Full implementation templates extracted from [AGENTS-TESTING.md](./AGENTS-TESTING.md). Read this file when you need the complete mock code, CI workflow, or auth setup — the main file has the rules and decision guidance.
 
+> **Skill directives apply here.** Follow the skill execution instructions at the top of [AGENTS-TESTING.md](./AGENTS-TESTING.md) before writing any code based on this reference.
+
 ---
 
 ## Mocking Code Blocks

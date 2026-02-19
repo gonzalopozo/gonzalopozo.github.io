@@ -8,11 +8,14 @@ Animation guidelines for the portfolio project — when and how to use the three
 - `motion` (v12+) — React animation library for layout, gestures, exit animations, orchestration
 - `@number-flow/react` — Animated number component for counters and statistics
 
-**Related coverage (do not duplicate):**
+> **Before designing or implementing animations/visual polish, execute the following skill** — read the SKILL.md and follow its instructions:
+>
+> 1. `.cursor/skills/frontend-design/SKILL.md`
+
+**Related coverage in other AGENTS files (do not duplicate):**
 
 - `AGENTS-ACCESSIBILITY.md` > Motion Preferences — `prefers-reduced-motion` CSS
 - `AGENTS-PERFORMANCE.md` > Dynamic Imports — `next/dynamic` for heavy components
-- `frontend-design` skill — Motion design philosophy
 
 ---
 

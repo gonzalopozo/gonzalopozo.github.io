@@ -4,12 +4,18 @@ Security guidelines for the portfolio project — all security layers for a Next
 
 > Full implementation code (proxy.ts, next.config.ts headers, SDK examples, audit commands): [AGENTS-SECURITY-REFERENCE.md](./AGENTS-SECURITY-REFERENCE.md)
 
-**Related skills (do not duplicate their content):**
+> **Before implementing or modifying authentication, execute the following skill** — read the SKILL.md and follow its instructions:
+>
+> 1. `.cursor/skills/better-auth-best-practices/SKILL.md`
 
-- `better-auth-best-practices` — `trustedOrigins`, `useSecureCookies`, cookie cache, `BETTER_AUTH_SECRET`, rate limiting config
-- `drizzle-orm` — Parameterized queries, `sql` template literal, prepared statements
-- `vercel-react-best-practices` — Server Action auth/authorization, Zod validation
-- `next-best-practices` — `unauthorized()`/`forbidden()` error handling, secrets on server
+> **Before writing or reviewing database queries, execute the following skill** — read the SKILL.md and follow its instructions:
+>
+> 1. `.cursor/skills/drizzle-orm/SKILL.md`
+
+> **Before hardening Server Actions, execute the following skills** — read each SKILL.md and follow its instructions:
+>
+> 1. `.cursor/skills/vercel-react-best-practices/SKILL.md`
+> 2. `.cursor/skills/next-best-practices/SKILL.md`
 
 ---
 

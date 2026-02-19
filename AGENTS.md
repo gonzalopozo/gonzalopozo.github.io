@@ -68,7 +68,17 @@ lib/
 
 ## Common Tasks
 
+> **Before adding a new entity, execute the following skill** — read the SKILL.md and follow its instructions:
+>
+> 1. `.cursor/skills/drizzle-orm/SKILL.md`
+
 **Add a new entity**: schema in `db/schema/` → `pnpm db:setup` → actions in `lib/actions/` → Zod schema in `lib/schemas/` → query in `lib/queries/` → dashboard page → public page.
+
+> **Before adding a UI component, execute the following skills** — read each SKILL.md and follow its instructions:
+>
+> 1. `.cursor/skills/shadcn-ui/SKILL.md`
+> 2. `.cursor/skills/frontend-design/SKILL.md`
+> 3. `.cursor/skills/tailwind-v4-shadcn/SKILL.md`
 
 **Add a UI component**: add in `components/ui/` using Radix primitives + Tailwind + `cn()`.
 

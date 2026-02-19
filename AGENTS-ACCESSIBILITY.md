@@ -2,11 +2,14 @@
 
 Accessibility guidelines for the portfolio project — project-specific patterns using Next.js 16, shadcn/ui, Tailwind CSS 4.1, and Sonner.
 
-**Related skills** (already installed — do not duplicate their content):
+> **Before auditing or fixing accessibility, execute the following skills** — read each SKILL.md and follow its instructions:
+>
+> 1. `.cursor/skills/accessibility/SKILL.md`
+> 2. `.cursor/skills/wcag-audit-patterns/SKILL.md`
 
-- `accessibility` — WCAG 2.1 guidelines, POUR principles, contrast ratios, ARIA usage, skip links, focus management, keyboard a11y, motion preferences, testing checklist
-- `wcag-audit-patterns` — WCAG 2.2 audit checklists, automated testing with axe-core + Playwright, remediation patterns
-- `shadcn-ui` — Radix UI primitives provide built-in ARIA for Dialog, Select, DropdownMenu, Tabs, etc.
+> **Before building or modifying shadcn/ui components with a11y requirements, execute the following skill** — read the SKILL.md and follow its instructions:
+>
+> 1. `.cursor/skills/shadcn-ui/SKILL.md`
 
 ---
 

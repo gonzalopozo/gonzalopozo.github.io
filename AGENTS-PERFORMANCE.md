@@ -2,12 +2,21 @@
 
 Performance guidelines for the portfolio project — project-specific guidance that ties together the installed skills.
 
-**Related skills** (already installed — do not duplicate their content):
+> **Before implementing caching (`use cache`, PPR, `cacheLife`, `cacheTag`), execute the following skill** — read the SKILL.md and follow its instructions:
+>
+> 1. `.cursor/skills/next-cache-components/SKILL.md`
 
-- `next-cache-components` — Cache Components, PPR, `use cache`, `cacheLife`, `cacheTag`, `updateTag`
-- `next-best-practices` — `next/image`, data patterns, bundling, RSC boundaries, Suspense
-- `vercel-react-best-practices` — 57 rules (waterfalls, bundle, server, client, re-render, rendering, JS, advanced)
-- `vercel-composition-patterns` — Component architecture, compound components, state management
+> **Before optimizing bundle or rendering performance, execute the following skill** — read the SKILL.md and follow its instructions:
+>
+> 1. `.cursor/skills/vercel-react-best-practices/SKILL.md`
+
+> **Before adjusting Next.js data patterns or RSC boundaries, execute the following skill** — read the SKILL.md and follow its instructions:
+>
+> 1. `.cursor/skills/next-best-practices/SKILL.md`
+
+> **Before restructuring component tree for performance, execute the following skill** — read the SKILL.md and follow its instructions:
+>
+> 1. `.cursor/skills/vercel-composition-patterns/SKILL.md`
 
 ---
 
