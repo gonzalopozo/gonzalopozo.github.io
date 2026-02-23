@@ -6,7 +6,7 @@
 
 _**User**_
 
-¿Qué comando de Git sirve para coger los cambios que tienes en una rama y moverlos a otra sin hacer commit? Git cherry-pic? @\home\gonzalo\.cursor\projects\home-gonzalo-gonzalopozo-dev2-gonzalopozo-github-io\terminals\1.txt:121-238 
+¿Qué comando de Git sirve para coger los cambios que tienes en una rama y moverlos a otra sin hacer commit? Git cherry-pic?
 
 ---
 
