@@ -6,6 +6,7 @@ import ReactGridLayout, { useContainerWidth, Layout } from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import { ReactNode } from 'react';
+import { GridItem } from '@/components/public/grid-item';
 
 export function PortfolioGrid() {
     const [section, setSection] = useQueryState('section', { defaultValue: '' })
@@ -19,9 +20,6 @@ export function PortfolioGrid() {
                     { i: "a", x: 0, y: 0, w: 1, h: 2, static: true },
                     { i: "b", x: 1, y: 0, w: 3, h: 2, minW: 2, maxW: 4 },
                     { i: "c", x: 4, y: 0, w: 1, h: 2 },
-                    { i: "d", x: 0, y: 1, w: 1, h: 1 },
-                    { i: "e", x: 1, y: 2, w: 2, h: 1 },
-                    { i: "f", x: 3, y: 1, w: 1, h: 1 }
                 ],
                 GridItems: [
                     <div className='bg-red-500 min-w-full' key="a">a</div>,
@@ -53,8 +51,8 @@ export function PortfolioGrid() {
     const { width, containerRef, mounted } = useContainerWidth();
 
     const layout = [
-        { i: "a", x: 0, y: 0, w: 1, h: 2, static: true },
-        { i: "b", x: 1, y: 0, w: 3, h: 2, minW: 2, maxW: 4 },
+        { i: "a", x: 3, y: 0, w: 1, h: 2, static: true },
+        { i: "b", x: 0, y: 2, w: 3, h: 2, minW: 2, maxW: 4 },
         { i: "c", x: 4, y: 0, w: 1, h: 2 }
     ];
 
@@ -75,19 +73,21 @@ export function PortfolioGrid() {
             </nav>
 
 
-            {/* Necesitamos un estado para el layout  */}
-            <div ref={containerRef} className='w-120 mx-3'>
+            <div
+                ref={containerRef}
+                className='max-w-full px-3 overflow-hidden'
+            >
                 {mounted && (
                     <ReactGridLayout
                         layout={gridLayout}
                         width={width}
-                        gridConfig={{ cols: 12, rowHeight: 30 }}
+                        gridConfig={{ cols: 5, rowHeight: 30 }}
                         resizeConfig={{ enabled: false }}
+                        className=''
                     >
-                        <div className='bg-red-500 min-w-full' key="a">a</div>,
-                        <div className='bg-amber-500 min-w-full' key="b">b</div>,
-                        <div className='bg-green-500 min-w-full' key="c">c</div>,
-                        {gridContent}
+                        <GridItem className="bg-red-500" key="a">a</GridItem>
+                        <GridItem className="bg-amber-500" key="b">b</GridItem>
+                        <GridItem className="bg-green-500" key="c">c</GridItem>
                     </ReactGridLayout>
                 )}
             </div>
