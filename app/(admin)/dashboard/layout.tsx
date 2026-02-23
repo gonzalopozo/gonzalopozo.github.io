@@ -1,4 +1,3 @@
-import type React from "react"
 import { AdminSidebar } from "@/components/admin/sidebar"
 import { AdminHeader } from "@/components/admin/header"
 import type { Metadata } from "next"

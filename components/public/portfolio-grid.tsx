@@ -2,41 +2,50 @@
 
 import { useQueryState } from 'nuqs'
 import { Button } from '@/components/ui/button'
-import ReactGridLayout, { useContainerWidth, Layout } from "react-grid-layout";
+import { Responsive, useContainerWidth, Layout } from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import { ReactNode } from 'react';
+import Image from 'next/image';
+import { RiGithubLine } from "react-icons/ri";
 
 export function PortfolioGrid() {
     const [section, setSection] = useQueryState('section', { defaultValue: '' })
 
-    const sections: { url: String, v: string | ((old: string) => string | null) | null, layout?: Layout, GridItems?: ReactNode }[] =
+    const sections: { url: String, v: string | ((old: string) => string | null) | null, layouts?: { lg: Layout, md: Layout }, GridItems?: ReactNode }[] =
         [
             {
                 url: 'All',
-                v: '',
-                layout: [
-                    { i: "a", x: 0, y: 0, w: 1, h: 2, static: true },
-                    { i: "b", x: 1, y: 0, w: 3, h: 2, minW: 2, maxW: 4 },
-                    { i: "c", x: 4, y: 0, w: 1, h: 2 },
-                    { i: "d", x: 0, y: 1, w: 1, h: 1 },
-                    { i: "e", x: 1, y: 2, w: 2, h: 1 },
-                    { i: "f", x: 3, y: 1, w: 1, h: 1 }
-                ],
-                GridItems: [
-                    <div className='bg-red-500 min-w-full' key="a">a</div>,
-                    <div className='bg-amber-500 min-w-full' key="b">b</div>,
-                    <div className="bg-green-500 min-w-full" key="c">c</div>,
-                ]
+                v: null,
+                layouts: {
+                    lg: [
+                        { i: "a", x: 0, y: 0, w: 2, h: 8 },
+                        { i: "b", x: 1, y: 1, w: 3, h: 2 },
+                        { i: "c", x: 2, y: 2, w: 1, h: 1 },
+                    ],
+                    md: [
+                        { i: "a", x: 0, y: 0, w: 2, h: 8 },
+                        { i: "b", x: 1, y: 1, w: 3, h: 2 },
+                        { i: "c", x: 2, y: 2, w: 1, h: 1 },
+                    ],
+                },
+                GridItems: []
             },
             {
                 url: 'About me',
                 v: 'About me',
-                layout: [
-                    { i: "d", x: 0, y: 1, w: 1, h: 1 },
-                    { i: "e", x: 1, y: 2, w: 2, h: 1 },
-                    { i: "f", x: 3, y: 1, w: 1, h: 1 },
-                ],
+                layouts: {
+                    lg: [
+                        { i: "d", x: 0, y: 1, w: 1, h: 1 },
+                        { i: "e", x: 1, y: 2, w: 2, h: 1 },
+                        { i: "f", x: 3, y: 1, w: 1, h: 1 },
+                    ],
+                    md: [
+                        { i: "d", x: 0, y: 0, w: 2, h: 8 },
+                        { i: "e", x: 1, y: 1, w: 3, h: 2 },
+                        { i: "f", x: 2, y: 2, w: 1, h: 1 },
+                    ],
+                },
                 GridItems: [
                     <div className='bg-teal-500 w-50' key="d">d</div>,
                     <div className='bg-fuchsia-500 w-50' key="e">e</div>,
@@ -46,22 +55,15 @@ export function PortfolioGrid() {
         ]
 
     const resolvedSection = sections.find(e => e.v === section) ?? sections[0]
-    const defaultLayout = sections[0].layout!
-    const gridLayout = resolvedSection.layout ?? defaultLayout
-    const gridContent = resolvedSection.GridItems ?? []
+    const gridLayouts = resolvedSection.layouts
+    const gridContent = resolvedSection.GridItems
 
     const { width, containerRef, mounted } = useContainerWidth();
 
-    const layout = [
-        { i: "a", x: 0, y: 0, w: 1, h: 2, static: true },
-        { i: "b", x: 1, y: 0, w: 3, h: 2, minW: 2, maxW: 4 },
-        { i: "c", x: 4, y: 0, w: 1, h: 2 }
-    ];
-
     return (
         <>
-            <nav className='mt-2'>
-                <ul className='flex flex-row gap-1.5 align-middle justify-center'>
+            <nav className='h-32 px-[3.5vw]'>
+                <ul className='flex flex-row gap-1.5 items-center-safe justify-center h-full'>
                     {
                         sections.map(s => (
                             <li>
@@ -74,21 +76,53 @@ export function PortfolioGrid() {
                 </ul>
             </nav>
 
-
-            {/* Necesitamos un estado para el layout  */}
-            <div ref={containerRef} className='w-120 mx-3'>
+            <div ref={containerRef} className='px-[3-5.vw] max-w-[1200px] mx-auto'>
                 {mounted && (
-                    <ReactGridLayout
-                        layout={gridLayout}
+                    <Responsive
+                        layouts={gridLayouts}
                         width={width}
-                        gridConfig={{ cols: 12, rowHeight: 30 }}
+                        breakpoints={{ lg: 996, md: 768, sm: 0 }}
+                        cols={{ lg: 5, md: 3, sm: 1 }}
+                        rowHeight={30}
                         resizeConfig={{ enabled: false }}
                     >
-                        <div className='bg-red-500 min-w-full' key="a">a</div>,
-                        <div className='bg-amber-500 min-w-full' key="b">b</div>,
-                        <div className='bg-green-500 min-w-full' key="c">c</div>,
+                        <div className='h-full w-full min-h-0 min-w-0 overflow-hidden p-6 bg-card rounded-4xl text-card-foreground flex flex-col items-start gap-2' key="a">
+                            <figure className='shrink-0'>
+                                <Image
+                                    src="/360.png"
+                                    width={70}
+                                    height={120}
+                                    alt="Picture of Gonzalo"
+                                    className="max-w-full h-auto object-contain"
+                                />
+                            </figure>
+                            <div>
+                                <h3 className='text-primary'>Gonzalo</h3>
+                                <p className="text-muted-foreground">
+                                    Apasionado por la tecnología, creo soluciones creativas y funcionales en la web. Siempre aprendiendo algo nuevo.
+                                </p>
+                            </div>
+                            <Button
+                                asChild
+                                variant="default"
+                                size="icon"
+                                className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full"
+                            >
+                                <a
+                                    href="https://github.com/gonzalopozo"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-2"
+                                    aria-label='GitHub Profile'
+                                >
+                                    <RiGithubLine className="size-5 shrink-0" aria-hidden />
+                                </a>
+                            </Button>
+                        </div>
+                        <div className='bg-amber-500 rounded-4xl flex justify-center items-center' key="b">B</div>
+                        <div className='bg-green-500 rounded-4xl flex justify-center items-center' key="c">C</div>
                         {gridContent}
-                    </ReactGridLayout>
+                    </Responsive>
                 )}
             </div>
         </>
