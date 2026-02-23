@@ -8,6 +8,8 @@ import "react-resizable/css/styles.css";
 import { ReactNode } from 'react';
 import Image from 'next/image';
 import { RiGithubLine } from "react-icons/ri";
+import 'maplibre-gl/dist/maplibre-gl.css';
+import Map, { Marker } from 'react-map-gl/maplibre';
 
 export function PortfolioGrid() {
     const [section, setSection] = useQueryState('section', { defaultValue: '' })
@@ -19,8 +21,8 @@ export function PortfolioGrid() {
                 v: null,
                 layouts: {
                     lg: [
-                        { i: "a", x: 0, y: 0, w: 2, h: 8 },
-                        { i: "b", x: 1, y: 1, w: 3, h: 2 },
+                        { i: "a", x: 0, y: 0, w: 4, h: 7 },
+                        { i: "b", x: 4, y: 0, w: 2, h: 7 },
                         { i: "c", x: 2, y: 2, w: 1, h: 1 },
                     ],
                     md: [
@@ -82,7 +84,7 @@ export function PortfolioGrid() {
                         layouts={gridLayouts}
                         width={width}
                         breakpoints={{ lg: 996, md: 768, sm: 0 }}
-                        cols={{ lg: 5, md: 3, sm: 1 }}
+                        cols={{ lg: 10, md: 6, sm: 1 }}
                         rowHeight={30}
                         resizeConfig={{ enabled: false }}
                     >
@@ -119,7 +121,15 @@ export function PortfolioGrid() {
                                 </a>
                             </Button>
                         </div>
-                        <div className='bg-amber-500 rounded-4xl flex justify-center items-center' key="b">B</div>
+                        <div className='h-full w-full min-h-0 min-w-0 overflow-hidden bg-card rounded-4xl text-card-foreground' key='b'>
+                            <Map
+                                initialViewState={{ latitude: 37.8, longitude: -122.4, zoom: 3}}
+                                style={{ width: "100%", height: "100%" }}
+                                mapStyle="https://demotiles.maplibre.org/style.json"
+                            >
+                                <Marker longitude={-122.4} latitude={37.8} color="red" />
+                            </Map>
+                        </div>
                         <div className='bg-green-500 rounded-4xl flex justify-center items-center' key="c">C</div>
                         {gridContent}
                     </Responsive>
