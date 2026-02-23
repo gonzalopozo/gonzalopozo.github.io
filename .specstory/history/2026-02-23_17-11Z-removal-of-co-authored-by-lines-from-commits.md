@@ -524,3 +524,83 @@ git push --force-with-lease origin restructure
 
 ---
 
+_**User**_
+
+@\home\gonzalo\.cursor\projects\home-gonzalo-gonzalopozo-dev2-gonzalopozo-github-io\terminals\1.txt:611 ¿Por qué me pone como si tuviera algo en stash con el *? @\home\gonzalo\.cursor\projects\home-gonzalo-gonzalopozo-dev2-gonzalopozo-github-io\terminals\1.txt 
+
+---
+
+_**Agent (model composer-1.5, mode Agent)**_
+
+
+
+---
+
+
+
+
+
+---
+
+Offset 600 is beyond file length (585 lines)
+
+---
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: cd /home/gonzalo/gonzalopozo.dev2/gonzalopozo.github.io && git stash list</summary>
+
+```bash
+cd /home/gonzalo/gonzalopozo.dev2/gonzalopozo.github.io && git stash list
+```
+
+```
+stash@{0}: On restructure: temp2
+stash@{1}: On restructure: temp before rebase
+
+```
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: cd /home/gonzalo/gonzalopozo.dev2/gonzalopozo.github.io && git status --short</summary>
+
+```bash
+cd /home/gonzalo/gonzalopozo.dev2/gonzalopozo.github.io && git status --short
+```
+</details>
+</tool-use>
+
+---
+
+
+
+---
+
+
+El `*2` en el prompt indica que tienes **2 entradas en el stash**, no cambios sin commitear.
+
+En muchos prompts de git (oh-my-zsh, powerlevel10k, starship, etc.) el asterisco suele representar la cantidad de stashes.
+
+En tu caso tienes:
+- `stash@{0}`: "temp2"
+- `stash@{1}`: "temp before rebase"
+
+Son los stashes que se crearon durante el rebase anterior (el tuyo y el autostash de git).
+
+Si ya no los necesitas, puedes borrarlos:
+
+```bash
+# Ver qué hay en cada stash
+git stash show stash@{0}
+git stash show stash@{1}
+
+# Borrar todos los stashes
+git stash clear
+```
+
+Si quieres conservar algo de alguno de ellos, haz `git stash pop` o `git stash apply` antes de borrarlos.
+
+---
+
