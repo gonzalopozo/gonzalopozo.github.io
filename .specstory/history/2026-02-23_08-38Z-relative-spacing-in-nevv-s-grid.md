@@ -12,7 +12,7 @@ https://nevflynn.com/
 
 ---
 
-_**Agent (model gpt-5.3-codex, mode Agent)**_
+_**Agent (model composer-1.5, mode Agent)**_
 
 
 
@@ -194,8 +194,6 @@ Tool cursor-ide-browser-browser_navigate not found, available tools:
 
 
 
-
-
 ---
 
 <tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
@@ -212,8 +210,6 @@ curl -sL "https://nevflynn.com/" | head -200
 
 
 ---
-
-
 
 
 
@@ -294,9 +290,9 @@ data-styled.g26[id="Map__Marker-sc-12s41qg-1"]{content:"joXAlg,"}/*!sc*/
 .eTWOUV{background:#fff;width:36px;height:36px;border-radius:18px;position:absolute;bottom:14px;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-webkit-justify-content:center;-ms-flex-pack:center;justify-content:center;-webkit-transition:box-shadow 0.2s ease;transition:box-shadow 0.2s ease;will-change:transform;z-index:1;}/*!sc*/
 .eTWOUV:hover{cursor:pointer;-webkit-transition:box-shadow 0.2s ease-out;transition:box-shadow 0.2s ease-out;box-shadow:rgba(255,255,255,1) 0px 0px 0px 1px,rgba(255,255,255,0.5) 0px 0px 0px 6px;}/*!sc*/
 data-styled.g29[id="Map__ZoomButton-sc-12s41qg-4"]{content:"eTWOUV,"}/*!sc*/
-.dlZlSs{width:100%;height:100%;position:absolute;left:0;top:0;background-image:url('https://api.mapbox.com/styles/v1/nevflynn/ckmq30o0a0pzx17qoi8dxp3ou/static/-6.2639433,53.304238,12/280x280?access_token=REDACTED&amp;attribution=false&amp;logo=false');}/*!sc*/
-@media (max-width:1200px){.dlZlSs{background-image:url('https://api.mapbox.com/styles/v1/nevflynn/ckmq30o0a0pzx17qoi8dxp3ou/static/-6.2639433,53.304238,12/180x180?access_token=REDACTED&amp;attribution=false&amp;logo=false');}}/*!sc*/
-@media (max-width:799px){.dlZlSs{background-image:url('https://api.mapbox.com/styles/v1/nevflynn/ckmq30o0a0pzx17qoi8dxp3ou/static/-6.2639433,53.304238,12/343x164?access_token=REDACTED&amp;attribution=false&amp;logo=false');}}/*!sc*/
+.dlZlSs{width:100%;height:100%;position:absolute;left:0;top:0;background-image:url('https://api.mapbox.com/styles/v1/nevflynn/ckmq30o0a0pzx17qoi8dxp3ou/static/-6.2639433,53.304238,12/280x280?access_token=[REDACTED]&amp;attribution=false&amp;logo=false');}/*!sc*/
+@media (max-width:1200px){.dlZlSs{background-image:url('https://api.mapbox.com/styles/v1/nevflynn/ckmq30o0a0pzx17qoi8dxp3ou/static/-6.2639433,53.304238,12/180x180?access_token=[REDACTED]&amp;attribution=false&amp;logo=false');}}/*!sc*/
+@media (max-width:799px){.dlZlSs{background-image:url('https://api.mapbox.com/styles/v1/nevflynn/ckmq30o0a0pzx17qoi8dxp3ou/static/-6.2639433,53.304238,12/343x164?access_token=[REDACTED]&amp;attribution=false&amp;logo=false');}}/*!sc*/
 data-styled.g30[id="Map__Static-sc-12s41qg-5"]{content:"dlZlSs,"}/*!sc*/
 .dtaBVa{width:100%;height:100%;position:absolute;left:0;top:0;opacity:0;}/*!sc*/
 data-styled.g31[id="Map__MapContainer-sc-12s41qg-6"]{content:"dtaBVa,"}/*!sc*/
@@ -398,8 +394,6 @@ data-styled.g68[id="pages__ContactButton-sc-7qvdue-5"]{content:"kAkArv,"}/*!sc*/
 
 
 
-
-
 ---
 
 <tool-use data-tool-type="read" data-tool-name="read_file_v2">
@@ -416,7 +410,6 @@ data-styled.g68[id="pages__ContactButton-sc-7qvdue-5"]{content:"kAkArv,"}/*!sc*/
 I'm examining the CSS layout structure to understand spacing and positioning. The grid container is centered with `margin: auto` and has no explicit padding, while the header has `padding: 0 3.5vw`. The grid container is centered within a max-width container, creating equal spacing on both sides. The grid container is centered using `margin: auto` with a `max-width: 1200px`, and side spacing comes from viewport width, not padding. The grid container uses dynamic side spacing that equals (viewport - 1200px) / 2 when viewport exceeds 1200px. </details></think>
 
 ---
-
 
 Checking the project's Tailwind spacing scale for equivalents:
 
@@ -518,7 +511,6 @@ I'm implementing viewport-relative spacing using 3.5vw for consistent padding ac
 
 ---
 
-
 From the HTML and CSS of [nevflynn.com](https://nevflynn.com/):
 
 **Header (nav):** `padding: 0 3.5vw` — so **3.5vw** on left and right.
@@ -545,7 +537,7 @@ And when using the react-grid-layout library those tailwind classnames should be
 
 ---
 
-_**Agent (model gpt-5.3-codex, mode Agent)**_
+_**Agent (model composer-1.5, mode Agent)**_
 
 <think><details><summary>Thought Process</summary>
 **Analyzing layout structure**
@@ -557,7 +549,6 @@ I'm considering where to apply Tailwind padding classes in relation to ReactGrid
 I'm moving the padding to the container element wrapping ReactGridLayout to create space on the sides. </details></think>
 
 ---
-
 
 Use the padding on a **wrapper around** `ReactGridLayout`, not on the layout component itself.
 
@@ -587,13 +578,11 @@ Como uso automaticamente los colores que tengo de mi color pallette en @app/glob
 
 ---
 
-_**Agent (model gpt-5.3-codex, mode Agent)**_
+_**Agent (model composer-1.5, mode Agent)**_
 
 
 
 ---
-
-
 
 
 
@@ -613,7 +602,6 @@ _**Agent (model gpt-5.3-codex, mode Agent)**_
 I'm implementing the @theme inline mapping for Tailwind v4 to connect CSS variables with utility classes. </details></think>
 
 ---
-
 
 Ya tienes la paleta conectada a Tailwind en `globals.css`. El bloque `@theme inline` mapea las variables a utilidades de color.
 
@@ -664,7 +652,7 @@ Y el header que margin tiene https://nevflynn.com/??
 
 ---
 
-_**Agent (model gpt-5.3-codex, mode Agent)**_
+_**Agent (model composer-1.5, mode Agent)**_
 
 <think><details><summary>Thought Process</summary>
 **Analyzing header styles**
@@ -672,7 +660,6 @@ _**Agent (model gpt-5.3-codex, mode Agent)**_
 The header uses padding: 0 3.5vw, not margin as the user asked. </details></think>
 
 ---
-
 
 En nevflynn.com el header **no usa margin** para el espacio lateral.
 
@@ -700,7 +687,7 @@ HTML Element: <nav class="pages__Header-sc-7qvdue-1 iQIaBO" style="opacity: 1;" 
 
 ---
 
-_**Agent (model gpt-5.3-codex, mode Agent)**_
+_**Agent (model composer-1.5, mode Agent)**_
 
 <think><details><summary>Thought Process</summary>
 **Analyzing header layout**
@@ -712,7 +699,6 @@ The grid items start at 16px from the top of the grid container, which means the
 The header is flush with the top of the page, and the first grid row aligns directly below it with no gap. </details></think>
 
 ---
-
 
 Sí, hay espacio vertical implicado. Del CSS de nevflynn.com:
 
@@ -756,7 +742,7 @@ HTML Element: <ul class="flex flex-row gap-1.5 align-middle justify-center" data
 
 ---
 
-_**Agent (model gpt-5.3-codex, mode Agent)**_
+_**Agent (model composer-1.5, mode Agent)**_
 
 <think><details><summary>Thought Process</summary>
 **Calculating relative height**
@@ -766,7 +752,6 @@ I'm converting Nev's 136px header height to rem units, which equals approximatel
 I'm using h-[8.5rem] for exact 136px header height in Tailwind. I'm using `h-[8.5rem]` for the header height, which is relative to the root font size. </details></think>
 
 ---
-
 
 Para un header similar al de Nev (136px) usando medidas relativas en Tailwind:
 
@@ -797,7 +782,7 @@ _**User**_
 
 ---
 
-_**Agent (model gpt-5.3-codex, mode Agent)**_
+_**Agent (model composer-1.5, mode Agent)**_
 
 <think><details><summary>Thought Process</summary>
 **Investigating header height**
@@ -805,8 +790,6 @@ _**Agent (model gpt-5.3-codex, mode Agent)**_
 The header height seems off likely due to parent container constraints or incorrect alignment classes. </details></think>
 
 ---
-
-
 
 
 
@@ -823,8 +806,6 @@ The header height seems off likely due to parent container constraints or incorr
 
 
 ---
-
-
 
 
 
@@ -852,8 +833,6 @@ The header height seems off likely due to parent container constraints or incorr
 
 
 
-
-
 ---
 
 <tool-use data-tool-type="read" data-tool-name="read_file_v2">
@@ -870,7 +849,6 @@ The header height seems off likely due to parent container constraints or incorr
 The layout issue likely stems from mobile viewport constraints, where the address bar and UI chrome reduce available height to around 277px, explaining the 36px height discrepancy. The nav might be getting squished by a flex parent; checking layout structure. </details></think>
 
 ---
-
 
 La altura de **36px** encaja con `h-[13vh]` si el viewport es corto: 36 ÷ 13 ≈ 2,77, así que 100vh ≈ 277px. Eso pasa en móvil, con DevTools abiertos o en una ventana pequeña.
 
@@ -903,12 +881,11 @@ HTML Element: <canvas class="mapboxgl-canvas" tabindex="0" aria-label="Map" role
 
 ---
 
-_**Agent (model gpt-5.3-codex, mode Agent)**_
+_**Agent (model composer-1.5, mode Agent)**_
 
 
 
 ---
-
 
 La librería que usa nevflynn.com para el mapa es **Mapbox GL JS**.
 
@@ -928,7 +905,7 @@ Busca librerías de mapas para Next.js React acoredes a mi proyecto.
 
 ---
 
-_**Agent (model gpt-5.3-codex, mode Agent)**_
+_**Agent (model composer-1.5, mode Agent)**_
 
 <think><details><summary>Thought Process</summary>
 **Planning targeted web search**</details></think>
@@ -1054,7 +1031,7 @@ Pero entonces en el caso de que me decantara por react-map-gl + maplibre-gl en v
 
 ---
 
-_**Agent (model gpt-5.3-codex, mode Agent)**_
+_**Agent (model composer-1.5, mode Agent)**_
 
 Sí, **prácticamente la misma estética** si usas el mismo style/tiles.
 
@@ -1081,7 +1058,7 @@ Acabo de instalar los paquetes como los dice en https://visgl.github.io/react-ma
 
 ---
 
-_**Agent (model gpt-5.3-codex, mode Agent)**_
+_**Agent (model composer-1.5, mode Agent)**_
 
 <think><details><summary>Thought Process</summary>
 **Analyzing package mismatch cause**</details></think>
@@ -1147,7 +1124,355 @@ Entonces sí tendrías que instalar `mapbox-gl` + token y dejar `react-map-gl/ma
 
 ---
 
-Extra que te va a fallar luego en tu archivo: tienes
+Extra que te va a fallar luego en tu archivo: tienes una typo en clase Tailwind:
+- `px-[3-5.vw]` → debería ser `px-[3.5vw]`.
+
+---
+
+_**User**_
+
+Quiero que hagas el mapa mio  DOM Path: div.bg-background > div.px-[3-5.vw] max-w-[1200px] mx-auto > div.react-grid-layout > div.react-grid-item h-full w-full min-h-0 min-w-0 overflow-hidden bg-card rounded-4xl text-card-foreground react-draggable c.Tran.form. react-re.izable-hide react-re.izable > div.maplibregl-map > div.maplibregl-canva.-container maplibregl-interactive maplibregl-touch-drag-pan maplibregl-touch-zoom-rotate > canvas.maplibregl-canva
+Position: top=247px, left=153px, width=418px, height=70px
+HTML Element: <canvas class="maplibregl-canvas" tabindex="0" aria-label="Map" role="region" width="522" height="87" style="width: 418px; height: 70px;" data-cursor-element-id="cursor-el-1"></canvas> visualmente igual que el de Nevv DOM Path: div#__next > div.page.__Container-.c-7qvdue-0 ihCoKo > div.page.__GridContainer-.c-7qvdue-4 jJtdFL > div.Grid__Container-lkw3pw-0 iXylth > div.react-grid-layout layout > div.Grid__ItemGrab-lkw3pw-1 Grid__Item-lkw3pw-2 gjQtXz fubZvu react-grid-item react-draggable react-re.izable-hide react-re.izable[1] > div.Map__Container-.c-12.41qg-0 cCuSDi > div.Map__MapContainer-.c-12.41qg-6 dtaBVa mapboxgl-map > div.mapboxgl-canva.-container mapboxgl-interactive mapboxgl-touch-zoom-rotate > canvas.mapboxgl-canva
+Position: top=-9px, left=441px, width=180px, height=180px
+HTML Element: <canvas class="mapboxgl-canvas" tabindex="0" aria-label="Map" role="region" width="225" height="225" style="width: 180px; height: 180px;" data-cursor-element-id="cursor-el-1"></canvas> 
+
+---
+
+_**Agent (model composer-1.5, mode Agent)**_
+
+<think><details><summary>Thought Process</summary>
+**Planning map tile layout changes**</details></think>
+
+---
+
+Perfecto, lo hago ahora: voy a ajustar tu `portfolio-grid.tsx` para que la tarjeta del mapa tenga proporción y estilo tipo Nevv (cuadrada, bordes, zoom inicial y canvas bien dimensionado), sin tocar más de lo necesario.
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/components/public/portfolio-grid.tsx</summary>
+
+</details>
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+**Planning map layout adjustments**</details></think>
+
+---
+
+He encontrado el problema visual principal: en `md` tu mapa está con `h:2` (eso te deja ~70px), por eso sale “aplastado”. Voy a ajustar solo el layout (`h` de `b`) y corregir la clase `px-[3.5vw]` para que se vea como bloque cuadrado estilo Nevv.
+
+---
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /home/gonzalo/gonzalopozo.github.io/components/public/portfolio-grid.tsx</summary>
+
+</details>
+
+</tool-use>
+
+---
+
+<tool-use data-tool-type="unknown" data-tool-name="read_lints">
+<details>
+<summary>Tool use: **read_lints**</summary>
+
+
+Parameters:
+
+```json
+{
+  "paths": [
+    "/home/gonzalo/gonzalopozo.github.io/components/public/portfolio-grid.tsx"
+  ]
+}
+```
+Result:
+
+```json
+{
+  "linterErrorsByFile": [
+    {
+      "relativeWorkspacePath": "/home/gonzalo/gonzalopozo.github.io/components/public/portfolio-grid.tsx"
+    }
+  ]
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+---
+
+Ajuste aplicado. Verifiqué además que no dejó errores de lint en `portfolio-grid.tsx`. Ahora tu mapa ya no debería colapsar a 70px y tendrá proporción más “tile cuadrado” como Nevv.Hecho. Ya te lo dejé más parecido al bloque de mapa de Nevv.
+
+Cambios en `components/public/portfolio-grid.tsx`:
+
+- Corregí el padding horizontal del contenedor:
+  - `px-[3-5.vw]` → `px-[3.5vw]`
+- Ajusté el tamaño del ítem del mapa (`b`) para que no se aplaste:
+  - `lg`: `h: 7` → `h: 6`
+  - `md`: antes `w: 3, h: 2` (muy bajo) → `w: 2, h: 6` (más cuadrado/compacto)
+- Quité atribución visible para estética limpia tipo tarjeta:
+  - `attributionControl={false}` en `<Map />`
+
+Con eso el canvas deja de salir tipo `418x70` y pasa a un tile con proporción mucho más cercana al estilo Nevv.
+
+Si quieres, en el siguiente paso te lo clavo aún más al look de Nevv (mismo encuadre, zoom y “mood” visual del style).
+
+---
+
+_**User**_
+
+DOM Path: div.bg-background > div.px-[3.5vw] max-w-[1200px] mx-auto > div.react-grid-layout > div.react-grid-item h-full w-full min-h-0 min-w-0 overflow-hidden bg-card rounded-4xl text-card-foreground react-draggable c.Tran.form. react-re.izable-hide react-re.izable > div.maplibregl-map > div.maplibregl-canva.-container maplibregl-interactive maplibregl-touch-drag-pan maplibregl-touch-zoom-rotate > canvas.maplibregl-canva
+Position: top=138px, left=478px, width=204px, height=270px
+HTML Element: <canvas class="maplibregl-canvas" tabindex="0" aria-label="Map" role="region" width="193" height="256" style="width: 204px; height: 270px;" data-cursor-element-id="cursor-el-1"></canvas> DOM Path: div#__next > div.page.__Container-.c-7qvdue-0 ihCoKo > div.page.__GridContainer-.c-7qvdue-4 jJtdFL > div.Grid__Container-lkw3pw-0 iXylth > div.react-grid-layout layout > div.Grid__ItemGrab-lkw3pw-1 Grid__Item-lkw3pw-2 gjQtXz fubZvu react-grid-item react-draggable react-re.izable-hide react-re.izable[1] > div.Map__Container-.c-12.41qg-0 cCuSDi > div.Map__MapContainer-.c-12.41qg-6 dtaBVa mapboxgl-map
+Position: top=50px, left=441px, width=180px, height=180px
+React Component: Map__MapContainer
+HTML Element: <div class="Map__MapContainer-sc-12s41qg-6 dtaBVa mapboxgl-map" style="opacity: 1; transition: 0.75s;" data-cursor-element-id="cursor-el-43"></div> Pero haz todo lo necesario para que tenga el mismo map style y la animación esa en el centro con los botones para  hacer zoom in y zoom out
+
+---
+
+_**Agent (model composer-1.5, mode Agent)**_
+
+<think><details><summary>Thought Process</summary>
+**Planning map style and layout edits**</details></think>
+
+---
+
+Voy a ajustarlo a nivel de componente para replicar el bloque de Nevv completo: proporción cuadrada del tile, estilo de mapa, “pulse” central y botones de zoom in/out con animación. Primero reviso cómo quedó tu archivo actual y luego aplico un parche único.
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/components/public/portfolio-grid.tsx</summary>
+
+</details>
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+**Planning map zoom and style**</details></think>
+
+---
+
+Voy a dejarlo muy parecido visualmente al bloque de Nevv en tres frentes: **proporción cuadrada**, **estética del mapa (light minimal)** y **UI overlay** (pulse central + botones de zoom). También conectaré los botones a `zoomIn/zoomOut` reales del mapa.
+
+---
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /home/gonzalo/gonzalopozo.github.io/components/public/portfolio-grid.tsx</summary>
+
+</details>
+
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+**Running lint and type checks**</details></think>
+
+---
+
+<tool-use data-tool-type="generic" data-tool-name="read_lints">
+<details>
+          <summary>Tool use: **read_lints** • Read lints for 1 file</summary>
+      
+Lint paths:
+
+- `/home/gonzalo/gonzalopozo.github.io/components/public/portfolio-grid.tsx`
+
+Lint results
+
+Lint errors for `/home/gonzalo/gonzalopozo.github.io/components/public/portfolio-grid.tsx`
+
+
+| Message | Range | Severity |
+|-------|-------|----------|
+| Type '\{ ref: RefObject<MapRef \| null>; initialViewState: \{ latitude: number; longitude: number; zoom: number; \}; style: \{ width: string; height: string; \}; mapStyle: string; attributionControl: false; dragRotate: false; onLoad: () => void; className: string; \}' is not assignable to type 'IntrinsicAttributes & MapInitOptions & Partial<ViewState> & MapCallbacks & \{ initialViewState?: (Partial<...> & \{ ...; \}) \| undefined; ... 9 more ...; cursor?: string \| undefined; \} & GlobalSettings & \{ ...; \} & RefAttributes<...>'.<br/>  Property 'className' does not exist on type 'IntrinsicAttributes & MapInitOptions & Partial<ViewState> & MapCallbacks & \{ initialViewState?: (Partial<...> & \{ ...; \}) \| undefined; ... 9 more ...; cursor?: string \| undefined; \} & GlobalSettings & \{ ...; \} & RefAttributes<...>'. | 136:33-136:42 | DIAGNOSTIC_SEVERITY_ERROR |
+
+
+</details>
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+**Refactoring map opacity handling**</details></think>
+
+---
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /home/gonzalo/gonzalopozo.github.io/components/public/portfolio-grid.tsx</summary>
+
+</details>
+
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+**Running lint checks**</details></think>
+
+---
+
+<tool-use data-tool-type="unknown" data-tool-name="read_lints">
+<details>
+<summary>Tool use: **read_lints**</summary>
+
+
+Parameters:
+
+```json
+{
+  "paths": [
+    "/home/gonzalo/gonzalopozo.github.io/components/public/portfolio-grid.tsx"
+  ]
+}
+```
+Result:
+
+```json
+{
+  "linterErrorsByFile": [
+    {
+      "relativeWorkspacePath": "/home/gonzalo/gonzalopozo.github.io/components/public/portfolio-grid.tsx"
+    }
+  ]
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+**Preparing concise Spanish confirmation**</details></think>
+
+---
+
+Lo dejé implementado para que se vea **mucho más parecido al mapa de Nevv** en tu `components/public/portfolio-grid.tsx`:
+
+- Tile del mapa con proporción más compacta/cuadrada en el grid (`b`):
+  - `lg`: `w:2, h:5`
+  - `md`: `w:2, h:5`
+- Estética visual más similar (base clara minimal): style GL de Carto Positron.
+- Animación central tipo “pulse” en el centro.
+- Botones flotantes de zoom **+ / -** (abajo izquierda/derecha), conectados al mapa real (`zoomIn` / `zoomOut`).
+- Fade-in al cargar mapa (como transición de entrada).
+- Todo sin errores de lint.
+
+### Nota importante
+Quedará muy similar, pero para que sea **idéntico** al de Nevv tendrías que usar **su mismo style de Mapbox** (style URL + token propio equivalente). Con MapLibre + style abierto lo dejamos en look cercano sin depender de credenciales de terceros.
+
+Si quieres, en el siguiente paso te lo clavo aún más:
+- misma paleta de azules,
+- mismo tamaño exacto del “pulse” por breakpoint,
+- misma posición y estilo de botones según desktop/mobile.
+
+---
+
+_**User**_
+
+En Mapbox se puede poner algun tipo de limite en el que si me llego a pasar de peticiones, deje de proporcionar la API. Lo digo porque no quiero que me cobren,
+
+---
+
+_**Agent (model composer-1.5, mode Agent)**_
+
+
+
+---
+
+
+
+
+
+---
+
+<tool-use data-tool-type="search" data-tool-name="web_search">
+<details>
+            <summary>Tool use: **web_search** • Searched web `undefined` • **1** results</summary>
+        
+| Title | URL | Chunk |
+|-------|-----|-------|
+| Web search results for query: Mapbox usage limits billing cap prevent charges 2025 |  | Links:<br/>1. [Am I able to set a cap for monthly spending?](https://docs.mapbox.com/help/faq/can-i-set-up-a-cap-for-monthly-spending)<br/>2. [Accounts and pricing \| Mapbox](https://docs.mapbox.com/accounts/guides)<br/>3. [Mapbox pricing](https://www.mapbox.com/pricing)<br/>4. [Console \| Mapbox](https://console.mapbox.com/account/settings/billing)<br/>5. [Invoices and billing \| Accounts and pricing \| Mapbox](https://docs.mapbox.com/accounts/guides/invoices)<br/><br/># Mapbox Billing Cap and Usage Limits<br/><br/>**Mapbox does not offer a built-in monthly spending cap feature.**[1] However, you can manage your costs through the following methods:<br/><br/>## Cost Management Strategies<br/><br/>Instead of an automatic cap, Mapbox recommends:<br/><br/>1. **Monitor your usage** - Check your account statistics and invoices regularly at your Account page[1]<br/>2. **Control access tokens** - You can temporarily deactivate maps by deleting or removing access tokens from your code to prevent authentication and stop incurring charges[1]<br/>3. **Reactivate when ready** - Add tokens back to resume service when needed[1]<br/><br/>## Free Tier Protection<br/><br/>All Mapbox Pay-as-you-go accounts include a **free tier each month** that resets on the first day of the billing period.[5] You'll receive an email notification the first time you exceed the free tier during each billing cycle.[5]<br/><br/>## Billing Cycle<br/><br/>- Billing periods run from the 1st to the last day of each month[5]<br/>- Invoices are generated on the first day of each billing period[5]<br/>- Your payment method is automatically charged when invoices finalize at the end of the month[5]<br/><br/>**Note:** To prevent unexpected charges, proactive monitoring and manual token management are currently your best options for controlling Mapbox costs. |
+
+</details>
+</tool-use>
+
+---
+
+
+
+---
+
+
+
+
+
+---
+
+<tool-use data-tool-type="search" data-tool-name="web_search">
+<details>
+            <summary>Tool use: **web_search** • Searched web `undefined` • **1** results</summary>
+        
+| Title | URL | Chunk |
+|-------|-----|-------|
+| Web search results for query: Mapbox free tier limits map loads 2025 |  | Links:<br/>1. [Navigating Mapbox Pricing: What to Expect for Free in 2025 - Oreate AI Blog](https://www.oreateai.com/blog/navigating-mapbox-pricing-what-to-expect-for-free-in-2025/152372acbf329df5882a5388e1afee69)<br/>2. [Geocoding - Free Address and Places Search \| Mapbox](https://mapbox.com/geocoding)<br/>3. [Manage your web map costs](https://docs.mapbox.com/help/troubleshooting/manage-web-map-costs/)<br/>4. [map loads \| Help \| Mapbox](https://docs.mapbox.com/help/glossary/map-loads/)<br/>5. [Mapbox GL JS Seats](https://docs.mapbox.com/gl-js-seats/)<br/><br/># Mapbox Free Tier Map Loads Limits (2025)<br/><br/>**Mapbox GL JS Web Maps:** Mapbox GL JS provides **50,000 free map loads per month** on the free tier.[1] A map load occurs whenever a Mapbox GL JS `Map` object is initialized on a webpage, including every time a user reloads a page. The maximum session length for a map load is 12 hours.[4]<br/><br/>**Other Free Tier Allowances:** Beyond map loads, Mapbox's 2025 free tier includes:[1]<br/>- **Directions API:** 100,000 monthly requests<br/>- **Map Matching API:** 100,000 monthly requests  <br/>- **Static Images API:** 50,000 requests<br/>- **Maps SDKs for Mobile:** Up to 25,000 monthly active users<br/>- **Navigation SDK:** Unlimited trips for up to 100 monthly active users and 1,000 monthly trips<br/><br/>Mapbox operates on a pay-as-you-go model with volume discounts as usage increases.[1] |
+
+</details>
+</tool-use>
+
+---
+
+
+
+---
+
+
+Mapbox **no ofrece un límite automático de gasto** ni un “hard cap” que corte el servicio al superar un umbral. Lo que sí puedes hacer:
+
+---
+
+### Lo que Mapbox sí ofrece
+
+1. **Free tier mensual**  
+   - ~50.000 map loads gratis al mes (se reinicia cada ciclo).  
+   - Te avisan por email la primera vez que superas el free tier en ese mes.
+
+2. **Control manual de tokens**  
+   - Puedes desactivar o eliminar tokens en [Mapbox Account](https://account.mapbox.com/).  
+   - Sin token válido, el mapa deja de cargar y no se generan cargos.
+
+3. **Monitoreo**  
+   - Revisar uso y facturación en [Account → Billing](https://account.mapbox.com/billing/).
+
+---
+
+### Cómo evitar que te cobren
+
+- **Opción A:** Usar solo el free tier y vigilar el uso.  
+- **Opción B:** Si te acercas al límite, desactivar el token hasta el mes siguiente.  
+- **Opción C:** No usar Mapbox y quedarte con **MapLibre** (como ya tienes): sin API key, sin límites de peticiones ni facturación.
+
+---
+
+### Recomendación
+
+Para un portfolio personal con poco tráfico, **MapLibre + tiles gratuitos** (Carto, OSM, etc.) suele ser suficiente y evita cualquier riesgo de cobro. Si quieres el look de Mapbox, puedes usar estilos compatibles con MapLibre o tiles similares sin depender de su API.
 
 ---
 
