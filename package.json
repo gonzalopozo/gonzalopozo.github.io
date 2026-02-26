@@ -21,6 +21,7 @@
     "skills:sync": "pnpm skills:check && pnpm skills:update"
   },
   "dependencies": {
+    "@dnd-kit/helpers": "^0.3.2",
     "@dnd-kit/react": "^0.3.2",
     "@libsql/client": "^0.17.0",
     "@number-flow/react": "^0.5.14",

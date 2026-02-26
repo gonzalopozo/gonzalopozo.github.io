@@ -6,7 +6,27 @@ import { Badge } from "@/components/ui/badge";
 import { ProjectInfo } from "@/lib/types";
 import { Pencil, ExternalLink, Trash, Github } from "lucide-react";
 import Link from "next/link";
-import { SortableRow } from "@/components/admin/sortable-row";
+// import { SortableRow } from "@/components/admin/sortable-row";
+import { useDroppable } from '@dnd-kit/react';
+import { ReactNode, useRef, useState } from "react";
+import { useSortable } from '@dnd-kit/react/sortable';
+import { RxDragHandleDots2 } from "react-icons/rx";
+
+function SortableRow({ children, id, index }: { children: ReactNode; id: number, index: number }) {
+    const [element, setElement] = useState<Element | null>(null);
+    const handleRef = useRef<HTMLButtonElement | null>(null);
+    useSortable({ id, index, element, handle: handleRef });
+
+    return (
+        <TableRow ref={setElement}>
+            <Button ref={handleRef} variant={"secondary"}> 
+                <RxDragHandleDots2 />
+            </Button>
+
+            {children}
+        </TableRow>
+    )
+}
 
 
 interface ProjectsTableProps {
@@ -41,6 +61,9 @@ function getStatusLabel(status: string): string {
 }
 
 export function ProjectsTable({ projects, onDelete }: ProjectsTableProps) {
+    const { ref } = useDroppable({
+        id: 'droppable',
+    });
 
     return (
         <Table>
@@ -56,101 +79,99 @@ export function ProjectsTable({ projects, onDelete }: ProjectsTableProps) {
                     <TableHead className="text-right">Acciones</TableHead>
                 </TableRow>
             </TableHeader>
-            <TableBody>
-                {projects.map((project) => (
-                    <SortableRow key={project.id} id={project.id}>
-                        <TableCell>
-                            <Badge variant="outline" className="font-mono">
-                                {project.order}
-                            </Badge>
-                        </TableCell>
-                        <TableCell className="font-medium">
-                            {project.title}
-                        </TableCell>
-                        <TableCell className="max-w-[200px]">
-                            <p className="truncate text-sm text-muted-foreground">
-                                {project.description || "—"}
-                            </p>
-                        </TableCell>
-                        <TableCell>
-                            <Badge variant={getStatusVariant(project.status)}>
-                                {getStatusLabel(project.status)}
-                            </Badge>
-                        </TableCell>
-                        <TableCell>
-                            <div className="flex flex-wrap gap-1 max-w-[150px]">
-                                {project.projectSkills.length > 0 ? (
-                                    project.projectSkills.slice(0, 3).map(({ skill }) => (
-                                        <Badge key={skill.id} variant="secondary" className="text-xs">
-                                            {skill.name}
-                                        </Badge>
-                                    ))
-                                ) : (
-                                    <span className="text-muted-foreground text-sm">—</span>
-                                )}
-                                {project.projectSkills.length > 3 && (
-                                    <Badge variant="secondary" className="text-xs">
-                                        +{project.projectSkills.length - 3}
+            <TableBody ref={ref}>
+                {projects.map((project, index) => (<SortableRow key={project.id} id={project.id} index={index}>
+                    <TableCell>
+                        <Badge variant="outline" className="font-mono">
+                            {project.order}
+                        </Badge>
+                    </TableCell>
+                    <TableCell className="font-medium">
+                        {project.title}
+                    </TableCell>
+                    <TableCell className="max-w-[200px]">
+                        <p className="truncate text-sm text-muted-foreground">
+                            {project.description || "—"}
+                        </p>
+                    </TableCell>
+                    <TableCell>
+                        <Badge variant={getStatusVariant(project.status)}>
+                            {getStatusLabel(project.status)}
+                        </Badge>
+                    </TableCell>
+                    <TableCell>
+                        <div className="flex flex-wrap gap-1 max-w-[150px]">
+                            {project.projectSkills.length > 0 ? (
+                                project.projectSkills.slice(0, 3).map(({ skill }) => (
+                                    <Badge key={skill.id} variant="secondary" className="text-xs">
+                                        {skill.name}
                                     </Badge>
-                                )}
-                            </div>
-                        </TableCell>
-                        <TableCell>
-                            <div className="flex items-center gap-2">
-                                {project.url && (
-                                    <a
-                                        href={project.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center text-primary hover:text-primary/80"
-                                        title="Ver proyecto"
-                                    >
-                                        <ExternalLink className="size-4" />
-                                    </a>
-                                )}
-                                {project.repoUrl && (
-                                    <a
-                                        href={project.repoUrl}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center text-muted-foreground hover:text-foreground"
-                                        title="Ver repositorio"
-                                    >
-                                        <Github className="size-4" />
-                                    </a>
-                                )}
-                                {!project.url && !project.repoUrl && (
-                                    <span className="text-muted-foreground">—</span>
-                                )}
-                            </div>
-                        </TableCell>
-                        <TableCell className="text-muted-foreground text-sm">
-                            {formatDate(project.updatedAt)}
-                        </TableCell>
-                        <TableCell className="text-right">
-                            <div className="flex items-center justify-end gap-1">
-                                <Button variant="ghost" size="sm" asChild>
-                                    <Link
-                                        href={`/dashboard/projects/${project.id}/edit`}
-                                        className="gap-1.5"
-                                    >
-                                        <Pencil className="size-3.5" />
-                                        Editar
-                                    </Link>
-                                </Button>
-                                <Button
-                                    onClick={() => onDelete(project.id)}
-                                    variant="destructive"
-                                    size="sm"
+                                ))
+                            ) : (
+                                <span className="text-muted-foreground text-sm">—</span>
+                            )}
+                            {project.projectSkills.length > 3 && (
+                                <Badge variant="secondary" className="text-xs">
+                                    +{project.projectSkills.length - 3}
+                                </Badge>
+                            )}
+                        </div>
+                    </TableCell>
+                    <TableCell>
+                        <div className="flex items-center gap-2">
+                            {project.url && (
+                                <a
+                                    href={project.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center text-primary hover:text-primary/80"
+                                    title="Ver proyecto"
+                                >
+                                    <ExternalLink className="size-4" />
+                                </a>
+                            )}
+                            {project.repoUrl && (
+                                <a
+                                    href={project.repoUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center text-muted-foreground hover:text-foreground"
+                                    title="Ver repositorio"
+                                >
+                                    <Github className="size-4" />
+                                </a>
+                            )}
+                            {!project.url && !project.repoUrl && (
+                                <span className="text-muted-foreground">—</span>
+                            )}
+                        </div>
+                    </TableCell>
+                    <TableCell className="text-muted-foreground text-sm">
+                        {formatDate(project.updatedAt)}
+                    </TableCell>
+                    <TableCell className="text-right">
+                        <div className="flex items-center justify-end gap-1">
+                            <Button variant="ghost" size="sm" asChild>
+                                <Link
+                                    href={`/dashboard/projects/${project.id}/edit`}
                                     className="gap-1.5"
                                 >
-                                    <Trash className="size-3.5" />
-                                    Eliminar
-                                </Button>
-                            </div>
-                        </TableCell>
-                    </SortableRow>
-                ))}
+                                    <Pencil className="size-3.5" />
+                                    Editar
+                                </Link>
+                            </Button>
+                            <Button
+                                onClick={() => onDelete(project.id)}
+                                variant="destructive"
+                                size="sm"
+                                className="gap-1.5"
+                            >
+                                <Trash className="size-3.5" />
+                                Eliminar
+                            </Button>
+                        </div>
+                    </TableCell>
+                </SortableRow>))}
             </TableBody>
         </Table>
     );
