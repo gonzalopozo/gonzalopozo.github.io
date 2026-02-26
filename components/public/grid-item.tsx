@@ -40,8 +40,9 @@ function ShowMoreButton({ variant, setSection }: ShowMoreButtonProps) {
 export const GridItem = forwardRef<HTMLDivElement, React.ComponentProps<"div"> & GridItemProps>(
     ({ children, className, variant, section, setSection, ...props }, ref) => (
         <div ref={ref} {...props}>
-            <Card className={cn("h-full w-full min-h-0 min-w-0 overflow-hidden bg-card rounded-4xl", className, {
-                "text-card-foreground p-6 bg-card": variant !== "map"
+            <Card className={cn("size-full min-h-0 min-w-0 overflow-hidden bg-card rounded-4xl", className, {
+                "text-card-foreground p-6 bg-card": variant !== "map",
+                "gap-0 p-0 py-0": variant === "map",
             })}>
                 {children}
 

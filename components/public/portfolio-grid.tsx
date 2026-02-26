@@ -5,49 +5,12 @@ import { Button } from '@/components/ui/button'
 import { Responsive, useContainerWidth, Layout } from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
-import { ReactNode, useState, useCallback, useRef } from 'react';
+import { ReactNode } from 'react';
 import Image from 'next/image';
 import { RiGithubLine } from "react-icons/ri";
-import 'maplibre-gl/dist/maplibre-gl.css';
-import Map, { Marker } from 'react-map-gl/maplibre';
-import { MapGLStyleSwitcher, type StyleItem } from 'map-gl-style-switcher/react-map-gl';
-import 'map-gl-style-switcher/dist/map-gl-style-switcher.css';
-import { OpenMapTilesLanguage } from '@teritorio/openmaptiles-gl-language';
-import MaplibreTransition from 'maplibre-transition';
-import type { Map as MapLibreMap } from 'maplibre-gl';
+import { Map, MapControls } from "@/components/ui/map";
 import { GridItem } from '@/components/public/grid-item';
-
-/** OpenFreeMap styles use OpenMapTiles schema — compatible with OpenMapTilesLanguage for label localization. */
-const MAP_STYLES: StyleItem[] = [
-    {
-        id: 'liberty',
-        name: 'Liberty',
-        image: 'https://raw.githubusercontent.com/muimsd/map-gl-style-switcher/refs/heads/main/public/voyager.png',
-        styleUrl: 'https://tiles.openfreemap.org/styles/liberty',
-        description: 'Liberty style from OpenFreeMap',
-    },
-    {
-        id: 'positron',
-        name: 'Positron',
-        image: 'https://raw.githubusercontent.com/muimsd/map-gl-style-switcher/refs/heads/main/public/positron.png',
-        styleUrl: 'https://tiles.openfreemap.org/styles/positron',
-        description: 'Positron style from OpenFreeMap',
-    },
-    {
-        id: 'bright',
-        name: 'Bright',
-        image: 'https://raw.githubusercontent.com/muimsd/map-gl-style-switcher/refs/heads/main/public/voyager.png',
-        styleUrl: 'https://tiles.openfreemap.org/styles/bright',
-        description: 'Bright style from OpenFreeMap',
-    },
-    {
-        id: 'dark',
-        name: 'Dark',
-        image: 'https://raw.githubusercontent.com/muimsd/map-gl-style-switcher/refs/heads/main/public/dark.png',
-        styleUrl: 'https://tiles.openfreemap.org/styles/dark',
-        description: 'Dark style from OpenFreeMap',
-    },
-];
+import { ModeToggle } from '@/components/theme-toggler';
 
 const PORTFOLIO_SECTIONS = ['About me', 'Projects', 'Experience', 'Contact'] as const
 
@@ -55,28 +18,6 @@ export type PortfolioSection = (typeof PORTFOLIO_SECTIONS)[number]
 
 export function PortfolioGrid() {
     const [section, setSection] = useQueryState('section', parseAsStringLiteral(PORTFOLIO_SECTIONS))
-    const languageControlRef = useRef<OpenMapTilesLanguage | null>(null)
-    const [mapStyle, setMapStyle] = useState(MAP_STYLES[0].styleUrl)
-    const [activeStyleId, setActiveStyleId] = useState(MAP_STYLES[0].id)
-
-    const applyMapLanguage = useCallback((map: MapLibreMap) => {
-        const browserLang = (navigator.languages?.[0] || navigator.language || 'en').split('-')[0]
-        const supported = ['es', 'en', 'de', 'fr', 'it', 'pt', 'ru', 'zh', 'ja', 'ko', 'ar']
-        const lang = supported.includes(browserLang) ? browserLang : 'en'
-        languageControlRef.current?.setLanguage(lang)
-    }, [])
-
-    const handleMapLoad = useCallback((evt: { target: MapLibreMap }) => {
-        const map = evt.target
-        MaplibreTransition.init(map)
-        const languageControl = new OpenMapTilesLanguage({
-            languageField: /^name(_|:)/,
-            getLanguageField: (lang: string) => (lang === 'mul' ? 'name' : `name_${lang}`),
-        })
-        languageControlRef.current = languageControl
-        map.addControl(languageControl, 'top-right')
-        map.on('styledata', () => applyMapLanguage(map))
-    }, [applyMapLanguage])
 
     const sections: { url: string; v: PortfolioSection | null; layouts?: { lg: Layout; md: Layout }; GridItems?: ReactNode }[] =
         [
@@ -139,6 +80,7 @@ export function PortfolioGrid() {
                             </li>
                         ))
                     }
+                    <ModeToggle />
                 </ul>
             </nav>
 
@@ -185,28 +127,11 @@ export function PortfolioGrid() {
                                 </a>
                             </Button>
                         </GridItem>
-                        <div className='h-full w-full min-h-0 min-w-0 overflow-hidden bg-card rounded-4xl text-card-foreground' key='b'>
-                            <Map
-                                initialViewState={{ latitude: 40.275, longitude: -3.915, zoom: 11 }}
-                                style={{ width: "100%", height: "100%" }}
-                                mapStyle={mapStyle}
-                                attributionControl={false}
-                                onLoad={handleMapLoad}
-                            >
-                                <MapGLStyleSwitcher
-                                    styles={MAP_STYLES}
-                                    activeStyleId={activeStyleId}
-                                    onStyleChange={(styleUrl) => {
-                                        setMapStyle(styleUrl)
-                                        const style = MAP_STYLES.find((s) => s.styleUrl === styleUrl)
-                                        if (style) setActiveStyleId(style.id)
-                                    }}
-                                    position="bottom-left"
-                                    theme="auto"
-                                />
-                                <Marker latitude={40.275} longitude={-3.915} color="red" />
+                        <GridItem variant='map' section={section} key="b">
+                            <Map center={[-3.916, 40.273]} zoom={13} attributionControl={false}>
+                                <MapControls />
                             </Map>
-                        </div>
+                        </GridItem>
                         <div className='bg-green-500 rounded-4xl flex justify-center items-center' key="c">C</div>
                         {gridContent}
                     </Responsive>
