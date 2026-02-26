@@ -70,6 +70,14 @@ Status: **completed**
 
 ---
 
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/package.json</summary>
+
+</details>
+</tool-use>
+
+---
+
 <tool-use data-tool-type="unknown" data-tool-name="semantic_search_full">
 <details>
 <summary>Tool use: **semantic_search_full**</summary>
@@ -4656,14 +4664,6 @@ Status: **completed**
 
 ---
 
-<tool-use data-tool-type="read" data-tool-name="read_file_v2">
-<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/package.json</summary>
-
-</details>
-</tool-use>
-
----
-
 
 
 ---
@@ -4880,6 +4880,14 @@ I'm analyzing the specstory file for drag-and-drop functionality details. </deta
 
 ---
 
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/.specstory/history/2026-02-26_09-55Z-drag-and-drop-row-reordering.md</summary>
+
+</details>
+</tool-use>
+
+---
+
 <tool-use data-tool-type="search" data-tool-name="web_search">
 <details>
             <summary>Tool use: **web_search** • Searched web `undefined` • **1** results</summary>
@@ -4887,14 +4895,6 @@ I'm analyzing the specstory file for drag-and-drop functionality details. </deta
 | Title | URL | Chunk |
 |-------|-----|-------|
 | Web search results for query: @dnd-kit sortable table rows React 2024 2025 |  | Links:<br/>1. [Multiple sortable lists - @dnd-kit](https://docs.dndkit.com/react/guides/multiple-sortable-lists)<br/>2. [Sortable - @dnd-kit](https://docs.dndkit.com/presets/sortable)<br/>3. [useSortable - @dnd-kit](https://dndkit.com/react/hooks/use-sortable)<br/>4. [@dnd-kit/sortable examples - CodeSandbox](https://codesandbox.io/examples/package/%40dnd-kit/sortable)<br/>5. [Managing sortable state - @dnd-kit](https://dndkit.com/react/guides/sortable-state-management)<br/><br/># @dnd-kit Sortable Table Rows in React<br/><br/>@dnd-kit provides a comprehensive solution for implementing sortable functionality, including table rows, in React applications.[2]<br/><br/>## Core Setup<br/><br/>To get started, install the sortable preset:[2]<br/>```bash<br/>npm install @dnd-kit/sortable<br/>```<br/><br/>The basic architecture uses two main concepts:[2]<br/>- **`SortableContext`** - A provider that wraps your sortable items<br/>- **`useSortable` hook** - Applied to individual draggable items to make them sortable[3]<br/><br/>## Basic Implementation<br/><br/>For a simple sortable list, use `DndContext`, `SortableContext`, and the `useSortable` hook:[2]<br/>- Configure sensors (PointerSensor, KeyboardSensor) for drag detection<br/>- Set a collision detection strategy (e.g., `closestCenter`)<br/>- Handle `onDragEnd` to update state using `arrayMove()`[2]<br/><br/>## Multiple Containers/Lists<br/><br/>For table rows across multiple containers, wrap each container in its own `SortableContext`.[2] Handle cross-container moves using the `onDragOver` callback with the `move` helper from `@dnd-kit/helpers`.[1]<br/><br/>## State Management<br/><br/>Use `onDragEnd` to update your application state. The library provides sortable-specific properties like `initialIndex`, `index`, `initialGroup`, and `group` to track position changes.[5] For multi-list scenarios, the `move` helper function simplifies state updates.[1]<br/><br/>## Examples<br/><br/>CodeSandbox has multiple working examples, including a `tanstack-table-example-row-dnd` specifically for table row drag-and-drop.[4] |
-
-</details>
-</tool-use>
-
----
-
-<tool-use data-tool-type="read" data-tool-name="read_file_v2">
-<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/.specstory/history/2026-02-26_09-55Z-drag-and-drop-row-reordering.md</summary>
 
 </details>
 </tool-use>
@@ -5110,17 +5110,6 @@ Parameters:
   "url": "https://orm.drizzle.team/docs/rqb"
 }
 ```
-Additional data:
-
-```json
-{
-  "reviewData": {
-    "status": "Done",
-    "selectedOption": "run",
-    "isShowingInput": false
-  }
-}
-```
 Result:
 
 ```json
@@ -5129,8 +5118,6 @@ Result:
   "markdown": "Drizzle ORM - [OLD] Query V1\n\n[Documentation](https://orm.drizzle.team/docs/overview)\n\n[30k+](https://github.com/drizzle-team/drizzle-orm)\n\nLight\n\nDark\n\nSystem\n\n[v1.094%](https://orm.drizzle.team/roadmap)\n\n[Benchmarks](https://orm.drizzle.team/benchmarks)\n\n[Extension](https://driz.link/extension)\n\n[Studio](https://orm.drizzle.team/drizzle-studio/overview)\n\n[Studio Package](https://github.com/drizzle-team/drizzle-studio-npm)\n\n[Gateway](https://gateway.drizzle.team/)\n\n[Drizzle Run](https://drizzle.run/)\n\nOur goodies!\n\n[Our Cloud Partner](https://driz.link/railway)\n\nProduct by Drizzle Team\n\n[One Dollar Stats $1 per mo web analytics christmas deal](https://driz.link/onedollarstats)\n\n# Drizzle Queries\n\nPostgreSQL\n\nSQLite\n\nMySQL\n\nSingleStore\n\nDrizzle ORM is designed to be a thin typed layer on top of SQL. We truly believe we’ve designed the best way to operate an SQL database from TypeScript and it’s time to make it better.\n\nRelational queries are meant to provide you with a great developer experience for querying nested relational data from an SQL database, avoiding multiple joins and complex data mappings.\n\nIt is an extension to the existing schema definition and query builder. You can opt-in to use it based on your needs. We’ve made sure you have both the best-in-class developer experience and performance.\n\nindex.ts\n\nschema.ts\n\n&#96;&#96;&#96;\nimport * as schema from './schema';\nimport { drizzle } from 'drizzle-orm/...';\n\nconst db = drizzle({ schema });\n\nconst result = await db._query.users.findMany({\n\twith: {\n\t\tposts: true\t\t\t\n\t},\n});\n&#96;&#96;&#96;\n\n&#96;&#96;&#96;\n[{\n\tid: 10,\n\tname: \"Dan\",\n\tposts: [\n\t\t{\n\t\t\tid: 1,\n\t\t\tcontent: \"SQL is awesome\",\n\t\t\tauthorId: 10,\n\t\t},\n\t\t{\n\t\t\tid: 2,\n\t\t\tcontent: \"But check relational queries\",\n\t\t\tauthorId: 10,\n\t\t}\n\t]\n}]\n&#96;&#96;&#96;\n\n⚠️ If you have SQL schema declared in multiple files you can do it like that\n\nindex.ts\n\nschema1.ts\n\nschema2.ts\n\n&#96;&#96;&#96;\nimport * as schema1 from './schema1';\nimport * as schema2 from './schema2';\nimport { drizzle } from 'drizzle-orm/...';\n\nconst db = drizzle({ schema: { ...schema1, ...schema2 } });\n\nconst result = await db._query.users.findMany({\n\twith: {\n\t\tposts: true\t\t\t\n\t},\n});\n&#96;&#96;&#96;\n\n## Modes\n\nDrizzle relational queries always generate exactly one SQL statement to run on the database and it has certain caveats. To have best in class support for every database out there we’ve introduced&#96;modes&#96;.\n\nDrizzle relational queries use lateral joins of subqueries under the hood and for now PlanetScale does not support them.\n\nWhen using mysql2 driver with regular MySQL database — you should specify&#96;mode: \"default\"&#96; When using mysql2 driver with PlanetScale — you need to specify&#96;mode: \"planetscale\"&#96;\n\n&#96;&#96;&#96;\nimport * as schema from './schema';\nimport { drizzle } from \"drizzle-orm/mysql2\";\nimport mysql from \"mysql2/promise\";\n\nconst connection = await mysql.createConnection({\n  uri: process.env.PLANETSCALE_DATABASE_URL,\n});\n\nconst db = drizzle({ client: connection, schema, mode: 'planetscale' });\n&#96;&#96;&#96;\n\n## Querying\n\nRelational queries are an extension to Drizzle’s original [query builder](https://orm.drizzle.team/docs/select). You need to provide all&#96;tables&#96; and&#96;relations&#96; from your schema file/files upon&#96;drizzle()&#96; initialization and then just use the&#96;db._query&#96; API.\n\n&#96;drizzle&#96; import path depends on the [database driver](https://orm.drizzle.team/docs/connect-overview) you’re using.\n\nindex.ts\n\nschema.ts\n\n&#96;&#96;&#96;\nimport * as schema from './schema';\nimport { drizzle } from 'drizzle-orm/...';\n\nconst db = drizzle({ schema });\n\nawait db._query.users.findMany(...);\n&#96;&#96;&#96;\n\n&#96;&#96;&#96;\n// if you have schema in multiple files\nimport * as schema1 from './schema1';\nimport * as schema2 from './schema2';\nimport { drizzle } from 'drizzle-orm/...';\n\nconst db = drizzle({ schema: { ...schema1, ...schema2 } });\n\nawait db._query.users.findMany(...);\n&#96;&#96;&#96;\n\nDrizzle provides&#96;.findMany()&#96; and&#96;.findFirst()&#96; APIs.\n\n### Find many\n\n&#96;&#96;&#96;\nconst users = await db._query.users.findMany();\n&#96;&#96;&#96;\n\n&#96;&#96;&#96;\n// result type\nconst result: {\n\tid: number;\n\tname: string;\n\tverified: boolean;\n\tinvitedBy: number | null;\n}[];\n&#96;&#96;&#96;\n\n### Find first\n\n&#96;.findFirst()&#96; will add&#96;limit 1&#96; to the query.\n\n&#96;&#96;&#96;\nconst user = await db._query.users.findFirst();\n&#96;&#96;&#96;\n\n&#96;&#96;&#96;\n// result type\nconst result: {\n\tid: number;\n\tname: string;\n\tverified: boolean;\n\tinvitedBy: number | null;\n};\n&#96;&#96;&#96;\n\n### Include relations\n\n&#96;With&#96; operator lets you combine data from multiple related tables and properly aggregate results.\n\nGetting all posts with comments:\n\n&#96;&#96;&#96;\nconst posts = await db._query.posts.findMany({\n\twith: {\n\t\tcomments: true,\n\t},\n});\n&#96;&#96;&#96;\n\nGetting first post with comments:\n\n&#96;&#96;&#96;\nconst post = await db._query.posts.findFirst({\n\twith: {\n\t\tcomments: true,\n\t},\n});\n&#96;&#96;&#96;\n\nYou can chain nested with statements as much as necessary. For any nested&#96;with&#96; queries Drizzle will infer types using [Core Type API](https://orm.drizzle.team/docs/goodies#type-api).\n\nGet all users with posts. Each post should contain a list of comments:\n\n&#96;&#96;&#96;\nconst users = await db._query.users.findMany({\n\twith: {\n\t\tposts: {\n\t\t\twith: {\n\t\t\t\tcomments: true,\n\t\t\t},\n\t\t},\n\t},\n});\n&#96;&#96;&#96;\n\n### Partial fields select\n\n&#96;columns&#96; parameter lets you include or omit columns you want to get from the database.\n\nDrizzle performs partial selects on the query level, no additional data is transferred from the database.\n\nKeep in mind that a single SQL statement is outputted by Drizzle.\n\nGet all posts with just&#96;id&#96;,&#96;content&#96; and include&#96;comments&#96;:\n\n&#96;&#96;&#96;\nconst posts = await db._query.posts.findMany({\n\tcolumns: {\n\t\tid: true,\n\t\tcontent: true,\n\t},\n\twith: {\n\t\tcomments: true,\n\t}\n});\n&#96;&#96;&#96;\n\nGet all posts without&#96;content&#96;:\n\n&#96;&#96;&#96;\nconst posts = await db._query.posts.findMany({\n\tcolumns: {\n\t\tcontent: false,\n\t},\n});\n&#96;&#96;&#96;\n\nWhen both&#96;true&#96; and&#96;false&#96; select options are present, all&#96;false&#96; options are ignored.\n\nIf you include the&#96;name&#96; field and exclude the&#96;id&#96; field,&#96;id&#96; exclusion will be redundant, all fields apart from&#96;name&#96; would be excluded anyways.\n\nExclude and Include fields in the same query:\n\n&#96;&#96;&#96;\nconst users = await db._query.users.findMany({\n\tcolumns: {\n\t\tname: true,\n\t\tid: false //ignored\n\t},\n});\n&#96;&#96;&#96;\n\n&#96;&#96;&#96;\n// result type\nconst users: {\n\tname: string;\n};\n&#96;&#96;&#96;\n\nOnly include columns from nested relations:\n\n&#96;&#96;&#96;\nconst res = await db._query.users.findMany({\n\tcolumns: {},\n\twith: {\n\t\tposts: true\n\t}\n});\n&#96;&#96;&#96;\n\n&#96;&#96;&#96;\n// result type\nconst res: {\n\tposts: {\n\t\tid: number,\n\t\ttext: string\n\t}\n}[];\n&#96;&#96;&#96;\n\n### Nested partial fields select\n\nJust like with&#96;partial select&#96;, you can include or exclude columns of nested relations:\n\n&#96;&#96;&#96;\nconst posts = await db._query.posts.findMany({\n\tcolumns: {\n\t\tid: true,\n\t\tcontent: true,\n\t},\n\twith: {\n\t\tcomments: {\n\t\t\tcolumns: {\n\t\t\t\tauthorId: false\n\t\t\t}\n\t\t}\n\t}\n});\n&#96;&#96;&#96;\n\n### Select filters\n\nJust like in our SQL-like query builder, relational queries API lets you define filters and conditions with the list of our [operators](https://orm.drizzle.team/docs/operators).\n\nYou can either import them from&#96;drizzle-orm&#96; or use from the callback syntax:\n\n&#96;&#96;&#96;\nimport { eq } from 'drizzle-orm';\n\nconst users = await db._query.users.findMany({\n\twhere: eq(users.id, 1)\n})\n&#96;&#96;&#96;\n\n&#96;&#96;&#96;\nconst users = await db._query.users.findMany({\n\twhere: (users, { eq }) =&gt; eq(users.id, 1),\n})\n&#96;&#96;&#96;\n\neq(users.id, 1), }) \"\n\nFind post with&#96;id=1&#96; and comments that were created before particular date:\n\n&#96;&#96;&#96;\nawait db._query.posts.findMany({\n\twhere: (posts, { eq }) =&gt; (eq(posts.id, 1)),\n\twith: {\n\t\tcomments: {\n\t\t\twhere: (comments, { lt }) =&gt; lt(comments.createdAt, new Date()),\n\t\t},\n\t},\n});\n&#96;&#96;&#96;\n\n(eq(posts.id, 1)), with: { comments: { where: (comments, { lt }) = lt(comments.createdAt, new Date()), }, }, }); \"\n\n### Limit &amp; Offset\n\nDrizzle ORM provides&#96;limit&#96;&amp;&#96;offset&#96; API for queries and for the nested entities.\n\nFind 5 posts:\n\n&#96;&#96;&#96;\nawait db._query.posts.findMany({\n\tlimit: 5,\n});\n&#96;&#96;&#96;\n\nFind posts and get 3 comments at most:\n\n&#96;&#96;&#96;\nawait db._query.posts.findMany({\n\twith: {\n\t\tcomments: {\n\t\t\tlimit: 3,\n\t\t},\n\t},\n});\n&#96;&#96;&#96;\n\nIMPORTANT\n\n&#96;offset&#96; is only available for top level query.\n\n&#96;&#96;&#96;\nawait db._query.posts.findMany({\n\tlimit: 5,\n\toffset: 2, // correct ✅\n\twith: {\n\t\tcomments: {\n\t\t\toffset: 3, // incorrect ❌\n\t\t\tlimit: 3,\n\t\t},\n\t},\n});\n&#96;&#96;&#96;\n\nFind posts with comments from the 5th to the 10th post:\n\n&#96;&#96;&#96;\nawait db._query.posts.findMany({\n\tlimit: 5,\n  offset: 5,\n\twith: {\n\t\tcomments: true,\n\t},\n});\n&#96;&#96;&#96;\n\n### Order By\n\nDrizzle provides API for ordering in the relational query builder.\n\nYou can use same ordering [core API](https://orm.drizzle.team/docs/select#order-by) or use&#96;order by&#96; operator from the callback with no imports.\n\n&#96;&#96;&#96;\nimport { desc, asc } from 'drizzle-orm';\n\nawait db._query.posts.findMany({\n\torderBy: [asc(posts.id)],\n});\n&#96;&#96;&#96;\n\n&#96;&#96;&#96;\nawait db._query.posts.findMany({\n\torderBy: (posts, { asc }) =&gt; [asc(posts.id)],\n});\n&#96;&#96;&#96;\n\n[asc(posts.id)], }); \"\n\nOrder by&#96;asc&#96;+&#96;desc&#96;:\n\n&#96;&#96;&#96;\nawait db._query.posts.findMany({\n\torderBy: (posts, { asc }) =&gt; [asc(posts.id)],\n\twith: {\n\t\tcomments: {\n\t\t\torderBy: (comments, { desc }) =&gt; [desc(comments.id)],\n\t\t},\n\t},\n});\n&#96;&#96;&#96;\n\n[asc(posts.id)], with: { comments: { orderBy: (comments, { desc }) = [desc(comments.id)], }, }, }); \"\n\n### Include custom fields\n\nRelational query API lets you add custom additional fields. It’s useful when you need to retrieve data and apply additional functions to it.\n\nIMPORTANT\n\nAs of now aggregations are not supported in&#96;extras&#96;, please use [core queries](https://orm.drizzle.team/docs/select) for that.\n\n&#96;&#96;&#96;\nimport { sql } from 'drizzle-orm';\n\nawait db._query.users.findMany({\n\textras: {\n\t\tloweredName: sql&#96;lower(${users.name})&#96;.as('lowered_name'),\n\t},\n})\n&#96;&#96;&#96;\n\n&#96;&#96;&#96;\nawait db._query.users.findMany({\n\textras: {\n\t\tloweredName: (users, { sql }) =&gt; sql&#96;lower(${users.name})&#96;.as('lowered_name'),\n\t},\n})\n&#96;&#96;&#96;\n\nsql&#96;lower(${users.name})&#96;.as('lowered_name'), }, }) \"\n\n&#96;lowerName&#96; as a key will be included to all fields in returned object.\n\nIMPORTANT\n\nYou have to explicitly specify&#96;.as(\" \")&#96;\n\nTo retrieve all users with groups, but with the fullName field included (which is a concatenation of firstName and lastName), you can use the following query with the Drizzle relational query builder.\n\n&#96;&#96;&#96;\nconst res = await db._query.users.findMany({\n\textras: {\n\t\tfullName: sql&lt;string&gt;&#96;concat(${users.name}, \" \", ${users.name})&#96;.as('full_name'),\n\t},\n\twith: {\n\t\tusersToGroups: {\n\t\t\twith: {\n\t\t\t\tgroup: true,\n\t\t\t},\n\t\t},\n\t},\n});\n&#96;&#96;&#96;\n\n&#96;concat(${users.name}, \" \", ${users.name})&#96;.as('full_name'), }, with: { usersToGroups: { with: { group: true, }, }, }, }); \"\n\n&#96;&#96;&#96;\n// result type\nconst res: {\n\tid: number;\n\tname: string;\n\tverified: boolean;\n\tinvitedBy: number | null;\n\tfullName: string;\n\tusersToGroups: {\n\t\t\tgroup: {\n\t\t\t\t\tid: number;\n\t\t\t\t\tname: string;\n\t\t\t\t\tdescription: string | null;\n\t\t\t};\n\t}[];\n}[];\n\n&#96;&#96;&#96;\n\nTo retrieve all posts with comments and add an additional field to calculate the size of the post content and the size of each comment content:\n\n&#96;&#96;&#96;\nconst res = await db._query.posts.findMany({\n\textras: (table, { sql }) =&gt; ({\n\t\tcontentLength: (sql&lt;number&gt;&#96;length(${table.content})&#96;).as('content_length'),\n\t}),\n\twith: {\n\t\tcomments: {\n\t\t\textras: {\n\t\t\t\tcommentSize: sql&lt;number&gt;&#96;length(${comments.content})&#96;.as('comment_size'),\n\t\t\t},\n\t\t},\n\t},\n});\n&#96;&#96;&#96;\n\n({ contentLength: (sql&#96;length(${table.content})&#96;).as('content_length'), }), with: { comments: { extras: { commentSize: sql&#96;length(${comments.content})&#96;.as('comment_size'), }, }, }, }); \"\n\n&#96;&#96;&#96;\n// result type\nconst res: {\n\tid: number;\n\tcreatedAt: Date;\n\tcontent: string;\n\tauthorId: number | null;\n\tcontentLength: number;\n\tcomments: {\n\t\t\tid: number;\n\t\t\tcreatedAt: Date;\n\t\t\tcontent: string;\n\t\t\tcreator: number | null;\n\t\t\tpostId: number | null;\n\t\t\tcommentSize: number;\n\t}[];\n};\n&#96;&#96;&#96;\n\n### Prepared statements\n\nPrepared statements are designed to massively improve query performance — [see here.](https://orm.drizzle.team/docs/perf-queries)\n\nIn this section, you can learn how to define placeholders and execute prepared statements using the Drizzle relational query builder.\n\n##### Placeholder in where\n\nPostgreSQL\n\nMySQL\n\nSQLite\n\n&#96;&#96;&#96;\nconst prepared = db._query.users.findMany({\n\twhere: ((users, { eq }) =&gt; eq(users.id, placeholder('id'))),\n\twith: {\n\t\tposts: {\n\t\t\twhere: ((users, { eq }) =&gt; eq(users.id, placeholder('pid'))),\n\t\t},\n\t},\n}).prepare('query_name');\n\nconst usersWithPosts = await prepared.execute({ id: 1 });\n&#96;&#96;&#96;\n\neq(users.id, placeholder('id'))), with: { posts: { where: ((users, { eq }) = eq(users.id, placeholder('pid'))), }, }, }).prepare('query_name'); const usersWithPosts = await prepared.execute({ id: 1 }); \"\n\n##### Placeholder in limit\n\nPostgreSQL\n\nMySQL\n\nSQLite\n\n&#96;&#96;&#96;\nconst prepared = db._query.users.findMany({\n\twith: {\n\t\tposts: {\n\t\t\tlimit: placeholder('limit'),\n\t\t},\n\t},\n}).prepare('query_name');\n\nconst usersWithPosts = await prepared.execute({ limit: 1 });\n&#96;&#96;&#96;\n\n##### Placeholder in offset\n\nPostgreSQL\n\nMySQL\n\nSQLite\n\n&#96;&#96;&#96;\nconst prepared = db._query.users.findMany({\n\toffset: placeholder('offset'),\n\twith: {\n\t\tposts: true,\n\t},\n}).prepare('query_name');\n\nconst usersWithPosts = await prepared.execute({ offset: 1 });\n&#96;&#96;&#96;\n\n##### Multiple placeholders\n\nPostgreSQL\n\nMySQL\n\nSQLite\n\n&#96;&#96;&#96;\nconst prepared = db._query.users.findMany({\n\tlimit: placeholder('uLimit'),\n\toffset: placeholder('uOffset'),\n\twhere: ((users, { eq, or }) =&gt; or(eq(users.id, placeholder('id')), eq(users.id, 3))),\n\twith: {\n\t\tposts: {\n\t\t\twhere: ((users, { eq }) =&gt; eq(users.id, placeholder('pid'))),\n\t\t\tlimit: placeholder('pLimit'),\n\t\t},\n\t},\n}).prepare('query_name');\n\nconst usersWithPosts = await prepared.execute({ pLimit: 1, uLimit: 3, uOffset: 1, id: 2, pid: 6 });\n&#96;&#96;&#96;\n\nor(eq(users.id, placeholder('id')), eq(users.id, 3))), with: { posts: { where: ((users, { eq }) = eq(users.id, placeholder('pid'))), limit: placeholder('pLimit'), }, }, }).prepare('query_name'); const usersWithPosts = await prepared.execute({ pLimit: 1, uLimit: 3, uOffset: 1, id: 2, pid: 6 }); \"\n\n--"
 }
 ```
-User decision: **accepted**
-
 Status: **completed**
 
 
@@ -5386,17 +5373,6 @@ Usando el `id` del proyecto como identificador estable en lugar de `Math.random(
 
 ---
 
-<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
-<details><summary>Tool use: **run_terminal_command_v2** • Run command: cd /home/gonzalo/gonzalopozo.github.io && pnpm build 2>&1 | tail -30</summary>
-
-```bash
-cd /home/gonzalo/gonzalopozo.github.io && pnpm build 2>&1 | tail -30
-```
-</details>
-</tool-use>
-
----
-
 <tool-use data-tool-type="unknown" data-tool-name="read_lints">
 <details>
 <summary>Tool use: **read_lints**</summary>
@@ -5425,6 +5401,17 @@ Result:
 Status: **completed**
 
 
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: cd /home/gonzalo/gonzalopozo.github.io && pnpm build 2>&1 | tail -30</summary>
+
+```bash
+cd /home/gonzalo/gonzalopozo.github.io && pnpm build 2>&1 | tail -30
+```
 </details>
 </tool-use>
 
@@ -5471,6 +5458,683 @@ El build sigue en ejecución, pero el linter no reporta errores. Resumen de los 
 **React exige que el render sea puro**: mismo input → mismo output. `Math.random()` es impuro porque devuelve un valor distinto en cada llamada, así que el componente podría cambiar entre renders sin que cambien las props.
 
 La solución es usar un **identificador estable** que venga de fuera: en este caso `project.id`, que no cambia entre renders y es único por fila.
+
+---
+
+_**User**_
+
+Esto que he hecho en @components/admin/projects-table.tsx no tiene pinta de funcionar. @components/admin/sortable-row.tsx 
+
+---
+
+_**Agent (model composer-1.5, mode Agent)**_
+
+
+
+---
+
+
+
+
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/components/admin/projects-table.tsx</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/components/admin/sortable-row.tsx</summary>
+
+</details>
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+**Checking dnd-kit imports**
+
+I'm verifying the correct import paths for @dnd-kit packages since the documentation shows conflicting information about DragDropProvider vs DndContext. </details></think>
+
+---
+
+
+
+
+
+---
+
+<tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search">
+<details>
+<summary>Tool use: **ripgrep_raw_search**</summary>
+
+
+Parameters:
+
+```json
+{
+  "pattern": "dnd-kit",
+  "path": "/home/gonzalo/gonzalopozo.github.io/package.json",
+  "caseInsensitive": false
+}
+```
+Additional data:
+
+```json
+{
+  "isPruned": true,
+  "pattern": "dnd-kit",
+  "path": "/home/gonzalo/gonzalopozo.github.io/package.json",
+  "outputMode": "content",
+  "totalFiles": 1,
+  "totalMatches": 1,
+  "topFiles": [
+    {
+      "uri": "package.json",
+      "matchCount": 1
+    }
+  ]
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="search" data-tool-name="web_search">
+<details>
+            <summary>Tool use: **web_search** • Searched web `undefined` • **1** results</summary>
+        
+| Title | URL | Chunk |
+|-------|-----|-------|
+| Web search results for query: @dnd-kit/react vs @dnd-kit/core 2024 2025 |  | Links:<br/>1. [@dnd-kit/core  vs  react-beautiful-dnd  vs  react-dnd  vs  react-drag-and-drop  vs  react-draggable  vs  react-file-drop](https://npmtrends.com/@dnd-kit/core-vs-react-beautiful-dnd-vs-react-dnd-vs-react-drag-and-drop-vs-react-draggable-vs-react-file-drop)<br/>2. [@dnd-kit/core](https://npm-compare.com/@dnd-kit/core)<br/>3. [@dnd-kit/react](https://www.npmjs.com/package/@dnd-kit/react)<br/>4. [Quickstart - @dnd-kit](https://dndkit.com/react/quickstart)<br/>5. [@dnd-kit/core](https://www.npmjs.com/package/@dnd-kit/core)<br/><br/># @dnd-kit/react vs @dnd-kit/core<br/><br/>## Key Differences<br/><br/>**@dnd-kit/core** is the foundational library.[5] It's a lightweight React library for building performant and accessible drag-and-drop experiences.[5] As of late 2024, it's at version 6.3.1 with 2.7 million weekly downloads and 1,251 dependents.[5]<br/><br/>**@dnd-kit/react** is a newer React integration layer built on top of @dnd-kit/core.[4] It's currently at version 0.1.2 (published recently) with 19,357 weekly downloads and provides React components and hooks.[3] According to the documentation, @dnd-kit/react is "a thin React integration layer built on top of the vanilla library."[4]<br/><br/>## When to Use Each<br/><br/>- **@dnd-kit/core**: The stable, production-ready option with extensive adoption and more documentation resources available<br/>- **@dnd-kit/react**: A newer, more React-focused abstraction layer that may provide a smoother developer experience for React-specific projects, but is still in early stages (0.x versions)[3]<br/><br/>Both are maintained by the same author and share the same underlying concepts around plugins, modifiers, and sensors.[4] If you're starting a new project, @dnd-kit/react appears to be the recommended modern approach, while @dnd-kit/core remains the battle-tested foundation.[5] |
+
+</details>
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+**Fixing drag reorder**
+
+I'm switching from the 'move to droppable' pattern to a proper drag-and-drop reordering implementation using @dnd-kit/react. I'm removing the redundant `isDropped` logic since both render branches are identical. </details></think>
+
+---
+
+
+
+
+
+---
+
+<tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search">
+<details>
+<summary>Tool use: **ripgrep_raw_search**</summary>
+
+
+Parameters:
+
+```json
+{
+  "pattern": "useSortable|SortableContext",
+  "path": "/home/gonzalo/gonzalopozo.github.io/node_modules/@dnd-kit",
+  "caseInsensitive": false
+}
+```
+Additional data:
+
+```json
+{
+  "isPruned": true,
+  "pattern": "useSortable|SortableContext",
+  "path": "/home/gonzalo/gonzalopozo.github.io/node_modules/@dnd-kit",
+  "outputMode": "content",
+  "totalFiles": 0,
+  "totalMatches": 0,
+  "topFiles": []
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+---
+
+Fetch timed out while retrieving content
+
+---
+
+
+
+---
+
+
+
+
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/node_modules/@dnd-kit/react/package.json</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="generic" data-tool-name="glob_file_search">
+<details>
+<summary>Tool use: **glob_file_search** • Searched codebase "undefined" • **0** result in **1** directory</summary>
+
+Directory: **/home/gonzalo/gonzalopozo.github.io/node_modules/@dnd-kit** (0 file)
+
+</details>
+</tool-use>
+
+---
+
+
+
+---
+
+
+
+
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/node_modules/@dnd-kit/react/sortable.d.ts</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/node_modules/@dnd-kit/react/utilities.d.ts</summary>
+
+</details>
+</tool-use>
+
+---
+
+
+
+---
+
+
+
+
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/node_modules/@dnd-kit/react/index.d.ts</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search">
+<details>
+<summary>Tool use: **ripgrep_raw_search**</summary>
+
+
+Parameters:
+
+```json
+{
+  "pattern": "SortableContext|Sortable",
+  "path": "/home/gonzalo/gonzalopozo.github.io/node_modules/@dnd-kit",
+  "caseInsensitive": false
+}
+```
+Additional data:
+
+```json
+{
+  "isPruned": true,
+  "pattern": "SortableContext|Sortable",
+  "path": "/home/gonzalo/gonzalopozo.github.io/node_modules/@dnd-kit",
+  "outputMode": "content",
+  "totalFiles": 0,
+  "totalMatches": 0,
+  "topFiles": []
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+---
+
+
+
+---
+
+
+
+
+
+---
+
+File not found
+
+---
+
+<tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search">
+<details>
+<summary>Tool use: **ripgrep_raw_search**</summary>
+
+
+Parameters:
+
+```json
+{
+  "pattern": "arrayMove|reorder",
+  "path": "/home/gonzalo/gonzalopozo.github.io/node_modules/@dnd-kit",
+  "caseInsensitive": false
+}
+```
+Additional data:
+
+```json
+{
+  "isPruned": true,
+  "pattern": "arrayMove|reorder",
+  "path": "/home/gonzalo/gonzalopozo.github.io/node_modules/@dnd-kit",
+  "outputMode": "content",
+  "totalFiles": 0,
+  "totalMatches": 0,
+  "topFiles": []
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+---
+
+
+
+---
+
+
+
+
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/node_modules/@dnd-kit/react/sortable.js</summary>
+
+</details>
+</tool-use>
+
+---
+
+
+
+---
+
+
+
+
+
+---
+
+<tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search">
+<details>
+<summary>Tool use: **ripgrep_raw_search**</summary>
+
+
+Parameters:
+
+```json
+{
+  "pattern": "DragEndEvent|operation|source|target",
+  "path": "/home/gonzalo/gonzalopozo.github.io/node_modules/@dnd-kit",
+  "glob": "*.d.ts",
+  "caseInsensitive": false
+}
+```
+Additional data:
+
+```json
+{
+  "isPruned": true,
+  "pattern": "DragEndEvent|operation|source|target",
+  "path": "/home/gonzalo/gonzalopozo.github.io/node_modules/@dnd-kit",
+  "outputMode": "content",
+  "totalFiles": 0,
+  "totalMatches": 0,
+  "topFiles": []
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+---
+
+File not found
+
+---
+
+
+
+---
+
+
+
+
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/node_modules/@dnd-kit/react/README.md</summary>
+
+</details>
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+**Analyzing drag pattern**
+
+I'm identifying why the user's drag implementation doesn't match the expected pattern from the README. </details></think>
+
+---
+
+
+Esto es lo que está fallando y cómo corregirlo:
+
+---
+
+## Problemas en la implementación actual
+
+### 1. Patrón equivocado: draggable + droppable vs sortable
+
+Estás usando `useDraggable` + `useDroppable`, que sirve para **mover un elemento de un sitio a otro** (como en el quickstart: “arrastrar de fuera a un contenedor”).
+
+Para **reordenar filas dentro de la misma tabla** necesitas `useSortable` de `@dnd-kit/react/sortable`, que está pensado para listas ordenables.
+
+### 2. Lógica de `isDropped` incorrecta
+
+```tsx
+if (!isDropped) {
+    return (<SortableRow ...>...</SortableRow>)
+}
+if (isDropped) {
+    return (<SortableRow ...>...</SortableRow>)  // ¡Mismo contenido!
+}
+```
+
+En ambos casos renderizas lo mismo: todas las filas. El quickstart usa `isDropped` para decidir si el elemento está **fuera** o **dentro** del droppable; aquí no cambia nada visualmente.
+
+### 3. No hay reordenación real
+
+`onDragEnd` solo hace `setIsDropped(target?.id === 'droppable')`. No se actualiza el orden de los proyectos ni se persiste en el servidor.
+
+### 4. `DragDropProvider` mal colocado
+
+`DragDropProvider` debe envolver **todo** el árbol donde haya draggables y droppables. Ahora solo envuelve el `TableBody`, pero `useDroppable` está en el componente padre. Lo correcto es que el provider envuelva el componente completo.
+
+---
+
+## Qué necesitas cambiar
+
+1. **Usar `useSortable`** en lugar de `useDraggable` en `SortableRow`:
+   ```ts
+   import { useSortable } from '@dnd-kit/react/sortable';
+   ```
+
+2. **Pasar `index`** a cada fila para que el sortable sepa su posición:
+   ```tsx
+   <SortableRow key={project.id} id={project.id} index={index}>
+   ```
+
+3. **Mantener el orden en estado** y actualizarlo en `onDragEnd`:
+   - Estado local: `const [items, setItems] = useState(projects)`
+   - En `onDragEnd`: calcular el nuevo orden (por ejemplo con `arrayMove` o lógica equivalente) y llamar a `setItems(nuevoOrden)`
+
+4. **Llamar a la server action** tras reordenar para persistir en BD:
+   ```ts
+   await reorderProjects(items.map(p => p.id));
+   ```
+
+5. **Revisar la API de `useSortable`** en tu versión de `@dnd-kit/react` (0.3.2): puede requerir `group`, `index` u otros parámetros. Consulta la documentación o los tipos en `node_modules/@dnd-kit/react/sortable.d.ts`.
+
+---
+
+## Resumen
+
+| Actual | Necesario |
+|--------|-----------|
+| `useDraggable` + `useDroppable` | `useSortable` |
+| `isDropped` sin efecto real | Estado con el orden de proyectos y actualización en `onDragEnd` |
+| Sin persistencia | Server action `reorderProjects(projectIds)` |
+| Provider solo en `TableBody` | Provider envolviendo toda la tabla |
+
+Si quieres que te proponga el código concreto de `SortableRow` y `ProjectsTable`, cambia a modo Agent.
+
+---
+
+_**User**_
+
+Ya he arreglado esto implementando useSortable, he tenido que desechar la idea del componente @components/admin/sortable-row.tsx en otro archivo. La cosa es que he estado investigando como crear un botón para mover todo el componente con este y no poder mover el componente desde cualquier parte de este.
+
+Entonces mi componente ha pasado de: 
+
+function SortableRow({ children, id, index }: { children: ReactNode; id: number, index: number }) {
+    const { ref } = useSortable({ id, index });
+
+    return (
+        <TableRow ref={ref}>
+            {children}
+        </TableRow>
+    )
+}
+
+a esto otro:
+ 
+
+@components/admin/projects-table.tsx:15-29 
+
+Y quiero que me explicas línea por línea el funcionamiento de todo esto nuevo
+
+---
+
+_**Agent (model composer-1.5, mode Agent)**_
+
+
+
+---
+
+
+
+
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/components/admin/projects-table.tsx</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/node_modules/@dnd-kit/react/sortable.d.ts</summary>
+
+</details>
+</tool-use>
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/node_modules/@dnd-kit/react/hooks.d.ts</summary>
+
+</details>
+</tool-use>
+
+---
+
+
+
+---
+
+
+
+
+
+---
+
+Path does not exist: /home/gonzalo/gonzalopozo.github.io/node_modules/@dnd-kit/dom
+
+---
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/node_modules/@dnd-kit/react/sortable.js</summary>
+
+</details>
+</tool-use>
+
+---
+
+<think><details><summary>Thought Process</summary>
+**Understanding drag handles**
+
+I understand that using `handle` makes sensors activate only when interacting with the handle element, not the entire draggable row. I see that `element` needs a ref for positioning but `handle` is just the drag button, so I need to make sure both refs are properly connected to their respective elements. </details></think>
+
+---
+
+
+Explicación línea por línea del nuevo `SortableRow`:
+
+---
+
+## Explicación línea por línea
+
+```tsx
+function SortableRow({ children, id, index }: { children: ReactNode; id: number, index: number }) {
+```
+
+**Línea 15** – Props del componente:
+- `id`: identificador único del proyecto (para `useSortable`).
+- `index`: posición en la lista (para ordenar).
+- `children`: resto de celdas de la fila.
+
+---
+
+```tsx
+    const [element, setElement] = useState<Element | null>(null);
+```
+
+**Línea 16** – Estado para el elemento arrastrable:
+- `element` guarda el nodo DOM de la fila (`TableRow`).
+- `setElement` se usa como callback ref: `ref={setElement}`.
+- React llama a `setElement(domNode)` al montar y `setElement(null)` al desmontar.
+- `element` es el contenedor que se mueve y con el que se calculan colisiones.
+
+---
+
+```tsx
+    const handleRef = useRef<HTMLButtonElement | null>(null);
+```
+
+**Línea 17** – Ref del handle:
+- `handleRef` apunta al botón de arrastre.
+- Se usa `useRef` porque el botón no necesita provocar re-renders al cambiar.
+- Solo este elemento puede iniciar el arrastre.
+
+---
+
+```tsx
+    useSortable({ id, index, element, handle: handleRef });
+```
+
+**Línea 18** – Configuración de `useSortable`:
+- `id`: identifica el sortable en el contexto.
+- `index`: posición actual en la lista.
+- `element`: nodo DOM de la fila (posición y colisiones).
+- `handle`: ref del botón; el drag solo empieza al interactuar con este elemento.
+
+Si no pasas `handle`, el drag se inicia desde cualquier parte de la fila. Con `handle`, solo el botón inicia el arrastre.
+
+---
+
+```tsx
+    return (
+        <TableRow ref={setElement}>
+```
+
+**Línea 21** – `ref={setElement}` en `TableRow`:
+- Al montar, React pasa el nodo DOM del `TableRow` a `setElement`.
+- `useSortable` recibe ese nodo vía `element` y lo usa para:
+  - medir posición y tamaño,
+  - detectar colisiones,
+  - aplicar transiciones al soltar.
+
+---
+
+```tsx
+            <Button ref={handleRef} variant={"secondary"}> 
+                <RxDragHandleDots2 />
+            </Button>
+```
+
+**Líneas 22–24** – Botón handle:
+- `ref={handleRef}`: el botón queda asignado a `handleRef.current`.
+- `useSortable` usa ese nodo como `handle`.
+- Los sensores (pointer, teclado) solo reaccionan cuando el usuario interactúa con este botón.
+- El resto de la fila (enlaces, botones Editar/Eliminar) sigue siendo clickeable sin iniciar el drag.
+
+---
+
+```tsx
+            {children}
+        </TableRow>
+    )
+}
+```
+
+**Líneas 26–28** – El resto de celdas se renderizan como `children` dentro de la fila.
+
+---
+
+## Resumen visual
+
+| Concepto | Qué es | Para qué sirve |
+|----------|--------|----------------|
+| **element** | `TableRow` (ref → `setElement`) | Define qué se mueve y dónde se detectan colisiones. |
+| **handle** | `Button` con icono (ref → `handleRef`) | Define desde dónde se puede iniciar el arrastre. |
+| **id** | `project.id` | Identificador único del sortable. |
+| **index** | Posición en el array | Orden actual en la lista. |
+
+---
+
+## Nota sobre `element` y `useState`
+
+`useSortable` usa `useOnElementChange` para reaccionar cuando `element` o `handle` cambian. Con `useState` para `element` y `ref={setElement}`, React actualiza el estado al montar/desmontar y `useSortable` recibe el nodo correcto. Es un patrón habitual para callback refs en React.
 
 ---
 
