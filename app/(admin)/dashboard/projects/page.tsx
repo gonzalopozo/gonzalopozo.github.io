@@ -1,28 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProjectsTable } from "@/components/admin/projects-table";
-import { db } from "@/db";
 import { deleteProject } from "@/lib/actions/projects";
-import { ProjectInfo } from "@/lib/types";
 import { Plus, FolderKanban } from "lucide-react";
 import Link from "next/link";
+import { getProjects } from "@/lib/queries/projects";
 
 export default async function ProjectsDashboardPage() {
-    const projectsData: ProjectInfo[] = await db.query.projects.findMany({
-        with: {
-            projectSkills: {
-                columns: {},
-                with: {
-                    skill: {
-                        columns: {
-                            id: true,
-                            name: true
-                        },
-                    }
-                }
-            }
-        }
-    });
+    const projectsData = await getProjects();
 
     return (
         <div className="space-y-6">
