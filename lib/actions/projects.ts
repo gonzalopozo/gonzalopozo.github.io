@@ -2,7 +2,7 @@
 
 import { db } from "@/db";
 import { projects, projectSkills } from "@/db/schema/portfolio";
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, gt, gte, lt, lte, ne, sql } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { ProjectStatus } from "@/lib/types";
 import { revalidatePath } from "next/cache";
@@ -104,6 +104,16 @@ export async function updateProject(id: number, formData: FormData) {
 
 export async function deleteProject(id: number) {
     await db.delete(projects).where(eq(projects.id, id));
+
+    revalidatePath("/dashboard/projects")
+}
+
+export async function updateProjectOrder(oldOrder: number, newOrder: number) {
+    const isBigger = newOrder > oldOrder ? true : false;
+
+    const newOrderprojectId = await db.update(projects).set({ order: newOrder }).where(eq(projects.order, oldOrder)).returning({ updateId: projects.id });
+
+    await db.update(projects).set({ order: isBigger ? sql`${projects.order} - 1` : sql`${projects.order} + 1` }).where(and(isBigger ? lte(projects.order, newOrder) : gte(projects.order, newOrder), ne(projects.id, newOrderprojectId[0].updateId), isBigger ? gte(projects.order, oldOrder) : lte(projects.order, oldOrder)))
 
     revalidatePath("/dashboard/projects")
 }

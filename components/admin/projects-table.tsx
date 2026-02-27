@@ -7,10 +7,11 @@ import { ProjectInfo } from "@/lib/types";
 import { Pencil, ExternalLink, Trash, Github } from "lucide-react";
 import Link from "next/link";
 // import { SortableRow } from "@/components/admin/sortable-row";
-import { ReactNode, useRef, useState } from "react";
+import { ReactNode, useRef, useState, useTransition } from "react";
 import { useDroppable, DragDropProvider } from '@dnd-kit/react';
 import { isSortable, useSortable } from '@dnd-kit/react/sortable';
 import { RxDragHandleDots2 } from "react-icons/rx";
+import { updateProjectOrder } from "@/lib/actions/projects";
 
 function SortableRow({ children, id, index }: { children: ReactNode; id: number, index: number }) {
     const [element, setElement] = useState<Element | null>(null);
@@ -67,6 +68,8 @@ export function ProjectsTable({ projects, onDelete }: ProjectsTableProps) {
         id: 'droppable',
     });
 
+    const [isPending, startTransition] = useTransition();
+
     return (
         <DragDropProvider
             // onDragMove={({ operation }) => {
@@ -81,11 +84,14 @@ export function ProjectsTable({ projects, onDelete }: ProjectsTableProps) {
             onDragEnd={({ operation }) => {
                 const { source } = operation;
                 if (isSortable(source)) {
-                    console.log(source.id, source.index); // index is available here
+
+                    startTransition(async () => {
+                        await updateProjectOrder(source.id as number, source.index + 1);
+                    });
                 }
             }}
         >
-            <Table>
+            <Table className={isPending ? "opacity-60 pointer-events-none" : ""}>
                 <TableHeader>
                     <TableRow>
                         <TableHead className="w-8"></TableHead>
