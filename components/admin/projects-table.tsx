@@ -19,9 +19,11 @@ function SortableRow({ children, id, index }: { children: ReactNode; id: number,
 
     return (
         <TableRow ref={setElement}>
-            <Button ref={handleRef} variant={"secondary"}>
-                <RxDragHandleDots2 />
-            </Button>
+            <TableCell>
+                <Button ref={handleRef} variant={"secondary"}>
+                    <RxDragHandleDots2 />
+                </Button>
+            </TableCell>
 
             {children}
         </TableRow>
@@ -86,6 +88,7 @@ export function ProjectsTable({ projects, onDelete }: ProjectsTableProps) {
             <Table>
                 <TableHeader>
                     <TableRow>
+                        <TableHead className="w-8"></TableHead>
                         <TableHead className="w-16">Orden</TableHead>
                         <TableHead>Título</TableHead>
                         <TableHead className="max-w-[200px]">Descripción</TableHead>
