@@ -108,12 +108,14 @@ export async function deleteProject(id: number) {
     revalidatePath("/dashboard/projects")
 }
 
-export async function updateProjectOrder(oldOrder: number, newOrder: number) {
+export async function updateProjectOrder(oldOrder: number, newOrder: number): Promise<string> {
     const isBigger = newOrder > oldOrder ? true : false;
 
-    const newOrderprojectId = await db.update(projects).set({ order: newOrder }).where(eq(projects.order, oldOrder)).returning({ updateId: projects.id });
+    const [{ updateId, updateProject }] = await db.update(projects).set({ order: newOrder }).where(eq(projects.order, oldOrder)).returning({ updateId: projects.id, updateProject: projects.title });
 
-    await db.update(projects).set({ order: isBigger ? sql`${projects.order} - 1` : sql`${projects.order} + 1` }).where(and(isBigger ? lte(projects.order, newOrder) : gte(projects.order, newOrder), ne(projects.id, newOrderprojectId[0].updateId), isBigger ? gte(projects.order, oldOrder) : lte(projects.order, oldOrder)))
+    await db.update(projects).set({ order: isBigger ? sql`${projects.order} - 1` : sql`${projects.order} + 1` }).where(and(isBigger ? lte(projects.order, newOrder) : gte(projects.order, newOrder), ne(projects.id, updateId), isBigger ? gte(projects.order, oldOrder) : lte(projects.order, oldOrder)))
 
     revalidatePath("/dashboard/projects")
+    
+    return updateProject;
 }

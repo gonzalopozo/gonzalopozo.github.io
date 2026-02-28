@@ -12,6 +12,7 @@ import { useDroppable, DragDropProvider } from '@dnd-kit/react';
 import { isSortable, useSortable } from '@dnd-kit/react/sortable';
 import { RxDragHandleDots2 } from "react-icons/rx";
 import { updateProjectOrder } from "@/lib/actions/projects";
+import { toast } from "sonner";
 
 function SortableRow({ children, id, index }: { children: ReactNode; id: number, index: number }) {
     const [element, setElement] = useState<Element | null>(null);
@@ -72,22 +73,22 @@ export function ProjectsTable({ projects, onDelete }: ProjectsTableProps) {
 
     return (
         <DragDropProvider
-            // onDragMove={({ operation }) => {
-            //     const { target } = operation;
-
-
-            //     if (target!.id.valueOf !== ) {
-
-            //     }
-            // }}
-
             onDragEnd={({ operation }) => {
                 const { source } = operation;
                 if (isSortable(source)) {
 
                     startTransition(async () => {
-                        await updateProjectOrder(source.id as number, source.index + 1);
+                        // const projectName = await updateProjectOrder(source.id as number, source.index + 1);
+                        // if (!isPending) toast.promise(updateProjectOrder(source.id as number, source.index + 1), )
+                        toast.promise(updateProjectOrder(source.id as number, source.index + 1), {
+                            loading: "Actualizando el orden del proyecto...",
+                            success: (projectName: string) => {
+                                return `El proyecto "${projectName}" ahora se encuentra en la posición ${source.index + 1}`;
+                            },
+                            error: 'Error',
+                        })
                     });
+
                 }
             }}
         >
