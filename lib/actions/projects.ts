@@ -2,7 +2,7 @@
 
 import { db } from "@/db";
 import { projects, projectSkills } from "@/db/schema/portfolio";
-import { and, eq, gt, gte, lt, lte, ne, sql } from "drizzle-orm";
+import { and, eq, gte, lte, ne, sql } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { ProjectStatus } from "@/lib/types";
 import { revalidatePath } from "next/cache";
@@ -108,14 +108,28 @@ export async function deleteProject(id: number) {
     revalidatePath("/dashboard/projects")
 }
 
-export async function updateProjectOrder(oldOrder: number, newOrder: number): Promise<string> {
-    const isBigger = newOrder > oldOrder ? true : false;
+export async function updateProjectOrder(projectId: number, newOrder: number): Promise<string> {
+    const [project] = await db
+        .select({ order: projects.order, title: projects.title })
+        .from(projects)
+        .where(eq(projects.id, projectId));
 
-    const [{ updateId, updateProject }] = await db.update(projects).set({ order: newOrder }).where(eq(projects.order, oldOrder)).returning({ updateId: projects.id, updateProject: projects.title });
+    const oldOrder = project.order;
+    if (oldOrder === newOrder) return "";
 
-    await db.update(projects).set({ order: isBigger ? sql`${projects.order} - 1` : sql`${projects.order} + 1` }).where(and(isBigger ? lte(projects.order, newOrder) : gte(projects.order, newOrder), ne(projects.id, updateId), isBigger ? gte(projects.order, oldOrder) : lte(projects.order, oldOrder)))
+    const isBigger = newOrder > oldOrder;
 
-    revalidatePath("/dashboard/projects")
-    
-    return updateProject;
+    await db.update(projects).set({ order: newOrder }).where(eq(projects.id, projectId));
+
+    await db.update(projects)
+        .set({ order: isBigger ? sql`${projects.order} - 1` : sql`${projects.order} + 1` })
+        .where(and(
+            isBigger ? lte(projects.order, newOrder) : gte(projects.order, newOrder),
+            ne(projects.id, projectId),
+            isBigger ? gte(projects.order, oldOrder) : lte(projects.order, oldOrder)
+        ));
+
+    revalidatePath("/dashboard/projects");
+
+    return project.title;
 }
