@@ -11,12 +11,17 @@ import { RiGithubLine } from "react-icons/ri";
 import { Map, MapControls } from "@/components/ui/map";
 import { GridItem } from '@/components/public/grid-item';
 import { ModeToggle } from '@/components/theme-toggler';
+import { ProjectInfo } from '@/lib/types';
 
 const PORTFOLIO_SECTIONS = ['About me', 'Projects', 'Experience', 'Contact'] as const
 
 export type PortfolioSection = (typeof PORTFOLIO_SECTIONS)[number]
 
-export function PortfolioGrid() {
+interface PorfolioGridProps {
+    projects: ProjectInfo[]
+}
+
+export function PortfolioGrid({ projects }: PorfolioGridProps) {
     const [section, setSection] = useQueryState('section', parseAsStringLiteral(PORTFOLIO_SECTIONS))
 
     const sections: { url: string; v: PortfolioSection | null; layouts?: { lg: Layout; md: Layout }; GridItems?: ReactNode }[] =
@@ -26,9 +31,9 @@ export function PortfolioGrid() {
                 v: null,
                 layouts: {
                     lg: [
-                        { i: "a", x: 0, y: 0, w: 4, h: 10 },
-                        { i: "b", x: 4, y: 0, w: 2, h: 7 },
-                        { i: "c", x: 2, y: 2, w: 1, h: 1 },
+                        { i: "a", x: 0, y: 0, w: 2, h: 8 },
+                        { i: "b", x: 2, y: 0, w: 1, h: 8 },
+                        { i: "c", x: 3, y: 0, w: 1, h: 8 },
                     ],
                     md: [
                         { i: "a", x: 0, y: 0, w: 2, h: 8 },
@@ -90,7 +95,7 @@ export function PortfolioGrid() {
                         layouts={gridLayouts}
                         width={width}
                         breakpoints={{ lg: 996, md: 768, sm: 0 }}
-                        cols={{ lg: 10, md: 6, sm: 1 }}
+                        cols={{ lg: 4, md: 2, sm: 1 }}
                         rowHeight={30}
                         resizeConfig={{ enabled: false }}
                     >
@@ -132,7 +137,6 @@ export function PortfolioGrid() {
                                 <MapControls />
                             </Map>
                         </GridItem>
-                        <div className='bg-green-500 rounded-4xl flex justify-center items-center' key="c">C</div>
                         {gridContent}
                     </Responsive>
                 )}
