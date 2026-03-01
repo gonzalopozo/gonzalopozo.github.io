@@ -403,4 +403,3 @@ Por qué esto corrige el salto raro:
 Si quieres, el siguiente paso es que lo probemos juntos con un caso concreto (mover de posición 1→5 y 5→1) y, si aún hay micro-jump, te doy un ajuste fino adicional en la config de animación de dnd-kit.
 
 ---
-

@@ -1603,4 +1603,3 @@ Good changes. The linter error is because `condition ? expression : null` is a t
 Ternaries are expressions — they return a value. ESLint expects them to be used as such (assigned to a variable, returned, etc.), not as standalone statements. An `if` statement is the correct construct when you only want to conditionally execute a side effect.
 
 ---
-

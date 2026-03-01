@@ -7,11 +7,12 @@ import { ProjectInfo } from "@/lib/types";
 import { Pencil, ExternalLink, Trash, Github } from "lucide-react";
 import Link from "next/link";
 // import { SortableRow } from "@/components/admin/sortable-row";
-import { ReactNode, useRef, useState, useTransition } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { useDroppable, DragDropProvider } from '@dnd-kit/react';
 import { isSortable, useSortable } from '@dnd-kit/react/sortable';
 import { RxDragHandleDots2 } from "react-icons/rx";
 import { updateProjectOrder } from "@/lib/actions/projects";
+import { toast } from "sonner";
 
 function SortableRow({ children, id, index }: { children: ReactNode; id: number, index: number }) {
     const [element, setElement] = useState<Element | null>(null);
@@ -63,35 +64,42 @@ function getStatusLabel(status: string): string {
     return labels[status] || status;
 }
 
-export function ProjectsTable({ projects, onDelete }: ProjectsTableProps) {
-    const { ref } = useDroppable({
-        id: 'droppable',
-    });
+export function ProjectsTable({ projects: serverProjects, onDelete }: ProjectsTableProps) {
+    const [projects, setProjects] = useState(serverProjects);
+    const { ref } = useDroppable({ id: 'droppable' });
 
-    const [isPending, startTransition] = useTransition();
+    useEffect(() => {
+        setProjects(serverProjects);
+    }, [serverProjects]);
 
     return (
         <DragDropProvider
-            // onDragMove={({ operation }) => {
-            //     const { target } = operation;
-
-
-            //     if (target!.id.valueOf !== ) {
-
-            //     }
-            // }}
-
-            onDragEnd={({ operation }) => {
+            onDragEnd={async ({ operation }) => {
                 const { source } = operation;
                 if (isSortable(source)) {
+                    const projectId = source.id as number;
+                    const newOrder = source.index + 1;
 
-                    startTransition(async () => {
-                        await updateProjectOrder(source.id as number, source.index + 1);
+                    setProjects(prev => {
+                        const oldIndex = prev.findIndex(p => p.id === projectId);
+                        if (oldIndex === -1) return prev;
+                        const reordered = [...prev];
+                        const [moved] = reordered.splice(oldIndex, 1);
+                        reordered.splice(source.index, 0, moved);
+                        return reordered.map((p, i) => ({ ...p, order: i + 1 }));
                     });
+
+                    try {
+                        const projectName = await updateProjectOrder(projectId, newOrder);
+                        if (projectName) toast.success(`Proyecto "${projectName}" actualizado a la posición ${newOrder}`);
+                    } catch {
+                        toast.error("Error al actualizar el orden");
+                        setProjects(serverProjects);
+                    }
                 }
             }}
         >
-            <Table className={isPending ? "opacity-60 pointer-events-none" : ""}>
+            <Table>
                 <TableHeader>
                     <TableRow>
                         <TableHead className="w-8"></TableHead>
@@ -107,7 +115,7 @@ export function ProjectsTable({ projects, onDelete }: ProjectsTableProps) {
                 </TableHeader>
                 <TableBody ref={ref}>
                     {projects.map((project, index) => (
-                        <SortableRow key={project.id} id={project.order} index={index}>
+                        <SortableRow key={project.id} id={project.id} index={index}>
                             <TableCell>
                                 <Badge variant="outline" className="font-mono">
                                     {project.order}
