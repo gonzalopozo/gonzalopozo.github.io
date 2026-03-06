@@ -33,7 +33,7 @@ export function PortfolioGrid({ projects }: PorfolioGridProps) {
                     lg: [
                         { i: "a", x: 0, y: 0, w: 2, h: 8 },
                         { i: "b", x: 2, y: 0, w: 1, h: 8 },
-                        { i: "c", x: 3, y: 0, w: 1, h: 8 },
+                        { i: "c", x: 0, y: 9, w: 1, h: 12 },
                     ],
                     md: [
                         { i: "a", x: 0, y: 0, w: 2, h: 8 },
@@ -137,7 +137,7 @@ export function PortfolioGrid({ projects }: PorfolioGridProps) {
                                 <MapControls />
                             </Map>
                         </GridItem>
-                        {gridContent}
+                        <GridItem variant='project' section={section} project={projects[1]} key="c" />
                     </Responsive>
                 )}
             </div>
