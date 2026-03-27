@@ -316,9 +316,6 @@ data-styled.g26[id="Map__Marker-sc-12s41qg-1"]{content:"joXAlg,"}/*!sc*/
 .eTWOUV{background:#fff;width:36px;height:36px;border-radius:18px;position:absolute;bottom:14px;display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;-webkit-align-items:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:center;-webkit-justify-content:center;-ms-flex-pack:center;justify-content:center;-webkit-transition:box-shadow 0.2s ease;transition:box-shadow 0.2s ease;will-change:transform;z-index:1;}/*!sc*/
 .eTWOUV:hover{cursor:pointer;-webkit-transition:box-shadow 0.2s ease-out;transition:box-shadow 0.2s ease-out;box-shadow:rgba(255,255,255,1) 0px 0px 0px 1px,rgba(255,255,255,0.5) 0px 0px 0px 6px;}/*!sc*/
 data-styled.g29[id="Map__ZoomButton-sc-12s41qg-4"]{content:"eTWOUV,"}/*!sc*/
-.dlZlSs{width:100%;height:100%;position:absolute;left:0;top:0;background-image:url('https://api.mapbox.com/styles/v1/nevflynn/ckmq30o0a0pzx17qoi8dxp3ou/static/-6.2639433,53.304238,12/280x280?access_token=REDACTED&amp;amp;attribution=false&amp;amp;logo=false');}/*!sc*/
-@media (max-width:1200px){.dlZlSs{background-image:url('https://api.mapbox.com/styles/v1/nevflynn/ckmq30o0a0pzx17qoi8dxp3ou/static/-6.2639433,53.304238,12/180x180?access_token=REDACTED&amp;amp;attribution=false&amp;amp;logo=false');}}/*!sc*/
-@media (max-width:799px){.dlZlSs{background-image:url('https://api.mapbox.com/styles/v1/nevflynn/ckmq30o0a0pzx17qoi8dxp3ou/static/-6.2639433,53.304238,12/343x164?access_token=REDACTED&amp;amp;attribution=false&amp;amp;logo=false');}}/*!sc*/
 data-styled.g30[id="Map__Static-sc-12s41qg-5"]{content:"dlZlSs,"}/*!sc*/
 .dtaBVa{width:100%;height:100%;position:absolute;left:0;top:0;opacity:0;}/*!sc*/
 data-styled.g31[id="Map__MapContainer-sc-12s41qg-6"]{content:"dtaBVa,"}/*!sc*/
@@ -653,7 +650,8 @@ cd /home/gonzalo/gonzalopozo.github.io && GIT_SEQUENCE_EDITOR="sed -i 's/^pick 8
 ```
 
 ```
-Rebasing (1/2)Stopped at 86af6cf...  # chore: specstory cursor convos update
+Rebasing (1/2)
+Stopped at 86af6cf...  # chore: specstory cursor convos update
 You can amend the commit now, with
 
   git commit --amend 
@@ -735,7 +733,6 @@ cd /home/gonzalo/gonzalopozo.github.io && grep -c "pk\.eyJ" .specstory/history/2
 ```
 0
 0
-.dlZlSs{width:100%;height:100%;position:absolute;left:0;top:0;background-image:url('https://api.mapbox.com/styles/v1/nevflynn/ckmq30o0a0pzx17qoi8dxp3ou/static/-6.2639433,53.304238,12/280x280?access_token=REDACTED&amp;amp;attribution=false&amp;amp;logo=false');}/*!sc*/
 
 ```
 </details>
@@ -767,7 +764,8 @@ cd /home/gonzalo/gonzalopozo.github.io && git add .specstory/history/2026-02-23_
  create mode 100644 .specstory/history/2026-02-23_08-38Z-relative-spacing-in-nevv-s-grid.md
  create mode 100644 .specstory/history/2026-02-23_09-20Z-linking-to-external-pages-in-next-js.md
  create mode 100644 .specstory/history/2026-02-23_09-32Z-grid-item-layout-issues.md
-Rebasing (2/2)Successfully rebased and updated refs/heads/restructure.
+Rebasing (2/2)
+Successfully rebased and updated refs/heads/restructure.
 
 ```
 </details>
@@ -1391,7 +1389,12 @@ cd /home/gonzalo/gonzalopozo.github.io && git rebase origin/restructure
 ```
 
 ```
-Rebasing (1/5)Rebasing (2/5)Rebasing (3/5)Rebasing (4/5)Rebasing (5/5)Successfully rebased and updated refs/heads/restructure.
+Rebasing (1/5)
+Rebasing (2/5)
+Rebasing (3/5)
+Rebasing (4/5)
+Rebasing (5/5)
+Successfully rebased and updated refs/heads/restructure.
 
 ```
 </details>

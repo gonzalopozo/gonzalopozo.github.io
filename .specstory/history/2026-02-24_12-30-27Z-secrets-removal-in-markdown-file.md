@@ -201,6 +201,3 @@ Status: **completed**
 
 _**Agent (composer-1.5)**_
 
-He eliminado el **token de Mapbox** (`REDACTED`) que aparecía 3 veces en las líneas 293–295 dentro de URLs de la API de Mapbox. Lo he sustituido por `[REDACTED]`.
-
-No he encontrado más secretos en el archivo (API keys, contraseñas, tokens, etc.).
