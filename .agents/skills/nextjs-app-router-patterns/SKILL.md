@@ -535,9 +535,3 @@ export async function updateProduct(id: string, data: ProductData) {
 - **Don't fetch in Client Components** - Use Server Components or React Query
 - **Don't over-nest layouts** - Each layout adds to the component tree
 - **Don't ignore loading states** - Always provide loading.tsx or Suspense
-
-## Resources
-
-- [Next.js App Router Documentation](https://nextjs.org/docs/app)
-- [Server Components RFC](https://github.com/reactjs/rfcs/blob/main/text/0188-server-components.md)
-- [Vercel Templates](https://vercel.com/templates/next.js)
