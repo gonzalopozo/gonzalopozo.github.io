@@ -47,3 +47,9 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# pnpm
+/pnpm-store/
+
+# vscode
+/.vscode/
