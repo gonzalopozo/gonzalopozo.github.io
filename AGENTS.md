@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Personal portfolio with a public page and an admin dashboard (CMS) — built with Next.js 16, React 19, TypeScript, Tailwind CSS 4.1, Drizzle ORM, Turso, and better-auth.
+Personal portfolio with a public page and an admin dashboard (CMS) — built with Next.js 16, React 19, TypeScript, Tailwind CSS 4.2, Drizzle ORM, Turso, and better-auth.
 
 ## Package Manager
 
@@ -14,16 +14,16 @@ Personal portfolio with a public page and an admin dashboard (CMS) — built wit
 | `pnpm build` | Production build |
 | `pnpm lint` | ESLint |
 | `pnpm db:setup` | Generate + push Drizzle migrations |
+| `pnpm start` | Start production server |
 | `pnpm test` | Vitest (watch mode) |
-| `pnpm test:e2e` | Playwright E2E |
 
 ## Tech Stack
 
 | Category | Technology |
 | --- | --- |
-| Framework | Next.js 16 (canary), App Router, React Compiler |
+| Framework | Next.js 16, App Router, React Compiler |
 | Language | TypeScript (strict) |
-| Styling | Tailwind CSS 4.1, tw-animate-css |
+| Styling | Tailwind CSS 4.2, tw-animate-css |
 | Database | Turso (libSQL) via Drizzle ORM |
 | Auth | better-auth (email/password, sign-up disabled) |
 | UI | shadcn/ui, Lucide icons, react-icons, cmdk, sonner |
@@ -40,6 +40,7 @@ app/
 components/
 ├── admin/            # Dashboard components
 ├── auth/             # Auth components
+├── public/           # Public portfolio components
 └── ui/               # shadcn/ui components
 db/schema/            # Drizzle schema (source of truth for DB structure)
 lib/
@@ -49,6 +50,7 @@ lib/
 ├── auth.ts           # better-auth config
 ├── auth-client.ts    # better-auth client
 ├── server-session.ts # Session helper
+├── types.d.ts        # Ambient / shared types
 └── utils.ts          # Shared utilities (cn, formatDate, etc.)
 ```
 
@@ -76,9 +78,9 @@ lib/
 
 > **Before adding a UI component, execute the following skills** — read each SKILL.md and follow its instructions:
 >
-> 1. `.cursor/skills/shadcn-ui/SKILL.md`
+> 1. `.cursor/skills/shadcn/SKILL.md`
 > 2. `.cursor/skills/frontend-design/SKILL.md`
-> 3. `.cursor/skills/tailwind-v4-shadcn/SKILL.md`
+> 3. `.cursor/skills/tailwind-design-system/SKILL.md`
 
 **Add a UI component**: add in `components/ui/` using Radix primitives + Tailwind + `cn()`.
 

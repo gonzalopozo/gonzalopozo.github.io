@@ -411,6 +411,7 @@ export async function GET(request: NextRequest) {
 | `[id]` | `app/(admin)/dashboard/projects/[id]/edit/` | Edit a specific project by ID |
 | `[id]` | `app/(admin)/dashboard/experiences/[id]/edit/` | Edit a specific experience by ID |
 | `[id]` | `app/(admin)/dashboard/skills/[id]/edit/` | Edit a specific skill by ID |
+| `[id]` | `app/(admin)/dashboard/social-links/[id]/edit/` | Edit a specific social link by ID |
 | `[...all]` | `app/api/auth/[...all]/` | Catch-all for better-auth endpoints |
 
 **Project rules**:

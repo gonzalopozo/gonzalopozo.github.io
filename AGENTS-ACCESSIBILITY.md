@@ -1,15 +1,15 @@
 # AGENTS-ACCESSIBILITY.md
 
-Accessibility guidelines for the portfolio project — project-specific patterns using Next.js 16, shadcn/ui, Tailwind CSS 4.1, and Sonner.
+Accessibility guidelines for the portfolio project — project-specific patterns using Next.js 16, shadcn/ui, Tailwind CSS 4.2, and Sonner.
 
 > **Before auditing or fixing accessibility, execute the following skills** — read each SKILL.md and follow its instructions:
 >
-> 1. `.cursor/skills/accessibility/SKILL.md`
+> 1. `.cursor/skills/accessibility-compliance/SKILL.md`
 > 2. `.cursor/skills/wcag-audit-patterns/SKILL.md`
 
 > **Before building or modifying shadcn/ui components with a11y requirements, execute the following skill** — read the SKILL.md and follow its instructions:
 >
-> 1. `.cursor/skills/shadcn-ui/SKILL.md`
+> 1. `.cursor/skills/shadcn/SKILL.md`
 
 ---
 

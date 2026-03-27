@@ -8,7 +8,7 @@ First-time setup, environment configuration, and development prerequisites.
 
 > **Before configuring Tailwind theme or CSS variables, execute the following skill** — read the SKILL.md and follow its instructions:
 >
-> 1. `.cursor/skills/tailwind-v4-shadcn/SKILL.md`
+> 1. `.cursor/skills/tailwind-design-system/SKILL.md`
 
 ---
 

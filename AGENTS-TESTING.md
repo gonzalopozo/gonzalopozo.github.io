@@ -10,7 +10,7 @@ Testing strategy, conventions, and project-specific patterns for a Next.js 16 ap
 
 > **Before writing Playwright E2E tests, execute the following skill** — read the SKILL.md and follow its instructions:
 >
-> 1. `.cursor/skills/playwright-skill/SKILL.md`
+> 1. `.cursor/skills/playwright-best-practices/SKILL.md`
 
 **Related coverage in other AGENTS files (do not duplicate):**
 
