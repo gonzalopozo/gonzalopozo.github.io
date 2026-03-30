@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
     turbopackFileSystemCacheForDev: true,
     turbopackFileSystemCacheForBuild: true,
   },
+  images: {
+    remotePatterns: [new URL('https://placehold.co/**')]
+  }
 };
 
 export default nextConfig;

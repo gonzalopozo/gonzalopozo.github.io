@@ -31,9 +31,11 @@ export function PortfolioGrid({ projects }: PorfolioGridProps) {
                 v: null,
                 layouts: {
                     lg: [
-                        { i: "a", x: 0, y: 0, w: 2, h: 8 },
-                        { i: "b", x: 2, y: 0, w: 1, h: 8 },
-                        { i: "c", x: 0, y: 9, w: 1, h: 12 },
+                        { i: "a", x: 0, y: 0, w: 4, h: 8 },
+                        { i: "b", x: 4, y: 0, w: 2, h: 8 },
+                        { i: "c", x: 6, y: 0, w: 2, h: 16 },
+                        { i: "d", x: 0, y: 1, w: 2, h: 16 },
+                        { i: "e", x: 2, y: 1, w: 4, h: 16 },
                     ],
                     md: [
                         { i: "a", x: 0, y: 0, w: 2, h: 8 },
@@ -59,9 +61,9 @@ export function PortfolioGrid({ projects }: PorfolioGridProps) {
                     ],
                 },
                 GridItems: [
-                    <div className='bg-teal-500 w-50' key="d">d</div>,
-                    <div className='bg-fuchsia-500 w-50' key="e">e</div>,
-                    <div className='bg-lime-500 w-50' key="f">f</div>,
+                    <div className='bg-primary w-50' key="d">d</div>,
+                    <div className='bg-accent w-50' key="e">e</div>,
+                    <div className='bg-secondary w-50' key="f">f</div>,
                 ]
             }, { url: 'Projects', v: 'Projects' }, { url: 'Experience', v: 'Experience' }, { url: 'Contact', v: 'Contact' }
         ]
@@ -95,7 +97,7 @@ export function PortfolioGrid({ projects }: PorfolioGridProps) {
                         layouts={gridLayouts}
                         width={width}
                         breakpoints={{ lg: 996, md: 768, sm: 0 }}
-                        cols={{ lg: 4, md: 2, sm: 1 }}
+                        cols={{ lg: 8, md: 4, sm: 1 }}
                         rowHeight={30}
                         resizeConfig={{ enabled: false }}
                     >
@@ -137,7 +139,9 @@ export function PortfolioGrid({ projects }: PorfolioGridProps) {
                                 <MapControls />
                             </Map>
                         </GridItem>
-                        <GridItem variant='project' section={section} project={projects[1]} key="c" />
+                        <GridItem variant='project' section={section} setSection={setSection} project={projects[0]} key="c" />
+                        <GridItem variant='project' section={section} setSection={setSection} project={projects[1]} key="d" />
+                        <GridItem variant='project' section={section} setSection={setSection} project={projects[2]} key="e" />
                     </Responsive>
                 )}
             </div>

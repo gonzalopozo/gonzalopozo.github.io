@@ -12,7 +12,7 @@ export interface ProjectInfo {
     description: string;
     url: string | null;
     repoUrl: string | null;
-    status: "active" | "archived" | "in-progress";
+    status: ProjectStatus;
     order: number;
     createdAt: Date;
     updatedAt: Date;
