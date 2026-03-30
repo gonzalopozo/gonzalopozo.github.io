@@ -53,3 +53,9 @@ node_modules/
 
 # vscode
 /.vscode/
+
+# specstory corrupted files
+.specstory/history/2026-02-23_16-31-36Z-secrets-exposure-during-push.md
+.specstory/history/2026-02-24_12-30-27Z-secrets-removal-in-markdown-file.md
+.specstory/history/2026-03-26_08-56-34Z-error-resolution-and-prevention.md
+.specstory/history/2026-02-23_08-38-39Z-relative-spacing-in-nevv's-grid.md
