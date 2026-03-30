@@ -81,6 +81,7 @@ lib/
 > 1. `.cursor/skills/shadcn/SKILL.md`
 > 2. `.cursor/skills/frontend-design/SKILL.md`
 > 3. `.cursor/skills/tailwind-design-system/SKILL.md`
+> 4. `AGENTS-DESIGN.md` (design tokens, grid vocabulary, card variants)
 
 **Add a UI component**: add in `components/ui/` using Radix primitives + Tailwind + `cn()`.
 
@@ -103,5 +104,6 @@ lib/
 | [Performance](./AGENTS-PERFORMANCE.md) | React Compiler, code splitting, loading states, bundle optimization, Core Web Vitals |
 | [Accessibility](./AGENTS-ACCESSIBILITY.md) | Landmarks, skip link, forms, images, contrast, motion preferences |
 | [Animations](./AGENTS-ANIMATIONS.md) | Tailwind animations, Motion, NumberFlow |
+| [Design](./AGENTS-DESIGN.md) | Theme tokens, bento grid system, card anatomy, pill navbar, typography |
 | [Testing](./AGENTS-TESTING.md) | Vitest, Playwright, mocking, CI |
 | [Testing Reference](./AGENTS-TESTING-REFERENCE.md) | Full mock code blocks, CI workflow YAML, auth setup, axe-core patterns |
