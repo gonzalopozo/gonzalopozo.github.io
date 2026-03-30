@@ -12,6 +12,7 @@ export const projects = sqliteTable("projects", {
     description: text().notNull(),
     url: text(),
     repoUrl: text(),
+    ogImageUrl: text(),
     status: text({ enum: ["active", "archived", "in-progress"] }).notNull().default("in-progress"),
     order: integer().notNull().default(0),
     ...timestamps,
