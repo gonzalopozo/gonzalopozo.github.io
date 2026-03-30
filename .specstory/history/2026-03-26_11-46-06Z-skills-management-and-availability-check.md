@@ -6645,6 +6645,26 @@ _**Agent (composer-2-fast)**_
 ```bash
 for s in drizzle-orm shadcn frontend-design tailwind-design-system typescript-advanced-types accessibility-compliance wcag-audit-patterns vercel-composition-patterns next-best-practices nextjs-app-router-patterns vercel-react-best-practices next-cache-components better-auth vitest playwright-best-practices seo; do test -f "/home/gonzalo/gonzalopozo.github.io/.cursor/skills/$s/SKILL.md" && echo "OK $s" || echo "MISSING $s"; done
 ```
+
+```
+OK drizzle-orm
+OK shadcn
+OK frontend-design
+OK tailwind-design-system
+OK typescript-advanced-types
+OK accessibility-compliance
+OK wcag-audit-patterns
+OK vercel-composition-patterns
+OK next-best-practices
+OK nextjs-app-router-patterns
+OK vercel-react-best-practices
+OK next-cache-components
+MISSING better-auth
+OK vitest
+OK playwright-best-practices
+OK seo
+
+```
 </details>
 </tool-use>
 
@@ -6652,3 +6672,400 @@ for s in drizzle-orm shadcn frontend-design tailwind-design-system typescript-ad
 <summary>Tool use: **run_terminal_command_v2**</summary>
 
 </details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+<think><details><summary>Thought Process</summary>
+**Verifying auth path**
+
+I corrected the typo in the auth path and verified that `better-auth-best-practices` is the correct reference. </details></think>
+
+_**Agent (composer-2-fast)**_
+
+
+
+
+
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="search" data-tool-name="glob_file_search">
+<details>
+<summary>Tool use: **glob_file_search** • Searched codebase "" • **5** results in **1** directory</summary>
+
+Directory: **** (5 files)
+
+| File |
+|------|
+| `./lib/types.d.ts` |
+| `./lib/auth-client.ts` |
+| `./lib/server-session.ts` |
+| `./lib/auth.ts` |
+| `./lib/utils.ts` |
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="search" data-tool-name="glob_file_search"><details>
+<summary>Tool use: **glob_file_search**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/AGENTS-TESTING-REFERENCE.md</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/AGENTS-TESTING.md</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+
+
+
+
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/package.json</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/playwright.config.ts</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+<think><details><summary>Thought Process</summary>
+**Updating test scripts**
+
+I'll add missing test scripts to package.json to match AGENTS expectations. I'll document the actual command in AGENTS-TESTING.md to match package.json scripts. 
+
+I'm updating AGENTS-TESTING.md to use `pnpm exec playwright test` for E2E tests and `pnpm test` for unit tests, matching the actual package.json scripts. I'm updating AGENTS-TESTING.md to use `pnpm exec playwright test` for E2E tests and `pnpm exec vitest run` for non-watch vitest, matching existing package.json scripts. I'm updating AGENTS-TESTING.md to clarify that `pnpm test` is for watch mode and `pnpm exec vitest run` is for CI 'run once' execution. </details></think>
+
+_**Agent (composer-2-fast)**_
+
+
+
+
+
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/.github/workflows/playwright.yml</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/vitest.config.mts</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+<think><details><summary>Thought Process</summary>
+**Updating agents testing**
+
+I'm replacing `pnpm test:e2e` with `pnpm exec playwrig` in AGENTS-TESTING.md. </details></think>
+
+_**Agent (composer-2-fast)**_
+
+
+
+
+
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search">
+<details>
+<summary>Tool use: **ripgrep_raw_search**</summary>
+
+
+Parameters:
+
+```json
+{
+  "caseInsensitive": false,
+  "glob": "AGENTS*.md",
+  "path": "/home/gonzalo/gonzalopozo.github.io",
+  "pattern": "test:e2e|test:run|test\\.yml"
+}
+```
+Additional data:
+
+```json
+{
+  "isPruned": true,
+  "outputMode": "content",
+  "path": "/home/gonzalo/gonzalopozo.github.io",
+  "pattern": "test:e2e|test:run|test\\.yml",
+  "topFiles": [
+    {
+      "matchCount": 1,
+      "uri": "./AGENTS-TESTING.md"
+    },
+    {
+      "matchCount": 3,
+      "uri": "./AGENTS-TESTING-REFERENCE.md"
+    }
+  ],
+  "totalFiles": 2,
+  "totalMatches": 4
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="unknown" data-tool-name="ripgrep_raw_search"><details>
+<summary>Tool use: **ripgrep_raw_search**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+<think><details><summary>Thought Process</summary>
+**Updating documentation**
+
+I'm adding Knowledge Resolution Order details and updating the AGENTS.md tree to include types.d.ts in the lib directory. </details></think>
+
+_**Agent (composer-2-fast)**_
+
+
+
+
+
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="search" data-tool-name="glob_file_search">
+<details>
+<summary>Tool use: **glob_file_search** • Searched codebase "" • **0** results in **1** directory</summary>
+
+Directory: **** (0 files)
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="search" data-tool-name="glob_file_search"><details>
+<summary>Tool use: **glob_file_search**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+<think><details><summary>Thought Process</summary>
+**Updating documentation**
+
+I'm updating the documentation files to reflect the correct paths and structures for the testing setup. </details></think>
+
+_**Agent (composer-2-fast)**_
+
+
+
+
+
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: test -f /home/gonzalo/gonzalopozo.github.io/.cursor/skills/better-auth-best-practices/SKILL.md && echo OK</summary>
+
+```bash
+test -f /home/gonzalo/gonzalopozo.github.io/.cursor/skills/better-auth-best-practices/SKILL.md && echo OK
+```
+
+```
+OK
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+
+Applying minimal fixes: `package.json` has no `test:e2e` or `test:run`; testing docs still reference them. Adding `lib/types.d.ts` to the project tree. Updating the CI template and cross-reference.
+
+
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /home/gonzalo/gonzalopozo.github.io/AGENTS.md</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /home/gonzalo/gonzalopozo.github.io/AGENTS-TESTING.md</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /home/gonzalo/gonzalopozo.github.io/AGENTS-TESTING-REFERENCE.md</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /home/gonzalo/gonzalopozo.github.io/AGENTS-TESTING-REFERENCE.md</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /home/gonzalo/gonzalopozo.github.io/AGENTS-TESTING-REFERENCE.md</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+<think><details><summary>Thought Process</summary>
+**Updating checklist**
+
+I'm updating the AGENTS-SETUP checklist to reference test.yml and adding a note about .agents/skills in AGENTS.md. </details></think>
+
+_**Agent (composer-2-fast)**_
+
+
+Here is the **agents-md-sync** pass and what changed.
+
+### Verification (Step 8)
+
+| Check | Result |
+|--------|--------|
+| Deep-Dive Guides vs `AGENTS-*.md` | All 12 sub-files listed |
+| Skill paths in AGENTS → `.cursor/skills/*/SKILL.md` | All resolve (symlinks to `.agents/skills/`) |
+| `AGENTS.md` § Commands vs `package.json` | Already aligned (`dev`, `build`, `lint`, `db:setup`, `start`, `test`) |
+| Stale command refs | **Fixed** (see below) |
+
+### Edits applied (3 files, 5 edits)
+
+1. **`AGENTS.md` § Project structure** — Documented existing `lib/types.d.ts` in the tree (it was missing while `lib/schemas/` is still only described for the workflow).
+
+2. **`AGENTS-TESTING.md`** — Replaced **`pnpm test:e2e`** with **`pnpm exec playwright test`**, since there is no `test:e2e` script in `package.json`.
+
+3. **`AGENTS-TESTING-REFERENCE.md` § CI** —  
+   - Clarified that the combined **`test.yml`** block is an **example** and pointed to the real workflow **[`.github/workflows/playwright.yml`](.github/workflows/playwright.yml)**.  
+   - Replaced **`pnpm test:run`** → **`pnpm exec vitest run`** and **`pnpm test:e2e`** → **`pnpm exec playwright test`** so the template matches how scripts work today (no `test:run` / `test:e2e` in `package.json`).
+
+### What we did **not** add/remove (on purpose)
+
+| Topic | Reason |
+|--------|--------|
+| New **`test:e2e`** / **`test:run`** scripts in `package.json` | Sync skill is doc↔code consistency; adding scripts would be a product choice, not a doc fix. You can add them later if you want shorter commands. |
+| **`seo-audit`**, **`playwright-cli`**, **`web-design-guidelines`** in **Common Tasks** | Skill rule: Common Tasks stays **curated**, not a full skill list. |
+| **`tests/`** folder | Described as the target layout; it may not exist yet — that stays as intentional/TODO. |
+| **`Glob(".cursor/skills/*/SKILL.md")`** only finding `agents-md-sync` | Expected: most entries are **symlinks**; the glob tool does not always follow them. A shell `ls` + `test -f` is the reliable check. |
+
+### Optional follow-ups (not done)
+
+- Add **`"test:e2e": "playwright test"`** and **`"test:run": "vitest run"`** to `package.json` so docs can use shorter commands again.  
+- Align **`.github/workflows/playwright.yml`** with project norms (e.g. **`pnpm/action-setup`**, Node 20, `pnpm install --frozen-lockfile`) — that is CI hygiene, not AGENTS drift.
+
+If you want, the next step can be adding those two scripts and a single line in `AGENTS.md` / testing docs to prefer `pnpm test:e2e` again.

@@ -201,3 +201,5 @@ Status: **completed**
 
 _**Agent (composer-1.5)**_
 
+
+No he encontrado más secretos en el archivo (API keys, contraseñas, tokens, etc.).

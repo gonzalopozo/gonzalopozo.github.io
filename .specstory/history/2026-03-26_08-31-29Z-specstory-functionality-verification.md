@@ -559,6 +559,20 @@ _**Agent (claude-4.6-opus-high-thinking)**_
 ```bash
 /home/gonzalo/gonzalopozo.github.io/.specstory/bin/specstory --version 2>&1
 ```
+
+```
+
+╭─────────────────────────────────────────────────────────────╮
+│                   Update Available! 🚀                      │
+├─────────────────────────────────────────────────────────────┤
+│ Current version: 1.11.0-windows-support-9ceab58             │
+│ Latest version:  1.12.0                                     │
+├─────────────────────────────────────────────────────────────┤
+│ Visit https://docs.specstory.com/quickstart for updates     │
+╰─────────────────────────────────────────────────────────────╯
+
+1.11.0-windows-support-9ceab58 (SpecStory)
+```
 </details>
 </tool-use>
 
@@ -566,3 +580,181 @@ _**Agent (claude-4.6-opus-high-thinking)**_
 <summary>Tool use: **run_terminal_command_v2**</summary>
 
 </details></tool-use>
+
+_**Agent (claude-4.6-opus-high-thinking)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: ls -la ~/.config/Cursor 2>/dev/null || echo "No symlink or directory at ~/.config/Cursor"</summary>
+
+```bash
+ls -la ~/.config/Cursor 2>/dev/null || echo "No symlink or directory at ~/.config/Cursor"
+```
+
+```
+No symlink or directory at ~/.config/Cursor
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (claude-4.6-opus-high-thinking)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: whoami && ls /mnt/c/Users/ 2>/dev/null</summary>
+
+```bash
+whoami && ls /mnt/c/Users/ 2>/dev/null
+```
+
+```
+root
+All Users
+Default
+Default User
+Public
+desktop.ini
+gonza
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (claude-4.6-opus-high-thinking)**_
+
+<think><details><summary>Thought Process</summary>
+So the version is still `1.11.0-windows-support-9ceab58` (the commit hash changed from `0106e64` to `9ceab58`, so it was updated but to a different build of the same version). The latest is `1.12.0`, so the update didn't go to the latest stable version.
+
+There's no symlink at `~/.config/Cursor`. The Windows username is `gonza`.
+
+Let me check if the Windows-side Cursor directory has the session data Specstory needs.</details></think>
+
+_**Agent (claude-4.6-opus-high-thinking)**_
+
+The version is still `1.11.0-windows-support` (the commit hash changed but it's the same version, not the latest `1.12.0`). And the symlink wasn't created. Let me verify the Windows Cursor path exists and create the symlink for you.
+
+_**Agent (claude-4.6-opus-high-thinking)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: ls /mnt/c/Users/gonza/AppData/Roaming/Cursor/ 2>/dev/null | head -10 || echo "Cursor directory not found"</summary>
+
+```bash
+ls /mnt/c/Users/gonza/AppData/Roaming/Cursor/ 2>/dev/null | head -10 || echo "Cursor directory not found"
+```
+
+```
+Backups
+Cache
+CachedConfigurations
+CachedData
+CachedExtensionVSIXs
+CachedProfilesData
+Code Cache
+Crashpad
+DIPS
+DIPS-wal
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (claude-4.6-opus-high-thinking)**_
+
+Good, the Cursor data directory exists at `/mnt/c/Users/gonza/AppData/Roaming/Cursor/`. Let me check if it contains the workspace storage with session data that Specstory needs.
+
+_**Agent (claude-4.6-opus-high-thinking)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: ls /mnt/c/Users/gonza/AppData/Roaming/Cursor/User/workspaceStorage/ 2>/dev/null | head -10 || echo "workspaceStorage not found"</summary>
+
+```bash
+ls /mnt/c/Users/gonza/AppData/Roaming/Cursor/User/workspaceStorage/ 2>/dev/null | head -10 || echo "workspaceStorage not found"
+```
+
+```
+0372bd480945d115c75da8686b0bc8ba
+08786bdc1327a72cc786a884c26251ea
+08b3660cd216b1612fed50b1d75f2a83
+17a5640bb662e82b70fb7c66fc60e82b
+1857eb8298f84da540d021b8561527e5
+1868321b7fa8b8f0bd204cc271cfe807
+1a4148cae486c24cb922f4c462ccffbe
+1d9480b02ade3c5eb263a5d655d43cbc
+1dfe48e67117a20d846dbc121edfdf08
+1e02060ec65b1ea0f85d240870fe6673
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (claude-4.6-opus-high-thinking)**_
+
+The session data is there. Now let me create the symlink so Specstory can find it.
+
+_**Agent (claude-4.6-opus-high-thinking)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: mkdir -p ~/.config && ln -s /mnt/c/Users/gonza/AppData/Roaming/Cursor ~/.config/Cursor</summary>
+
+```bash
+mkdir -p ~/.config && ln -s /mnt/c/Users/gonza/AppData/Roaming/Cursor ~/.config/Cursor
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (claude-4.6-opus-high-thinking)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: ls -la ~/.config/Cursor</summary>
+
+```bash
+ls -la ~/.config/Cursor
+```
+
+```
+lrwxrwxrwx 1 root root 41 Mar 26 09:37 /home/gonzalo/.config/Cursor -&gt; /mnt/c/Users/gonza/AppData/Roaming/Cursor
+
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (claude-4.6-opus-high-thinking)**_
+
+The symlink is in place:
+
+```
+~/.config/Cursor -> /mnt/c/Users/gonza/AppData/Roaming/Cursor
+```
+
+Now you need to **restart the Specstory `watch` command** in Terminal 5 (Ctrl+C to stop the errored process, then let it re-run). It should now find the Cursor IDE sessions through the symlink.
+
+Also note that you're still on `1.11.0-windows-support`, not the latest `1.12.0`. You may want to update following the [Specstory quickstart docs](https://docs.specstory.com/quickstart) if the symlink alone doesn't fully resolve the issues.

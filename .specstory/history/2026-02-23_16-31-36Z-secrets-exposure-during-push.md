@@ -818,6 +818,7 @@ cd /home/gonzalo/gonzalopozo.github.io && grep -c "pk\.eyJ" .specstory/history/2
 ```
 0
 0
+.dlZlSs{width:100%;height:100%;position:absolute;left:0;top:0;background-image:url('https://api.mapbox.com/styles/v1/nevflynn/ckmq30o0a0pzx17qoi8dxp3ou/static/-6.2639433,53.304238,12/280x280?access_token=REDACTED&amp;amp;attribution=false&amp;amp;logo=false');}/*!sc*/
 
 ```
 </details>
