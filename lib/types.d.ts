@@ -12,6 +12,7 @@ export interface ProjectInfo {
     description: string;
     url: string | null;
     repoUrl: string | null;
+    ogImageUrl: string | null;
     status: ProjectStatus;
     order: number;
     createdAt: Date;
