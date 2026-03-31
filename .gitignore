@@ -49,7 +49,7 @@ node_modules/
 /playwright/.auth/
 
 # pnpm
-/pnpm-store/
+/.pnpm-store/
 
 # vscode
 /.vscode/
