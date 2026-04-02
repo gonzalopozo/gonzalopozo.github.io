@@ -1,7 +1,6 @@
 // import "server-only"
 import { URL } from "url";
 import { resolve4, resolve6 } from "dns/promises";
-import { updateExperience } from "./actions/experiences";
 
 /**
  * Retorna true/false dependiendo de si la dirección IP es invalida o valida respectivamente.
@@ -134,6 +133,31 @@ export async function saveImageInVercelBlob(url: string): Promise<string | null>
     }
 
     console.log("Todas las IPs V6 son validas");
+
+    let response;
+
+    try {
+        response = await fetch(webUrl.toString(), {
+            redirect: "error",
+            signal: AbortSignal.timeout(5_000)
+        });
+    } catch {
+        return null;
+    }
+
+    if (!response.ok) return null;
+
+    const responseContentType = response.headers.get("content-type");
+    if (!responseContentType?.toLowerCase().includes("text/html")) return null;
+
+    const responseContentLength = response.headers.get("content-length");
+    if (responseContentLength !== null) {
+        const n = Number(responseContentLength);
+        if (Number.isFinite(n) && n > 5 * 1024 * 1024) return null;
+    }
+
+    const html = await response.text();
+    if (html.length > 5 * 1024 * 1024) return null;
 
     return null;
 }
