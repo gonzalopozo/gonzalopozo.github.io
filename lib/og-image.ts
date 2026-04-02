@@ -1,6 +1,7 @@
 // import "server-only"
 import { URL } from "url";
 import { resolve4, resolve6 } from "dns/promises";
+import * as cheerio from "cheerio";
 
 /**
  * Retorna true/false dependiendo de si la dirección IP es invalida o valida respectivamente.
@@ -108,9 +109,8 @@ export async function saveImageInVercelBlob(url: string): Promise<string | null>
 
     console.log("El url es parseable")
 
-    const webUrl = new URL(url);
-
-    if (!webUrl) return null;
+    let webUrl;
+    try { webUrl = new URL(url) } catch { return null };
 
     console.log("Se ha creado correctamente el objeto URL")
 
@@ -136,6 +136,8 @@ export async function saveImageInVercelBlob(url: string): Promise<string | null>
 
     let response;
 
+    console.log("Hacinedo fetch de la web...")
+
     try {
         response = await fetch(webUrl.toString(), {
             redirect: "error",
@@ -145,19 +147,47 @@ export async function saveImageInVercelBlob(url: string): Promise<string | null>
         return null;
     }
 
+    console.log("La web no nos intenteta redireccionar ni ha superiado el timeout de 5 segundos");
+
     if (!response.ok) return null;
+
+    console.log("La respuesta del fetch fue exitosa");
 
     const responseContentType = response.headers.get("content-type");
     if (!responseContentType?.toLowerCase().includes("text/html")) return null;
+
+    console.log("El content-type de la respuesta es text/html");
 
     const responseContentLength = response.headers.get("content-length");
     if (responseContentLength !== null) {
         const n = Number(responseContentLength);
         if (Number.isFinite(n) && n > 5 * 1024 * 1024) return null;
+        console.log("El content-length de la respuesta es menor que 5 MB");
     }
 
     const html = await response.text();
     if (html.length > 5 * 1024 * 1024) return null;
+    console.log("El contenido (html) de la respuesta es menor que 5 MB");
+
+    const htmlPage = cheerio.load(html);
+    const htmlMetaTag = htmlPage(`meta[property="og:image"]`).length > 0 ? htmlPage(`meta[property="og:image"]`) : htmlPage(`meta[name="og:image"]`).length > 0 ? htmlPage(`meta[name="og:image"]`) : null;
+    if (!htmlMetaTag) return null;
+
+    console.log(`Cargamos la web y tiene un tag meta con property/name "og:image"`);
+
+    const ogImageUrl = htmlMetaTag.attr("content");
+    if (!ogImageUrl) return null;
+
+    console.log("El tag meta contiene un atributo content");
+
+    let ogImageNormalizedUrl;
+    try { ogImageNormalizedUrl = new URL(ogImageUrl, webUrl) } catch { return null }
+
+    console.log("Se ha creado correctamente el objeto URL para el link de la open-graph image");
+
+    if (ogImageNormalizedUrl.protocol !== "https:") return null;
+
+    console.log("El protocolo del link de la open-graph image es https");
 
     return null;
 }
