@@ -97,6 +97,46 @@ function isInvalidIpV6(ip: string): boolean {
     return false;
 }
 
+function isDnsMissingRecordsError(err: unknown): boolean {
+    if (typeof err !== "object" || err === null || !("code" in err)) return false;
+    const code = (err as NodeJS.ErrnoException).code;
+    return (
+        code === "ENODATA" ||
+        code === "ENOTFOUND" ||
+        code === "ESOCKETNODATA"
+    );
+}
+
+/**
+ * Resuelve A y AAAA; falla si el DNS falla de forma irrecuperable o si alguna IP es privada.
+ * Hosts solo IPv4 o solo IPv6: el otro resolve puede rechazar con ENODATA/ENOTFOUND — es normal.
+ */
+async function assertHostnameHasOnlyPublicIps(hostname: string): Promise<boolean> {
+    let v4: string[] = [];
+    try {
+        v4 = await resolve4(hostname);
+    } catch (e) {
+        if (!isDnsMissingRecordsError(e)) return false;
+    }
+
+    for (const ip of v4) {
+        if (isInvalidIpV4(ip)) return false;
+    }
+
+    let v6: string[] = [];
+    try {
+        v6 = await resolve6(hostname);
+    } catch (e) {
+        if (!isDnsMissingRecordsError(e)) return false;
+    }
+
+    for (const ip of v6) {
+        if (isInvalidIpV6(ip)) return false;
+    }
+
+    return v4.length > 0 || v6.length > 0;
+}
+
 
 /**
  * Guarda la imagen en el storage (Vercel Blob)
@@ -118,21 +158,9 @@ export async function saveImageInVercelBlob(url: string): Promise<string | null>
 
     console.log("El protocolo es https")
 
-    const revolvedIpsV4  = await resolve4(webUrl.hostname);
+    if (!(await assertHostnameHasOnlyPublicIps(webUrl.hostname))) return null;
 
-    for (const ip of revolvedIpsV4) {
-        if (isInvalidIpV4(ip)) return null;
-    }
-
-    console.log("Todas las IPs V4 son validas");
-
-    const revolvedIpsV6  = await resolve6(webUrl.hostname);
-
-    for (const ip of revolvedIpsV6) {
-        if (isInvalidIpV6(ip)) return null;
-    }
-
-    console.log("Todas las IPs V6 son validas");
+    console.log("El hostname de la página resuelve solo a IPs públicas (A y/o AAAA)");
 
     let response;
 
@@ -188,6 +216,10 @@ export async function saveImageInVercelBlob(url: string): Promise<string | null>
     if (ogImageNormalizedUrl.protocol !== "https:") return null;
 
     console.log("El protocolo del link de la open-graph image es https");
+
+    if (!(await assertHostnameHasOnlyPublicIps(ogImageNormalizedUrl.hostname))) return null;
+
+    console.log("El hostname de la og:image resuelve solo a IPs públicas (A y/o AAAA)");
 
     return null;
 }
