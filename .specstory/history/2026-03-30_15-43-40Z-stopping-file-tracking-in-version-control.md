@@ -12,7 +12,6 @@ How I can stop tracking some files that I have been tracking but I do not want t
 
 _**Agent (composer-2-fast)**_
 
-
 To **stop tracking** files that Git already follows but you want to keep only on your machine:
 
 ## 1. Ignore them from now on
@@ -43,4 +42,7 @@ After that, Git ignores those paths per `.gitignore`, and the last commit stops 
 
 ## Notes
 
-- **Secrets**: 
+- **Secrets**: If you ever committed secrets, add them to `.gitignore` and **rotate** the secrets; `git rm --cached` does not remove them from past commits.
+- **Global ignore**: For personal-only ignores on all repos, use `~/.gitignore_global` and `git config --global core.excludesfile ~/.gitignore_global`.
+
+If you tell me the exact paths (e.g. under your portfolio repo), I can suggest precise `git rm --cached` lines and `.gitignore` entries.

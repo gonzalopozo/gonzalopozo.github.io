@@ -216,8 +216,8 @@ Additional data:
 {
   "reviewData": {
     "isShowingInput": false,
-    "selectedOption": "allowlistDomain",
-    "status": "Done"
+    "selectedOption": "run",
+    "status": "None"
   }
 }
 ```
@@ -388,6 +388,17 @@ Parameters:
   "url": "https://nextjs.org/docs/app/api-reference/components/image"
 }
 ```
+Additional data:
+
+```json
+{
+  "reviewData": {
+    "isShowingInput": false,
+    "selectedOption": "run",
+    "status": "None"
+  }
+}
+```
 Result:
 
 ```json
@@ -430,7 +441,7 @@ Additional data:
   "reviewData": {
     "isShowingInput": false,
     "selectedOption": "run",
-    "status": "Done"
+    "status": "None"
   }
 }
 ```
@@ -476,7 +487,7 @@ Additional data:
   "reviewData": {
     "isShowingInput": false,
     "selectedOption": "run",
-    "status": "Done"
+    "status": "None"
   }
 }
 ```
@@ -594,7 +605,7 @@ Additional data:
   "reviewData": {
     "isShowingInput": false,
     "selectedOption": "run",
-    "status": "Done"
+    "status": "None"
   }
 }
 ```
@@ -920,7 +931,6 @@ Give me a quick and resumed diagrams of each approach.
 
 _**Agent (claude-4.6-opus-high-thinking)**_
 
-
 Here are compact diagrams for the three approaches (no View Transitions).
 
 ---
@@ -995,7 +1005,6 @@ In human language, resume me what each approach does.
 
 _**Agent (claude-4.6-opus-high-thinking)**_
 
-
 **Approach A — Save the image URL in the database**  
 When you (or your app) save a project in the admin, the server visits the project’s live URL once, reads the page like a browser would, finds the Open Graph image address, checks it’s reasonable, and stores that URL in the database. The public site only shows that saved link and uses Next.js’s image component so the image is resized and cached efficiently. If the remote site changes its preview image, you need to save the project again (or run a refresh) to update what you stored.
 
@@ -1064,7 +1073,6 @@ _**Agent (claude-4.6-opus-high-thinking)**_
 I'm clarifying that Approach A2 involves fetching OG images, uploading them to object storage, and storing CDN URLs in the database. I'm noting that Approach B proxies OG images on each request, fetching the image or HTML to generate the OG on-the-fly. I'm clarifying that Approach C stores only the OG image URL in the DB and uses a proxy to re-fetch from the original source when needed. </details></think>
 
 _**Agent (claude-4.6-opus-high-thinking)**_
-
 
 Here’s how **A2** lines up against **B** and **C** in plain terms.
 
@@ -1960,4 +1968,259 @@ Here's why:
 
 **The pattern:**
 
-- A pure utility function (not a Server Action, just a regular `async function`) that does all the work: fetch page → parse OG tag → validate → fetch
+- A pure utility function (not a Server Action, just a regular `async function`) that does all the work: fetch page → parse OG tag → validate → fetch image → validate → upload to Blob → return the URL. Lives in something like `lib/og-image.ts`.
+- A Server Action `refreshProjectOgImage(projectId: number)` in `lib/actions/projects.ts` that calls the utility and updates the DB.
+- `createProject` and `updateProject` call the utility function at the end (after the DB insert/update succeeds), wrapped in a try-catch that **swallows failures** — the project saves regardless.
+
+---
+
+### Step 1: Add the `ogImageUrl` column to the schema
+
+**Where:** `db/schema/portfolio.ts`
+
+**What to do:**
+- Add a new nullable `text()` column called `ogImageUrl` to the `projects` table.
+- Run `pnpm db:setup` to push the schema change to your database.
+
+**What to think about:**
+- It's nullable because a project might not have a `url`, or the target site might not have an OG image. The card should handle `null` gracefully (show a placeholder).
+
+---
+
+### Step 2: Update the `ProjectInfo` type
+
+**Where:** `lib/types.d.ts`
+
+**What to do:**
+- Add `ogImageUrl: string | null` to the `ProjectInfo` interface.
+
+---
+
+### Step 3: Install dependencies
+
+**What you need:**
+- `@vercel/blob` — for uploading to Vercel Blob.
+- `cheerio` — for parsing HTML and extracting the `og:image` meta tag. Install its types too if needed (it ships its own types).
+
+**What to think about:**
+- `cheerio` is the industry standard for server-side HTML parsing. Don't use regex to find meta tags — HTML is too irregular.
+- You do **not** need a DNS library — Node.js has `dns/promises` built-in.
+
+---
+
+### Step 4: Create the OG image utility
+
+**Where:** Create a new file `lib/og-image.ts`.
+
+**Add `import "server-only"` at the top** — this code must never run in the browser.
+
+This file will export one function. Here's the logic broken into sub-steps:
+
+#### 4a. Accept a URL string, return a Blob URL string or null
+
+The function signature takes a project URL (the live site URL), does everything, and returns either the Vercel Blob public URL or `null` if anything fails.
+
+#### 4b. Validate the input URL
+
+- Parse it with `new URL(url)`.
+- Check that `protocol` is `"https:"`. Reject anything else.
+- If parsing throws, return `null`.
+
+#### 4c. SSRF: Resolve DNS and reject private IPs
+
+- Use `dns.resolve4()` and `dns.resolve6()` from `node:dns/promises` to resolve the hostname.
+- Check every resolved IP against private ranges: `127.x`, `10.x`, `172.16-31.x`, `192.168.x`, `169.254.x`, `0.x`, `::1`, `fc00:`, `fe80:`, `fd`. If any match, return `null`.
+- Also reject the cloud metadata IP `169.254.169.254` explicitly.
+
+**What to think about:**
+- You check the IPs **before** making any HTTP request. This is the critical SSRF defense.
+- Use regex patterns or `net.isIP()` + range checks — whichever you find clearer.
+
+#### 4d. Fetch the HTML page
+
+- Use `fetch()` with three options:
+  - `redirect: "error"` — throws on any redirect, preventing redirect-to-internal-IP attacks.
+  - `signal` from an `AbortController` with a 5-second timeout.
+  - No special headers needed.
+- If the fetch fails or times out, return `null`.
+- Check that the response `Content-Type` contains `text/html`. If it's not HTML, return `null`.
+- Read the body as text. Limit it: if `Content-Length` is present and exceeds 5 MB, return `null` before reading. If not present, read the text and check its length after.
+
+#### 4e. Parse the OG image URL
+
+- Load the HTML into `cheerio`.
+- Select `meta[property="og:image"]` and read its `content` attribute.
+- If not found, try `meta[name="og:image"]` as a fallback (some sites use `name` instead of `property`).
+- If still not found, return `null`.
+- The OG image URL might be relative. Resolve it against the page URL using `new URL(ogImageValue, pageUrl)`.
+- Validate the resolved URL: must be `https:`.
+
+#### 4f. SSRF check on the image URL too
+
+- The OG image might be on a **different host** than the page. Repeat the DNS resolution + private IP check from step 4c on this new hostname.
+- This prevents a scenario where the page is on a legit host but the OG tag points to `http://169.254.169.254/...`.
+
+#### 4g. Fetch the image
+
+- Fetch the resolved OG image URL with the same options: `redirect: "error"`, 5s timeout via `AbortController`.
+- Check `Content-Type` — must be one of: `image/png`, `image/jpeg`, `image/webp`, `image/gif`, `image/avif`. Reject `image/svg+xml`, `text/html`, anything else.
+- Read the response as an `ArrayBuffer`. Check its byte length: reject if > 5 MB.
+
+#### 4h. Validate magic bytes
+
+- Convert the `ArrayBuffer` to a `Uint8Array` (or `Buffer`).
+- Check the first bytes against known signatures:
+  - PNG: bytes 0-3 are `[0x89, 0x50, 0x4E, 0x47]`
+  - JPEG: bytes 0-2 are `[0xFF, 0xD8, 0xFF]`
+  - WebP: bytes 0-3 are `[0x52, 0x49, 0x46, 0x46]` (RIFF) and bytes 8-11 are `[0x57, 0x45, 0x42, 0x50]` (WEBP)
+  - GIF: bytes 0-2 are `[0x47, 0x49, 0x46]` (GIF)
+  - AVIF: bytes 4-7 are `[0x66, 0x74, 0x79, 0x70]` (ftyp) — this is actually the ISOBMFF container check
+- If none match, return `null`. This catches an SVG disguised with a fake `Content-Type`.
+
+#### 4i. Upload to Vercel Blob
+
+- Use `put()` from `@vercel/blob`.
+- For the filename, use something like `og-images/{projectId}-{timestamp}.{extension}`. The timestamp makes each upload a unique URL (immutable caching).
+- Set `access: "public"`.
+- The `put()` function returns an object with a `url` property — that's your final CDN URL.
+
+**What to think about:**
+- `put()` accepts a `Buffer` or `ArrayBuffer` as the body. You already have the buffer from step 4g.
+- Set `cacheControlMaxAge` to a high value (e.g. 31536000 = 1 year) since the URL is unique per upload.
+- `addRandomSuffix: false` if you're already building a unique filename with the timestamp.
+
+#### 4j. Delete the old blob (cleanup)
+
+- If the project already had an `ogImageUrl` (from a previous upload), delete the old blob to avoid orphaned files.
+- Use `del()` from `@vercel/blob` with the old URL.
+- Wrap in try-catch — if deletion fails, it's not critical.
+
+#### 4k. Return the new URL
+
+- Return the `url` from `put()`.
+
+---
+
+### Step 5: Create the "refresh OG image" Server Action
+
+**Where:** `lib/actions/projects.ts`
+
+**What to do:**
+- Create a new exported async function `refreshProjectOgImage(projectId: number)`.
+- Step 1: `getServerSession()` — redirect if null.
+- Step 2: Query the project from the DB to get its `url` and current `ogImageUrl`.
+- Step 3: If the project has no `url`, return an error (can't fetch OG from nothing).
+- Step 4: Call your utility function from `lib/og-image.ts` passing the project's `url`.
+- Step 5: If the utility returned a new URL, update the project's `ogImageUrl` column in the DB. If it returned `null`, you can either keep the old value or set it to `null` — your choice.
+- Step 6: If there was an old `ogImageUrl` and you got a new one, delete the old blob.
+- Step 7: `revalidatePath` for both the dashboard and public page.
+
+---
+
+### Step 6: Call the utility from `createProject` and `updateProject`
+
+**Where:** `lib/actions/projects.ts`
+
+**What to do in `createProject`:**
+- After the DB insert succeeds and you have the `projectId`, check if `url` was provided.
+- If yes, call your utility function inside a try-catch.
+- If it returns a URL, update the project's `ogImageUrl` column.
+- If it fails, do nothing — the project is already saved, just without an OG image.
+
+**What to do in `updateProject`:**
+- Same logic, but also consider: did the `url` change? If the URL didn't change, you might skip re-fetching. Or always re-fetch — up to you.
+- If the URL was removed (set to empty), set `ogImageUrl` to `null` and delete the old blob.
+
+**What to think about:**
+- The try-catch around the utility call is crucial. External fetches are unreliable. Your project save must never fail because GitHub is down.
+- You could also make the OG fetch fire-and-forget (don't `await` it) so the redirect to `/dashboard/projects` happens immediately. But then you'd need to handle the DB update asynchronously, which is trickier. For a single-admin app, just awaiting it is fine — the extra 1-2 seconds of wait is acceptable.
+
+---
+
+### Step 7: Update `next.config.ts`
+
+**What to do:**
+- Add Vercel Blob's domain to `images.remotePatterns`. The pattern is `*.public.blob.vercel-storage.com` with `https` protocol.
+- Remove the `placehold.co` pattern (or keep it for fallbacks, your call).
+
+---
+
+### Step 8: Update the card component
+
+**Where:** `components/public/grid-item.tsx`
+
+**What to do:**
+- Replace the hardcoded `https://placehold.co/1200x630.png` with `project.ogImageUrl`.
+- Handle the `null` case: if `ogImageUrl` is null, show a placeholder (could be a local image in `/public`, a gradient, or the placehold.co fallback).
+- Update the `alt` text to use the project title.
+
+---
+
+### Step 9: Add the "Refresh OG Image" button in the admin
+
+**Where:** Wherever you have the project edit form or projects table in the dashboard.
+
+**What to do:**
+- Add a button that calls the `refreshProjectOgImage` action with the project ID.
+- Show a loading state while it runs.
+- Show a toast (via `sonner`) with success/failure.
+- Optionally show a preview of the current OG image next to the button.
+
+**What to think about:**
+- This is useful when a project's site updates its OG image and you want to pull the new one without editing the project.
+
+---
+
+### Step 10: Handle blob cleanup on project deletion
+
+**Where:** `lib/actions/projects.ts`, in `deleteProject`
+
+**What to do:**
+- Before deleting the project from the DB, query it to get the `ogImageUrl`.
+- If it has one, call `del()` from `@vercel/blob` to remove the file.
+- Then delete the project as usual.
+
+**What to think about:**
+- If you forget this, deleted projects leave orphaned blobs in your storage. At your scale it's pennies, but it's good hygiene.
+
+---
+
+### Step 11: Set up the Vercel Blob store
+
+**Where:** Vercel dashboard.
+
+**What to do:**
+1. Go to your project in the Vercel dashboard.
+2. Go to Storage → Create → Blob.
+3. Name it something like `portfolio-og-images`.
+4. Copy the `BLOB_READ_WRITE_TOKEN` to your `.env.local` for local development.
+5. On Vercel, the token is automatically injected — no manual env var needed in production.
+
+---
+
+### Step 12: Verify `Content-Security-Policy`
+
+**Where:** Your CSP configuration (currently in `AGENTS-SECURITY.md` as a TODO — you have `img-src 'self' blob: data: https:` planned).
+
+**What to think about:**
+- Your `img-src` directive already allows `https:`, which covers Vercel Blob URLs.
+- The Vercel Blob CDN itself sets appropriate headers. The `Content-Security-Policy: sandbox` header on blob responses is something Vercel doesn't let you configure per-object (unlike S3). But since you've validated the file is a raster image via magic bytes, the risk is already mitigated. If you ever move to R2/S3, you can set that header on the bucket.
+
+---
+
+### Order of Execution Summary
+
+```
+1. Schema + types              (DB column + TypeScript)
+2. Install deps                (pnpm add @vercel/blob cheerio)
+3. Vercel Blob store           (dashboard setup + env var)
+4. Utility function            (lib/og-image.ts — the core logic)
+5. next.config.ts              (remotePatterns for blob domain)
+6. Refresh action              (standalone action for the button)
+7. Wire into create/update     (call utility, swallow errors)
+8. Wire into delete            (cleanup old blob)
+9. Update card component       (use ogImageUrl with fallback)
+10. Admin UI button             (refresh trigger + preview)
+```
+
+Steps 1-5 can be tested in isolation by writing a small script or test that calls the utility with a known URL and checks that a blob appears. Steps 6-10 are the integration work.

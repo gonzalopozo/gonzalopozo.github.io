@@ -12,7 +12,6 @@ Go to http://localhost:3000/ and look at the project's card and tell me why @com
 
 _**Agent (composer-2-fast)**_
 
-
 Inspecting the status-indicator component and its usage, then opening the site in the browser MCP to see why it isn't rendering.
 
 
@@ -77,13 +76,6 @@ Directory: **/home/gonzalo/.cursor/projects/home-gonzalo-gonzalopozo-github-io/m
 
 _**Agent (composer-2-fast)**_
 
-
-
-
-
-
-_**Agent (composer-2-fast)**_
-
 <tool-use data-tool-type="read" data-tool-name="read_file_v2">
 <details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/app/globals.css</summary>
 
@@ -129,7 +121,6 @@ _**Agent (composer-2-fast)**_
 I'm correcting the invalid Tailwind CSS classes in `status-indicator.tsx` to use proper v4 syntax like `bg-status-active` instead of `bg-(--status-active)`. </details></think>
 
 _**Agent (composer-2-fast)**_
-
 
 Navigating to the page and capturing a snapshot. The component uses invalid Tailwind classes: `bg-(${color})` produces `bg-(--status-active)`, which isn't valid Tailwind syntax.
 
@@ -191,7 +182,6 @@ I found that status indicator dots are missing from accessibility tree due to in
 
 _**Agent (composer-2-fast)**_
 
-
 Confirming: the snapshot shows project titles (e.g. "NBAMON") with no visible colored dot — the indicator spans render but have no effective background. Invalid Tailwind classes: `bg-(${color})` expands to `bg-(--status-active)`, which isn't valid Tailwind (arbitrary values need square brackets, e.g. `bg-[var(--status-active)]`, or theme utilities like `bg-status-active`). There's also a logic bug: archived maps to `--status-in-progress` and in-progress to `--status-archived`. Fixing the component.
 
 
@@ -210,13 +200,6 @@ _**Agent (composer-2-fast)**_
 <summary>Tool use: **edit_file_v2**</summary>
 
 </details></tool-use>
-
-_**Agent (composer-2-fast)**_
-
-
-
-
-
 
 _**Agent (composer-2-fast)**_
 
@@ -280,21 +263,19 @@ Additional data:
 
 ```json
 {
-  "blockReason": "mcpToolsProtection",
-  "reviewData": {
-    "candidatesForAllowlist": [],
-    "isShowingInput": false,
-    "selectedOption": "run",
-    "serverId": "browsermcp",
-    "status": "None",
-    "toolName": "browser_navigate"
-  },
-  "status": "cancelled"
+  "status": "success"
+}
+```
+Result:
+
+```json
+{
+  "result": "{\"content\":[{\"type\":\"text\",\"text\":\"\\n- Page URL: http://localhost:3000/\\n- Page Title: Create Next App\\n- Page Snapshot\\n&#96;&#96;&#96;yaml\\n- document [ref=s1e2]:\\n  - region \\\"Notifications alt+T\\\" [ref=s1e4]\\n  - navigation [ref=s1e6]:\\n    - list [ref=s1e7]:\\n      - listitem [ref=s1e8]:\\n        - button \\\"All\\\" [ref=s1e9]\\n      - listitem [ref=s1e10]:\\n        - button \\\"About me\\\" [ref=s1e11]\\n      - listitem [ref=s1e12]:\\n        - button \\\"Projects\\\" [ref=s1e13]\\n      - listitem [ref=s1e14]:\\n        - button \\\"Experience\\\" [ref=s1e15]\\n      - listitem [ref=s1e16]:\\n        - button \\\"Contact\\\" [ref=s1e17]\\n      - button \\\"Toggle theme\\\" [ref=s1e18]\\n  - figure [ref=s1e24]:\\n    - img \\\"Picture of Gonzalo\\\" [ref=s1e25]\\n  - heading \\\"Gonzalo\\\" [level=3] [ref=s1e27]\\n  - paragraph [ref=s1e28]: Apasionado por la tecnología, creo soluciones creativas y funcionales en la web. Siempre aprendiendo algo nuevo.\\n  - link \\\"GitHub Profile\\\" [ref=s1e29]:\\n    - /url: https://github.com/gonzalopozo\\n  - button \\\"¡Conoce más de mí!\\\" [ref=s1e30]\\n  - region \\\"Map\\\" [ref=s1e40]\\n  - button \\\"Zoom in\\\" [ref=s1e48]\\n  - button \\\"Zoom out\\\" [ref=s1e49]\\n  - figure [ref=s1e52]:\\n    - img \\\"Project image\\\" [ref=s1e53]\\n  - text: NBAMON Online multiplayer NBA-themed game. Vanilla JS + Canvas API + Express 5\\n  - paragraph [ref=s1e62]: Proyecto desarrollado con JavaScript\\n  - link \\\"View repository on GitHub\\\" [ref=s1e64]:\\n    - /url: https://github.com/gonzalopozo/Nbamon\\n  - link \\\"View live project\\\" [ref=s1e65]:\\n    - /url: https://nbamon.gonzalopozo.dev/\\n  - paragraph [ref=s1e66]: \\\"Estado: active\\\"\\n  - text: Creado el 26/3/2026\\n  - button \\\"¡Descubre mis proyectos!\\\" [ref=s1e69]\\n  - figure [ref=s1e72]:\\n    - img \\\"Project image\\\" [ref=s1e73]\\n  - text: HoopMetrics Plataforma SaaS para análisis y visualización de estadísticas de la NBA | SaaS platform for NBA statistics analysis and visualization\\n  - paragraph [ref=s1e82]: Proyecto desarrollado con JavaScript\\n  - link \\\"View repository on GitHub\\\" [ref=s1e84]:\\n    - /url: https://github.com/gonzalopozo/HoopMetrics\\n  - link \\\"View live project\\\" [ref=s1e85]:\\n    - /url: https://hoop-metrics.vercel.app/\\n  - paragraph [ref=s1e86]: \\\"Estado: in-progress\\\"\\n  - text: Creado el 27/3/2026\\n  - button \\\"¡Descubre mis proyectos!\\\" [ref=s1e89]\\n  - figure [ref=s1e92]:\\n    - img \\\"Project image\\\" [ref=s1e93]\\n  - text: NBAMON Online multiplayer NBA-themed game. Vanilla JS + Canvas API + Express 5\\n  - paragraph [ref=s1e102]: Proyecto desarrollado con JavaScript\\n  - link \\\"View repository on GitHub\\\" [ref=s1e104]:\\n    - /url: https://github.com/gonzalopozo/Nbamon\\n  - link \\\"View live project\\\" [ref=s1e105]:\\n    - /url: https://nbamon.gonzalopozo.dev/\\n  - paragraph [ref=s1e106]: \\\"Estado: active\\\"\\n  - text: Creado el 26/3/2026\\n  - button \\\"¡Descubre mis proyectos!\\\" [ref=s1e109]\\n  - document [ref=s1e111]\\n  - alert [ref=s1e116]\\n&#96;&#96;&#96;\\n\"}]}"
 }
 ```
 User decision: **accepted**
 
-Status: **loading**
+Status: **completed**
 
 
 </details>
@@ -304,3 +285,86 @@ Status: **loading**
 <summary>Tool use: **mcp-browsermcp-user-browsermcp-browser_navigate**</summary>
 
 </details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/.cursor/projects/home-gonzalo-gonzalopozo-github-io/mcps/user-browsermcp/tools/browser_screenshot.json</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="unknown" data-tool-name="mcp-browsermcp-user-browsermcp-browser_screenshot">
+<details>
+<summary>Tool use: **mcp-browsermcp-user-browsermcp-browser_screenshot**</summary>
+
+
+Parameters:
+
+```json
+{
+  "tools": [
+    {
+      "name": "browser_screenshot",
+      "parameters": "{}",
+      "serverName": "browsermcp"
+    }
+  ]
+}
+```
+Additional data:
+
+```json
+{
+  "status": "success"
+}
+```
+Result:
+
+```json
+{
+  "result": "{\"content\":[{\"type\":\"text\",\"text\":\"Error: Failed to capture tab: image readback failed\"}]}"
+}
+```
+User decision: **accepted**
+
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="unknown" data-tool-name="mcp-browsermcp-user-browsermcp-browser_screenshot"><details>
+<summary>Tool use: **mcp-browsermcp-user-browsermcp-browser_screenshot**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+Here's what was going wrong and what we changed.
+
+## Why it wasn’t painting
+
+**Invalid Tailwind classes.** The component built strings like `` `bg-(${color})` ``, which become `bg-(--status-active)`, `bg-(--status-in-progress)`, etc.
+
+That is **not** valid Tailwind:
+
+- Utilities are resolved from **complete class names** in your source. Parentheses don’t mean “use this CSS variable” the way `bg-[var(--status-active)]` does.
+- So Tailwind never emitted real `background-color` rules for those spans. The DOM was there (nested `span`s with `h-2 w-2`), but they had **no background**, so nothing showed up.
+
+Your theme already exposes these in `globals.css` under `@theme inline` as `--color-status-active`, `--color-status-in-progress`, and `--color-status-archived`, so the matching utilities are `bg-status-active`, `bg-status-in-progress`, and `bg-status-archived`.
+
+**Wrong status → color mapping.** The old ternary mapped `archived` to `--status-in-progress` and the default (`in-progress`) to `--status-archived`. That was swapped.
+
+## What we did
+
+`status-indicator.tsx` was updated to use the theme utilities (`bg-status-active` / `bg-status-archived` / `bg-status-in-progress`), fix the mapping, wire `className` on the outer `span`, and add a small `ml-2` so the dot isn’t glued to the title.
+
+After a refresh, you should see the green/blue/amber dots next to each project title. If anything still looks off, say which card and we can tune spacing or size.
