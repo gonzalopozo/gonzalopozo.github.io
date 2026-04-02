@@ -149,7 +149,7 @@ export async function saveImageInVercelBlob(url: string): Promise<string | null>
 
     console.log("El url es parseable")
 
-    let webUrl;
+    let webUrl: URL;
     try { webUrl = new URL(url) } catch { return null };
 
     console.log("Se ha creado correctamente el objeto URL")
@@ -162,7 +162,7 @@ export async function saveImageInVercelBlob(url: string): Promise<string | null>
 
     console.log("El hostname de la página resuelve solo a IPs públicas (A y/o AAAA)");
 
-    let response;
+    let response: Response;
 
     console.log("Hacinedo fetch de la web...")
 
@@ -175,7 +175,7 @@ export async function saveImageInVercelBlob(url: string): Promise<string | null>
         return null;
     }
 
-    console.log("La web no nos intenteta redireccionar ni ha superiado el timeout de 5 segundos");
+    console.log("La web no nos intenteta redireccionar ni ha superado el timeout de 5 segundos");
 
     if (!response.ok) return null;
 
@@ -208,7 +208,7 @@ export async function saveImageInVercelBlob(url: string): Promise<string | null>
 
     console.log("El tag meta contiene un atributo content");
 
-    let ogImageNormalizedUrl;
+    let ogImageNormalizedUrl: URL;
     try { ogImageNormalizedUrl = new URL(ogImageUrl, webUrl) } catch { return null }
 
     console.log("Se ha creado correctamente el objeto URL para el link de la open-graph image");
@@ -220,6 +220,33 @@ export async function saveImageInVercelBlob(url: string): Promise<string | null>
     if (!(await assertHostnameHasOnlyPublicIps(ogImageNormalizedUrl.hostname))) return null;
 
     console.log("El hostname de la og:image resuelve solo a IPs públicas (A y/o AAAA)");
+
+    let imageResponse: Response;
+
+    console.log("Hacinedo fetch de la imagen...")
+
+    try {
+        imageResponse = await fetch(ogImageNormalizedUrl.toString(), {
+            redirect: "error",
+            signal: AbortSignal.timeout(5_000)
+        });
+    } catch {
+        return null;
+    }
+
+    console.log("El fetch de la imagen no nos intenta redireccionar ni ha superado el timeout de 5 segundos");
+
+    if (!imageResponse.ok) return null;
+
+    console.log("La respuesta del fetch de la imagen fue exitosa");
+
+    let imageResponseContentType = imageResponse.headers.get("content-type");
+    if (imageResponseContentType && imageResponseContentType.includes(";")) imageResponseContentType = imageResponseContentType.split(";")[0].trim().toLowerCase();
+    const validImageContentTypes = ["image/png", "image/jpg", "image/jpeg", "image/webp", "image/gif", "image/avif"];
+    if (!(validImageContentTypes.includes(imageResponseContentType!.toLowerCase()))) return null;
+
+    const imageAsBuffer = await imageResponse.arrayBuffer();
+    if (imageAsBuffer.byteLength > (5 * 1024 * 1024)) return null;
 
     return null;
 }
