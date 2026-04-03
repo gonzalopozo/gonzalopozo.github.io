@@ -50,4 +50,16 @@ _**Agent (composer-2-fast)**_
 
 Funciona en JavaScript: en cada rama se evalúa una asignación con `+=` y el resultado del ternario es el valor asignado (que no usas).
 
-No es una forma recomendable de escribirlo porque el ternario aquí solo sirv
+No es una forma recomendable de escribirlo porque el ternario aquí solo sirve para elegir *qué* concatenar; es más claro poner esa elección en el lado derecho:
+
+```ts
+zerosFiller += i === zeroGroupsToAdd - 1 ? "0" : "0:";
+```
+
+Así evitas dos `+=` repetidos y dejas claro que solo cambia el fragmento de string.
+
+**Nota:** En la rama `true` e `false` los nombres sugieren “último grupo vs no último”, pero **ambas** añaden `"0"`; la diferencia es el `":"` extra en los no finales. El refactor de arriba mantiene exactamente ese comportamiento.
+
+**Sobre el bloque entero de IPv6**
+
+`leftGroupsCount` y `rightGroupsCount` usan `.length` de la cadena, no el número de grupos hex separados por `:`. Para lógica de expansión de `::` suele hacer falta contar grupos (p. ej. con `split(":")` y filtrar vacíos) o usar una API que ya devuelva la dirección normalizada. Eso es independiente del estilo del ternario en la 53.
