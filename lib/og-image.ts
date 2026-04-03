@@ -137,6 +137,52 @@ async function assertHostnameHasOnlyPublicIps(hostname: string): Promise<boolean
     return v4.length > 0 || v6.length > 0;
 }
 
+function isPng(uInt8Array: Uint8Array): boolean {
+    return (
+        uInt8Array[0] === 0x89 &&
+        uInt8Array[1] === 0x50 &&
+        uInt8Array[2] === 0x4E &&
+        uInt8Array[3] === 0x47
+    );
+}
+
+function isJpeg(uInt8Array: Uint8Array): boolean {
+    return (
+        uInt8Array[0] === 0xFF &&
+        uInt8Array[1] === 0xD8 &&
+        uInt8Array[2] === 0xFF 
+    );
+}
+
+function isWebP(uInt8Array: Uint8Array): boolean {
+    return (
+        uInt8Array[0] === 0x52 &&
+        uInt8Array[1] === 0x49 &&
+        uInt8Array[2] === 0x46 && 
+        uInt8Array[3] === 0x46 &&  
+        uInt8Array[8] === 0x57 &&  
+        uInt8Array[9] === 0x45 &&  
+        uInt8Array[10] === 0x42 &&  
+        uInt8Array[11] === 0x50  
+    );
+}
+
+function isGif(uInt8Array: Uint8Array): boolean {
+    return (
+        uInt8Array[0] === 0x47 &&
+        uInt8Array[1] === 0x49 &&
+        uInt8Array[2] === 0x46 
+    );
+}
+
+function isAvif(uInt8Array: Uint8Array): boolean {
+    return (
+        uInt8Array[4] === 0x66 &&
+        uInt8Array[5] === 0x74 &&
+        uInt8Array[6] === 0x79 &&
+        uInt8Array[7] === 0x70
+    );
+}
 
 /**
  * Guarda la imagen en el storage (Vercel Blob)
@@ -245,9 +291,25 @@ export async function saveImageInVercelBlob(url: string): Promise<string | null>
     const validImageContentTypes = ["image/png", "image/jpg", "image/jpeg", "image/webp", "image/gif", "image/avif"];
     if (!(validImageContentTypes.includes(imageResponseContentType!.toLowerCase()))) return null;
 
+    console.log("El content-type de la respuestad de la imagen es un tipo valido de imagen");
+
     const imageAsBuffer = await imageResponse.arrayBuffer();
     if (imageAsBuffer.byteLength > (5 * 1024 * 1024)) return null;
 
+    console.log("La imagen no supera las 5MB");
+
+    const imageAsUint8Array = new Uint8Array(imageAsBuffer);
+
+    if (
+        !isPng(imageAsUint8Array) &&
+        !isJpeg(imageAsUint8Array) &&
+        !isWebP(imageAsUint8Array) &&
+        !isGif(imageAsUint8Array) &&
+        !isAvif(imageAsUint8Array)
+    ) return null;
+
+
+    // imageAsUint8Array[0]
     return null;
 }
 
