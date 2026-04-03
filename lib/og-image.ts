@@ -2,6 +2,7 @@
 import { URL } from "url";
 import { resolve4, resolve6 } from "dns/promises";
 import * as cheerio from "cheerio";
+import { PutBlobResult, put } from '@vercel/blob';
 
 /**
  * Retorna true/false dependiendo de si la dirección IP es invalida o valida respectivamente.
@@ -189,7 +190,7 @@ function isAvif(uInt8Array: Uint8Array): boolean {
  * @param url El url de la página la cual queremos obtener su open-graph image
  * @returns El string con la dirección de la imagen guarda en nuestro storage (Vercel Blob) o null si falla
  */
-export async function saveImageInVercelBlob(url: string): Promise<string | null> {
+export async function saveImageInVercelBlob(url: string, projectId: number): Promise<string | null> {
     console.log("URL original:", url)
     if (!URL.canParse(url)) return null;
 
@@ -291,7 +292,7 @@ export async function saveImageInVercelBlob(url: string): Promise<string | null>
     const validImageContentTypes = ["image/png", "image/jpg", "image/jpeg", "image/webp", "image/gif", "image/avif"];
     if (!(validImageContentTypes.includes(imageResponseContentType!.toLowerCase()))) return null;
 
-    console.log("El content-type de la respuestad de la imagen es un tipo valido de imagen");
+    console.log("El content-type de la respuesta de la imagen es un tipo valido de imagen");
 
     const imageAsBuffer = await imageResponse.arrayBuffer();
     if (imageAsBuffer.byteLength > (5 * 1024 * 1024)) return null;
@@ -308,9 +309,37 @@ export async function saveImageInVercelBlob(url: string): Promise<string | null>
         !isAvif(imageAsUint8Array)
     ) return null;
 
+    const typeCheckers = [isPng, isJpeg, isWebP, isGif, isAvif];
+
+    let imageExtension: string | undefined = undefined;
+    for (const typeChecker of typeCheckers) {
+        if (typeChecker(imageAsUint8Array)) {
+            imageExtension = typeChecker.name.slice(2).toLowerCase();
+            break;
+        }
+    }
+
+    if (!imageExtension) return null;
+
+    console.log("La imagen es comprobando con los magic bytes de un tipo valido de imagen");
+
+    const timestamp = Date.now();
+    let imageUploaded: PutBlobResult;
+    try {
+        imageUploaded = await put(`og-images/${projectId}-${timestamp}.${imageExtension}`, imageAsBuffer, {
+            access: "public",
+            contentType: imageResponseContentType!,
+            cacheControlMaxAge: 31536000,
+            addRandomSuffix: false,
+        })
+    } catch {
+        return null;
+    }
+
+    console.log("La imagen se ha subido correctamente a Vercel Blob");
 
     // imageAsUint8Array[0]
     return null;
 }
 
-void saveImageInVercelBlob("https://nbamon.gonzalopozo.dev/");
+// void saveImageInVercelBlob("https://nbamon.gonzalopozo.dev/");
