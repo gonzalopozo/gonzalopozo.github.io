@@ -172,3 +172,354 @@ if (
 What went wrong before: using **`||` between `!isPng`, `!isJpeg`, …** means “return null if **any** format does **not** match,” which is true for every real file (a PNG is never also a JPEG), so you always returned `null`.
 
 Using **`&&` between the negations** (or one `!(…||…||…)` ) means “return null only when **every** format check fails,” which is what you want.
+
+---
+
+_**User**_
+
+@lib/og-image.ts:315-317 Aquí, he de añadir yo la extensión del archivo en el nombre?
+
+---
+
+_**Agent (composer-2-fast)**_
+
+<think><details><summary>Thought Process</summary>
+**Answering Vercel Blob question**
+
+I'm responding to the user's question about Vercel Blob file extensions, clarifying that adding extensions is good practice for proper MIME type detection. I'm checking the `@vercel/blob` `put()` API to see if it accepts `contentType` option for setting MIME type. </details></think>
+
+_**Agent (composer-2-fast)**_
+
+
+Sí. Conviene que el **pathname del blob** incluya la extensión (`.png`, `.jpg`, `.jpeg`, `.webp`, `.gif`, `.avif`) por claridad en la URL, por convención y porque muchas herramientas y caches asocian tipo a la extensión.
+
+Ahora mismo tienes `...${timestamp}.` — ese **punto suelto** al final no aporta nada útil; debería ser algo como `` `og-images/${projectId}-${timestamp}.png` `` (u otra extensión coherente con el formato real).
+
+Lo ideal es **derivar la extensión del mismo criterio que usaste en magic bytes** (por ejemplo, si pasó `isPng` → `.png`, si `isJpeg` → `.jpg` o `.jpeg`, etc.), para que nombre y contenido coincidan.
+
+Además, en `put()` de `@vercel/blob` puedes (y suele ser buena idea) pasar **`contentType`** en las opciones con el MIME correcto (`image/png`, `image/jpeg`, …), para que el objeto se sirva con el tipo adecuado aunque alguien mire solo los headers. La extensión y el `contentType` se refuerzan mutuamente.
+
+---
+
+_**User**_
+
+@lib/og-image.ts:312-320 Qué te parece mi approach para obtener la extensión del archivo? @lib/og-image.ts 
+
+---
+
+_**Agent (composer-2-fast)**_
+
+
+Revisando el archivo completo para ver cómo quedó `imageExtension` y el flujo.
+
+
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/lib/og-image.ts</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+<think><details><summary>Thought Process</summary>
+**Reviewing user approach**
+
+The user's approach incorrectly uses `typeChecker.name.toLowerCase()` which transforms function names like 'isPng' into 'ispng' instead of checking file extensions. </details></think>
+
+_**Agent (composer-2-fast)**_
+
+
+La idea de **recorrer los mismos checkers que ya validaste** y asignar metadatos en el primer acierto es buena: evitas duplicar la lógica de firmas en otro sitio.
+
+El problema está en **`typeChecker.name`**:
+
+1. **No te da la extensión.** Para `isPng`, `name` es `"isPng"` → `toLowerCase()` → **`"ispng"`**, no `"png"`. El archivo quedaría algo como `...123.ispng`, que no es una extensión estándar.
+
+2. **MIME:** Si montaras `image/${name}`, saldría `image/ispng`, no `image/png`.
+
+3. **Producción:** Con bundlers/minificadores, las funciones a veces pasan a llamarse `a`, `b`, etc., y **`name` deja de ser estable**; ahí el enfoque se rompe sin que lo veas en dev.
+
+Por eso suele ir mejor **emparejar explícitamente** checker ↔ extensión (y opcionalmente MIME), por ejemplo:
+
+- Un array de tuplas `{ check: (u: Uint8Array) => boolean; ext: string }`, o  
+- Un solo helper que devuelva `{ ext, mime } | null` tras las mismas comprobaciones.
+
+Así el nombre del archivo y `contentType` salen de datos tuyos, no del nombre de la función.
+
+**Resumen:** El flujo (bucle + `break` cuando coincide) está bien; **no uses `Function.name` como fuente de `.png` / `image/png`**. Sustitúyelo por un mapeo explícito a `png`, `jpg`, `webp`, `gif`, `avif` (y MIME si lo necesitas).
+
+---
+
+_**User**_
+
+Y ahora?
+
+---
+
+_**Agent (composer-2-fast)**_
+
+
+Revisando el archivo actualizado.
+
+
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/lib/og-image.ts</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+<think><details><summary>Thought Process</summary>
+**Fixing extension logic**
+
+I found that the extension logic uses `slice(0, 1)` which incorrectly takes only the first character, causing all extensions to be '.i'. I fixed the extension logic by changing `slice(0, 1)` to `slice(2)` to correctly extract file extensions. </details></think>
+
+_**Agent (composer-2-fast)**_
+
+
+Ahora mismo **no está bien**: usas `slice(0, 1)`, que solo toma **el primer carácter** del nombre de la función.
+
+- `isPng` → `"i"`
+- `isJpeg` → `"i"`
+- …todas empiezan por `i` → la extensión sería siempre **`.i`**, no `.png`, `.jpg`, etc.
+
+Seguramente quisiste quitar el prefijo `is`: eso sería algo como tomar desde el índice 2, p. ej. `"isPng".slice(2)` → `"Png"` → `toLowerCase()` → `"png"`.
+
+Aun así, **seguir dependiendo de `name` + `slice`** es frágil (minificación puede cambiar nombres). Lo sólido es lo que comentamos: **array de tuplas** `{ check, ext }` o un único helper que devuelva la extensión (y MIME) de forma explícita.
+
+Siguiente paso práctico: sustituir ese bucle por un mapeo explícito, por ejemplo:
+
+```ts
+const FORMATS: { test: (u: Uint8Array) => boolean; ext: string }[] = [
+  { test: isPng, ext: "png" },
+  { test: isJpeg, ext: "jpg" },
+  { test: isWebP, ext: "webp" },
+  { test: isGif, ext: "gif" },
+  { test: isAvif, ext: "avif" },
+];
+// for...of, primer match → ext
+```
+
+Así la extensión no depende del nombre de la función ni de cortar strings.
+
+También: `put()` devuelve una Promise; deberías **`await put(...)`** y usar la URL devuelta en el `return`, no dejar `return null` al final si quieres que la función entregue la URL del blob. Si quieres, en el siguiente mensaje pega el bloque completo tras tus cambios y lo revisamos línea a línea.
+
+---
+
+_**User**_
+
+Y ahora?
+
+---
+
+_**Agent (composer-2-fast)**_
+
+
+
+
+
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/lib/og-image.ts</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+<think><details><summary>Thought Process</summary>
+**Checking slice behavior**
+
+I verified that `"isPng".slice(2, -1)` returns "Pn" because it slices from index 2 up to (but not including) the last character. I confirmed that `"isPng".slice(2, -1)` returns "Pn" by tracing the indices and understanding how negative end indices work in slice. I realized my earlier slice calculation was wrong - 'isPng'.slice(2, -1) actually returns 'Pn', not 'png' as expected. I fixed the slice logic to use `slice(2)` for getting everything after 'is', which correctly returns 'png'. I found that `slice(2, -1)` incorrectly strips the last character; `slice(2)` is needed to get everything after 'is' without modifying the final character. </details></think>
+
+_**Agent (composer-2-fast)**_
+
+
+Todavía **no**: `slice(2, -1)` no hace lo que buscas.
+
+En JavaScript, el **segundo argumento negativo** cuenta desde el final del string. `slice(2, -1)` significa: desde el índice 2 **hasta el penúltimo carácter** (excluye el último).
+
+Ejemplos:
+
+| `name`   | `slice(2, -1)` | Resultado |
+|----------|----------------|-----------|
+| `"isPng"`  | quita `is` y quita la `g` | `"Pn"` ❌ (quieres `png`) |
+| `"isJpeg"` | | `"Jpe"` ❌ |
+| `"isWebP"` | | `"Web"` ❌ |
+
+Es decir, no obtienes la extensión correcta; además **sigue dependiendo de `Function.name`** (minify).
+
+**Qué hacer:** usa el mapeo explícito que comentamos (array de `{ test, ext }`) y listo. Es corto, claro y no se rompe en build.
+
+Dos detalles que siguen pendientes en el fragmento:
+
+1. **`await put(...)`** — `put` es asíncrono; sin `await` no tienes la URL ni manejas errores.
+2. **`return null` fijo** — cuando termines el upload, deberías **devolver la URL** del blob (o el valor que quieras exponer), no `null` si todo fue bien.
+
+Si quieres, pega otra vez el bloque cuando tengas el array `FORMATS` / tuplas y el `await put`, y lo revisamos.
+
+---
+
+_**User**_
+
+Y ahora?
+
+---
+
+_**Agent (composer-2-fast)**_
+
+
+
+
+
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/lib/og-image.ts</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/lib/og-image.ts</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+
+Ahora mismo **empeora**: `slice(2, 0)` en JavaScript devuelve **string vacío** (el índice final `0` va **antes** que el inicio `2`, así que el resultado es `""`).
+
+- `imageExtension` queda `""`
+- `if (!imageExtension)` es verdadero → **sales con `return null`** aunque los magic bytes fueran correctos
+
+Es decir, con este código **casi nunca** llegarías al `put` con una extensión válida.
+
+**Qué hacer:** deja de derivar la extensión con `name` + `slice`. Usa algo explícito, por ejemplo:
+
+```ts
+const FORMATS = [
+  { test: isPng, ext: "png" },
+  { test: isJpeg, ext: "jpg" },
+  { test: isWebP, ext: "webp" },
+  { test: isGif, ext: "gif" },
+  { test: isAvif, ext: "avif" },
+] as const;
+
+let imageExtension: string | undefined;
+for (const { test, ext } of FORMATS) {
+  if (test(imageAsUint8Array)) {
+    imageExtension = ext;
+    break;
+  }
+}
+```
+
+Luego **`await put(...)`** y **devuelve la URL** que devuelve `put`, no `return null` si todo fue bien.
+
+Referencia rápida de `slice`: el segundo índice debe ser **mayor** que el primero; `slice(2)` sin segundo argumento es “desde el 2 hasta el final” (eso sería lo correcto si quisieras `Png` desde `"isPng"`, pero el mapeo explícito sigue siendo más seguro).
+
+---
+
+_**User**_
+
+Y ahora?
+
+---
+
+_**Agent (composer-2-fast)**_
+
+
+
+
+
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/lib/og-image.ts</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2">
+<details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/lib/og-image.ts</summary>
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="read" data-tool-name="read_file_v2"><details>
+<summary>Tool use: **read_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+<think><details><summary>Thought Process</summary>
+**Checking function names**
+
+I verified that slicing function names from index 2 produces correct extensions in development. </details></think>
+
+_**Agent (composer-2-fast)**_
+
+
+Esta versión **ya da extensiones correctas** si los nombres de las funciones siguen siendo `isPng`, `isJpeg`, `isWebP`, `isGif`, `isAvif`:
+
+- `slice(2, typeChecker.name.length)` es lo mismo que **`slice(2)`**: quitas el prefijo `is` y el resto en minúsculas coincide con `png`, `jpeg`, `webp`, `gif`, `avif`.
+
+Detalles:
+
+1. **Minificación** — En un build que renombre funciones a `a`, `b`, etc., `name.slice(2)` deja de ser fiable. Para algo que va a producción, el array `{ test, ext }` sigue siendo la opción más segura.
+
+2. **`put` sin `await`** — Sigue siendo un bug: necesitas **`await put(...)`** y usar el objeto devuelto (p. ej. `.url`).
+
+3. **`return null` al final** — Si el subida va bien, deberías **devolver la URL pública del blob**, no `null`.
+
+4. **Redundancia** — Puedes escribir solo `typeChecker.name.slice(2).toLowerCase()`; el segundo argumento de `slice` no hace falta.
+
+En resumen: **la idea de quitar `is` con `slice(2)` ya cuadra con los nombres actuales**; falta cerrar el flujo async/retorno y, si quieres blindarte al minifier, el mapeo explícito a `ext`.
