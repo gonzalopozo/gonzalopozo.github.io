@@ -6,6 +6,8 @@ import { and, eq, gte, lte, ne, sql } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { ProjectStatus } from "@/lib/types";
 import { revalidatePath } from "next/cache";
+import { getServerSession } from "@/lib/server-session";
+import { deleteOldImageInVercelBlob, saveImageInVercelBlob } from "@/lib/og-image";
 
 interface ProjectSkill {
     projectId: number,
@@ -38,12 +40,12 @@ export async function createProject(formData: FormData) {
 
     const projectSkillsInsert: ProjectSkill[] = projectSkillsData.map(skill => {
         return { projectId: projectIdData[0].insertedId, skillId: skill }
-    }) 
+    })
 
     console.log("projectSkillsInsert", projectSkillsInsert);
 
     await db.insert(projectSkills).values(projectSkillsInsert);
-    
+
     redirect("/dashboard/projects")
 }
 
@@ -84,7 +86,7 @@ export async function updateProject(id: number, formData: FormData) {
 
         if (!alreadyExists) {
             await db.insert(projectSkills).values(skillToReview);
-        } 
+        }
     }
 
     // Delete skills that were removed
@@ -95,9 +97,9 @@ export async function updateProject(id: number, formData: FormData) {
 
         if (!stillExists) {
             await db.delete(projectSkills).where(and(eq(projectSkills.projectId, id), eq(projectSkills.skillId, formerSkill.skillId)));
-        } 
+        }
     }
-    
+
 
     redirect("/dashboard/projects")
 }
@@ -132,4 +134,35 @@ export async function updateProjectOrder(projectId: number, newOrder: number): P
     revalidatePath("/dashboard/projects");
 
     return project.title;
+}
+
+export async function refreshProjectOgImage(projectId: number) {
+    const session = await getServerSession();
+    if (!session) return null;
+
+    const [project] = await db
+        .select({ url: projects.url, ogImageUrl: projects.ogImageUrl })
+        .from(projects)
+        .where(eq(projects.id, projectId));
+
+    if (!project.url) throw Error("Can't fetch OG image from nothing");
+
+    const uploadedImageUrl = await saveImageInVercelBlob(project.url, projectId);
+
+    if (!uploadedImageUrl) return null;
+
+    try {
+        await db.update(projects).set({ ogImageUrl: uploadedImageUrl }).where(eq(projects.id, projectId));
+    } catch (e) {
+        console.log(e);
+        return null;
+    }
+
+    const previousOgUrl = project.ogImageUrl;
+    if (previousOgUrl && previousOgUrl !== uploadedImageUrl) {
+        await deleteOldImageInVercelBlob(previousOgUrl);
+    }
+
+    revalidatePath("/");
+    revalidatePath("/dashboard/projects");
 }

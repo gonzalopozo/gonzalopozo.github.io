@@ -217,7 +217,7 @@ function isAvif(uInt8Array: Uint8Array): boolean {
  * @param url El url de la página la cual queremos obtener su open-graph image
  * @returns El string con la dirección de la imagen guarda en nuestro storage (Vercel Blob) o null si falla
  */
-export async function saveImageInVercelBlob(url: string, projectId: number, oldImage?: string): Promise<string | null> {
+export async function saveImageInVercelBlob(url: string, projectId: number): Promise<string | null> {
     console.log("URL original:", url)
     if (!URL.canParse(url)) return null;
 
@@ -337,12 +337,18 @@ export async function saveImageInVercelBlob(url: string, projectId: number, oldI
         !isAvif(imageAsUint8Array)
     ) return null;
 
-    const typeCheckers = [isPng, isJpeg, isWebP, isGif, isAvif];
+    const formatByMagicBytes: Array<{ test: (b: Uint8Array) => boolean; ext: string }> = [
+        { test: isPng, ext: "png" },
+        { test: isJpeg, ext: "jpeg" },
+        { test: isWebP, ext: "webp" },
+        { test: isGif, ext: "gif" },
+        { test: isAvif, ext: "avif" },
+    ];
 
-    let imageExtension: string | undefined = undefined;
-    for (const typeChecker of typeCheckers) {
-        if (typeChecker(imageAsUint8Array)) {
-            imageExtension = typeChecker.name.slice(2).toLowerCase();
+    let imageExtension: string | undefined;
+    for (const { test, ext } of formatByMagicBytes) {
+        if (test(imageAsUint8Array)) {
+            imageExtension = ext;
             break;
         }
     }
@@ -366,6 +372,10 @@ export async function saveImageInVercelBlob(url: string, projectId: number, oldI
 
     console.log("La imagen se ha subido correctamente a Vercel Blob");
 
+    return imageUploaded.url;
+}
+
+export async function deleteOldImageInVercelBlob(oldImage: string) {
     if (oldImage) {
         try {
             await del(oldImage);
@@ -373,6 +383,4 @@ export async function saveImageInVercelBlob(url: string, projectId: number, oldI
             console.log("Borrado de la imagen antigua fallido", e)
         }
     }
-
-    return imageUploaded.url;
 }
