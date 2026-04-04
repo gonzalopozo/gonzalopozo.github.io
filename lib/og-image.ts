@@ -2,7 +2,7 @@
 import { URL } from "url";
 import { resolve4, resolve6 } from "dns/promises";
 import * as cheerio from "cheerio";
-import { PutBlobResult, put } from '@vercel/blob';
+import { PutBlobResult, del, put } from '@vercel/blob';
 
 /**
  * Retorna true/false dependiendo de si la dirección IP es invalida o valida respectivamente.
@@ -190,7 +190,7 @@ function isAvif(uInt8Array: Uint8Array): boolean {
  * @param url El url de la página la cual queremos obtener su open-graph image
  * @returns El string con la dirección de la imagen guarda en nuestro storage (Vercel Blob) o null si falla
  */
-export async function saveImageInVercelBlob(url: string, projectId: number): Promise<string | null> {
+export async function saveImageInVercelBlob(url: string, projectId: number, oldImage?: string): Promise<string | null> {
     console.log("URL original:", url)
     if (!URL.canParse(url)) return null;
 
@@ -338,8 +338,13 @@ export async function saveImageInVercelBlob(url: string, projectId: number): Pro
 
     console.log("La imagen se ha subido correctamente a Vercel Blob");
 
-    // imageAsUint8Array[0]
-    return null;
-}
+    if (oldImage) {
+        try {
+            await del(oldImage);
+        } catch (e) {
+            console.log("Borrado de la imagen antigua fallido", e)
+        }
+    }
 
-// void saveImageInVercelBlob("https://nbamon.gonzalopozo.dev/");
+    return imageUploaded.url;
+}
