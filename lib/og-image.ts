@@ -1,4 +1,4 @@
-// import "server-only"
+import "server-only"
 import { URL } from "url";
 import { resolve4, resolve6 } from "dns/promises";
 import * as cheerio from "cheerio";
@@ -176,13 +176,40 @@ function isGif(uInt8Array: Uint8Array): boolean {
     );
 }
 
+/** ISO BMFF first box: `ftyp`; major or compatible brands must be `avif` or `avis`. */
+const FOURCC_FTYP = [0x66, 0x74, 0x79, 0x70] as const;
+const BRAND_AVIF = [0x61, 0x76, 0x69, 0x66] as const;
+const BRAND_AVIS = [0x61, 0x76, 0x69, 0x73] as const;
+
+function fourccEqual(buf: Uint8Array, offset: number, fourcc: readonly number[]): boolean {
+    for (let i = 0; i < 4; i++) {
+        if (buf[offset + i] !== fourcc[i]) return false;
+    }
+    return true;
+}
+
+function isAvifOrAvisBrand(buf: Uint8Array, offset: number): boolean {
+    return fourccEqual(buf, offset, BRAND_AVIF) || fourccEqual(buf, offset, BRAND_AVIS);
+}
+
 function isAvif(uInt8Array: Uint8Array): boolean {
-    return (
-        uInt8Array[4] === 0x66 &&
-        uInt8Array[5] === 0x74 &&
-        uInt8Array[6] === 0x79 &&
-        uInt8Array[7] === 0x70
-    );
+    if (uInt8Array.length < 16) return false;
+    if (!fourccEqual(uInt8Array, 4, FOURCC_FTYP)) return false;
+
+    const boxSize = new DataView(
+        uInt8Array.buffer,
+        uInt8Array.byteOffset,
+        uInt8Array.byteLength
+    ).getUint32(0, false);
+
+    if (boxSize < 16 || boxSize > uInt8Array.length) return false;
+
+    if (isAvifOrAvisBrand(uInt8Array, 8)) return true;
+
+    for (let i = 16; i + 4 <= boxSize; i += 4) {
+        if (isAvifOrAvisBrand(uInt8Array, i)) return true;
+    }
+    return false;
 }
 
 /**
@@ -289,8 +316,9 @@ export async function saveImageInVercelBlob(url: string, projectId: number, oldI
 
     let imageResponseContentType = imageResponse.headers.get("content-type");
     if (imageResponseContentType && imageResponseContentType.includes(";")) imageResponseContentType = imageResponseContentType.split(";")[0].trim().toLowerCase();
+    if (!imageResponseContentType) return null;
     const validImageContentTypes = ["image/png", "image/jpg", "image/jpeg", "image/webp", "image/gif", "image/avif"];
-    if (!(validImageContentTypes.includes(imageResponseContentType!.toLowerCase()))) return null;
+    if (!(validImageContentTypes.includes(imageResponseContentType.toLowerCase()))) return null;
 
     console.log("El content-type de la respuesta de la imagen es un tipo valido de imagen");
 
