@@ -475,4 +475,13 @@ _**Agent (composer-2-fast)**_
 
 **WebP** is Google’s **image** format (lossy/lossless, animation, etc.). On disk, a **WebP file is packaged inside a RIFF container**, not as raw image bytes from byte 0. So the structure is roughly:
 
-1. **`RIFF
+1. **`RIFF`** — marks “this is RIFF.”
+2. Next 4 bytes — size of the rest of the file chunk (per RIFF rules).
+3. Then a **four-character code** that identifies the **specific** format: for WebP that must be **`WEBP`** — bytes `0x57, 0x45, 0x42, 0x50` at **offset 8** in the standard WebP layout.
+
+So:
+
+- **RIFF** = generic box/wrapper.
+- **WEBP** = “this RIFF file is specifically WebP, not WAV or something else.”
+
+That’s why you check **both**: `RIFF` alone matches other file types; `RIFF` + `WEBP` at 8–11 is what pins it to WebP.

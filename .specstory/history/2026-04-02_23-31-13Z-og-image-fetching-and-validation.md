@@ -23,7 +23,6 @@ If none match, return null. This catches an SVG disguised with a fake Content-Ty
 
 _**Agent (composer-2-fast)**_
 
-
 Reviewing `lib/og-image.ts` and the transcript for requirement 4g. Reading both files.
 
 
@@ -68,7 +67,6 @@ I'm adding null checks for Content-Type headers to prevent runtime errors from m
 I'm fixing the image type validation to handle MIME type variations and null content-types properly. </details></think>
 
 _**Agent (composer-2-fast)**_
-
 
 Here’s a focused review of **step 4g** in `lib/og-image.ts` against the guide in the transcript (fetch image with `redirect: "error"`, 5s timeout, allowlisted `Content-Type`, `arrayBuffer()`, max 5 MB). No code changes.
 
@@ -125,7 +123,6 @@ Thoughts on my approach to fix "1. Content-Type is rarely the raw subtype only"?
 
 _**Agent (composer-2-fast)**_
 
-
 Checking how you're handling `Content-Type` in `lib/og-image.ts`.
 
 
@@ -151,7 +148,6 @@ _**Agent (composer-2-fast)**_
 I'm handling Content-Type parsing edge cases by splitting on semicolons and taking the media type part. I'm trimming whitespace from Content-Type media types to prevent parsing failures. I'm handling null/undefined Content-Type values to prevent runtime errors. </details></think>
 
 _**Agent (composer-2-fast)**_
-
 
 Your direction is right: **take the part before the first `;`** so parameters like `charset` don’t break the allowlist.
 

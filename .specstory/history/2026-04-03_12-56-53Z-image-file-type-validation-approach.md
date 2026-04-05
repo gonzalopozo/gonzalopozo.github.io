@@ -8,15 +8,22 @@ _**User**_
 
 **DON'T EDIT MY CODE**
 
-Check my approach on @lib/og-image.ts to solve "4h. Validate magic bytes
-Convert the ArrayBuffer to a Uint8Array (or Buffer).
-Check the first bytes against known signatures:
-PNG: bytes 0-3 are [0x89, 0x50, 0x4E, 0x47]
-JPEG: bytes 0-2 are [0xFF, 0xD8, 0xFF]
-WebP: bytes 0-3 are [0x52, 0x49, 0x46, 0x46] (RIFF) and bytes 8-11 are [0x57, 0x45, 0x42, 0x50] (WEBP)
-GIF: bytes 0-2 are [0x47, 0x49, 0x46] (GIF)
-AVIF: bytes 4-7 are [0x66, 0x74, 0x79, 0x70] (ftyp) — this is actually the ISOBMFF container check
-If none match, return null. This catches an SVG disguised with a fake Content-Type." from @\home\gonzalo\.cursor\projects\home-gonzalo-gonzalopozo-github-io\agent-transcripts\8cdd6527-36ac-42b1-91c3-de3e1e1be445\8cdd6527-36ac-42b1-91c3-de3e1e1be445.jsonl 
+Check my approach on @lib/og-image.ts to solve "4i. Upload to Vercel Blob
+Use put() from @vercel/blob.
+For the filename, use something like og-images/{projectId}-{timestamp}.{extension}. The timestamp makes each upload a unique URL (immutable caching).
+Set access: "public".
+The put() function returns an object with a url property — that's your final CDN URL.
+What to think about:
+
+put() accepts a Buffer or ArrayBuffer as the body. You already have the buffer from step 4g.
+Set cacheControlMaxAge to a high value (e.g. 31536000 = 1 year) since the URL is unique per upload.
+addRandomSuffix: false if you're already building a unique filename with the timestamp.
+4j. Delete the old blob (cleanup)
+If the project already had an ogImageUrl (from a previous upload), delete the old blob to avoid orphaned files.
+Use del() from @vercel/blob with the old URL.
+Wrap in try-catch — if deletion fails, it's not critical.
+4k. Return the new URL
+Return the url from put()." from @\home\gonzalo\.cursor\projects\home-gonzalo-gonzalopozo-github-io\agent-transcripts\8cdd6527-36ac-42b1-91c3-de3e1e1be445\8cdd6527-36ac-42b1-91c3-de3e1e1be445.jsonl 
 
 ---
 
