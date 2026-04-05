@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
     turbopackFileSystemCacheForBuild: true,
   },
   images: {
-    remotePatterns: [new URL('https://placehold.co/**')]
+    remotePatterns: [new URL(`${process.env.BLOB_PUBLIC_HOSTNAME}/**`)]
   }
 };
 
