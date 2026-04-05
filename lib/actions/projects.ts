@@ -188,7 +188,7 @@ export async function updateProjectOrder(projectId: number, newOrder: number): P
     return project.title;
 }
 
-export async function refreshProjectOgImage(projectId: number) {
+export async function refreshProjectOgImage(projectId: number): Promise<void | null> {
     const session = await getServerSession();
     if (!session) return null;
 

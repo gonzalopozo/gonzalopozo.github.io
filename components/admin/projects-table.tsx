@@ -36,7 +36,7 @@ function SortableRow({ children, id, index }: { children: ReactNode; id: number,
 interface ProjectsTableProps {
     projects: ProjectInfo[];
     onDelete: (id: number) => void;
-    refreshOgImage: (id: number) => void;
+    refreshOgImage: (id: number) => Promise<void | null>;
 }
 
 function formatDate(date: Date) {
@@ -188,10 +188,21 @@ export function ProjectsTable({ projects: serverProjects, onDelete, refreshOgIma
                             <TableCell className="text-right">
                                 <div className="flex items-center justify-end gap-1">
                                     <Button
-                                        onClick={() => refreshOgImage(project.id)}
+                                        onClick={async () => {
+                                            try {
+                                                const result = await refreshOgImage(project.id);
+                                                if (result === null) {
+                                                    toast.error("No se pudo actualizar la imagen Open Graph");
+                                                    return;
+                                                }
+                                                toast.success("Imagen Open Graph actualizada");
+                                            } catch (e: unknown) {
+                                                toast.error(e instanceof Error ? e.message : "No se pudo actualizar la imagen Open Graph");
+                                            }
+                                        }}
                                         variant="ghost"
                                         size="sm"
-                                        className="gap-1.5"
+                                        className="gap-1.5 cursor-pointer"
                                     >
                                         <RxUpdate className="size-3.5" />
                                     </Button>
