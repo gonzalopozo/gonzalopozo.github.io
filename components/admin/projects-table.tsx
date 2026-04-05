@@ -10,7 +10,7 @@ import Link from "next/link";
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { useDroppable, DragDropProvider } from '@dnd-kit/react';
 import { isSortable, useSortable } from '@dnd-kit/react/sortable';
-import { RxDragHandleDots2 } from "react-icons/rx";
+import { RxDragHandleDots2, RxUpdate } from "react-icons/rx";
 import { updateProjectOrder } from "@/lib/actions/projects";
 import { toast } from "sonner";
 
@@ -36,6 +36,7 @@ function SortableRow({ children, id, index }: { children: ReactNode; id: number,
 interface ProjectsTableProps {
     projects: ProjectInfo[];
     onDelete: (id: number) => void;
+    refreshOgImage: (id: number) => void;
 }
 
 function formatDate(date: Date) {
@@ -64,7 +65,7 @@ function getStatusLabel(status: string): string {
     return labels[status] || status;
 }
 
-export function ProjectsTable({ projects: serverProjects, onDelete }: ProjectsTableProps) {
+export function ProjectsTable({ projects: serverProjects, onDelete, refreshOgImage }: ProjectsTableProps) {
     const [projects, setProjects] = useState(serverProjects);
     const { ref } = useDroppable({ id: 'droppable' });
 
@@ -186,6 +187,14 @@ export function ProjectsTable({ projects: serverProjects, onDelete }: ProjectsTa
                             </TableCell>
                             <TableCell className="text-right">
                                 <div className="flex items-center justify-end gap-1">
+                                    <Button
+                                        onClick={() => refreshOgImage(project.id)}
+                                        variant="ghost"
+                                        size="sm"
+                                        className="gap-1.5"
+                                    >
+                                        <RxUpdate className="size-3.5" />
+                                    </Button>
                                     <Button variant="ghost" size="sm" asChild>
                                         <Link
                                             href={`/dashboard/projects/${project.id}/edit`}

@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ProjectsTable } from "@/components/admin/projects-table";
-import { deleteProject } from "@/lib/actions/projects";
+import { deleteProject, refreshProjectOgImage } from "@/lib/actions/projects";
 import { Plus, FolderKanban } from "lucide-react";
 import Link from "next/link";
 import { getProjects } from "@/lib/queries/projects";
@@ -54,7 +54,7 @@ export default async function ProjectsDashboardPage() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <ProjectsTable projects={projectsData} onDelete={deleteProject} />
+                        <ProjectsTable projects={projectsData} onDelete={deleteProject} refreshOgImage={refreshProjectOgImage} />
                     </CardContent>
                 </Card>
             )}
