@@ -157,6 +157,12 @@ export async function updateProject(id: number, formData: FormData) {
 }
 
 export async function deleteProject(id: number) {
+    const [oldUrl] = await db.select({ ogImageUrl: projects.ogImageUrl }).from(projects).where(eq(projects.id, id));
+
+    if (oldUrl && oldUrl.ogImageUrl) {
+        await deleteOldImageInVercelBlob(oldUrl.ogImageUrl);
+    }
+
     await db.delete(projects).where(eq(projects.id, id));
 
     revalidatePath("/dashboard/projects")
