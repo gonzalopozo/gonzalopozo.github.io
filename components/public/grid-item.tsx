@@ -54,9 +54,22 @@ export const GridItem = forwardRef<HTMLDivElement, React.ComponentProps<"div"> &
             })}>
                 {(variant === "project") && project && (
                     <>
-                        <figure className="min-h-0 overflow-hidden">
-
-                        <Image src={"https://placehold.co/1200x630.png"} alt={"Project image"} width={1260} height={630} className="h-full w-full object-cover" />
+                        <figure className="relative min-h-0 overflow-hidden">
+                            {project.ogImageUrl ? (
+                                <Image
+                                    src={project.ogImageUrl}
+                                    alt={project.title}
+                                    width={1260}
+                                    height={630}
+                                    className="h-full w-full object-cover"
+                                    sizes="(max-width: 768px) 100vw, 50vw"
+                                />
+                            ) : (
+                                <div
+                                    className="aspect-1200/630 w-full bg-linear-to-br from-primary/40 via-secondary to-accent/45 dark:from-primary/55 dark:via-card dark:to-accent/40"
+                                    aria-hidden="true"
+                                />
+                            )}
                         </figure>
                         <CardHeader className="content-start items-start">
                             <CardTitle className="flex items-center justify-between">
