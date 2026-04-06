@@ -15,12 +15,21 @@ import {
     CommandItem,
     CommandList,
 } from "@/components/ui/command";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function IconPicker() {
     const [open, setOpen] = useState(false);
     const [selectedIcon, setSelectedIcon] = useState<string | null>();
     const [debouncedQuery, setDebouncedQuery] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
+
+    useEffect(() => {
+        const id = setTimeout(() => {
+            setDebouncedQuery(searchQuery)
+            console.log("300 ms")
+        }, 300);
+        return () => clearTimeout(id);
+    }, [searchQuery]);
 
     return (
         <Popover defaultOpen={false} open={open} onOpenChange={setOpen} >
@@ -31,7 +40,7 @@ export function IconPicker() {
             </PopoverTrigger>
             <PopoverContent align="center">
                 <Command>
-                    <CommandInput placeholder="Escribe el nombre de tu skill..." />
+                    <CommandInput placeholder="Escribe el nombre de tu skill..." value={searchQuery} onValueChange={(input) => setSearchQuery(input) } />
                     <CommandList>
                         <CommandEmpty>
                             Iconos no encontrados...
