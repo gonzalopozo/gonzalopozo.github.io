@@ -20,8 +20,8 @@ import { useEffect, useState } from "react";
 export function IconPicker() {
     const [open, setOpen] = useState(false);
     const [selectedIcon, setSelectedIcon] = useState<string | null>();
-    const [debouncedQuery, setDebouncedQuery] = useState("");
-    const [searchQuery, setSearchQuery] = useState("");
+    const [debouncedQuery, setDebouncedQuery] = useState<string | null>();
+    const [searchQuery, setSearchQuery] = useState<string | null>();
 
     useEffect(() => {
         const id = setTimeout(() => {
@@ -35,20 +35,29 @@ export function IconPicker() {
         <Popover defaultOpen={false} open={open} onOpenChange={setOpen} >
             <PopoverTrigger asChild>
                 <Button variant="outline">
-                    Icon picker
+                    { selectedIcon ? `Icono seleccionado: ${selectedIcon}` : "Icon picker" }
                 </Button>
             </PopoverTrigger>
             <PopoverContent align="center">
-                <Command>
-                    <CommandInput placeholder="Escribe el nombre de tu skill..." value={searchQuery} onValueChange={(input) => setSearchQuery(input) } />
+                <Command shouldFilter={false}>
+                    <CommandInput placeholder="Escribe el nombre de tu skill..." value={searchQuery || ""} onValueChange={(input) => setSearchQuery(input) } />
                     <CommandList>
                         <CommandEmpty>
                             Iconos no encontrados...
                         </CommandEmpty>
                         <CommandGroup>
-                            <CommandItem>
-                                Hola...
-                            </CommandItem>
+                            {
+                                debouncedQuery && manifest.filter((icon) => {
+                                    return icon.name.toLowerCase().includes(debouncedQuery.toLowerCase())
+                                }).slice(0, 30).map(iconQuery => (
+                                    <CommandItem key={`${iconQuery.name}-${iconQuery.pack}`} onSelect={() => {
+                                        setSelectedIcon(`${iconQuery.name} | ${iconQuery.pack}`);
+                                        setOpen(false);
+                                    }}>
+                                        {iconQuery.name} | {iconQuery.pack}
+                                    </CommandItem>
+                                ))
+                            }
                         </CommandGroup>
                     </CommandList>
                 </Command>
