@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { createSkill } from "@/lib/actions/skills";
 import Link from "next/link";
 import { ArrowLeft, Plus } from "lucide-react";
+import { IconPicker } from "@/components/admin/icon-picker";
 
 export default async function NewSkillDashboardPage() {
     return (
@@ -78,6 +79,10 @@ export default async function NewSkillDashboardPage() {
                             <p className="text-xs text-muted-foreground">
                                 Identificador del icono a mostrar (opcional)
                             </p>
+                        </div>
+
+                        <div className="space-y-2">
+                            <IconPicker />
                         </div>
 
                         {/* URL Field */}
