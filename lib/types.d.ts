@@ -3,8 +3,9 @@ export type SkillType = "fullstack" | "frontend" | "backend" | "database" | "dev
 export type ProjectStatus = "active" | "archived" | "in-progress";
 
 export interface Skill {
-    name: string;
     id: number;
+    name: string;
+    icon: string | null;
 }
 export interface ProjectInfo {
     id: number;

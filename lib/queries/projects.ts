@@ -11,7 +11,8 @@ export async function getProjects(): Promise<ProjectInfo[]> {
                     skill: {
                         columns: {
                             id: true,
-                            name: true
+                            name: true,
+                            icon: true
                         },
                     }
                 }
@@ -31,7 +32,8 @@ export async function getProjectById(id: number): Promise<ProjectInfo | undefine
                     skill: {
                         columns: {
                             id: true,
-                            name: true
+                            name: true,
+                            icon: true
                         },
                     }
                 }
