@@ -12,7 +12,6 @@ Quick question why while using the shadcn component <Card> it  doesn't display v
 
 _**Agent (composer-2-fast)**_
 
-
 Inspecting how `Card` is used in `grid-item.tsx` and the project's `card` component styles.
 
 
@@ -54,7 +53,6 @@ I'm using `clsx` and `tailwind-merge` to merge class names, where `p-6` override
 
 _**Agent (composer-2-fast)**_
 
-
 Checking how `GridItem` is placed in the grid and whether padding conflicts.
 
 
@@ -73,7 +71,6 @@ _**Agent (composer-2-fast)**_
 </details></tool-use>
 
 _**Agent (composer-2-fast)**_
-
 
 Here’s what’s going on.
 

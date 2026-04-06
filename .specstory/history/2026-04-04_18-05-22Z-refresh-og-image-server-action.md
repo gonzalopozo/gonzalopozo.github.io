@@ -27,7 +27,6 @@ Step 7: revalidatePath for both the dashboard and public page.
 
 _**Agent (composer-2-fast)**_
 
-
 Reviewing your `og-image.ts` utility and `projects.ts` actions against the spec—reading the files without making edits.
 
 
@@ -66,7 +65,6 @@ _**Agent (composer-2-fast)**_
 I'm analyzing how refreshProjectOgImage aligns with the spec steps and comparing it to the lib/og-image.ts utility. </details></think>
 
 _**Agent (composer-2-fast)**_
-
 
 Checking whether `getServerSession` is async and which public paths need revalidation for projects.
 
@@ -214,7 +212,6 @@ _**Agent (composer-2-fast)**_
 I found that `getServerSession` is async and must be awaited, otherwise the auth check fails due to a truthy Promise. </details></think>
 
 _**Agent (composer-2-fast)**_
-
 
 Here’s a concise review of how `lib/og-image.ts` lines up with the Step 5 checklist and what stands out in `refreshProjectOgImage`.
 

@@ -107,38 +107,77 @@ Parameters:
   "pattern": "lru-cache|rate.?limit"
 }
 ```
-Result:
+Additional data:
 
 ```json
 {
-  "success": {
-    "outputMode": "files_with_matches",
-    "pattern": "lru-cache|rate.?limit",
-    "workspaceResults": {
-      "/home/gonzalo/gonzalopozo.github.io": {
-        "files": {
-          "files": [
-            "./.specstory/history/2026-02-16_09-00Z-carpeta-@-specstory.md",
-            "./.agents/skills/vercel-react-best-practices/rules/server-cache-lru.md",
-            "./.agents/skills/vercel-react-best-practices/AGENTS.md",
-            "./.agents/skills/drizzle-orm/references/performance.md",
-            "./.agents/skills/better-auth-best-practices/SKILL.md",
-            "./pnpm-lock.yaml",
-            "./AGENTS-SECURITY.md",
-            "./.specstory/history/2026-02-02_15-14Z-agents-md-file-for-portfolio-project.md",
-            "./.specstory/history/2025-12-08_18-01Z-server-actions-in-next-js-client-components.md",
-            "./.specstory/history/2025-12-08_17-52Z-next-js-16-server-action-security-from-client.md",
-            "./.specstory/history/2025-12-08_17-11Z-next-js-auth-and-redirect-architecture.md",
-            "./.specstory/history/2025-12-01_16-49Z-update-next-js-interview-questions.md",
-            "./.specstory/history/2025-11-25_16-46Z-(1)-integrating-better-auth-with-existing-db.md",
-            "./.specstory/history/2025-11-25_16-46Z-integrating-better-auth-with-existing-db.md",
-            "./.specstory/history/2025-11-26_13-07Z-review-project-roadmap-for-updates-and-errors.md"
-          ],
-          "totalFiles": 15
-        }
-      }
+  "isPruned": true,
+  "outputMode": "files_with_matches",
+  "pattern": "lru-cache|rate.?limit",
+  "topFiles": [
+    {
+      "matchCount": 1,
+      "uri": "./.specstory/history/2026-02-16_09-00Z-carpeta-@-specstory.md"
+    },
+    {
+      "matchCount": 1,
+      "uri": "./.agents/skills/vercel-react-best-practices/rules/server-cache-lru.md"
+    },
+    {
+      "matchCount": 1,
+      "uri": "./.agents/skills/vercel-react-best-practices/AGENTS.md"
+    },
+    {
+      "matchCount": 1,
+      "uri": "./.agents/skills/drizzle-orm/references/performance.md"
+    },
+    {
+      "matchCount": 1,
+      "uri": "./.agents/skills/better-auth-best-practices/SKILL.md"
+    },
+    {
+      "matchCount": 1,
+      "uri": "./pnpm-lock.yaml"
+    },
+    {
+      "matchCount": 1,
+      "uri": "./AGENTS-SECURITY.md"
+    },
+    {
+      "matchCount": 1,
+      "uri": "./.specstory/history/2026-02-02_15-14Z-agents-md-file-for-portfolio-project.md"
+    },
+    {
+      "matchCount": 1,
+      "uri": "./.specstory/history/2025-12-08_18-01Z-server-actions-in-next-js-client-components.md"
+    },
+    {
+      "matchCount": 1,
+      "uri": "./.specstory/history/2025-12-08_17-52Z-next-js-16-server-action-security-from-client.md"
+    },
+    {
+      "matchCount": 1,
+      "uri": "./.specstory/history/2025-12-08_17-11Z-next-js-auth-and-redirect-architecture.md"
+    },
+    {
+      "matchCount": 1,
+      "uri": "./.specstory/history/2025-12-01_16-49Z-update-next-js-interview-questions.md"
+    },
+    {
+      "matchCount": 1,
+      "uri": "./.specstory/history/2025-11-25_16-46Z-(1)-integrating-better-auth-with-existing-db.md"
+    },
+    {
+      "matchCount": 1,
+      "uri": "./.specstory/history/2025-11-25_16-46Z-integrating-better-auth-with-existing-db.md"
+    },
+    {
+      "matchCount": 1,
+      "uri": "./.specstory/history/2025-11-26_13-07Z-review-project-roadmap-for-updates-and-errors.md"
     }
-  }
+  ],
+  "totalFiles": 15,
+  "totalMatches": 15
 }
 ```
 Status: **completed**

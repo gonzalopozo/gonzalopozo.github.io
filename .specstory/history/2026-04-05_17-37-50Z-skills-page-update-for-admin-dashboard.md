@@ -171,3 +171,113 @@ _**Agent (composer-2-fast)**_
 <summary>Tool use: **edit_file_v2**</summary>
 
 </details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+<think><details><summary>Thought Process</summary>
+**Aligning import order**
+
+I'm reordering imports in social-links to match the projects pattern. </details></think>
+
+_**Agent (composer-2-fast)**_
+
+
+
+
+
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /home/gonzalo/gonzalopozo.github.io/app/(admin)/dashboard/skills/new/page.tsx</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="unknown" data-tool-name="read_lints">
+<details>
+<summary>Tool use: **read_lints**</summary>
+
+
+Parameters:
+
+```json
+{
+  "paths": [
+    "/home/gonzalo/gonzalopozo.github.io/app/(admin)/dashboard/skills/new/page.tsx"
+  ]
+}
+```
+Result:
+
+```json
+{
+  "linterErrorsByFile": [
+    {
+      "relativeWorkspacePath": "/home/gonzalo/gonzalopozo.github.io/app/(admin)/dashboard/skills/new/page.tsx"
+    }
+  ]
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="unknown" data-tool-name="read_lints"><details>
+<summary>Tool use: **read_lints**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+
+
+
+
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2">
+<details><summary>Tool use: **run_terminal_command_v2** • Run command: cd /home/gonzalo/gonzalopozo.github.io && pnpm exec eslint "app/(admin)/dashboard/skills/new/page.tsx"</summary>
+
+```bash
+cd /home/gonzalo/gonzalopozo.github.io && pnpm exec eslint "app/(admin)/dashboard/skills/new/page.tsx"
+```
+</details>
+</tool-use>
+
+<tool-use data-tool-type="shell" data-tool-name="run_terminal_command_v2"><details>
+<summary>Tool use: **run_terminal_command_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+
+Here’s what changed for `app/(admin)/dashboard/skills/new/page.tsx` so it matches the other “new” dashboard pages:
+
+### Alignment with projects / experiences / social-links
+
+- **Layout**: Outer `space-y-6`, header row with ghost **back** button → `/dashboard/skills`, **ArrowLeft** icon, **title + muted subtitle** in Spanish.
+- **Form container**: **`Card`** with `max-w-2xl`, **`CardHeader`** (`CardTitle` / `CardDescription`), **`CardContent`**.
+- **Fields**: **`Label`**, **`Input`**, and the same **native `<select>`** styling as the project status field on the projects page; optional fields use **`text-xs text-muted-foreground`** hints like the others.
+- **Actions**: Primary **`Button`** with **`Plus`** + “Crear habilidad”, outline **Cancel** linking back to the list.
+- **Imports**: UI components first, then `createSkill`, then `Link` and Lucide icons (same style as projects/experiences).
+
+### Behaviour
+
+- **`name`** is required; **`type`** is required (same option **values** as before for `SkillType`).
+- **`icon`** and **`url`** stay optional; **`url`** uses `type="url"` like the other forms.
+
+`createSkill` in `lib/actions/skills.ts` is unchanged — it still reads `name`, `type`, `icon`, and `url` from the form.
