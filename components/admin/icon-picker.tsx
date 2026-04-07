@@ -32,6 +32,22 @@ const PACK_LOADERS: Record<string, () => Promise<Record<string, any>>> = {
     lia: () => import("react-icons/lia"),
 };
 
+interface IconPickerProps {
+    fullName?: string;
+}
+
+class IconPicked implements IconPickerProps {
+    constructor(public fullName: string) {}
+
+    getIconName(): string {
+        return this.fullName.split("|")[0].trim();
+    }
+
+    getIconPackage(): string {
+        return this.fullName.split("|")[1].trim();
+    }
+}
+
 interface IconPreviewProps {
     iconPackage: string;
     iconName: string;
@@ -64,9 +80,9 @@ function IconPreview({ iconName, iconPackage }: IconPreviewProps) {
     return <Icon className="size-4" aria-hidden />;
 }
 
-export function IconPicker() {
+export function IconPicker({ fullName }: IconPickerProps) {
     const [open, setOpen] = useState(false);
-    const [selectedIcon, setSelectedIcon] = useState<string | null>();
+    const [selectedIcon, setSelectedIcon] = useState<string | null>(fullName ?? null);
     const [debouncedQuery, setDebouncedQuery] = useState<string | null>();
     const [searchQuery, setSearchQuery] = useState<string | null>();
 
@@ -78,11 +94,20 @@ export function IconPicker() {
         return () => clearTimeout(id);
     }, [searchQuery]);
 
+    const selectedPicked = selectedIcon ? new IconPicked(selectedIcon) : null;
+
     return (
         <Popover defaultOpen={false} open={open} onOpenChange={setOpen} >
             <PopoverTrigger asChild>
                 <Button variant="outline">
-                    {selectedIcon ? `Icono seleccionado: ${selectedIcon}` : "Icon picker"}
+                    { selectedPicked ? (
+                        <>
+                            Icono seleccionado {selectedPicked.fullName} <IconPreview iconName={selectedPicked.getIconName()} iconPackage={selectedPicked.getIconPackage()} />
+                        </>
+                        ) :
+                        (
+                            "Icon picker"
+                        ) }
                 </Button>
             </PopoverTrigger>
             <PopoverContent align="center">
@@ -96,12 +121,12 @@ export function IconPicker() {
                             {
                                 debouncedQuery && manifest.filter((icon) => {
                                     return icon.name.toLowerCase().includes(debouncedQuery.toLowerCase())
-                                }).slice(0, 30).map(iconQuery => (
-                                    <CommandItem key={`${iconQuery.name}-${iconQuery.pack}`} value={`${iconQuery.name}-${iconQuery.pack}`} onSelect={() => {
-                                        setSelectedIcon(`${iconQuery.name} | ${iconQuery.pack}`);
+                                }).slice(0, 30).map(({ name, pack }) => (
+                                    <CommandItem key={`${name}-${pack}`} value={`${name}-${pack}`} onSelect={() => {
+                                        setSelectedIcon(`${name} | ${pack}`);
                                         setOpen(false);
                                     }}>
-                                        {iconQuery.name} | {iconQuery.pack} | <IconPreview iconName={iconQuery.name} iconPackage={iconQuery.pack} />
+                                        {name} | {pack} | <IconPreview iconName={name} iconPackage={pack} />
                                     </CommandItem>
                                 ))
                             }
