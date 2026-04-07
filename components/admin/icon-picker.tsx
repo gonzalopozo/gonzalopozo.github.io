@@ -100,7 +100,7 @@ export function IconPicker({ fullName }: IconPickerProps) {
         <Popover defaultOpen={false} open={open} onOpenChange={setOpen} >
             <PopoverTrigger asChild>
                 <Button variant="outline">
-                    { selectedPicked ? (
+                    {selectedPicked ? (
                         <>
                             Icono seleccionado {selectedPicked.fullName} <IconPreview iconName={selectedPicked.getIconName()} iconPackage={selectedPicked.getIconPackage()} />
                         </>
@@ -130,7 +130,7 @@ export function IconPicker({ fullName }: IconPickerProps) {
                                     </CommandItem>
                                 ))
                             }
-                            <input type="hidden" name="icon" id="icon" value={debouncedQuery ?? ""} />
+                            <input type="hidden" name="icon" id="icon" value={selectedIcon ?? ""} />
                         </CommandGroup>
                     </CommandList>
                 </Command>
