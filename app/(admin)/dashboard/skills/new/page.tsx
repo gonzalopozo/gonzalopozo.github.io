@@ -69,19 +69,6 @@ export default async function NewSkillDashboardPage() {
 
                         {/* Icon Field */}
                         <div className="space-y-2">
-                            <Label htmlFor="icon">Icono</Label>
-                            <Input
-                                type="text"
-                                name="icon"
-                                id="icon"
-                                placeholder="Ej: typescript, react, github..."
-                            />
-                            <p className="text-xs text-muted-foreground">
-                                Identificador del icono a mostrar (opcional)
-                            </p>
-                        </div>
-
-                        <div className="space-y-2">
                             <IconPicker />
                         </div>
 

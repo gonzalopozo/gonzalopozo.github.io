@@ -105,6 +105,7 @@ export function IconPicker() {
                                     </CommandItem>
                                 ))
                             }
+                            <input type="hidden" name="icon" id="icon" value={debouncedQuery ?? ""} />
                         </CommandGroup>
                     </CommandList>
                 </Command>
