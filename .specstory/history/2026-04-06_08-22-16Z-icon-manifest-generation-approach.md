@@ -395,41 +395,38 @@ So: **`null, 2` helps a bit** vs **`null, 4`**; **dropping the third argument** 
 
 _**User**_
 
-and what about if we do it minified?
+In the plan you say "When to re-run: Only when you upgrade the react-icons package version". To automatize this do I need something like husky or not?
 
 ---
 
 _**Agent (composer-2-fast)**_
 
 <think><details><summary>Thought Process</summary>
-**Summarizing manifest sizes**
+**Evaluating hook strategies**
 
-I'm summarizing the size tradeoffs for minified vs indented manifest formats. </details></think>
+I'm considering whether Husky is needed for auto-re-running icon manifest generation on react-icons upgrade. I'm weighing whether to use Husky to trigger manifest regeneration on react-icons upgrade. </details></think>
 
 _**Agent (composer-2-fast)**_
 
 
-**Minified** means `JSON.stringify(output)` with no third argument (or `undefined`).
+You do **not** need Husky to automate this. Husky is only one way to hook into **git**, and your requirement is really: *when `react-icons` changes, the committed manifest should stay correct.*
 
-### Size (same ~21k entries you measured before)
+### What actually solves it
 
-| Format   | Rough size |
-|----------|------------|
-| Minified | **~783 KB** |
-| Indent 2 | ~1.16 MB |
-| Indent 4 | ~1.41 MB |
+1. **CI check (most common, no Husky)**  
+   After `pnpm install`, run `pnpm icons:manifest` and fail the job if `lib/react-icons-manifest.json` changes (`git diff --exit-code` or equivalent).  
+   Then any upgrade of `react-icons` (you or Renovate) either includes an updated manifest in the same PR, or CI goes red until someone runs the script and commits.  
+   No local hooks, works for everyone who clones the repo.
 
-So minified is about **one line per “logical” block** in practice it’s often **one long line** (or a few), i.e. **~380 KB smaller than indent 2** and **~630 KB smaller than indent 4** on disk.
+2. **Husky (optional, local)**  
+   A **pre-commit** hook can run the generator and either fail when the file changes (reminds you to commit) or auto-stage the file. That helps *before* push, but it only runs for people who have Husky installed and doesn’t replace CI if you care about guarantees.
 
-### Tradeoffs
+3. **`postinstall` / `prepare`**  
+   Usually **not** ideal: it runs on **every** install, not only when `react-icons` changes, so you pay the cost constantly unless you add clever guards.
 
-- **Pros**: Smaller repo file, slightly less to read from disk, same data after `JSON.parse`.
-- **Cons**: **Git diffs are useless** for small edits (whole file or huge hunks change). **Hard to spot-check** in the editor. **Merge conflicts** on the manifest are more painful.
+### Practical takeaway
 
-### When it’s a good fit
+- **Automate enforcement**: prefer a **CI step** that regenerates and checks for a clean diff.  
+- **Husky**: nice for **local** discipline, not required for “automation” in the sense of upgrades.
 
-Minified is a good default for a **generated** artifact you rarely hand-edit: regenerate after `react-icons` bumps, spot-check via search or a script, not by reading the whole file.
-
-### When to keep pretty-print
-
-If you care about **readable diffs** when the manifest changes (e.g. reviewing what new icons a version added), indent **2** is a reasonable compromise; minified optimizes for size over human-readable diffs.
+So: **no, you don’t need Husky** unless you specifically want a git-hook workflow; **CI** is the usual way to tie “upgrade `react-icons`” to “manifest must match.”

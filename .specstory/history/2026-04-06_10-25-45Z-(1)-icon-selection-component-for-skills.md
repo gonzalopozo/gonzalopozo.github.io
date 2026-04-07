@@ -3466,3 +3466,49 @@ _**Agent (claude-4.6-opus-high-thinking)**_
 That's it. Without an explicit `value`, `cmdk` derives each item's identity from its text content. Every time an icon loads, the text content changes (the `<span>a</span>` disappears, the `<svg>` appears), so `cmdk` thinks the list changed and resets focus to the first item.
 
 With `value={`${iconQuery.name}-${iconQuery.pack}`}`, each item has a stable identity regardless of what renders inside it. Arrow navigation stays put while icons load in the background.
+
+---
+
+_**User**_
+
+How can I could do this "The pack module gets cached by the browser after the first import. Subsequent icons from the same pack resolve instantly. You can also add a module-level Map cache to avoid even the import() call overhead on repeat access, but it's optional — the browser module cache handles it."? And is it worth it?
+
+---
+
+_**Agent (claude-4.6-opus-high-thinking)**_
+
+<think><details><summary>Thought Process</summary>
+The user is asking about adding a module-level Map cache for the dynamically imported pack modules, and whether it's worth doing.
+
+Let me think about this:
+
+1. **Browser module cache**: When you call `import("react-icons/si")` the first time, the browser downloads and parses the chunk. The second time you call `import("react-icons/si")`, the browser returns the already-loaded module instantly — the Promise resolves synchronously (or near-instantly). This is built into the ES module spec.
+
+2. **Module-level Map cache**: This would store the resolved module object in a `Map` so you don't even call `import()` again. 
+
+The key difference is that without a Map, each `import()` call creates a new Promise that resolves from the browser cache, adding microtask overhead, whereas a Map would skip the Promise entirely and return the module directly. For loading 30 items at once, this overhead is negligible since the browser's built-in caching already makes repeat imports essentially free.
+
+Since the Map implementation is just a few lines and adds no complexity, it's a reasonable optimization even if the practical benefit is minimal. I should explain this concept to the user without diving into code details.</details></think>
+
+_**Agent (claude-4.6-opus-high-thinking)**_
+
+## How it works
+
+You'd create a `Map<string, Promise<IconModule>>` outside any component (module scope). Before calling `import()`, check if the Map already has an entry for that pack. If yes, reuse the stored Promise. If no, call `import()`, store the Promise in the Map, and return it.
+
+The key insight: you cache the **Promise itself**, not the resolved module. That way even if two `IconPreview` components mount simultaneously for the same pack, they share the same in-flight request — no duplicate `import()` calls.
+
+## Is it worth it?
+
+**Honestly, no.** Here's why:
+
+The browser's module cache already does this. Once `import("react-icons/si")` resolves the first time, every subsequent `import("react-icons/si")` call returns a Promise that resolves **instantly** (the module is already parsed and in memory). The only "cost" you're avoiding with a Map is creating a Promise object and waiting one microtask tick (~0.001ms) — completely imperceptible.
+
+Where a Map cache **would** matter:
+- If `import()` had network cost on every call (it doesn't after the first load)
+- If you had hundreds of components re-mounting rapidly (you cap at 30)
+- If the Promise resolution was slow (it's synchronous from cache)
+
+For your icon picker with 30 items, the browser cache is more than enough. Add the Map only if you ever profile and find the `import()` calls showing up — which they won't.
+
+Focus your time on the remaining steps (form integration, server-side renderer, composition) instead.

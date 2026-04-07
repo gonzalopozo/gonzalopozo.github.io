@@ -44,4 +44,8 @@ _**Agent (composer-2-fast)**_
 
 The text describes **one flat array** of objects, not an array of subarrays.
 
-You end up with a single list where every element looks like `{ name: "SiReact", pack: "si" }`. You loop over each pack (`si`, `di`, `fa`), and for each exported
+You end up with a single list where every element looks like `{ name: "SiReact", pack: "si" }`. You loop over each pack (`si`, `di`, `fa`), and for each exported key you push one object into that same array (with the right `pack` value). So you might have thousands of entries in one array: some with `pack: "si"`, some `pack: "di"`, some `pack: "fa"`.
+
+You **do not** need a structure like `[[{...}, {...}], [{...}]]` per pack unless you choose that for your own UI. The spec’s “array of objects” plus the spot-check examples (`SiReact`, `SiTypescript`, `FaGithub`) matches a **flat** list with a `pack` field on each row so search/filter can still tell which icon set to import from.
+
+A grouped alternative would be something like `{ si: [...names], di: [...], fa: [...] }` or arrays per pack—that’s **not** what that sentence is describing.
