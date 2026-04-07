@@ -5,7 +5,14 @@ import { Label } from "@/components/ui/label";
 import { createSkill } from "@/lib/actions/skills";
 import Link from "next/link";
 import { ArrowLeft, Plus } from "lucide-react";
-import { IconPicker } from "@/components/admin/icon-picker";
+import dynamic from "next/dynamic";
+
+const IconPicker = dynamic(
+    () => import("@/components/admin/icon-picker").then((mod) => mod.IconPicker),
+    {
+        loading: () => <p>Loading...</p>,
+    }
+);
 
 export default async function NewSkillDashboardPage() {
     return (
@@ -69,6 +76,7 @@ export default async function NewSkillDashboardPage() {
 
                         {/* Icon Field */}
                         <div className="space-y-2">
+                            <Label htmlFor="icon">Icono</Label>
                             <IconPicker />
                         </div>
 
