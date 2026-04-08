@@ -460,3 +460,91 @@ _**Agent (composer-2-fast)**_
 **Using useMemo for picked**
 
 I'm using `useMemo` to derive the picked icon from selectedIcon or fullName, leveraging the IconPicked class for parsing. </details></think>
+
+_**Agent (composer-2-fast)**_
+
+
+Eliminando el aviso de ESLint: la clase `IconPicked` quedaba sin uso. Usándola al renderizar el icono seleccionado.
+
+
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /home/gonzalo/gonzalopozo.github.io/components/admin/icon-picker.tsx</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+
+
+
+
+
+_**Agent (composer-2-fast)**_
+
+<tool-use data-tool-type="unknown" data-tool-name="read_lints">
+<details>
+<summary>Tool use: **read_lints**</summary>
+
+
+Parameters:
+
+```json
+{
+  "paths": [
+    "/home/gonzalo/gonzalopozo.github.io/components/admin/icon-picker.tsx"
+  ]
+}
+```
+Result:
+
+```json
+{
+  "linterErrorsByFile": [
+    {
+      "relativeWorkspacePath": "/home/gonzalo/gonzalopozo.github.io/components/admin/icon-picker.tsx"
+    }
+  ]
+}
+```
+Status: **completed**
+
+
+</details>
+</tool-use>
+
+<tool-use data-tool-type="unknown" data-tool-name="read_lints"><details>
+<summary>Tool use: **read_lints**</summary>
+
+</details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+
+## Por qué salían esos errores
+
+1. **`implements IconPickerProps` sin declarar `fullName`**  
+   En TypeScript, una clase que `implements` una interfaz debe **tener declaradas** todas las propiedades. Solo hacer `this.fullName = fullName` en el constructor **no declara** el miembro en la clase (salvo que uses parámetros de propiedad o un campo explícito `fullName: string`). Por eso el compilador decía que faltaba `fullName` en `IconPicked` y que `this.fullName` no existía.
+
+2. **`{ fullName }: IconPicked` como props del componente**  
+   El tipo de instancia de `IconPicked` dependía de lo anterior; al estar mal la clase, el tipo también fallaba. Para un componente React lo habitual es **`IconPickerProps`**, no la clase.
+
+3. **`fullName` sin usar**  
+   ESLint avisaba porque declarabas la prop pero no la usabas. Tiene sentido usarla como valor inicial del estado.
+
+## Qué se cambió
+
+- **`constructor(public fullName: string)`** en `IconPicked`: declara e inicializa `fullName` y cumple `IconPickerProps`.
+- **`fullName?: string`** en la interfaz: en `new/page.tsx` usas `<IconPicker />` sin props.
+- **`IconPicker({ fullName }: IconPickerProps)`** y estado inicial **`fullName ?? undefined`**.
+- **`selectedPicked`** con `new IconPicked(selectedIcon)` para el botón, así la clase deja de estar “muerta” y reutilizas `getIconName` / `getIconPackage`.

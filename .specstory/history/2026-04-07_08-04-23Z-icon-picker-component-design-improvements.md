@@ -1490,3 +1490,41 @@ The solution is straightforward: remove `ssr: false` from the dynamic import. Th
 Actually, let me think about this more carefully. The `IconPicker` component uses `"use client"` and has browser-only APIs (useState, useEffect). But `next/dynamic` in a Server Component should handle this fine without `ssr: false` — the component will be server-rendered as its initial state and then hydrated on the client.
  
 Looking at what actually happens during rendering: `IconPicker` doesn't call any browser APIs during its render phase (no `window` or `document` access), and the dynamic icon pack imports happen inside effects which don't run on the server anyway. So dropping `ssr: false` is definitely the right move — the server will render the initial button state and the client takes over from there. There's also something about importing `IconPickerSkeleton` that needs checking.</details></think>
+
+_**Agent (claude-4.6-opus-high-thinking)**_
+
+The fix is simple — `ssr: false` is not allowed in Server Components with `next/dynamic`. The `IconPicker` doesn't need it anyway since it doesn't use browser-only APIs during render (hooks like `useState`/`useEffect` work fine during SSR). Let me remove it from both files.
+
+_**Agent (claude-4.6-opus-high-thinking)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /home/gonzalo/gonzalopozo.github.io/app/(admin)/dashboard/skills/new/page.tsx</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (claude-4.6-opus-high-thinking)**_
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2">
+
+<details><summary>Tool use: **edit_file_v2** • Edit file: /home/gonzalo/gonzalopozo.github.io/app/(admin)/dashboard/skills/[id]/edit/page.tsx</summary>
+
+</details>
+
+</tool-use>
+
+<tool-use data-tool-type="write" data-tool-name="edit_file_v2"><details>
+<summary>Tool use: **edit_file_v2**</summary>
+
+</details></tool-use>
+
+_**Agent (claude-4.6-opus-high-thinking)**_
+
+Removed `ssr: false` from both dynamic imports. The `IconPicker` component doesn't access any browser-only globals (`window`, `document`) during render — it only uses `useState` and `useEffect`, which are safe during SSR (effects are skipped, state uses initial values). The `loading` fallback with `IconPickerSkeleton` still works correctly.

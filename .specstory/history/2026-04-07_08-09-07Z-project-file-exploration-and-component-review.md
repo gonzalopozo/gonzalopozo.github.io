@@ -707,4 +707,246 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
       type={type}
       data-slot="input"
       className={cn(
-        "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:fon
+        "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+        "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+        "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+export { Input }
+```
+
+### `label.tsx` (full)
+
+```1:25:/home/gonzalo/gonzalopozo.github.io/components/ui/label.tsx
+"use client"
+
+import * as React from "react"
+import * as LabelPrimitive from "@radix-ui/react-label"
+
+import { cn } from "@/lib/utils"
+
+function Label({
+  className,
+  ...props
+}: React.ComponentProps<typeof LabelPrimitive.Root>) {
+  return (
+    <LabelPrimitive.Root
+      data-slot="label"
+      className={cn(
+        "flex items-center gap-2 text-sm leading-none font-medium select-none group-data-[disabled=true]:pointer-events-none group-data-[disabled=true]:opacity-50 peer-disabled:cursor-not-allowed peer-disabled:opacity-50",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+export { Label }
+```
+
+---
+
+## 9. `app/globals.css` (full)
+
+```1:140:/home/gonzalo/gonzalopozo.github.io/app/globals.css
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: oklch(0.975 0.008 270);
+  --foreground: oklch(0.155 0.025 270);
+  --card: oklch(1.000 0 0);
+  --card-foreground: oklch(0.155 0.025 270);
+  --popover: oklch(1.000 0 0);
+  --popover-foreground: oklch(0.155 0.025 270);
+  --primary: oklch(0.400 0.170 250);
+  --primary-foreground: oklch(0.985 0.005 250);
+  --secondary: oklch(0.945 0.012 270);
+  --secondary-foreground: oklch(0.195 0.025 270);
+  --muted: oklch(0.920 0.008 270);
+  --muted-foreground: oklch(0.430 0.020 265);
+  --accent: oklch(0.700 0.180 55);
+  --accent-foreground: oklch(0.200 0.050 55);
+  --destructive: oklch(0.550 0.220 25);
+  --destructive-foreground: oklch(0.985 0.005 25);
+  --border: oklch(0.885 0.012 270);
+  --input: oklch(0.885 0.012 270);
+  --ring: oklch(0.480 0.170 250);
+  --radius: 0.5rem;
+  --chart-1: oklch(0.400 0.170 250);
+  --chart-2: oklch(0.600 0.200 35);
+  --chart-3: oklch(0.500 0.180 300);
+  --chart-4: oklch(0.500 0.140 185);
+  --chart-5: oklch(0.550 0.170 145);
+  --sidebar: oklch(1.000 0 0);
+  --sidebar-foreground: oklch(0.155 0.025 270);
+  --sidebar-primary: oklch(0.400 0.170 250);
+  --sidebar-primary-foreground: oklch(0.985 0.005 250);
+  --sidebar-accent: oklch(0.945 0.012 270);
+  --sidebar-accent-foreground: oklch(0.195 0.025 270);
+  --sidebar-border: oklch(0.885 0.012 270);
+  --sidebar-ring: oklch(0.480 0.170 250);
+  --status-active: oklch(0.520 0.175 155);
+  --status-in-progress: oklch(0.480 0.170 250);
+  --status-archived: oklch(0.620 0.150 70);
+}
+
+.dark {
+  --background: oklch(0.120 0.025 275);
+  --foreground: oklch(0.950 0.008 265);
+  --card: oklch(0.175 0.022 270);
+  --card-foreground: oklch(0.950 0.008 265);
+  --popover: oklch(0.175 0.022 270);
+  --popover-foreground: oklch(0.950 0.008 265);
+  --primary: oklch(0.750 0.170 235);
+  --primary-foreground: oklch(0.120 0.035 235);
+  --secondary: oklch(0.225 0.018 275);
+  --secondary-foreground: oklch(0.910 0.008 265);
+  --muted: oklch(0.225 0.018 275);
+  --muted-foreground: oklch(0.580 0.016 265);
+  --accent: oklch(0.800 0.170 50);
+  --accent-foreground: oklch(0.120 0.045 50);
+  --destructive: oklch(0.640 0.200 25);
+  --destructive-foreground: oklch(0.120 0.025 25);
+  --border: oklch(0.265 0.018 275);
+  --input: oklch(0.265 0.018 275);
+  --ring: oklch(0.750 0.170 235);
+  --chart-1: oklch(0.750 0.170 235);
+  --chart-2: oklch(0.740 0.170 35);
+  --chart-3: oklch(0.700 0.160 300);
+  --chart-4: oklch(0.680 0.130 185);
+  --chart-5: oklch(0.720 0.160 145);
+  --sidebar: oklch(0.175 0.022 270);
+  --sidebar-foreground: oklch(0.950 0.008 265);
+  --sidebar-primary: oklch(0.750 0.170 235);
+  --sidebar-primary-foreground: oklch(0.120 0.035 235);
+  --sidebar-accent: oklch(0.225 0.018 275);
+  --sidebar-accent-foreground: oklch(0.910 0.008 265);
+  --sidebar-border: oklch(0.265 0.018 275);
+  --sidebar-ring: oklch(0.750 0.170 235);
+  --status-active: oklch(0.700 0.175 155);
+  --status-in-progress: oklch(0.700 0.150 235);
+  --status-archived: oklch(0.740 0.150 70);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-4xl: 2rem;
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-status-active: var(--status-active);
+  --color-status-in-progress: var(--status-in-progress);
+  --color-status-archived: var(--status-archived);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  .maplibregl-popup-content {
+    @apply bg-transparent! shadow-none! p-0! rounded-none!;
+  }
+  .maplibregl-popup-tip {
+    @apply hidden!;
+  }
+}
+```
+
+---
+
+## 10. `Skeleton` under `components/admin/`
+
+**No matches** for `Skeleton` in `/home/gonzalo/gonzalopozo.github.io/components/admin/`.
+
+---
+
+## 11. `lib/react-icons-manifest.json` (first 20 lines)
+
+Path: `/home/gonzalo/gonzalopozo.github.io/lib/react-icons-manifest.json`
+
+```json
+[
+  {
+    "name": "Fa500Px",
+    "pack": "fa"
+  },
+  {
+    "name": "FaAccessibleIcon",
+    "pack": "fa"
+  },
+  {
+    "name": "FaAccusoft",
+    "pack": "fa"
+  },
+  {
+    "name": "FaAcquisitionsIncorporated",
+    "pack": "fa"
+  },
+  {
+    "name": "FaAd",
+    "pack": "fa"
+```
+
+Structure: a JSON array of objects with **`name`** (react-icons export name) and **`pack`** (icon family short code, e.g. `"fa"`).
+
+---
+
+## 12. `components/ui/select.tsx`
+
+**Not present.**
+
+---
+
+## 13. `lib/utils.ts` (full)
+
+```1:7:/home/gonzalo/gonzalopozo.github.io/lib/utils.ts
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+```

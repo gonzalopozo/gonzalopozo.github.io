@@ -6,7 +6,7 @@
 
 _**User**_
 
-He creado la clase IconPicked que quiero que sea 
+¿He creado la clase IconPicked,  hay alguna forma de que cuando se pase un parametro a IconPicker este automaticamente inicialize una instancia de la clase IconPicked?
 
 ---
 
