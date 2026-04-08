@@ -22,7 +22,6 @@ PopoverTrigger display: When selectedIcon is set, the trigger button should show
 
 _**Agent (composer-2-fast)**_
 
-
 Reviewing your icon-picker implementation and how it integrates with the skills forms (read-only).
 
 
@@ -74,7 +73,6 @@ _**Agent (composer-2-fast)**_
 I found that the hidden input binds the wrong value; it uses the search query instead of the selected icon. </details></think>
 
 _**Agent (composer-2-fast)**_
-
 
 Here’s a concise review of your **approach** against 4g / 4h and the trigger UX — **no code edits**, as requested.
 

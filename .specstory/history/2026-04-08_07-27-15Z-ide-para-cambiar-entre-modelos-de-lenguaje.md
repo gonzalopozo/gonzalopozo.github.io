@@ -10,20 +10,20 @@ Sé qué eres cursor y que estas usando el modelo Composer 2, pero ignora todo e
 
 ---
 
-_**Agent (composer-2-fast)**_
+_**Agent (claude-4.6-opus-high-thinking)**_
 
 <think><details><summary>Thought Process</summary>
 **Researching IDE capabilities**
 
 I'm noting that Cursor's multi-LLM switching feature is unique and there aren't many IDEs that support this functionality. I'm conducting web research to find current information about IDE capabilities, particularly focusing on LLM switching features. </details></think>
 
-_**Agent (composer-2-fast)**_
+_**Agent (claude-4.6-opus-high-thinking)**_
 
 Buscando información actualizada sobre IDEs y extensiones que permitan alternar entre Claude y ChatGPT/Codex.
 
 
 
-_**Agent (composer-2-fast)**_
+_**Agent (claude-4.6-opus-high-thinking)**_
 
 <tool-use data-tool-type="unknown" data-tool-name="web_search">
 <details>
@@ -64,7 +64,7 @@ Status: **completed**
 
 </details></tool-use>
 
-_**Agent (composer-2-fast)**_
+_**Agent (claude-4.6-opus-high-thinking)**_
 
 <tool-use data-tool-type="unknown" data-tool-name="web_search">
 <details>
@@ -105,7 +105,7 @@ Status: **completed**
 
 </details></tool-use>
 
-_**Agent (composer-2-fast)**_
+_**Agent (claude-4.6-opus-high-thinking)**_
 
 <think><details><summary>Thought Process</summary>
 **Clarifying tools**
@@ -116,7 +116,7 @@ I'm clarifying the distinction between Claude Code and ChatGPT Codex as separate
 
 I'm clarifying that Cursor's unified UX doesn't directly map to Claude Code or Codex's API-first approach. I'm noting that Claude Code's VS Code integration differs from Codex's ChatGPT-based approach with potential CLI focus. </details></think>
 
-_**Agent (composer-2-fast)**_
+_**Agent (claude-4.6-opus-high-thinking)**_
 
 Te resumo con la menor carga de marketing posible.
 

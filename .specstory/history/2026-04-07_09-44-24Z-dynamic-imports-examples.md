@@ -12,7 +12,6 @@ Give me two example of using dinamyc imports, one with then/catch and anothe one
 
 _**Agent (composer-2-fast)**_
 
-
 Here are two equivalent patterns for **dynamic `import()`** (ES modules).
 
 ### 1. With `.then()` / `.catch()`
