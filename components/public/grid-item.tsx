@@ -1,31 +1,23 @@
 "use client"
 
-import { forwardRef } from "react"
-import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import type { ComponentPropsWithRef } from "react"
+import { parseAsStringLiteral, useQueryState } from "nuqs"
+import { Card } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button";
-import { PortfolioSection } from "@/components/public/portfolio-grid";
-import { ProjectInfo } from "@/lib/types";
-import { ArrowBigDownDashIcon } from "lucide-react";
-import { FaExternalLinkAlt, FaGithub } from "react-icons/fa";
-import Image from "next/image";
-import { StatusIndicator } from "@/components/public/status-indicator";
-
+import { Button } from "@/components/ui/button"
+import { PORTFOLIO_SECTIONS, type PortfolioSection } from "@/components/public/portfolio-sections"
 
 export type GridItemVariant = 'about' | 'project' | 'experience' | 'contact' | 'map';
-type SetSection = (variant: PortfolioSection | null) => Promise<URLSearchParams>
 
 interface GridItemProps {
     variant: GridItemVariant
-    section: PortfolioSection | null
-    setSection?: SetSection
-    project?: ProjectInfo
 }
 
-interface ShowMoreButtonProps {
+interface GridItemShowMoreButtonProps {
     variant: Exclude<GridItemVariant, 'map'>
-    setSection: SetSection
 }
+
+type GridItemComponentProps = ComponentPropsWithRef<"div"> & GridItemProps
 
 const VARIANT_CONFIG: Record<Exclude<GridItemVariant, 'map'>, { section: PortfolioSection; label: string }> = {
     about: { section: "About me", label: "¡Conoce más de mí!" },
@@ -34,94 +26,41 @@ const VARIANT_CONFIG: Record<Exclude<GridItemVariant, 'map'>, { section: Portfol
     project: { section: "Projects", label: "¡Descubre mis proyectos!" },
 }
 
-function ShowMoreButton({ variant, setSection }: ShowMoreButtonProps) {
-    const { section, label } = VARIANT_CONFIG[variant]
+export function GridItemShowMoreButton({ variant }: GridItemShowMoreButtonProps) {
+    const [section, setSection] = useQueryState("section", parseAsStringLiteral(PORTFOLIO_SECTIONS))
+    const { section: targetSection, label } = VARIANT_CONFIG[variant]
+
+    if (section) {
+        return null
+    }
 
     return (
-        <Button onClick={() => setSection(section)}>
+        <Button onClick={() => setSection(targetSection)}>
             {label}
         </Button>
     )
 }
 
-export const GridItem = forwardRef<HTMLDivElement, React.ComponentProps<"div"> & GridItemProps>(
-    ({ children, className, variant, section, setSection, project, ...props }, ref) => (
+export function GridItem({
+    children,
+    className,
+    variant,
+    ref,
+    ...props
+}: GridItemComponentProps) {
+    return (
         <div ref={ref} {...props}>
             <Card className={cn("size-full min-h-0 min-w-0 overflow-hidden bg-card rounded-4xl", className, {
                 "text-card-foreground bg-card": variant !== "map",
                 "gap-0 p-0 py-0": variant === "map",
                 "grid grid-cols-1 grid-rows-[auto repeat(3, 1fr)] pt-0": variant === "project"
             })}>
-                {(variant === "project") && project && (
-                    <>
-                        <figure className="relative min-h-0 overflow-hidden">
-                            {project.ogImageUrl ? (
-                                <Image
-                                    src={project.ogImageUrl}
-                                    alt={project.title}
-                                    width={1260}
-                                    height={630}
-                                    className="h-full w-full object-cover"
-                                    sizes="(max-width: 768px) 100vw, 50vw"
-                                />
-                            ) : (
-                                <div
-                                    className="aspect-1200/630 w-full bg-linear-to-br from-primary/40 via-secondary to-accent/45 dark:from-primary/55 dark:via-card dark:to-accent/40"
-                                    aria-hidden="true"
-                                />
-                            )}
-                        </figure>
-                        <CardHeader className="content-start items-start">
-                            <CardTitle className="flex items-center justify-between">
-                                {project.title}
-                                <StatusIndicator status={project.status} />
-                            </CardTitle>
-                            <CardDescription>
-                                {project.description}
-                            </CardDescription>
-                            {/* <CardAction>
-                                See more here <ArrowBigDownDashIcon />
-                            </CardAction> */}
-                        </CardHeader>
-                        <CardContent>
-                            <div className="flex items-center justify-between gap-4">
-                                <p>Proyecto desarrollado con {project.projectSkills.map(({ skill }) => skill.name).join(", ")}</p>
-                                <div className="flex items-center justify-evenly grow">
-                                    {project.repoUrl && (
-                                        <a href={project.repoUrl} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="View repository on GitHub">
-                                            <FaGithub className="size-5" aria-hidden="true" />
-                                        </a>
-                                    )}
-                                    {project.url && (
-                                        <a href={project.url} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors" aria-label="View live project">
-                                            <FaExternalLinkAlt className="size-4" aria-hidden="true" />
-                                        </a>
-                                    )}
-                                </div>
-                            </div>
-                            <p>Estado: <span className={cn("font-bold", project.status === "active" && "text-status-active", project.status === "archived" && "text-status-archived", project.status === "in-progress" && "text-status-in-progress")}>{project.status}</span></p>
-                        </CardContent>
-                        <CardFooter className="flex flex-col items-start gap-3">
-                            Creado el {project.createdAt.getDate()}/{project.createdAt.getMonth() + 1}/{project.createdAt.getFullYear()}
+                {children}
 
-                            {!section && setSection && (
-                                <ShowMoreButton variant={variant} setSection={setSection} />
-                            )}
-                        </CardFooter>
-                    </>
-
-                )}
-
-                {variant !== "project" && (
-                    children
-                )}
-
-                {!section && variant !== "project" && setSection && variant !== "map" && (
-                    <ShowMoreButton variant={variant} setSection={setSection} />
+                {variant !== "project" && variant !== "map" && (
+                    <GridItemShowMoreButton variant={variant} />
                 )}
             </Card>
         </div>
     )
-)
-
-GridItem.displayName = "GridItem"
+}

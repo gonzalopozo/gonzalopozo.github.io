@@ -5,23 +5,19 @@ import { Button } from '@/components/ui/button'
 import { Responsive, useContainerWidth, Layout } from "react-grid-layout";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import Image from 'next/image';
 import { RiGithubLine } from "react-icons/ri";
 import { Map, MapControls } from "@/components/ui/map";
 import { GridItem } from '@/components/public/grid-item';
+import { PORTFOLIO_SECTIONS, type PortfolioSection } from '@/components/public/portfolio-sections';
 import { ModeToggle } from '@/components/theme-toggler';
-import { ProjectInfo } from '@/lib/types';
-
-const PORTFOLIO_SECTIONS = ['About me', 'Projects', 'Experience', 'Contact'] as const
-
-export type PortfolioSection = (typeof PORTFOLIO_SECTIONS)[number]
 
 interface PorfolioGridProps {
-    projects: ProjectInfo[]
+    projectCards: ReactNode[]
 }
 
-export function PortfolioGrid({ projects }: PorfolioGridProps) {
+export function PortfolioGrid({ projectCards }: PorfolioGridProps) {
     const [section, setSection] = useQueryState('section', parseAsStringLiteral(PORTFOLIO_SECTIONS))
 
     const sections: { url: string; v: PortfolioSection | null; layouts?: { lg: Layout; md: Layout }; GridItems?: ReactNode }[] =
@@ -70,7 +66,6 @@ export function PortfolioGrid({ projects }: PorfolioGridProps) {
 
     const resolvedSection = sections.find(e => e.v === section) ?? sections[0]
     const gridLayouts = resolvedSection.layouts
-    const gridContent = resolvedSection.GridItems
 
     const { width, containerRef, mounted } = useContainerWidth();
 
@@ -101,7 +96,7 @@ export function PortfolioGrid({ projects }: PorfolioGridProps) {
                         rowHeight={30}
                         resizeConfig={{ enabled: false }}
                     >
-                        <GridItem variant='about' section={section} setSection={setSection} className='flex flex-col items-start gap-2' key="a">
+                        <GridItem variant='about' className='flex flex-col items-start gap-2' key="a">
                             <figure className='shrink-0'>
                                 <Image
                                     src="/360.png"
@@ -134,14 +129,14 @@ export function PortfolioGrid({ projects }: PorfolioGridProps) {
                                 </a>
                             </Button>
                         </GridItem>
-                        <GridItem variant='map' section={section} key="b">
+                        <GridItem variant='map' key="b">
                             <Map center={[-3.916, 40.273]} zoom={13} attributionControl={false}>
                                 <MapControls />
                             </Map>
                         </GridItem>
-                        <GridItem variant='project' section={section} setSection={setSection} project={projects[0]} key="c" />
-                        <GridItem variant='project' section={section} setSection={setSection} project={projects[1]} key="d" />
-                        <GridItem variant='project' section={section} setSection={setSection} project={projects[2]} key="e" />
+                        <GridItem variant='project' key="c">{projectCards[0]}</GridItem>
+                        <GridItem variant='project' key="d">{projectCards[1]}</GridItem>
+                        <GridItem variant='project' key="e">{projectCards[2]}</GridItem>
                     </Responsive>
                 )}
             </div>

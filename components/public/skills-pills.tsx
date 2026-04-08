@@ -1,11 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { SkillIcon } from "@/components/public/skill-icon";
-
-interface Skill {
-    id: number;
-    name: string;
-    iconFullName: string;
-}
+import type { Skill } from "@/lib/types";
 
 interface SkillsPillsProps {
     skills: Skill[];
@@ -16,7 +11,12 @@ export function SkillsPills({ skills }: SkillsPillsProps) {
 
     return (
         <div className="flex flex-wrap gap-1.5">
-            {skills.map(({ id, name, iconFullName }) => ( <Badge variant="secondary" key={`${id}-${name}`}>{iconFullName ? <SkillIcon iconFullName={iconFullName} /> : null }{name}</Badge> ))}
+            {skills.map(({ id, name, icon }) => (
+                <Badge variant="secondary" key={`${id}-${name}`} className="gap-1.5">
+                    {icon ? <SkillIcon iconFullName={icon} /> : null}
+                    {name}
+                </Badge>
+            ))}
         </div>
     )
 
