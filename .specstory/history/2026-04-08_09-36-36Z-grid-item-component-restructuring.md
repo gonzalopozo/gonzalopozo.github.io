@@ -1572,7 +1572,6 @@ I'm clarifying when to use .d.ts files vs regular .ts files for type declaration
 
 _**Agent (composer-2-fast)**_
 
-
 No. Keep it as a normal `.ts` module.
 
 `portfolio-sections.ts` is meant to export **`PORTFOLIO_SECTIONS`**, which is a **runtime value** (the array you pass to `parseAsStringLiteral` and use elsewhere). A **`.d.ts`** file is for **type-only** declarations; it doesn’t (and shouldn’t) carry that kind of real `const` implementation in the same way you’re using it.
