@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "spellcheck": "cspell lint . --config cspell.json --no-progress",
+    "spellcheck:suggestions": "cspell lint . --config cspell.json --no-progress --show-suggestions",
     "knip": "knip",
     "test": "vitest",
     "migrate:generate": "drizzle-kit generate --config ./db/drizzle.config.ts",
@@ -77,6 +79,7 @@
     }
   },
   "devDependencies": {
+    "@cspell/dict-es-es": "^3.0.8",
     "@playwright/test": "^1.58.2",
     "@tailwindcss/postcss": "^4.2.1",
     "@testing-library/dom": "^10.4.1",
@@ -86,6 +89,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.4",
     "babel-plugin-react-compiler": "1.0.0",
+    "cspell": "^10.0.0",
     "drizzle-kit": "^0.31.9",
     "eslint": "^9.39.3",
     "eslint-config-next": "16.1.6",

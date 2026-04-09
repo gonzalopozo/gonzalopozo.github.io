@@ -10,10 +10,10 @@ import { PutBlobResult, del, put } from '@vercel/blob';
  * @returns Retorna true si es una IP invalida y false si es valida.
  */
 function isInvalidIpV4(ip: string): boolean {
-    const octects = ip.split(".").map(Number);
-    if (octects.length !== 4 || octects.some((p) => isNaN(p))) return true;
+    const octets = ip.split(".").map(Number);
+    if (octets.length !== 4 || octets.some((p) => isNaN(p))) return true;
 
-    const [a, b, c] = octects; 
+    const [a, b, c] = octets;
 
     if (
         (a === 0) ||
@@ -41,10 +41,10 @@ function isInvalidIpV6(ip: string): boolean {
     let ipFilled;
 
     if (ip.includes("::")) {
-        const ipSplited = ip.split("::");
-    
-        const leftIpPart = ipSplited[0].split(":");
-        const rightIpPart = ipSplited[1].split(":");
+        const ipSplitParts = ip.split("::");
+
+        const leftIpPart = ipSplitParts[0].split(":");
+        const rightIpPart = ipSplitParts[1].split(":");
     
         const leftGroupsCount = ((leftIpPart.length === 1) && (leftIpPart[0] === "")) ? 0 : leftIpPart.length;
         const rightGroupsCount = ((rightIpPart.length === 1) && (rightIpPart[0] === "")) ? 0 : rightIpPart.length;
@@ -62,7 +62,7 @@ function isInvalidIpV6(ip: string): boolean {
         ipFilled = ip.replaceAll("::", zerosFiller);
     } else ipFilled = ip;
 
-    const groups = ipFilled.split(":").map(octect => parseInt(octect, 16));
+    const groups = ipFilled.split(":").map((hexGroup) => parseInt(hexGroup, 16));
     if (groups.length !== 8 || groups.some((p) => isNaN(p))) return true;
 
     const [g0, g1, g2, g3, g4, g5, g6, g7] = groups; 
@@ -90,9 +90,9 @@ function isInvalidIpV6(ip: string): boolean {
         const octet3 = g7 >> 8;
         const octet4 = g7 & 255;
 
-        const extracedIpV4 = `${octet1}.${octet2}.${octet3}.${octet4}`
+        const extractedIpV4 = `${octet1}.${octet2}.${octet3}.${octet4}`;
 
-        if (isInvalidIpV4(extracedIpV4)) return true;
+        if (isInvalidIpV4(extractedIpV4)) return true;
     }
 
     return false;
@@ -238,7 +238,7 @@ export async function saveImageInVercelBlob(url: string, projectId: number): Pro
 
     let response: Response;
 
-    console.log("Hacinedo fetch de la web...")
+    console.log("Haciendo fetch de la web...");
 
     try {
         response = await fetch(webUrl.toString(), {
@@ -249,7 +249,7 @@ export async function saveImageInVercelBlob(url: string, projectId: number): Pro
         return null;
     }
 
-    console.log("La web no nos intenteta redireccionar ni ha superado el timeout de 5 segundos");
+    console.log("La web no nos intenta redireccionar ni ha superado el timeout de 5 segundos");
 
     if (!response.ok) return null;
 
@@ -297,7 +297,7 @@ export async function saveImageInVercelBlob(url: string, projectId: number): Pro
 
     let imageResponse: Response;
 
-    console.log("Hacinedo fetch de la imagen...")
+    console.log("Haciendo fetch de la imagen...");
 
     try {
         imageResponse = await fetch(ogImageNormalizedUrl.toString(), {
