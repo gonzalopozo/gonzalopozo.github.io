@@ -46,6 +46,7 @@ ESOCKETNODATA
 # npm / UI libraries
 cmdk
 dnd
+depcruise
 Devicons
 geist
 maplibre
