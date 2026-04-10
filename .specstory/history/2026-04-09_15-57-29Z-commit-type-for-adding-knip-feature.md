@@ -324,13 +324,6 @@ Add it as a new script in @package.json
 
 _**Agent (composer-2-fast)**_
 
-
-
-
-
-
-_**Agent (composer-2-fast)**_
-
 <tool-use data-tool-type="read" data-tool-name="read_file_v2">
 <details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/package.json</summary>
 
@@ -343,7 +336,6 @@ _**Agent (composer-2-fast)**_
 </details></tool-use>
 
 _**Agent (composer-2-fast)**_
-
 
 Adding `knip:fix` next to `knip`, matching the `audit:fix` pattern.
 
@@ -365,7 +357,6 @@ _**Agent (composer-2-fast)**_
 </details></tool-use>
 
 _**Agent (composer-2-fast)**_
-
 
 Added a `knip:fix` script next to `knip`:
 
