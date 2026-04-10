@@ -68,6 +68,7 @@ turso
 unixepoch
 
 # Technical / comments
+lockfiles
 subcomponents
 
 # Documentation (AGENTS-*.md) — acronyms & product terms

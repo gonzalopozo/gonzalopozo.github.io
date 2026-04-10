@@ -13,6 +13,9 @@
 # testing
 /coverage
 
+# CSpell (lint-staged --cache)
+.cspellcache
+
 # next.js
 /.next/
 /out/
