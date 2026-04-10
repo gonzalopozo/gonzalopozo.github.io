@@ -174,7 +174,6 @@ I'm structuring the tool review by category and assessing each tool's relevance 
 
 _**Agent (composer-2-fast)**_
 
-
 Here’s a curated pass over your list in the context of **this repo**: Next.js 16 App Router, React 19, TypeScript, Tailwind 4.2, Drizzle + Turso, better-auth, pnpm, Vitest, and a public site + admin CMS.
 
 ---

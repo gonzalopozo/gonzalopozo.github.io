@@ -2716,7 +2716,7 @@ Additional data:
   "reviewData": {
     "isShowingInput": false,
     "selectedOption": "run",
-    "status": "Done"
+    "status": "None"
   }
 }
 ```
@@ -3551,9 +3551,23 @@ Parameters:
   "searchTerm": "Prettier proseWrap preserve never markdown difference"
 }
 ```
+Result:
+
+```json
+{
+  "isFinal": true,
+  "references": [
+    {
+      "chunk": "Links:\n1. [Question: \"never\" vs \"preserve\" in --prose-wrap · Issue #6488 · prettier/prettier](https://github.com/prettier/prettier/issues/6488)\n2. [feat(markdown): add &#96;proseWrap: \"preserve\"&#96; option · Pull Request #3340 · prettier/prettier](https://github.com/prettier/prettier/pull/3340)\n3. [Options · Prettier](https://prettier.io/docs/en/next/options.html)\n4. [Options · Prettier](https://prettier.io/docs/options)\n5. [Clarify documentation around proseWrap · Pull Request #12134 · prettier/prettier](https://github.com/prettier/prettier/pull/12134)\n\n# Prettier proseWrap: \"never\" vs \"preserve\" in Markdown\n\nThe key differences between these two &#96;proseWrap&#96; options for Markdown are:[1]\n\n**\"never\"**: Puts all text in one single long line. It unwraps all prose blocks, removing any line breaks within paragraphs.[1][5]\n\n**\"preserve\"**: Respects and maintains the original linebreaks from the input. It does no wrapping of prose blocks, leaving them as-is without reformatting.[1][5]\n\n## Example\n\nWith the same input text split across two lines:[1]\n\n&#96;&#96;&#96;\nLorem ipsum dolor sit amet, consectetur adipiscing elit.\nCurabitur consectetur maximus risus, sed maximus tellus tincidunt et.\n&#96;&#96;&#96;\n\n- **\"never\"** output: Combines into one line: &#96;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur consectetur maximus risus, sed maximus tellus tincidunt et.&#96;\n\n- **\"preserve\"** output: Keeps the original line breaks intact as shown in the input.\n\nFor context, there's also \"always\" which wraps prose to fit the &#96;printWidth&#96; setting.[1] The &#96;\"preserve\"&#96; option was added as a default because different Markdown variants are sensitive to line breaks differently (GitHub, BitBucket, etc.), making it safer to preserve the original formatting rather than reformatting it.[2]",
+      "title": "Web search results for query: Prettier proseWrap preserve never markdown difference"
+    }
+  ],
+  "rejected": false
+}
+```
 User decision: **accepted**
 
-Status: **loading**
+Status: **completed**
 
 
 </details>
@@ -3563,3 +3577,48 @@ Status: **loading**
 <summary>Tool use: **web_search**</summary>
 
 </details></tool-use>
+
+_**Agent (composer-2-fast)**_
+
+
+Here’s how Prettier uses them for **Markdown** (and similar prose):
+
+## `proseWrap: "preserve"`
+
+- **Keeps the line breaks you already have** inside a paragraph (and generally avoids reflowing prose to `printWidth`).
+- Good when **line breaks matter** for you (diffs, “one sentence per line,” or tools that care about how lines are split).
+
+**Example:** If your source has two lines in one paragraph:
+
+```md
+Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+Curabitur consectetur maximus risus.
+```
+
+Prettier will **not** glue those into one wrapped block (it **preserves** that structure).
+
+---
+
+## `proseWrap: "never"`
+
+- **Does not wrap** prose to `printWidth`.
+- For paragraph text, it tends to **collapse** inner line breaks so each paragraph becomes **one long line** (until the next blank line), instead of keeping your manual breaks.
+
+So the practical difference vs **`preserve`**:  
+**`never`** = “don’t wrap to column width” and often **unwraps** lines in a paragraph into a single line.  
+**`preserve`** = “don’t reflow for width; **keep** the author’s line breaks.”
+
+---
+
+## Compared to `"always"`
+
+- **`"always"`** reflows paragraph text so lines fit **`printWidth`** (e.g. 100 columns). That’s the one that **hard-wraps** prose.
+
+---
+
+**Rule of thumb**
+
+- Want **manual line breaks kept** → **`preserve`** (also the usual default for Markdown in Prettier).
+- Want **each paragraph as one long line** (no manual mid-paragraph breaks) → closer to **`never`** behavior, but read the [official `proseWrap` docs](https://prettier.io/docs/en/options.html#prose-wrap) for your Prettier version because wording and edge cases are refined over time.
+
+The distinction is also discussed in [this Prettier issue](https://github.com/prettier/prettier/issues/6488) about `never` vs `preserve`.
