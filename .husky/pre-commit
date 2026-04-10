@@ -1,0 +1,6 @@
+# Pre-commit — portfolio-gonzalopozo (Next.js 16, pnpm)
+#
+# Husky is installed; this hook is intentionally a no-op until you add steps
+# (e.g. lint-staged → eslint, typecheck, vitest run, cspell). Use `pnpm run …`.
+
+:

@@ -23,7 +23,8 @@
     "skills:check": "pnpm dlx skills check",
     "skills:update": "pnpm dlx skills update -y",
     "skills:sync": "pnpm skills:check && pnpm skills:update",
-    "icons:manifest": "pnpm tsx scripts/generate-icon-manifest.mts"
+    "icons:manifest": "pnpm tsx scripts/generate-icon-manifest.mts",
+    "prepare": "husky"
   },
   "dependencies": {
     "@dnd-kit/helpers": "^0.3.2",
@@ -94,6 +95,7 @@
     "drizzle-kit": "^0.31.9",
     "eslint": "^9.39.3",
     "eslint-config-next": "16.1.6",
+    "husky": "^9.1.7",
     "jsdom": "^28.1.0",
     "knip": "^6.3.1",
     "postcss": "8.5.8",
