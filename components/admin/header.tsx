@@ -1,108 +1,111 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import { usePathname } from "next/navigation"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { cn } from "@/lib/utils"
+import { useState } from 'react';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { cn } from '@/lib/utils';
 import {
-  Menu,
-  LayoutDashboard,
-  FolderKanban,
-  Briefcase,
-  Wrench,
-  Settings,
-  Link2,
-  ExternalLink,
-  Boxes,
-} from "lucide-react"
+	Menu,
+	LayoutDashboard,
+	FolderKanban,
+	Briefcase,
+	Wrench,
+	Settings,
+	Link2,
+	ExternalLink,
+	Boxes,
+} from 'lucide-react';
 
-interface AdminHeaderProps {
-  user: {
-    name: string
-    email: string
-    image?: string | null
-  }
-}
+// interface AdminHeaderProps {
+//   user: {
+//     name: string
+//     email: string
+//     image?: string | null
+//   }
+// }
 
 const navigation = [
-  { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Projects", href: "/dashboard/projects", icon: FolderKanban },
-  { name: "Experiences", href: "/dashboard/experiences", icon: Briefcase },
-  { name: "Skills", href: "/dashboard/skills", icon: Wrench },
-  { name: "Social Links", href: "/dashboard/social-links", icon: Link2 },
-  { name: "Settings", href: "/dashboard/settings", icon: Settings },
-]
+	{ name: 'Overview', href: '/dashboard', icon: LayoutDashboard },
+	{ name: 'Projects', href: '/dashboard/projects', icon: FolderKanban },
+	{ name: 'Experiences', href: '/dashboard/experiences', icon: Briefcase },
+	{ name: 'Skills', href: '/dashboard/skills', icon: Wrench },
+	{ name: 'Social Links', href: '/dashboard/social-links', icon: Link2 },
+	{ name: 'Settings', href: '/dashboard/settings', icon: Settings },
+];
 
-export function AdminHeader({ user }: AdminHeaderProps) {
-  const pathname = usePathname()
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+// TODO: { user }: AdminHeaderProps ???
+export function AdminHeader() {
+	const pathname = usePathname();
+	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  return (
-    <header className="flex h-16 items-center justify-between border-b border-border bg-card px-4 lg:px-6">
-      <div className="flex items-center gap-4">
-        <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="lg:hidden">
-              <Menu className="h-5 w-5" />
-              <span className="sr-only">Toggle menu</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-64 p-0">
-            <div className="flex h-16 items-center border-b border-border px-3 pr-12">
-              <Link
-                href="/dashboard"
-                className="flex items-center gap-3 rounded-md bg-accent px-3 py-2 text-sm font-medium text-accent-foreground"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                <Boxes className="h-4 w-4" />
-                <span>Dashboard</span>
-              </Link>
-            </div>
-            <nav className="space-y-1 px-3 py-4">
-              {navigation.map((item) => {
-                const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href))
-                return (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={cn(
-                      "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                      isActive
-                        ? "bg-accent text-accent-foreground"
-                        : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
-                    )}
-                  >
-                    <item.icon className="h-4 w-4" />
-                    {item.name}
-                  </Link>
-                )
-              })}
-            </nav>
-          </SheetContent>
-        </Sheet>
-        <div className="lg:hidden">
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-3 rounded-md bg-accent px-3 py-2 text-sm font-medium text-accent-foreground"
-          >
-            <Boxes className="h-4 w-4" />
-            <span>Dashboard</span>
-          </Link>
-        </div>
-      </div>
+	return (
+		<header className="border-border bg-card flex h-16 items-center justify-between border-b px-4 lg:px-6">
+			<div className="flex items-center gap-4">
+				<Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+					<SheetTrigger asChild>
+						<Button variant="ghost" size="icon" className="lg:hidden">
+							<Menu className="h-5 w-5" />
+							<span className="sr-only">Toggle menu</span>
+						</Button>
+					</SheetTrigger>
+					<SheetContent side="left" className="w-64 p-0">
+						<div className="border-border flex h-16 items-center border-b px-3 pr-12">
+							<Link
+								href="/dashboard"
+								className="bg-accent text-accent-foreground flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium"
+								onClick={() => setMobileMenuOpen(false)}
+							>
+								<Boxes className="h-4 w-4" />
+								<span>Dashboard</span>
+							</Link>
+						</div>
+						<nav className="space-y-1 px-3 py-4">
+							{navigation.map((item) => {
+								const isActive =
+									pathname === item.href ||
+									(item.href !== '/dashboard' && pathname.startsWith(item.href));
+								return (
+									<Link
+										key={item.name}
+										href={item.href}
+										onClick={() => setMobileMenuOpen(false)}
+										className={cn(
+											'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
+											isActive
+												? 'bg-accent text-accent-foreground'
+												: 'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
+										)}
+									>
+										<item.icon className="h-4 w-4" />
+										{item.name}
+									</Link>
+								);
+							})}
+						</nav>
+					</SheetContent>
+				</Sheet>
+				<div className="lg:hidden">
+					<Link
+						href="/dashboard"
+						className="bg-accent text-accent-foreground flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium"
+					>
+						<Boxes className="h-4 w-4" />
+						<span>Dashboard</span>
+					</Link>
+				</div>
+			</div>
 
-      <div className="flex items-center gap-2">
-        <Button variant="outline" size="sm" asChild>
-          <Link href="/" target="_blank">
-            <ExternalLink className="mr-2 h-4 w-4" />
-            View Site
-          </Link>
-        </Button>
+			<div className="flex items-center gap-2">
+				<Button variant="outline" size="sm" asChild>
+					<Link href="/" target="_blank">
+						<ExternalLink className="mr-2 h-4 w-4" />
+						View Site
+					</Link>
+				</Button>
 
-        {/* <DropdownMenu>
+				{/* <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="rounded-full">
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
@@ -126,7 +129,7 @@ export function AdminHeader({ user }: AdminHeaderProps) {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu> */}
-      </div>
-    </header>
-  )
+			</div>
+		</header>
+	);
 }

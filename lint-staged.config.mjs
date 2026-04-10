@@ -6,7 +6,9 @@
  * @see https://github.com/lint-staged/lint-staged
  * @see https://nextjs.org/docs/app/api-reference/config/eslint
  */
-export default {
+const config = {
 	'*.{js,jsx,mjs,cjs,ts,tsx,mts,cts}': ['eslint --fix', 'prettier --write'],
 	'*.{json,md,mdx,css,scss,html,yml,yaml}': 'prettier --write',
 };
+
+export default config;
