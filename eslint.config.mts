@@ -1,4 +1,5 @@
 import { defineConfig, globalIgnores } from "eslint/config";
+import eslintConfigPrettier from "eslint-config-prettier";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 import vitest from "@vitest/eslint-plugin";
@@ -95,6 +96,9 @@ export default defineConfig([
       },
     },
   },
+
+  // Turn off ESL<int rules that conflict with Prettier (formatting). Must stay near the end.
+  eslintConfigPrettier,
 
   globalIgnores([
     ".next/**",
