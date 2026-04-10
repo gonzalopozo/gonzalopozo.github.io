@@ -12,6 +12,7 @@
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
 		"lint:staged": "lint-staged",
+		"commitlint": "commitlint",
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
 		"spellcheck": "cspell lint . --config cspell.json --no-progress",
@@ -88,6 +89,8 @@
 		}
 	},
 	"devDependencies": {
+		"@commitlint/cli": "^20.5.0",
+		"@commitlint/config-conventional": "^20.5.0",
 		"@cspell/dict-es-es": "^3.0.8",
 		"@playwright/test": "^1.58.2",
 		"@tailwindcss/postcss": "^4.2.1",
