@@ -14,11 +14,11 @@ import type { Config } from "prettier";
  */
 const config: Config = {
   semi: true,
-  singleQuote: false,
+  singleQuote: true,
   jsxSingleQuote: false,
   trailingComma: "all",
-  tabWidth: 2,
-  useTabs: false,
+  tabWidth: 4,
+  useTabs: true,
   printWidth: 100,
   bracketSpacing: true,
   bracketSameLine: false,
