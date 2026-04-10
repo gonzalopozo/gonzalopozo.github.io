@@ -14,8 +14,8 @@ First-time setup, environment configuration, and development prerequisites.
 
 ## Prerequisites
 
-- Node.js 18+
-- pnpm v10.x (`npm install -g pnpm@10`)
+- Node.js 24+
+- pnpm 10.33.0 via the repo's `packageManager` field
 - Turso CLI (optional, for local DB management)
 
 ## Environment Variables
@@ -33,7 +33,10 @@ BETTER_AUTH_URL=http://localhost:3000
 
 ```bash
 pnpm i
+pnpm run hooks:install
 ```
+
+`ignore-scripts=true` is enabled in `.npmrc`, so lifecycle scripts do not run during install. Husky hooks must be installed manually with `pnpm run hooks:install`.
 
 ## Making Schema Changes
 
