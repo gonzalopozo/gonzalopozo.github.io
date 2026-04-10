@@ -17,13 +17,13 @@ Accessibility guidelines for the portfolio project — project-specific patterns
 
 **Always use Next.js components instead of HTML equivalents** — they provide built-in optimizations and accessibility.
 
-| HTML | Next.js Component | Import | Why |
-| --- | --- | --- | --- |
-| `<a>` | `<Link>` | `next/link` | Client-side nav, prefetching, accessible by default |
-| `<form>` | `<Form>` | `next/form` | Prefetches loading UI, progressive enhancement |
-| `<img>` | `<Image>` | `next/image` | Lazy loading, responsive srcset, enforces `alt` + dimensions |
-| Manual font `<link>` | `next/font` | `next/font/google` | Self-hosted, zero layout shift |
-| `<script>` | `<Script>` | `next/script` | Loading strategies, avoids blocking |
+| HTML                 | Next.js Component | Import             | Why                                                          |
+| -------------------- | ----------------- | ------------------ | ------------------------------------------------------------ |
+| `<a>`                | `<Link>`          | `next/link`        | Client-side nav, prefetching, accessible by default          |
+| `<form>`             | `<Form>`          | `next/form`        | Prefetches loading UI, progressive enhancement               |
+| `<img>`              | `<Image>`         | `next/image`       | Lazy loading, responsive srcset, enforces `alt` + dimensions |
+| Manual font `<link>` | `next/font`       | `next/font/google` | Self-hosted, zero layout shift                               |
+| `<script>`           | `<Script>`        | `next/script`      | Loading strategies, avoids blocking                          |
 
 ### Rules
 
@@ -166,6 +166,7 @@ shadcn's `FormField` + `FormLabel` + `FormMessage` handles this automatically wi
 ## Sonner Toasts
 
 Sonner handles ARIA live regions automatically:
+
 - Success/info toasts: `aria-live="polite"` (non-interrupting)
 - Error toasts: `role="alert"` (interrupting)
 - Keyboard-dismissible
@@ -178,12 +179,12 @@ Sonner handles ARIA live regions automatically:
 
 Always use `next/image` which enforces `alt` at the TypeScript level.
 
-| Image Type | Alt Text |
-| --- | --- |
+| Image Type         | Alt Text                                                          |
+| ------------------ | ----------------------------------------------------------------- |
 | Project screenshot | Describe what it shows: `"Dashboard view of task management app"` |
-| Company logo | Company name: `"Vercel logo"` |
-| Decorative | `alt="" aria-hidden="true"` |
-| Profile photo | `"Gonzalo Pozo, Full Stack Developer"` |
+| Company logo       | Company name: `"Vercel logo"`                                     |
+| Decorative         | `alt="" aria-hidden="true"`                                       |
+| Profile photo      | `"Gonzalo Pozo, Full Stack Developer"`                            |
 
 ### Rules
 
@@ -199,20 +200,20 @@ Add to `app/globals.css` to disable animations for users who prefer reduced moti
 
 ```css
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  html {
-    scroll-behavior: smooth;
-  }
+	html {
+		scroll-behavior: smooth;
+	}
 }
 ```
 
@@ -220,10 +221,10 @@ For Windows High Contrast mode, ensure focus uses `outline` not `box-shadow`:
 
 ```css
 @media (forced-colors: active) {
-  :focus-visible {
-    outline: 2px solid CanvasText;
-    outline-offset: 2px;
-  }
+	:focus-visible {
+		outline: 2px solid CanvasText;
+		outline-offset: 2px;
+	}
 }
 ```
 
@@ -233,11 +234,11 @@ For Windows High Contrast mode, ensure focus uses `outline` not `box-shadow`:
 
 ### WCAG AA Thresholds
 
-| Element | Minimum Ratio |
-| --- | --- |
-| Normal text (< 18px or < 14px bold) | 4.5:1 |
-| Large text (>= 18px or >= 14px bold) | 3:1 |
-| UI components (borders, icons, focus rings) | 3:1 |
+| Element                                     | Minimum Ratio |
+| ------------------------------------------- | ------------- |
+| Normal text (< 18px or < 14px bold)         | 4.5:1         |
+| Large text (>= 18px or >= 14px bold)        | 3:1           |
+| UI components (borders, icons, focus rings) | 3:1           |
 
 ### Rules
 

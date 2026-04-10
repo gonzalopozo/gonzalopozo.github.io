@@ -28,12 +28,12 @@ CSP protects against XSS, clickjacking, and code injection by declaring trusted 
 ### CSP Skeleton (in proxy.ts)
 
 ```typescript
-const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
-const isDev = process.env.NODE_ENV === "development";
+const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
+const isDev = process.env.NODE_ENV === 'development';
 
 const cspHeader = `
   default-src 'self';
-  script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ""};
+  script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ''};
   style-src 'self'${isDev ? " 'unsafe-inline'" : ` 'nonce-${nonce}'`};
   img-src 'self' blob: data: https:;
   font-src 'self';
@@ -61,14 +61,14 @@ const cspHeader = `
 
 Six headers configured in `next.config.ts` via the `headers()` function:
 
-| Header | Purpose |
-| --- | --- |
-| `X-DNS-Prefetch-Control: on` | DNS prefetching for external links |
-| `Strict-Transport-Security` | Forces HTTPS for 2 years, all subdomains, preload-eligible |
-| `X-Frame-Options: SAMEORIGIN` | Prevents iframe embedding (clickjacking) |
-| `X-Content-Type-Options: nosniff` | Prevents MIME-type sniffing |
-| `Referrer-Policy: strict-origin-when-cross-origin` | Limits referrer info on cross-origin |
-| `Permissions-Policy` | Disables camera, microphone, geolocation, browsing-topics |
+| Header                                             | Purpose                                                    |
+| -------------------------------------------------- | ---------------------------------------------------------- |
+| `X-DNS-Prefetch-Control: on`                       | DNS prefetching for external links                         |
+| `Strict-Transport-Security`                        | Forces HTTPS for 2 years, all subdomains, preload-eligible |
+| `X-Frame-Options: SAMEORIGIN`                      | Prevents iframe embedding (clickjacking)                   |
+| `X-Content-Type-Options: nosniff`                  | Prevents MIME-type sniffing                                |
+| `Referrer-Policy: strict-origin-when-cross-origin` | Limits referrer info on cross-origin                       |
+| `Permissions-Policy`                               | Disables camera, microphone, geolocation, browsing-topics  |
 
 ### Rules
 
@@ -85,6 +85,7 @@ Six headers configured in `next.config.ts` via the `headers()` function:
 Two-layer approach as recommended by [better-auth Next.js docs](https://www.better-auth.com/docs/integrations/next#auth-protection):
 
 **Layer 1 — Optimistic redirects via `proxy.ts`** (UX only, NOT secure):
+
 - Checks cookie existence only — no DB call, no session validation
 - Logged-in users on `/login` → redirect to `/dashboard`
 - Logged-out users on `/dashboard` → redirect to `/login`
@@ -95,7 +96,7 @@ Two-layer approach as recommended by [better-auth Next.js docs](https://www.bett
 ```typescript
 // Every protected page and Server Action must do this:
 const session = await getServerSession();
-if (!session) redirect("/login");
+if (!session) redirect('/login');
 ```
 
 `getServerSession()` in `lib/server-session.ts` validates the session against the database, wrapped in `cache()` to deduplicate within a request.
@@ -125,11 +126,11 @@ Every action follows the **4-step pattern**: authenticate → validate → execu
 
 ### Revalidate vs Redirect (Step 4)
 
-| Scenario | Use | Why |
-| --- | --- | --- |
-| **Create** (user on `/new` or dialog) | `redirect("/dashboard/entities")` | Navigate back to list |
-| **Update** (user stays on same page) | `revalidatePath("/dashboard/entities")` | Refresh in-place |
-| **Delete** (user stays on same page) | `revalidatePath("/dashboard/entities")` | Seamless UI refresh |
+| Scenario                              | Use                                     | Why                   |
+| ------------------------------------- | --------------------------------------- | --------------------- |
+| **Create** (user on `/new` or dialog) | `redirect("/dashboard/entities")`       | Navigate back to list |
+| **Update** (user stays on same page)  | `revalidatePath("/dashboard/entities")` | Refresh in-place      |
+| **Delete** (user stays on same page)  | `revalidatePath("/dashboard/entities")` | Seamless UI refresh   |
 
 `redirect()` already triggers a fresh render — a preceding `revalidatePath()` to the same path is redundant.
 
@@ -152,13 +153,14 @@ Schemas in `lib/schemas/` — see [AGENTS-PATTERNS.md § Zod Schemas](./AGENTS-P
 Drizzle ORM produces parameterized queries by default. Safe patterns:
 
 ```typescript
-db.select().from(projects).where(eq(projects.id, id));       // Query builder — safe
-db.insert(projects).values({ title, description });           // Insert — safe
-sql<number>`COALESCE(MAX(${projects.order}), 0)`              // sql template — safe (parameterized)
+db.select().from(projects).where(eq(projects.id, id)); // Query builder — safe
+db.insert(projects).values({ title, description }); // Insert — safe
+sql<number>`COALESCE(MAX(${projects.order}), 0)`; // sql template — safe (parameterized)
 ```
 
 **Never do**:
-- `db.execute(\`SELECT * FROM projects WHERE id = ${id}\`)` — SQL injection
+
+- `db.execute(\`SELECT \* FROM projects WHERE id = ${id}\`)` — SQL injection
 - `sql.raw(\`... WHERE title = '${title}'\`)` — SQL injection
 - Dynamic table/column names from user input
 
@@ -172,10 +174,10 @@ sql<number>`COALESCE(MAX(${projects.order}), 0)`              // sql template �
 
 ## Secure Environment Variables
 
-| Pattern | Exposure | Examples |
-| --- | --- | --- |
-| `NEXT_PUBLIC_*` | Bundled in client JS (visible to everyone) | `NEXT_PUBLIC_API_URL` |
-| No prefix | Server-only (never sent to browser) | `TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN`, `BETTER_AUTH_SECRET` |
+| Pattern         | Exposure                                   | Examples                                                       |
+| --------------- | ------------------------------------------ | -------------------------------------------------------------- |
+| `NEXT_PUBLIC_*` | Bundled in client JS (visible to everyone) | `NEXT_PUBLIC_API_URL`                                          |
+| No prefix       | Server-only (never sent to browser)        | `TURSO_DATABASE_URL`, `TURSO_AUTH_TOKEN`, `BETTER_AUTH_SECRET` |
 
 ### Rules
 
@@ -214,10 +216,10 @@ better-auth manages session cookies with flags: `httpOnly: true`, `secure: true`
 
 ### Recommended WAF Rules
 
-| Rule | Path | Limit | Window | Action |
-| --- | --- | --- | --- | --- |
-| Auth protection | `/api/auth/*` | 20 req | 60s | Deny (429) |
-| General API | `/api/*` | 100 req | 60s | Deny (429) |
+| Rule            | Path          | Limit   | Window | Action     |
+| --------------- | ------------- | ------- | ------ | ---------- |
+| Auth protection | `/api/auth/*` | 20 req  | 60s    | Deny (429) |
+| General API     | `/api/*`      | 100 req | 60s    | Deny (429) |
 
 ### Rules
 
@@ -251,12 +253,12 @@ better-auth manages session cookies with flags: `httpOnly: true`, `secure: true`
 
 ## Vercel Security Features
 
-| Automatic (no config) | Needs Configuration |
-| --- | --- |
-| HTTPS + SSL/TLS certificates | Mark secrets as Sensitive in dashboard |
-| DDoS mitigation | Attack Challenge Mode (CAPTCHA for bots) |
-| Edge network / global CDN | Deployment Protection (restrict previews) |
-| Encrypted env vars at rest | WAF rate limit rules |
+| Automatic (no config)        | Needs Configuration                       |
+| ---------------------------- | ----------------------------------------- |
+| HTTPS + SSL/TLS certificates | Mark secrets as Sensitive in dashboard    |
+| DDoS mitigation              | Attack Challenge Mode (CAPTCHA for bots)  |
+| Edge network / global CDN    | Deployment Protection (restrict previews) |
+| Encrypted env vars at rest   | WAF rate limit rules                      |
 
 ### Rules
 
@@ -267,16 +269,16 @@ better-auth manages session cookies with flags: `httpOnly: true`, `secure: true`
 
 ## Defense in Depth Summary
 
-| Layer | Protection | This Project |
-| --- | --- | --- |
-| Network | DDoS, HTTPS | Vercel (automatic) |
-| Edge | Rate limiting | Vercel WAF rules |
-| Transport | HSTS, TLS | Security headers in `next.config.ts` |
-| Application | CSP, headers | `proxy.ts` + `next.config.ts` |
-| Authentication | Session validation | better-auth + `getServerSession()` |
-| Input | Validation | Zod schemas + Drizzle ORM |
-| Data | Parameterized queries | Drizzle ORM (automatic) |
-| Dependencies | Vulnerability audit | `pnpm audit` |
+| Layer          | Protection            | This Project                         |
+| -------------- | --------------------- | ------------------------------------ |
+| Network        | DDoS, HTTPS           | Vercel (automatic)                   |
+| Edge           | Rate limiting         | Vercel WAF rules                     |
+| Transport      | HSTS, TLS             | Security headers in `next.config.ts` |
+| Application    | CSP, headers          | `proxy.ts` + `next.config.ts`        |
+| Authentication | Session validation    | better-auth + `getServerSession()`   |
+| Input          | Validation            | Zod schemas + Drizzle ORM            |
+| Data           | Parameterized queries | Drizzle ORM (automatic)              |
+| Dependencies   | Vulnerability audit   | `pnpm audit`                         |
 
 ---
 

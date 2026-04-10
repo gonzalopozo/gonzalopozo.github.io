@@ -34,5 +34,8 @@ public/**/*.ico
 public/**/*.woff
 public/**/*.woff2
 
+# Large icons JSON
+lib/react-icons-manifest.json
+
 # Misc
 .next/cache

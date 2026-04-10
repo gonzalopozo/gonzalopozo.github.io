@@ -13,80 +13,80 @@ SEO and metadata guidelines for the portfolio project. Templates for metadata, O
 Use this complete metadata template in `app/layout.tsx` (or `app/(public)/layout.tsx` for the public portfolio page). This is a Server Component export only — metadata cannot be used in Client Components.
 
 ```typescript
-import type { Metadata } from "next";
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://gonzalopozo.dev"),
-  title: {
-    default: "Gonzalo Pozo - Full Stack Developer",
-    template: "%s | Gonzalo Pozo",
-  },
-  description:
-    "Full Stack Developer portfolio showcasing projects, work experiences, and technical skills. Built with Next.js, React, TypeScript, and Tailwind CSS.",
-  keywords: [
-    "full stack developer",
-    "web developer",
-    "portfolio",
-    "react",
-    "nextjs",
-    "typescript",
-    "tailwind css",
-  ],
-  authors: [{ name: "Gonzalo Pozo", url: "https://gonzalopozo.dev" }],
-  creator: "Gonzalo Pozo",
+	metadataBase: new URL('https://gonzalopozo.dev'),
+	title: {
+		default: 'Gonzalo Pozo - Full Stack Developer',
+		template: '%s | Gonzalo Pozo',
+	},
+	description:
+		'Full Stack Developer portfolio showcasing projects, work experiences, and technical skills. Built with Next.js, React, TypeScript, and Tailwind CSS.',
+	keywords: [
+		'full stack developer',
+		'web developer',
+		'portfolio',
+		'react',
+		'nextjs',
+		'typescript',
+		'tailwind css',
+	],
+	authors: [{ name: 'Gonzalo Pozo', url: 'https://gonzalopozo.dev' }],
+	creator: 'Gonzalo Pozo',
 
-  openGraph: {
-    title: "Gonzalo Pozo - Full Stack Developer",
-    description:
-      "Full Stack Developer portfolio showcasing projects, work experiences, and technical skills.",
-    url: "https://gonzalopozo.dev",
-    siteName: "Gonzalo Pozo Portfolio",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Gonzalo Pozo - Full Stack Developer Portfolio",
-      },
-    ],
-    locale: "en_US",
-    type: "website",
-  },
+	openGraph: {
+		title: 'Gonzalo Pozo - Full Stack Developer',
+		description:
+			'Full Stack Developer portfolio showcasing projects, work experiences, and technical skills.',
+		url: 'https://gonzalopozo.dev',
+		siteName: 'Gonzalo Pozo Portfolio',
+		images: [
+			{
+				url: '/og-image.png',
+				width: 1200,
+				height: 630,
+				alt: 'Gonzalo Pozo - Full Stack Developer Portfolio',
+			},
+		],
+		locale: 'en_US',
+		type: 'website',
+	},
 
-  twitter: {
-    card: "summary_large_image",
-    title: "Gonzalo Pozo - Full Stack Developer",
-    description:
-      "Full Stack Developer portfolio showcasing projects, work experiences, and technical skills.",
-    creator: "@your_twitter_handle",
-    images: ["/og-image.png"],
-  },
+	twitter: {
+		card: 'summary_large_image',
+		title: 'Gonzalo Pozo - Full Stack Developer',
+		description:
+			'Full Stack Developer portfolio showcasing projects, work experiences, and technical skills.',
+		creator: '@your_twitter_handle',
+		images: ['/og-image.png'],
+	},
 
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
+	robots: {
+		index: true,
+		follow: true,
+		googleBot: {
+			index: true,
+			follow: true,
+			'max-video-preview': -1,
+			'max-image-preview': 'large',
+			'max-snippet': -1,
+		},
+	},
 
-  icons: {
-    icon: "/icon.png",
-    shortcut: "/shortcut-icon.png",
-    apple: "/apple-icon.png",
-  },
+	icons: {
+		icon: '/icon.png',
+		shortcut: '/shortcut-icon.png',
+		apple: '/apple-icon.png',
+	},
 
-  verification: {
-    google: "your-google-verification-code",
-  },
+	verification: {
+		google: 'your-google-verification-code',
+	},
 
-  alternates: {
-    canonical: "https://gonzalopozo.dev",
-  },
+	alternates: {
+		canonical: 'https://gonzalopozo.dev',
+	},
 };
 ```
 
@@ -134,17 +134,17 @@ export default async function Image() {
 Create `app/sitemap.ts`:
 
 ```typescript
-import type { MetadataRoute } from "next";
+import type { MetadataRoute } from 'next';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return [
-    {
-      url: "https://gonzalopozo.dev",
-      lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 1,
-    },
-  ];
+	return [
+		{
+			url: 'https://gonzalopozo.dev',
+			lastModified: new Date(),
+			changeFrequency: 'weekly',
+			priority: 1,
+		},
+	];
 }
 ```
 
@@ -153,17 +153,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
 Create `app/robots.ts`:
 
 ```typescript
-import type { MetadataRoute } from "next";
+import type { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
-  return {
-    rules: {
-      userAgent: "*",
-      allow: "/",
-      disallow: ["/dashboard/", "/login/", "/api/"],
-    },
-    sitemap: "https://gonzalopozo.dev/sitemap.xml",
-  };
+	return {
+		rules: {
+			userAgent: '*',
+			allow: '/',
+			disallow: ['/dashboard/', '/login/', '/api/'],
+		},
+		sitemap: 'https://gonzalopozo.dev/sitemap.xml',
+	};
 }
 ```
 
@@ -182,13 +182,13 @@ export default function robots(): MetadataRoute.Robots {
 
 Place in `app/`:
 
-| File | Purpose |
-| ---- | ------- |
-| `favicon.ico` | Browser tab favicon |
-| `icon.png` / `icon.svg` | App icon |
-| `apple-icon.png` | Apple touch icon |
-| `opengraph-image.png` or `.tsx` | Open Graph image (1200x630px) |
-| `twitter-image.png` or `.tsx` | Twitter card (optional, falls back to OG) |
-| `sitemap.ts` / `sitemap.xml` | Sitemap |
-| `robots.ts` / `robots.txt` | Crawling directives |
-| `manifest.ts` / `manifest.json` | PWA manifest |
+| File                            | Purpose                                   |
+| ------------------------------- | ----------------------------------------- |
+| `favicon.ico`                   | Browser tab favicon                       |
+| `icon.png` / `icon.svg`         | App icon                                  |
+| `apple-icon.png`                | Apple touch icon                          |
+| `opengraph-image.png` or `.tsx` | Open Graph image (1200x630px)             |
+| `twitter-image.png` or `.tsx`   | Twitter card (optional, falls back to OG) |
+| `sitemap.ts` / `sitemap.xml`    | Sitemap                                   |
+| `robots.ts` / `robots.txt`      | Crawling directives                       |
+| `manifest.ts` / `manifest.json` | PWA manifest                              |

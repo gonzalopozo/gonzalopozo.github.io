@@ -18,18 +18,19 @@ Next.js uses a file-system based router where specific file names inside `app/` 
 
 **Used in project**: Yes.
 
-| Page | Path |
-| --- | --- |
-| Root redirect | `app/page.tsx` |
-| Public portfolio | `app/(public)/page.tsx` |
-| Login | `app/(admin)/login/page.tsx` |
-| Dashboard overview | `app/(admin)/dashboard/page.tsx` |
-| Projects list | `app/(admin)/dashboard/projects/page.tsx` |
-| New project | `app/(admin)/dashboard/projects/new/page.tsx` |
-| Edit project | `app/(admin)/dashboard/projects/[id]/edit/page.tsx` |
-| ... (same pattern for experiences, skills, social-links, settings) | |
+| Page                                                               | Path                                                |
+| ------------------------------------------------------------------ | --------------------------------------------------- |
+| Root redirect                                                      | `app/page.tsx`                                      |
+| Public portfolio                                                   | `app/(public)/page.tsx`                             |
+| Login                                                              | `app/(admin)/login/page.tsx`                        |
+| Dashboard overview                                                 | `app/(admin)/dashboard/page.tsx`                    |
+| Projects list                                                      | `app/(admin)/dashboard/projects/page.tsx`           |
+| New project                                                        | `app/(admin)/dashboard/projects/new/page.tsx`       |
+| Edit project                                                       | `app/(admin)/dashboard/projects/[id]/edit/page.tsx` |
+| ... (same pattern for experiences, skills, social-links, settings) |                                                     |
 
 **Project rules**:
+
 - Pages are async Server Components — they fetch data and render content
 - After applying the Container-Presentational pattern, pages should be thin containers (~50 lines max)
 - Every admin page must call `getServerSession()` at the top
@@ -37,14 +38,14 @@ Next.js uses a file-system based router where specific file names inside `app/` 
 
 ```typescript
 export default async function Page({
-  params,
-  searchParams,
+	params,
+	searchParams,
 }: {
-  params: Promise<{ id: string }>;
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+	params: Promise<{ id: string }>;
+	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const { id } = await params;
-  // ...
+	const { id } = await params;
+	// ...
 }
 ```
 
@@ -56,13 +57,14 @@ export default async function Page({
 
 **Used in project**: Yes.
 
-| Layout | Path | Purpose |
-| --- | --- | --- |
-| Root | `app/layout.tsx` | HTML shell, fonts, global styles, metadata |
-| Admin dashboard | `app/(admin)/dashboard/layout.tsx` | Sidebar, header, auth wrapper |
-| Public | `app/(public)/layout.tsx` | Public page shell with semantic landmarks |
+| Layout          | Path                               | Purpose                                    |
+| --------------- | ---------------------------------- | ------------------------------------------ |
+| Root            | `app/layout.tsx`                   | HTML shell, fonts, global styles, metadata |
+| Admin dashboard | `app/(admin)/dashboard/layout.tsx` | Sidebar, header, auth wrapper              |
+| Public          | `app/(public)/layout.tsx`          | Public page shell with semantic landmarks  |
 
 **Project rules**:
+
 - Root layout must include `<html>` and `<body>` tags
 - Layouts are Server Components by default — keep them as Server Components
 - The admin dashboard layout should eventually use real session data instead of the current `mockUser`
@@ -92,6 +94,7 @@ export default async function Layout({
 See [AGENTS-PATTERNS.md § Error Boundaries](./AGENTS-PATTERNS.md#4-error-boundaries) for which route segments need `loading.tsx` files.
 
 **Key behaviors**:
+
 - Shown immediately on navigation — provides instant feedback before data arrives
 - Server Component by default — can render Skeleton components without JS
 - Shared layouts remain interactive while loading shows
@@ -128,10 +131,12 @@ export default function DashboardLoading() {
 **Used in project**: No — **needs to be added**.
 
 **Props**:
+
 - `error: Error & { digest?: string }` — the error object. In production, server errors show a generic message; use `digest` to correlate with server logs
 - `reset: () => void` — re-renders the route segment to attempt recovery
 
 **Key behaviors**:
+
 - Wraps `page.tsx` in a React Error Boundary
 - Errors bubble up to the nearest parent `error.tsx` if not caught locally
 - Does **not** catch errors in the same-level `layout.tsx` — only in `page.tsx` and children
@@ -184,8 +189,8 @@ export default function DashboardError({ error, reset }: DashboardErrorProps) {
 ```typescript
 // In error.tsx — log but don't display
 useEffect(() => {
-  console.error("Dashboard error:", error);
-  // TODO: Send to error tracking service (Sentry, etc.)
+	console.error('Dashboard error:', error);
+	// TODO: Send to error tracking service (Sentry, etc.)
 }, [error]);
 ```
 
@@ -233,9 +238,9 @@ export default function GlobalError({
 
 **Where to add**:
 
-| File | Purpose |
-| --- | --- |
-| `app/not-found.tsx` | Root-level 404 for unmatched URLs |
+| File                                  | Purpose                                                                                           |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `app/not-found.tsx`                   | Root-level 404 for unmatched URLs                                                                 |
 | `app/(admin)/dashboard/not-found.tsx` | Shown when `notFound()` is called in dashboard pages (e.g., editing a project that doesn't exist) |
 
 **Implementation**:
@@ -279,6 +284,7 @@ export default async function EditProjectPage({
 ```
 
 **Key behaviors**:
+
 - `not-found.tsx` is a Server Component — can fetch data
 - Returns `200` status for streamed responses, `404` for non-streamed
 - Root `app/not-found.tsx` handles any unmatched URL in the app
@@ -311,12 +317,13 @@ export default async function EditProjectPage({
 
 **Used in project**: Yes.
 
-| Route Handler | Path | Purpose |
-| --- | --- | --- |
-| Auth catch-all | `app/api/auth/[...all]/route.ts` | better-auth handles all auth endpoints |
-| Clear invalid session | `app/api/auth/clear-invalid-session/route.ts` | Clears stale session cookies |
+| Route Handler         | Path                                          | Purpose                                |
+| --------------------- | --------------------------------------------- | -------------------------------------- |
+| Auth catch-all        | `app/api/auth/[...all]/route.ts`              | better-auth handles all auth endpoints |
+| Clear invalid session | `app/api/auth/clear-invalid-session/route.ts` | Clears stale session cookies           |
 
 **Project rules**:
+
 - Prefer Server Actions over Route Handlers for data mutations — Route Handlers are only needed for third-party integrations (like better-auth)
 - Route Handlers support `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `HEAD`, `OPTIONS`
 - `params` is a promise in Next.js 16 — must be awaited
@@ -324,11 +331,11 @@ export default async function EditProjectPage({
 
 ```typescript
 // app/api/example/route.ts
-import { type NextRequest } from "next/server";
+import { type NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
-  return Response.json({ data: "example" });
+	const searchParams = request.nextUrl.searchParams;
+	return Response.json({ data: 'example' });
 }
 ```
 
@@ -343,6 +350,7 @@ export async function GET(request: NextRequest) {
 **Documented in**: `AGENTS-SECURITY.md` > Content Security Policy, Auth Protection Pattern.
 
 **Key behaviors**:
+
 - Runs at the edge, before rendering
 - Can rewrite, redirect, or produce responses
 - Cannot access the request body
@@ -357,16 +365,17 @@ export async function GET(request: NextRequest) {
 **Used in project**: No.
 
 **When to use (not currently needed)**:
+
 - To reset form state between navigations
 - To re-trigger `useEffect` on every navigation
 - To show a Suspense fallback on every navigation (layouts only show it on first load)
 
-| Behavior | `layout.tsx` | `template.tsx` |
-| --- | --- | --- |
-| Persists across navigations | Yes | No |
-| Preserves state | Yes | No — state resets |
-| Re-runs `useEffect` | No | Yes |
-| Suspense fallback | First load only | Every navigation |
+| Behavior                    | `layout.tsx`    | `template.tsx`    |
+| --------------------------- | --------------- | ----------------- |
+| Persists across navigations | Yes             | No                |
+| Preserves state             | Yes             | No — state resets |
+| Re-runs `useEffect`         | No              | Yes               |
+| Suspense fallback           | First load only | Every navigation  |
 
 **Nesting order**: `layout.tsx` → `template.tsx` → `page.tsx`
 
@@ -388,12 +397,13 @@ export async function GET(request: NextRequest) {
 
 **Used in project**: Yes.
 
-| Route Group | Path | Purpose |
-| --- | --- | --- |
-| `(admin)` | `app/(admin)/` | Groups login and dashboard routes under a shared admin context |
-| `(public)` | `app/(public)/` | Groups the public portfolio page with its own layout |
+| Route Group | Path            | Purpose                                                        |
+| ----------- | --------------- | -------------------------------------------------------------- |
+| `(admin)`   | `app/(admin)/`  | Groups login and dashboard routes under a shared admin context |
+| `(public)`  | `app/(public)/` | Groups the public portfolio page with its own layout           |
 
 **Project rules**:
+
 - Route group names are stripped from the URL — `app/(admin)/dashboard/` maps to `/dashboard`
 - Each route group can have its own `layout.tsx`, `error.tsx`, `loading.tsx`, `not-found.tsx`
 - Never nest route groups unnecessarily — keep the hierarchy flat
@@ -406,15 +416,16 @@ export async function GET(request: NextRequest) {
 
 **Used in project**: Yes.
 
-| Segment | Path | Purpose |
-| --- | --- | --- |
-| `[id]` | `app/(admin)/dashboard/projects/[id]/edit/` | Edit a specific project by ID |
-| `[id]` | `app/(admin)/dashboard/experiences/[id]/edit/` | Edit a specific experience by ID |
-| `[id]` | `app/(admin)/dashboard/skills/[id]/edit/` | Edit a specific skill by ID |
-| `[id]` | `app/(admin)/dashboard/social-links/[id]/edit/` | Edit a specific social link by ID |
-| `[...all]` | `app/api/auth/[...all]/` | Catch-all for better-auth endpoints |
+| Segment    | Path                                            | Purpose                             |
+| ---------- | ----------------------------------------------- | ----------------------------------- |
+| `[id]`     | `app/(admin)/dashboard/projects/[id]/edit/`     | Edit a specific project by ID       |
+| `[id]`     | `app/(admin)/dashboard/experiences/[id]/edit/`  | Edit a specific experience by ID    |
+| `[id]`     | `app/(admin)/dashboard/skills/[id]/edit/`       | Edit a specific skill by ID         |
+| `[id]`     | `app/(admin)/dashboard/social-links/[id]/edit/` | Edit a specific social link by ID   |
+| `[...all]` | `app/api/auth/[...all]/`                        | Catch-all for better-auth endpoints |
 
 **Project rules**:
+
 - `params` is a **promise** in Next.js 16 — always `await params` before accessing properties
 - Validate `id` params before using them — parse as `Number(id)` and call `notFound()` if the entity doesn't exist
 
@@ -446,15 +457,15 @@ if (isNaN(numericId)) notFound();
 
 **Convention**: Named exports that configure rendering behavior.
 
-| Export | Type | Default | Purpose |
-| --- | --- | --- | --- |
-| `dynamic` | `'auto' \| 'force-dynamic' \| 'error' \| 'force-static'` | `'auto'` | Control static vs dynamic rendering |
-| `dynamicParams` | `boolean` | `true` | Allow dynamic segments not in `generateStaticParams` |
-| `revalidate` | `false \| 0 \| number` | `false` | Default revalidation time (seconds) |
-| `fetchCache` | `'auto' \| 'force-cache' \| ...` | `'auto'` | Override fetch cache behavior |
-| `runtime` | `'nodejs' \| 'edge'` | `'nodejs'` | Execution runtime |
-| `preferredRegion` | `'auto' \| 'global' \| 'home' \| string[]` | `'auto'` | Deployment region preference |
-| `maxDuration` | `number` | Platform default | Maximum execution time (seconds) |
+| Export            | Type                                                     | Default          | Purpose                                              |
+| ----------------- | -------------------------------------------------------- | ---------------- | ---------------------------------------------------- |
+| `dynamic`         | `'auto' \| 'force-dynamic' \| 'error' \| 'force-static'` | `'auto'`         | Control static vs dynamic rendering                  |
+| `dynamicParams`   | `boolean`                                                | `true`           | Allow dynamic segments not in `generateStaticParams` |
+| `revalidate`      | `false \| 0 \| number`                                   | `false`          | Default revalidation time (seconds)                  |
+| `fetchCache`      | `'auto' \| 'force-cache' \| ...`                         | `'auto'`         | Override fetch cache behavior                        |
+| `runtime`         | `'nodejs' \| 'edge'`                                     | `'nodejs'`       | Execution runtime                                    |
+| `preferredRegion` | `'auto' \| 'global' \| 'home' \| string[]`               | `'auto'`         | Deployment region preference                         |
+| `maxDuration`     | `number`                                                 | Platform default | Maximum execution time (seconds)                     |
 
 **Important**: These options are disabled when `cacheComponents: true` is set in `next.config.ts` (which this project uses). Prefer the Data Access Facade with `"use cache"` and `cacheLife()` instead.
 
@@ -470,16 +481,14 @@ if (isNaN(numericId)) notFound();
 
 ```typescript
 // instrumentation.ts
-import { type Instrumentation } from "next";
+import { type Instrumentation } from 'next';
 
 export function register() {
-  // Initialize observability tools
+	// Initialize observability tools
 }
 
-export const onRequestError: Instrumentation.onRequestError = async (
-  err, request, context
-) => {
-  // Send error to tracking service
+export const onRequestError: Instrumentation.onRequestError = async (err, request, context) => {
+	// Send error to tracking service
 };
 ```
 
@@ -496,10 +505,10 @@ export const onRequestError: Instrumentation.onRequestError = async (
 ```typescript
 // instrumentation-client.ts
 export function onRouterTransitionStart(
-  url: string,
-  navigationType: "push" | "replace" | "traverse"
+	url: string,
+	navigationType: 'push' | 'replace' | 'traverse',
 ) {
-  // Track navigation event
+	// Track navigation event
 }
 ```
 
@@ -520,6 +529,7 @@ export function onRouterTransitionStart(
 **Used in project**: Yes.
 
 **Project rules**:
+
 - Reference files as `/filename.ext` (not `/public/filename.ext`)
 - Only put truly static assets here
 - Metadata files should use the metadata file conventions in `app/` when possible
@@ -538,18 +548,19 @@ export function onRouterTransitionStart(
 
 Metadata files generate SEO tags, favicons, sitemaps, and social sharing images. **Full templates in [AGENTS-SEO.md](./AGENTS-SEO.md).**
 
-| File | Purpose | Status |
-| --- | --- | --- |
-| `favicon.ico` | Browser tab favicon | **Needed** |
-| `icon.png` / `icon.svg` | App icon | **Needed** |
-| `apple-icon.png` | Apple touch icon | **Needed** |
-| `opengraph-image.tsx` or `.png` | Social sharing image (1200x630px) | **Needed** |
-| `twitter-image.tsx` or `.png` | Twitter card (optional, falls back to OG) | Optional |
-| `sitemap.ts` / `sitemap.xml` | Sitemap | **Needed** |
-| `robots.ts` / `robots.txt` | Crawling directives | **Needed** |
-| `manifest.ts` / `manifest.json` | Web app manifest (PWA) | Optional |
+| File                            | Purpose                                   | Status     |
+| ------------------------------- | ----------------------------------------- | ---------- |
+| `favicon.ico`                   | Browser tab favicon                       | **Needed** |
+| `icon.png` / `icon.svg`         | App icon                                  | **Needed** |
+| `apple-icon.png`                | Apple touch icon                          | **Needed** |
+| `opengraph-image.tsx` or `.png` | Social sharing image (1200x630px)         | **Needed** |
+| `twitter-image.tsx` or `.png`   | Twitter card (optional, falls back to OG) | Optional   |
+| `sitemap.ts` / `sitemap.xml`    | Sitemap                                   | **Needed** |
+| `robots.ts` / `robots.txt`      | Crawling directives                       | **Needed** |
+| `manifest.ts` / `manifest.json` | Web app manifest (PWA)                    | Optional   |
 
 **Project rules**:
+
 - Prefer `.ts`/`.tsx` over static files — type-safe, dynamic content
 - `opengraph-image.tsx` uses `next/og` (`ImageResponse`) at build time
 - `sitemap.ts` should disallow `/dashboard/`, `/login/`, `/api/`
@@ -574,6 +585,7 @@ layout.tsx
 ```
 
 This means:
+
 - `error.tsx` catches errors from `page.tsx` and `loading.tsx`, but **not** from `layout.tsx` or `template.tsx`
 - `loading.tsx` shows while `page.tsx` is streaming/suspending
 - `template.tsx` re-renders on navigation; `layout.tsx` does not
@@ -612,39 +624,39 @@ export function ProjectsTable({ projects }: ProjectsTableProps) {
 
 ```typescript
 // lib/queries/projects.ts
-import "server-only";
-import { db } from "@/db";
-import { projects } from "@/db/schema/portfolio";
-import { asc, eq } from "drizzle-orm";
+import 'server-only';
+import { db } from '@/db';
+import { projects } from '@/db/schema/portfolio';
+import { asc, eq } from 'drizzle-orm';
 
 export async function getProjectsWithSkills() {
-  return db.query.projects.findMany({
-    with: {
-      projectSkills: {
-        columns: {},
-        with: {
-          skill: {
-            columns: { id: true, name: true },
-          },
-        },
-      },
-    },
-    orderBy: [asc(projects.order)],
-  });
+	return db.query.projects.findMany({
+		with: {
+			projectSkills: {
+				columns: {},
+				with: {
+					skill: {
+						columns: { id: true, name: true },
+					},
+				},
+			},
+		},
+		orderBy: [asc(projects.order)],
+	});
 }
 
 export async function getProjectById(id: number) {
-  return db.query.projects.findFirst({
-    where: eq(projects.id, id),
-    with: {
-      projectSkills: {
-        columns: {},
-        with: {
-          skill: true,
-        },
-      },
-    },
-  });
+	return db.query.projects.findFirst({
+		where: eq(projects.id, id),
+		with: {
+			projectSkills: {
+				columns: {},
+				with: {
+					skill: true,
+				},
+			},
+		},
+	});
 }
 ```
 
@@ -652,14 +664,16 @@ export async function getProjectById(id: number) {
 
 ```typescript
 // lib/queries/projects.ts
-import "server-only";
-import { unstable_cacheLife as cacheLife } from "next/cache";
+import 'server-only';
+import { unstable_cacheLife as cacheLife } from 'next/cache';
 
 export async function getProjectsWithSkills() {
-  "use cache";
-  cacheLife("minutes");
+	'use cache';
+	cacheLife('minutes');
 
-  return db.query.projects.findMany({ /* ... */ });
+	return db.query.projects.findMany({
+		/* ... */
+	});
 }
 ```
 
@@ -667,14 +681,14 @@ export async function getProjectsWithSkills() {
 
 ```typescript
 // lib/schemas/projects.ts
-import { z } from "zod";
+import { z } from 'zod';
 
 export const projectSchema = z.object({
-  title: z.string().min(1, "Title is required").max(200),
-  description: z.string().min(1, "Description is required").max(2000),
-  url: z.string().url("Invalid URL").optional().or(z.literal("")),
-  repoUrl: z.string().url("Invalid URL").optional().or(z.literal("")),
-  status: z.enum(["active", "archived", "in-progress"]),
-  skillIds: z.array(z.number().int().positive()).default([]),
+	title: z.string().min(1, 'Title is required').max(200),
+	description: z.string().min(1, 'Description is required').max(2000),
+	url: z.string().url('Invalid URL').optional().or(z.literal('')),
+	repoUrl: z.string().url('Invalid URL').optional().or(z.literal('')),
+	status: z.enum(['active', 'archived', 'in-progress']),
+	skillIds: z.array(z.number().int().positive()).default([]),
 });
 ```

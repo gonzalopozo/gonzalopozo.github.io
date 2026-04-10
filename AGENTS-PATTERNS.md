@@ -27,12 +27,12 @@ Design patterns and architecture guidelines for the portfolio project.
 
 ## Overview
 
-| Pattern | What It Solves | Where It Applies |
-| --- | --- | --- |
-| Container-Presentational | Page files mix data fetching with 200+ lines of UI | Admin dashboard pages, public page |
-| Server Action Hardening | Actions have no auth, no validation, no error handling | All `lib/actions/` files |
-| Data Access Facade | DB queries duplicated inline across page files | All pages that query the database |
-| Error Boundaries | Zero error recovery — failed DB query crashes entire page | All route segments |
+| Pattern                  | What It Solves                                            | Where It Applies                   |
+| ------------------------ | --------------------------------------------------------- | ---------------------------------- |
+| Container-Presentational | Page files mix data fetching with 200+ lines of UI        | Admin dashboard pages, public page |
+| Server Action Hardening  | Actions have no auth, no validation, no error handling    | All `lib/actions/` files           |
+| Data Access Facade       | DB queries duplicated inline across page files            | All pages that query the database  |
+| Error Boundaries         | Zero error recovery — failed DB query crashes entire page | All route segments                 |
 
 ---
 
@@ -83,44 +83,41 @@ Every Server Action follows a **4-step strategy**: authenticate → validate →
 ### 4-Step Template
 
 ```typescript
-"use server";
+'use server';
 
-import { getServerSession } from "@/lib/server-session";
-import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
-import { db } from "@/db";
-import { entitySchema } from "@/lib/schemas/entity";
+import { getServerSession } from '@/lib/server-session';
+import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
+import { db } from '@/db';
+import { entitySchema } from '@/lib/schemas/entity';
 
 export async function createEntity(formData: FormData) {
-  // 1. AUTHENTICATE
-  const session = await getServerSession();
-  if (!session) redirect("/login");
+	// 1. AUTHENTICATE
+	const session = await getServerSession();
+	if (!session) redirect('/login');
 
-  // 2. VALIDATE
-  const parsed = entitySchema.safeParse({
-    name: formData.get("name"),
-  });
-  if (!parsed.success) return { error: parsed.error.flatten().fieldErrors };
+	// 2. VALIDATE
+	const parsed = entitySchema.safeParse({
+		name: formData.get('name'),
+	});
+	if (!parsed.success) return { error: parsed.error.flatten().fieldErrors };
 
-  // 3. EXECUTE
-  try {
-    await db.insert(table).values(parsed.data);
-  } catch {
-    return { error: "Failed to create entity." };
-  }
+	// 3. EXECUTE
+	try {
+		await db.insert(table).values(parsed.data);
+	} catch {
+		return { error: 'Failed to create entity.' };
+	}
 
-  // 4. REVALIDATE / REDIRECT
-  redirect("/dashboard/entities");
+	// 4. REVALIDATE / REDIRECT
+	redirect('/dashboard/entities');
 }
 ```
 
 ### Action Return Type
 
 ```typescript
-type ActionResult =
-  | { error: string }
-  | { error: Record<string, string[]> }
-  | void; // success — redirect happens
+type ActionResult = { error: string } | { error: Record<string, string[]> } | void; // success — redirect happens
 ```
 
 ### Rules
@@ -159,16 +156,18 @@ lib/queries/
 
 ```typescript
 // lib/queries/projects.ts
-import "server-only";
-import { db } from "@/db";
-import { projects } from "@/db/schema/portfolio";
-import { asc, eq } from "drizzle-orm";
+import 'server-only';
+import { db } from '@/db';
+import { projects } from '@/db/schema/portfolio';
+import { asc, eq } from 'drizzle-orm';
 
 export async function getProjectsWithSkills() {
-  return db.query.projects.findMany({
-    with: { projectSkills: { columns: {}, with: { skill: { columns: { id: true, name: true } } } } },
-    orderBy: [asc(projects.order)],
-  });
+	return db.query.projects.findMany({
+		with: {
+			projectSkills: { columns: {}, with: { skill: { columns: { id: true, name: true } } } },
+		},
+		orderBy: [asc(projects.order)],
+	});
 }
 ```
 
@@ -189,14 +188,14 @@ Add `error.tsx` and `loading.tsx` files to route segments for error recovery and
 
 ### Minimum Required Files
 
-| File | Catches |
-| --- | --- |
-| `app/error.tsx` | Root-level fallback for any unhandled error |
-| `app/(admin)/dashboard/error.tsx` | Database failures, auth errors in dashboard |
-| `app/(public)/error.tsx` | Database failures on public portfolio page |
-| `app/(admin)/dashboard/loading.tsx` | Skeleton while dashboard data loads |
-| `app/(public)/loading.tsx` | Skeleton while public page data loads |
-| `app/not-found.tsx` | Custom 404 page |
+| File                                | Catches                                     |
+| ----------------------------------- | ------------------------------------------- |
+| `app/error.tsx`                     | Root-level fallback for any unhandled error |
+| `app/(admin)/dashboard/error.tsx`   | Database failures, auth errors in dashboard |
+| `app/(public)/error.tsx`            | Database failures on public portfolio page  |
+| `app/(admin)/dashboard/loading.tsx` | Skeleton while dashboard data loads         |
+| `app/(public)/loading.tsx`          | Skeleton while public page data loads       |
+| `app/not-found.tsx`                 | Custom 404 page                             |
 
 ### Template
 
@@ -234,37 +233,37 @@ export default function DashboardError({
 
 ### Quick Reference
 
-| Convention | File | Used in Project | Status |
-| --- | --- | --- | --- |
-| Page | `page.tsx` | Yes — 9 pages | Active |
-| Layout | `layout.tsx` | Yes — root, admin, public | Active |
-| Loading | `loading.tsx` | No | **Needed** |
-| Error | `error.tsx` | No | **Needed** |
-| Global Error | `global-error.tsx` | No | Optional |
-| Not Found | `not-found.tsx` | No | **Needed** |
-| Forbidden | `forbidden.tsx` | No | Experimental — not yet |
-| Unauthorized | `unauthorized.tsx` | No | Experimental — not yet |
-| Route Handler | `route.ts` | Yes — auth routes | Active |
-| Proxy | `proxy.ts` | Yes — auth + CSP | Active |
-| Template | `template.tsx` | No | Not needed |
-| Default | `default.tsx` | No | Not needed |
-| Route Groups | `(folder)` | Yes — `(admin)`, `(public)` | Active |
-| Dynamic Segments | `[param]`, `[...param]` | Yes — `[id]`, `[...all]` | Active |
-| Parallel Routes | `@folder` | No | Not needed |
-| Intercepting Routes | `(.)folder` | No | Not needed |
-| Route Segment Config | `export const dynamic` | No | Prefer `"use cache"` instead |
-| Metadata Files | Various | Partial — see [AGENTS-SEO.md](./AGENTS-SEO.md) | **Needed** |
+| Convention           | File                    | Used in Project                                | Status                       |
+| -------------------- | ----------------------- | ---------------------------------------------- | ---------------------------- |
+| Page                 | `page.tsx`              | Yes — 9 pages                                  | Active                       |
+| Layout               | `layout.tsx`            | Yes — root, admin, public                      | Active                       |
+| Loading              | `loading.tsx`           | No                                             | **Needed**                   |
+| Error                | `error.tsx`             | No                                             | **Needed**                   |
+| Global Error         | `global-error.tsx`      | No                                             | Optional                     |
+| Not Found            | `not-found.tsx`         | No                                             | **Needed**                   |
+| Forbidden            | `forbidden.tsx`         | No                                             | Experimental — not yet       |
+| Unauthorized         | `unauthorized.tsx`      | No                                             | Experimental — not yet       |
+| Route Handler        | `route.ts`              | Yes — auth routes                              | Active                       |
+| Proxy                | `proxy.ts`              | Yes — auth + CSP                               | Active                       |
+| Template             | `template.tsx`          | No                                             | Not needed                   |
+| Default              | `default.tsx`           | No                                             | Not needed                   |
+| Route Groups         | `(folder)`              | Yes — `(admin)`, `(public)`                    | Active                       |
+| Dynamic Segments     | `[param]`, `[...param]` | Yes — `[id]`, `[...all]`                       | Active                       |
+| Parallel Routes      | `@folder`               | No                                             | Not needed                   |
+| Intercepting Routes  | `(.)folder`             | No                                             | Not needed                   |
+| Route Segment Config | `export const dynamic`  | No                                             | Prefer `"use cache"` instead |
+| Metadata Files       | Various                 | Partial — see [AGENTS-SEO.md](./AGENTS-SEO.md) | **Needed**                   |
 
 ### Files to Create Before Production
 
-| Priority | File | Why |
-| --- | --- | --- |
-| **High** | `app/error.tsx`, `app/(admin)/dashboard/error.tsx`, `app/(public)/error.tsx` | Error recovery |
-| **High** | `app/(admin)/dashboard/loading.tsx`, `app/(public)/loading.tsx` | Loading skeletons |
-| **High** | `app/not-found.tsx` | Custom 404 |
-| **Medium** | `app/sitemap.ts`, `app/robots.ts`, OG image, favicons | SEO (see [AGENTS-SEO.md](./AGENTS-SEO.md)) |
-| **Low** | `app/(admin)/dashboard/not-found.tsx` | Admin 404 for missing entities |
-| **Low** | `instrumentation.ts` | Production error tracking |
+| Priority   | File                                                                         | Why                                        |
+| ---------- | ---------------------------------------------------------------------------- | ------------------------------------------ |
+| **High**   | `app/error.tsx`, `app/(admin)/dashboard/error.tsx`, `app/(public)/error.tsx` | Error recovery                             |
+| **High**   | `app/(admin)/dashboard/loading.tsx`, `app/(public)/loading.tsx`              | Loading skeletons                          |
+| **High**   | `app/not-found.tsx`                                                          | Custom 404                                 |
+| **Medium** | `app/sitemap.ts`, `app/robots.ts`, OG image, favicons                        | SEO (see [AGENTS-SEO.md](./AGENTS-SEO.md)) |
+| **Low**    | `app/(admin)/dashboard/not-found.tsx`                                        | Admin 404 for missing entities             |
+| **Low**    | `instrumentation.ts`                                                         | Production error tracking                  |
 
 ### Key Convention Rules
 

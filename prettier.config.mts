@@ -1,4 +1,4 @@
-import type { Config } from "prettier";
+import type { Config } from 'prettier';
 
 /**
  * Prettier — opinionated formatter for this Next.js 16 + React 19 + TypeScript + Tailwind repo.
@@ -13,18 +13,18 @@ import type { Config } from "prettier";
  * @see https://github.com/tailwindlabs/prettier-plugin-tailwindcss
  */
 const config: Config = {
-  semi: true,
-  singleQuote: true,
-  jsxSingleQuote: false,
-  trailingComma: "all",
-  tabWidth: 4,
-  useTabs: true,
-  printWidth: 100,
-  bracketSpacing: true,
-  bracketSameLine: false,
-  arrowParens: "always",
-  endOfLine: "lf",
-  plugins: ["prettier-plugin-tailwindcss"],
+	semi: true,
+	singleQuote: true,
+	jsxSingleQuote: false,
+	trailingComma: 'all',
+	tabWidth: 4,
+	useTabs: true,
+	printWidth: 100,
+	bracketSpacing: true,
+	bracketSameLine: false,
+	arrowParens: 'always',
+	endOfLine: 'lf',
+	plugins: ['prettier-plugin-tailwindcss'],
 };
 
 export default config;

@@ -21,15 +21,15 @@ Animation guidelines for the portfolio project — when and how to use the three
 
 ## When to Use Each Layer
 
-| Situation | Use | Why |
-| --- | --- | --- |
-| Spinners, pulses, simple hover effects | **Tailwind** (`animate-*`, `transition-*`) | Zero JS, GPU-accelerated |
-| shadcn component transitions (Dialog, Sheet) | **tw-animate-css** (built in) | Pre-configured, consistent |
-| Icon state changes (copy→check, like toggle) | **Motion** (`AnimatePresence`) | CSS can't do enter/exit cleanly |
-| Layout animations (list reorder, add/remove) | **Motion** (`layout` prop) | CSS can't animate FLIP |
-| Animated number counters | **NumberFlow** | Purpose-built, accessible |
-| Page transitions | **Motion** or CSS View Transitions | Prefer CSS for simple fades |
-| Scroll-triggered animations | **Motion** (`useInView`) or Tailwind `motion-safe:` | Motion for complex orchestration |
+| Situation                                    | Use                                                 | Why                              |
+| -------------------------------------------- | --------------------------------------------------- | -------------------------------- |
+| Spinners, pulses, simple hover effects       | **Tailwind** (`animate-*`, `transition-*`)          | Zero JS, GPU-accelerated         |
+| shadcn component transitions (Dialog, Sheet) | **tw-animate-css** (built in)                       | Pre-configured, consistent       |
+| Icon state changes (copy→check, like toggle) | **Motion** (`AnimatePresence`)                      | CSS can't do enter/exit cleanly  |
+| Layout animations (list reorder, add/remove) | **Motion** (`layout` prop)                          | CSS can't animate FLIP           |
+| Animated number counters                     | **NumberFlow**                                      | Purpose-built, accessible        |
+| Page transitions                             | **Motion** or CSS View Transitions                  | Prefer CSS for simple fades      |
+| Scroll-triggered animations                  | **Motion** (`useInView`) or Tailwind `motion-safe:` | Motion for complex orchestration |
 
 ### Rules
 
@@ -44,11 +44,11 @@ Animation guidelines for the portfolio project — when and how to use the three
 
 ### Built-in Utilities
 
-| Utility | Use |
-| --- | --- |
-| `animate-spin` | Loading spinners |
-| `animate-ping` | Notification badges |
-| `animate-pulse` | Skeleton loaders |
+| Utility          | Use                    |
+| ---------------- | ---------------------- |
+| `animate-spin`   | Loading spinners       |
+| `animate-ping`   | Notification badges    |
+| `animate-pulse`  | Skeleton loaders       |
 | `animate-bounce` | Scroll-down indicators |
 
 ### Transition Pattern
@@ -73,8 +73,16 @@ Define in `globals.css` via `@theme` directive for reusable animations:
 
 ```css
 @theme {
-  --animate-wiggle: wiggle 0.3s ease-in-out;
-  @keyframes wiggle { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+	--animate-wiggle: wiggle 0.3s ease-in-out;
+	@keyframes wiggle {
+		0%,
+		100% {
+			transform: rotate(-3deg);
+		}
+		50% {
+			transform: rotate(3deg);
+		}
+	}
 }
 ```
 
@@ -87,8 +95,8 @@ Use as `animate-wiggle`. Prefer this over inline `animate-[...]` for animations 
 Import from `motion/react` (not `framer-motion` — package renamed):
 
 ```typescript
-"use client";
-import { motion, AnimatePresence } from "motion/react";
+'use client';
+import { motion, AnimatePresence } from 'motion/react';
 ```
 
 ### Basic Animation
@@ -143,14 +151,14 @@ Use `layout` prop for automatic FLIP when size/position changes:
 
 ### Key Concepts
 
-| Concept | What It Does | When to Use |
-| --- | --- | --- |
-| `initial` / `animate` / `exit` | Mount/unmount states | Entrance/exit animations |
-| `transition` | Duration, easing, spring config | Fine-tune any animation |
-| `layout` / `layoutId` | FLIP layout animations | List reorder, shared transitions |
-| `AnimatePresence` | Keeps children until exit completes | Anything that mounts/unmounts |
-| `whileHover` / `whileTap` | Hover/press animations | Interactive elements |
-| `useInView` / `useScroll` | Viewport/scroll tracking | Scroll-triggered animations |
+| Concept                        | What It Does                        | When to Use                      |
+| ------------------------------ | ----------------------------------- | -------------------------------- |
+| `initial` / `animate` / `exit` | Mount/unmount states                | Entrance/exit animations         |
+| `transition`                   | Duration, easing, spring config     | Fine-tune any animation          |
+| `layout` / `layoutId`          | FLIP layout animations              | List reorder, shared transitions |
+| `AnimatePresence`              | Keeps children until exit completes | Anything that mounts/unmounts    |
+| `whileHover` / `whileTap`      | Hover/press animations              | Interactive elements             |
+| `useInView` / `useScroll`      | Viewport/scroll tracking            | Scroll-triggered animations      |
 
 ### With Server Components
 
@@ -189,10 +197,10 @@ import NumberFlow from "@number-flow/react";
 
 ### Where to Use
 
-| Location | Value | Format |
-| --- | --- | --- |
-| Dashboard overview stats | Project/experience/skill count | Integer |
-| Public page (if showing stats) | Years of experience | Integer + suffix |
+| Location                       | Value                          | Format           |
+| ------------------------------ | ------------------------------ | ---------------- |
+| Dashboard overview stats       | Project/experience/skill count | Integer          |
+| Public page (if showing stats) | Years of experience            | Integer + suffix |
 
 ### Rules
 
@@ -207,12 +215,12 @@ import NumberFlow from "@number-flow/react";
 
 ### Animate Only Composite Properties (GPU-accelerated)
 
-| Safe (GPU) | Avoid (triggers layout) |
-| --- | --- |
-| `transform` (translate, scale, rotate) | `width`, `height` |
-| `opacity` | `top`, `right`, `bottom`, `left` |
-| `filter` (blur, brightness) | `margin`, `padding` |
-| `clip-path` | `border-width`, `font-size` |
+| Safe (GPU)                             | Avoid (triggers layout)          |
+| -------------------------------------- | -------------------------------- |
+| `transform` (translate, scale, rotate) | `width`, `height`                |
+| `opacity`                              | `top`, `right`, `bottom`, `left` |
+| `filter` (blur, brightness)            | `margin`, `padding`              |
+| `clip-path`                            | `border-width`, `font-size`      |
 
 ### Rules
 
@@ -226,14 +234,14 @@ import NumberFlow from "@number-flow/react";
 
 ### Timing
 
-| Type | Duration | Easing |
-| --- | --- | --- |
-| Micro-interaction (button press, icon swap) | 100-200ms | `ease-out` |
-| Enter/appear | 200-300ms | `ease-out` |
-| Exit/disappear | 150-250ms | `ease-in` |
-| Layout change (reorder, resize) | 200-400ms | `ease-in-out` |
-| Page transition | 300-500ms | `ease-in-out` |
-| Number transition | 300-750ms | spring or `ease-out` |
+| Type                                        | Duration  | Easing               |
+| ------------------------------------------- | --------- | -------------------- |
+| Micro-interaction (button press, icon swap) | 100-200ms | `ease-out`           |
+| Enter/appear                                | 200-300ms | `ease-out`           |
+| Exit/disappear                              | 150-250ms | `ease-in`            |
+| Layout change (reorder, resize)             | 200-400ms | `ease-in-out`        |
+| Page transition                             | 300-500ms | `ease-in-out`        |
+| Number transition                           | 300-750ms | spring or `ease-out` |
 
 ### Easing Rule of Thumb
 

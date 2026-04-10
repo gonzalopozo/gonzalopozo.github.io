@@ -30,28 +30,28 @@ Skip JSDoc for:
 
 ### Approved Tags
 
-| Tag | Use for | Example context |
-| --- | --- | --- |
-| `@param` | Only when the name/type isn't self-explanatory, or to clarify constraints | `@param id - Must be > 0, validated upstream by Zod` |
-| `@returns` | Only when the return value has non-obvious meaning | `@returns null when the user has no active session` |
-| `@throws` | Server actions / functions that throw or redirect | `@throws Redirects to /login if unauthenticated` |
-| `@example` | Complex utilities where usage isn't obvious | `@example cn("base", condition && "extra")` |
-| `@deprecated` | Superseded code that still exists | `@deprecated Use getServerSession() instead` |
-| `@see` | Link to related code, docs, or decisions | `@see AGENTS-SECURITY.md for auth pattern` |
-| `@todo` | Known improvements pending | `@todo Add Zod validation (issue #42)` |
+| Tag           | Use for                                                                   | Example context                                      |
+| ------------- | ------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `@param`      | Only when the name/type isn't self-explanatory, or to clarify constraints | `@param id - Must be > 0, validated upstream by Zod` |
+| `@returns`    | Only when the return value has non-obvious meaning                        | `@returns null when the user has no active session`  |
+| `@throws`     | Server actions / functions that throw or redirect                         | `@throws Redirects to /login if unauthenticated`     |
+| `@example`    | Complex utilities where usage isn't obvious                               | `@example cn("base", condition && "extra")`          |
+| `@deprecated` | Superseded code that still exists                                         | `@deprecated Use getServerSession() instead`         |
+| `@see`        | Link to related code, docs, or decisions                                  | `@see AGENTS-SECURITY.md for auth pattern`           |
+| `@todo`       | Known improvements pending                                                | `@todo Add Zod validation (issue #42)`               |
 
 Avoid `@type`, `@typedef`, `@callback` — TypeScript handles these.
 
 ### Where to Prioritize
 
-| Location | Priority | Reason |
-| --- | --- | --- |
-| `lib/actions/*` (Server Actions) | **High** | Side effects, auth checks, revalidation, redirects |
-| `lib/auth.ts`, `lib/server-session.ts` | **High** | Security assumptions, session flow |
-| `db/schema/*` | **Medium** | Relationships, constraints, enum meanings |
-| `components/ui/*` (reusable) | **Medium** | Prop behavior, variants, accessibility notes |
-| `lib/utils.ts` | **Low** | Only if logic is non-trivial |
-| Page/layout components | **Low** | Only for unusual data fetching or auth patterns |
+| Location                               | Priority   | Reason                                             |
+| -------------------------------------- | ---------- | -------------------------------------------------- |
+| `lib/actions/*` (Server Actions)       | **High**   | Side effects, auth checks, revalidation, redirects |
+| `lib/auth.ts`, `lib/server-session.ts` | **High**   | Security assumptions, session flow                 |
+| `db/schema/*`                          | **Medium** | Relationships, constraints, enum meanings          |
+| `components/ui/*` (reusable)           | **Medium** | Prop behavior, variants, accessibility notes       |
+| `lib/utils.ts`                         | **Low**    | Only if logic is non-trivial                       |
+| Page/layout components                 | **Low**    | Only for unusual data fetching or auth patterns    |
 
 ### Examples
 
@@ -66,7 +66,7 @@ Avoid `@type`, `@typedef`, `@callback` — TypeScript handles these.
  * @throws Error if the project ID does not exist.
  */
 export async function updateProject(formData: FormData) {
-  // ...
+	// ...
 }
 ```
 
@@ -77,8 +77,8 @@ export async function updateProject(formData: FormData) {
  * Tracks employment status changes over time.
  * Each row is an immutable snapshot — never update, only insert.
  */
-export const employmentHistory = sqliteTable("employment_history", {
-  // ...
+export const employmentHistory = sqliteTable('employment_history', {
+	// ...
 });
 ```
 
@@ -92,7 +92,7 @@ export const employmentHistory = sqliteTable("employment_history", {
  * @see AGENTS-SECURITY.md — "Auth Protection Pattern" for the two-layer approach.
  */
 export async function getServerSession() {
-  // ...
+	// ...
 }
 ```
 
@@ -114,7 +114,7 @@ export async function getServerSession() {
  * @deprecated Replaced by `getServerSession()`. Will be removed in v2.
  */
 export function getSessionFromCookie() {
-  // ...
+	// ...
 }
 ```
 

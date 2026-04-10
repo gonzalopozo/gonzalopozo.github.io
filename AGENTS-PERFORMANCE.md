@@ -24,11 +24,11 @@ Performance guidelines for the portfolio project — project-specific guidance t
 
 Enabled in this project (`reactCompiler: true` in `next.config.ts`). Automatically inserts memoization at build time.
 
-| Before (manual) | After (compiler handles it) |
-| --- | --- |
-| `useMemo(() => calc(data), [data])` | `const result = calc(data)` |
-| `useCallback((id) => fn(id), [fn])` | `const handler = (id) => fn(id)` |
-| `React.memo(Component)` | `function Component(props) { ... }` |
+| Before (manual)                     | After (compiler handles it)         |
+| ----------------------------------- | ----------------------------------- |
+| `useMemo(() => calc(data), [data])` | `const result = calc(data)`         |
+| `useCallback((id) => fn(id), [fn])` | `const handler = (id) => fn(id)`    |
+| `React.memo(Component)`             | `function Component(props) { ... }` |
 
 ### Rules
 
@@ -72,14 +72,14 @@ const ChartComponent = dynamic(() => import("@/components/chart"), {
 
 ### Project-Specific Guidance
 
-| Component | Dynamic? | Reason |
-| --- | --- | --- |
-| Admin sidebar/header | No | Always visible |
-| Login form | No | Lightweight, needed immediately |
-| Skills multi-select (cmdk) | Yes | Heavy dependency, only in forms |
-| Data tables | No | Primary dashboard content |
-| Delete confirmation dialog | Yes | Only on user action |
-| Public portfolio page | No | All content is primary |
+| Component                  | Dynamic? | Reason                          |
+| -------------------------- | -------- | ------------------------------- |
+| Admin sidebar/header       | No       | Always visible                  |
+| Login form                 | No       | Lightweight, needed immediately |
+| Skills multi-select (cmdk) | Yes      | Heavy dependency, only in forms |
+| Data tables                | No       | Primary dashboard content       |
+| Delete confirmation dialog | Yes      | Only on user action             |
+| Public portfolio page      | No       | All content is primary          |
 
 ---
 
@@ -119,11 +119,11 @@ For pages with multiple independent data sources, use separate `<Suspense>` boun
 
 ### Where to Add Loading Files
 
-| Route | Needed? | Reason |
-| --- | --- | --- |
-| `app/(admin)/dashboard/*/page.tsx` (all) | Yes | All fetch from DB |
-| `app/(public)/page.tsx` | Yes | Fetches all portfolio data |
-| `app/(admin)/login/page.tsx` | No | No data fetching |
+| Route                                    | Needed? | Reason                     |
+| ---------------------------------------- | ------- | -------------------------- |
+| `app/(admin)/dashboard/*/page.tsx` (all) | Yes     | All fetch from DB          |
+| `app/(public)/page.tsx`                  | Yes     | Fetches all portfolio data |
+| `app/(admin)/login/page.tsx`             | No      | No data fetching           |
 
 ---
 
@@ -156,15 +156,15 @@ Is the component interactive (onClick, onChange, state, effects)?
 
 ### Project-Specific Boundaries
 
-| Component | Type | Reason |
-| --- | --- | --- |
-| Dashboard layout | Server | Static structure |
-| Sidebar navigation | Client | Active state, mobile toggle |
-| Projects list page | Server | Data fetching, table rendering |
-| Delete confirmation dialog | Client | Modal state, click handlers |
-| Login form | Client | Form state, submission |
-| Public portfolio page | Server | Static rendering, SEO |
-| Skills multi-select | Client | Combobox interactivity (cmdk) |
+| Component                  | Type   | Reason                         |
+| -------------------------- | ------ | ------------------------------ |
+| Dashboard layout           | Server | Static structure               |
+| Sidebar navigation         | Client | Active state, mobile toggle    |
+| Projects list page         | Server | Data fetching, table rendering |
+| Delete confirmation dialog | Client | Modal state, click handlers    |
+| Login form                 | Client | Form state, submission         |
+| Public portfolio page      | Server | Static rendering, SEO          |
+| Skills multi-select        | Client | Combobox interactivity (cmdk)  |
 
 ---
 
@@ -172,31 +172,31 @@ Is the component interactive (onClick, onChange, state, effects)?
 
 ### LCP (Largest Contentful Paint) — Loading
 
-| Rating | Threshold |
-| --- | --- |
-| Good | <= 2.5s |
+| Rating            | Threshold |
+| ----------------- | --------- |
+| Good              | <= 2.5s   |
 | Needs Improvement | 2.5s–4.0s |
-| Poor | > 4.0s |
+| Poor              | > 4.0s    |
 
 **Optimizations in this project**: `priority` on above-fold images, `next/font` for fonts, `"use cache"` + `cacheLife` for data, Server Components on public page, `loading.tsx` for instant shell.
 
 ### INP (Interaction to Next Paint) — Interactivity
 
-| Rating | Threshold |
-| --- | --- |
-| Good | <= 200ms |
+| Rating            | Threshold   |
+| ----------------- | ----------- |
+| Good              | <= 200ms    |
 | Needs Improvement | 200ms–500ms |
-| Poor | > 500ms |
+| Poor              | > 500ms     |
 
 **Optimizations**: React Compiler auto-memoization, Server Components by default (minimal client JS), dynamic imports for heavy components, `startTransition` for mutations.
 
 ### CLS (Cumulative Layout Shift) — Visual Stability
 
-| Rating | Threshold |
-| --- | --- |
-| Good | <= 0.1 |
-| Needs Improvement | 0.1–0.25 |
-| Poor | > 0.25 |
+| Rating            | Threshold |
+| ----------------- | --------- |
+| Good              | <= 0.1    |
+| Needs Improvement | 0.1–0.25  |
+| Poor              | > 0.25    |
 
 **Optimizations**: `next/image` with dimensions (prevents shift), `next/font` (no FOUT), skeleton UIs matching content shape, no content injection above existing elements.
 
@@ -206,20 +206,20 @@ Is the component interactive (onClick, onChange, state, effects)?
 
 ```typescript
 // components/web-vitals.tsx
-"use client";
+'use client';
 
-import { useReportWebVitals } from "next/web-vitals";
+import { useReportWebVitals } from 'next/web-vitals';
 
 export function WebVitals() {
-  useReportWebVitals((metric) => {
-    // metric.name: "LCP" | "INP" | "CLS" | "FCP" | "TTFB"
-    // metric.rating: "good" | "needs-improvement" | "poor"
-    if (process.env.NODE_ENV === "development") {
-      console.log(metric.name, metric.value, metric.rating);
-    }
-    // Production: send to analytics endpoint
-  });
-  return null;
+	useReportWebVitals((metric) => {
+		// metric.name: "LCP" | "INP" | "CLS" | "FCP" | "TTFB"
+		// metric.rating: "good" | "needs-improvement" | "poor"
+		if (process.env.NODE_ENV === 'development') {
+			console.log(metric.name, metric.value, metric.rating);
+		}
+		// Production: send to analytics endpoint
+	});
+	return null;
 }
 ```
 

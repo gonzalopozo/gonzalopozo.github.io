@@ -1,10 +1,10 @@
-import { defineConfig, globalIgnores } from "eslint/config";
-import eslintConfigPrettier from "eslint-config-prettier";
-import nextVitals from "eslint-config-next/core-web-vitals";
-import nextTs from "eslint-config-next/typescript";
-import vitest from "@vitest/eslint-plugin";
-import reactCompiler from "eslint-plugin-react-compiler";
-import globals from "globals";
+import { defineConfig, globalIgnores } from 'eslint/config';
+import eslintConfigPrettier from 'eslint-config-prettier';
+import nextVitals from 'eslint-config-next/core-web-vitals';
+import nextTs from 'eslint-config-next/typescript';
+import vitest from '@vitest/eslint-plugin';
+import reactCompiler from 'eslint-plugin-react-compiler';
+import globals from 'globals';
 
 /**
  * Tailored ESLint flat config for this Next.js 16 + React 19 + TypeScript app.
@@ -16,101 +16,95 @@ import globals from "globals";
  * @see https://nextjs.org/docs/app/api-reference/config/eslint
  */
 export default defineConfig([
-  ...nextVitals,
-  ...nextTs,
+	...nextVitals,
+	...nextTs,
 
-  // Aligns with `reactCompiler: true` in next.config.ts — catches Rules of React issues the compiler cares about.
-  // MapLibre integration intentionally disables some hook rules; the compiler skips those files anyway.
-  {
-    name: "portfolio/react-compiler",
-    files: ["**/*.{js,jsx,mjs,ts,tsx,mts,cts}"],
-    ignores: [
-      "**/*.config.{js,mjs,cjs,ts,mts}",
-      "scripts/**",
-      "e2e/**",
-      "components/ui/map.tsx",
-    ],
-    plugins: {
-      "react-compiler": reactCompiler,
-    },
-    rules: {
-      "react-compiler/react-compiler": "error",
-    },
-  },
+	// Aligns with `reactCompiler: true` in next.config.ts — catches Rules of React issues the compiler cares about.
+	// MapLibre integration intentionally disables some hook rules; the compiler skips those files anyway.
+	{
+		name: 'portfolio/react-compiler',
+		files: ['**/*.{js,jsx,mjs,ts,tsx,mts,cts}'],
+		ignores: [
+			'**/*.config.{js,mjs,cjs,ts,mts}',
+			'scripts/**',
+			'e2e/**',
+			'components/ui/map.tsx',
+		],
+		plugins: {
+			'react-compiler': reactCompiler,
+		},
+		rules: {
+			'react-compiler/react-compiler': 'error',
+		},
+	},
 
-  // Lightweight TS style rules (no type-aware project service — keeps lint fast).
-  {
-    name: "portfolio/typescript-import-style",
-    files: ["**/*.{ts,tsx}"],
-    rules: {
-      "@typescript-eslint/consistent-type-imports": [
-        "warn",
-        {
-          prefer: "type-imports",
-          fixStyle: "inline-type-imports",
-        },
-      ],
-    },
-  },
+	// Lightweight TS style rules (no type-aware project service — keeps lint fast).
+	{
+		name: 'portfolio/typescript-import-style',
+		files: ['**/*.{ts,tsx}'],
+		rules: {
+			'@typescript-eslint/consistent-type-imports': [
+				'warn',
+				{
+					prefer: 'type-imports',
+					fixStyle: 'inline-type-imports',
+				},
+			],
+		},
+	},
 
-  // Stricter console usage in UI routes/components (server modules may log intentionally).
-  {
-    name: "portfolio/no-console-app",
-    files: [
-      "app/**/*.{ts,tsx}",
-      "components/**/*.{ts,tsx}",
-    ],
-    rules: {
-      "no-console": ["warn", { allow: ["warn", "error"] }],
-    },
-  },
+	// Stricter console usage in UI routes/components (server modules may log intentionally).
+	{
+		name: 'portfolio/no-console-app',
+		files: ['app/**/*.{ts,tsx}', 'components/**/*.{ts,tsx}'],
+		rules: {
+			'no-console': ['warn', { allow: ['warn', 'error'] }],
+		},
+	},
 
-  // Vitest — unit/integration tests under Vitest (not Playwright e2e).
-  {
-    ...vitest.configs.recommended,
-    name: "portfolio/vitest",
-    files: [
-      "**/*.{test,spec}.{ts,tsx,js,jsx,mts,mjs}",
-      "**/__tests__/**/*.{ts,tsx,js,jsx}",
-    ],
-    languageOptions: {
-      globals: {
-        ...vitest.configs.env.languageOptions.globals,
-      },
-    },
-  },
+	// Vitest — unit/integration tests under Vitest (not Playwright e2e).
+	{
+		...vitest.configs.recommended,
+		name: 'portfolio/vitest',
+		files: ['**/*.{test,spec}.{ts,tsx,js,jsx,mts,mjs}', '**/__tests__/**/*.{ts,tsx,js,jsx}'],
+		languageOptions: {
+			globals: {
+				...vitest.configs.env.languageOptions.globals,
+			},
+		},
+	},
 
-  // Node: one-off scripts and repo config files.
-  {
-    name: "portfolio/node-globals",
-    files: [
-      "scripts/**/*.{mts,ts,cjs,mjs}",
-      "*.{config,setup}.{ts,mts,mjs,js,cjs}",
-      "postcss.config.*",
-      "eslint.config.mts",
-    ],
-    languageOptions: {
-      globals: {
-        ...globals.nodeBuiltin,
-        ...globals.node,
-      },
-    },
-  },
+	// Node: one-off scripts and repo config files.
+	{
+		name: 'portfolio/node-globals',
+		files: [
+			'scripts/**/*.{mts,ts,cjs,mjs}',
+			'*.{config,setup}.{ts,mts,mjs,js,cjs}',
+			'postcss.config.*',
+			'eslint.config.mts',
+		],
+		languageOptions: {
+			globals: {
+				...globals.nodeBuiltin,
+				...globals.node,
+			},
+		},
+	},
 
-  // Turn off ESL<int rules that conflict with Prettier (formatting). Must stay near the end.
-  eslintConfigPrettier,
+	// Turn off ESL<int rules that conflict with Prettier (formatting). Must stay near the end.
+	eslintConfigPrettier,
 
-  globalIgnores([
-    ".next/**",
-    "out/**",
-    "build/**",
-    "coverage/**",
-    "playwright-report/**",
-    "test-results/**",
-    "node_modules/**",
-    ".pnpm-store/**",
-    "next-env.d.ts",
-    "**/*.min.js",
-    "public/**",
-  ]),
+	globalIgnores([
+		'.next/**',
+		'out/**',
+		'build/**',
+		'coverage/**',
+		'playwright-report/**',
+		'test-results/**',
+		'node_modules/**',
+		'.pnpm-store/**',
+		'next-env.d.ts',
+		'**/*.min.js',
+		'public/**',
+	]),
 ]);

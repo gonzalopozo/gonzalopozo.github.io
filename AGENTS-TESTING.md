@@ -25,16 +25,16 @@ Testing strategy, conventions, and project-specific patterns for a Next.js 16 ap
 
 Use TDD (test first) where bugs have real impact and the feedback loop is fast. Use Test-After for framework-coupled or UI-heavy code.
 
-| Code Layer | Strategy | Tool |
-| --- | --- | --- |
-| Zod validation schemas | **TDD** (test first) | Vitest |
-| Utility functions (`lib/utils.ts`) | **TDD** (test first) | Vitest |
-| Server Action logic | **TDD for validation, Test-After for DB** | Vitest |
-| Junction table sync logic | **Test-After** | Vitest |
-| Client Components with custom logic | **Test-After** (optional) | Vitest + RTL |
-| Pages, layouts, route flows | **Test-After** | Playwright |
-| Auth flows (login, protected routes) | **Test-After** | Playwright |
-| Public page rendering | **Test-After** | Playwright |
+| Code Layer                           | Strategy                                  | Tool         |
+| ------------------------------------ | ----------------------------------------- | ------------ |
+| Zod validation schemas               | **TDD** (test first)                      | Vitest       |
+| Utility functions (`lib/utils.ts`)   | **TDD** (test first)                      | Vitest       |
+| Server Action logic                  | **TDD for validation, Test-After for DB** | Vitest       |
+| Junction table sync logic            | **Test-After**                            | Vitest       |
+| Client Components with custom logic  | **Test-After** (optional)                 | Vitest + RTL |
+| Pages, layouts, route flows          | **Test-After**                            | Playwright   |
+| Auth flows (login, protected routes) | **Test-After**                            | Playwright   |
+| Public page rendering                | **Test-After**                            | Playwright   |
 
 **TDD cycle**: Red (failing test) → Green (minimum code to pass) → Refactor (clean up, tests stay green) → Repeat.
 
@@ -56,6 +56,7 @@ Use TDD (test first) where bugs have real impact and the feedback loop is fast. 
 **Config file**: `vitest.config.mts` — already in the repo.
 
 Project-specific settings:
+
 - `environment: 'jsdom'` — simulates DOM for component tests (override per-file with `// @vitest-environment node`)
 - `plugins: [tsconfigPaths()]` — resolves `@/*` path alias
 - `include: ['tests/**/*.test.{ts,tsx}']` — only `tests/` directory
@@ -68,6 +69,7 @@ Project-specific settings:
 **Config file**: `playwright.config.ts` — already in the repo.
 
 Project-specific settings:
+
 - `testDir: './e2e'` — all E2E tests in `e2e/`
 - `baseURL: 'http://localhost:3000'` — enables `page.goto('/')`
 - `webServer: { command: 'pnpm dev' }` — auto-starts dev server
@@ -101,12 +103,12 @@ e2e/                           # Playwright E2E tests
 
 ### Naming Rules
 
-| Convention | Vitest | Playwright |
-| --- | --- | --- |
-| Extension | `.test.ts` / `.test.tsx` | `.spec.ts` |
-| Directory | `tests/` | `e2e/` |
-| File names | Mirror source (`projects.test.ts` → `lib/actions/projects.ts`) | Named by flow (`auth.spec.ts`) |
-| Test names | Behavior: `"rejects empty title"` | User action: `"should create a new project"` |
+| Convention | Vitest                                                         | Playwright                                   |
+| ---------- | -------------------------------------------------------------- | -------------------------------------------- |
+| Extension  | `.test.ts` / `.test.tsx`                                       | `.spec.ts`                                   |
+| Directory  | `tests/`                                                       | `e2e/`                                       |
+| File names | Mirror source (`projects.test.ts` → `lib/actions/projects.ts`) | Named by flow (`auth.spec.ts`)               |
+| Test names | Behavior: `"rejects empty title"`                              | User action: `"should create a new project"` |
 
 ---
 
@@ -116,14 +118,14 @@ e2e/                           # Playwright E2E tests
 
 ### Summary
 
-| Dependency | Mock Target | Pattern |
-| --- | --- | --- |
-| Database (Turso/Drizzle) | `@/db` | `vi.mock("@/db", () => ({ db: { insert: vi.fn()... } }))` |
-| Authentication | `@/lib/server-session` | `vi.mock(...)` then `vi.mocked(getServerSession).mockResolvedValue(...)` |
-| `redirect()` | `next/navigation` | Mock to throw `Error("REDIRECT:/path")` — mirrors Next.js behavior |
-| `revalidatePath()` | `next/cache` | `vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }))` |
-| `headers()` / `cookies()` | `next/headers` | `vi.mock("next/headers", ...)` |
-| `FormData` | Manual creation | Helper: `createFormData(record)` — see reference file |
+| Dependency                | Mock Target            | Pattern                                                                  |
+| ------------------------- | ---------------------- | ------------------------------------------------------------------------ |
+| Database (Turso/Drizzle)  | `@/db`                 | `vi.mock("@/db", () => ({ db: { insert: vi.fn()... } }))`                |
+| Authentication            | `@/lib/server-session` | `vi.mock(...)` then `vi.mocked(getServerSession).mockResolvedValue(...)` |
+| `redirect()`              | `next/navigation`      | Mock to throw `Error("REDIRECT:/path")` — mirrors Next.js behavior       |
+| `revalidatePath()`        | `next/cache`           | `vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }))`             |
+| `headers()` / `cookies()` | `next/headers`         | `vi.mock("next/headers", ...)`                                           |
+| `FormData`                | Manual creation        | Helper: `createFormData(record)` — see reference file                    |
 
 ### Rules
 
@@ -139,31 +141,31 @@ e2e/                           # Playwright E2E tests
 
 ### Vitest (Unit Tests)
 
-| What to Test | Example |
-| --- | --- |
-| Schema accepts valid data | All required fields present, correct types |
-| Schema rejects missing required fields | Empty title, empty description |
-| Schema rejects invalid values | Status `"deleted"` (not in enum), title over 200 chars |
-| Schema handles optional fields | Empty URL allowed, invalid URL rejected |
-| Schema `.or(z.literal(""))` for optional URLs | Empty string passes, `"not-a-url"` fails |
-| Action authenticates before executing | Returns redirect when session is null |
-| Action validates input before DB call | Invalid data never reaches `db.insert()` |
-| Action calls correct Drizzle operations | `db.insert()` called with validated data |
-| Action revalidates/redirects correctly | `redirect()` or `revalidatePath()` called |
-| Junction table sync adds/removes skills | New skills inserted, removed skills deleted, unchanged ignored |
+| What to Test                                  | Example                                                        |
+| --------------------------------------------- | -------------------------------------------------------------- |
+| Schema accepts valid data                     | All required fields present, correct types                     |
+| Schema rejects missing required fields        | Empty title, empty description                                 |
+| Schema rejects invalid values                 | Status `"deleted"` (not in enum), title over 200 chars         |
+| Schema handles optional fields                | Empty URL allowed, invalid URL rejected                        |
+| Schema `.or(z.literal(""))` for optional URLs | Empty string passes, `"not-a-url"` fails                       |
+| Action authenticates before executing         | Returns redirect when session is null                          |
+| Action validates input before DB call         | Invalid data never reaches `db.insert()`                       |
+| Action calls correct Drizzle operations       | `db.insert()` called with validated data                       |
+| Action revalidates/redirects correctly        | `redirect()` or `revalidatePath()` called                      |
+| Junction table sync adds/removes skills       | New skills inserted, removed skills deleted, unchanged ignored |
 
 ### Playwright (E2E Tests)
 
-| What to Test | Example |
-| --- | --- |
-| Login flow | Credentials → redirect to dashboard |
-| Auth protection | `/dashboard` without session → redirect to `/login` |
-| Create entity | Fill form → submit → entity in list |
-| Edit entity | Click edit → modify → save → changes visible |
-| Delete entity | Click delete → confirm → removed from list |
-| Validation errors | Submit empty form → error messages visible |
-| Public page renders | Visit `/` → all sections visible |
-| Accessibility (axe-core) | No WCAG 2.2 AA violations |
+| What to Test             | Example                                             |
+| ------------------------ | --------------------------------------------------- |
+| Login flow               | Credentials → redirect to dashboard                 |
+| Auth protection          | `/dashboard` without session → redirect to `/login` |
+| Create entity            | Fill form → submit → entity in list                 |
+| Edit entity              | Click edit → modify → save → changes visible        |
+| Delete entity            | Click delete → confirm → removed from list          |
+| Validation errors        | Submit empty form → error messages visible          |
+| Public page renders      | Visit `/` → all sections visible                    |
+| Accessibility (axe-core) | No WCAG 2.2 AA violations                           |
 
 ---
 
@@ -174,6 +176,7 @@ e2e/                           # Playwright E2E tests
 Log in once and reuse the session across tests via Playwright's storage state. See [AGENTS-TESTING-REFERENCE.md](./AGENTS-TESTING-REFERENCE.md#playwright-auth-setup) for full auth setup code and project config.
 
 Key points:
+
 - `e2e/auth.setup.ts` logs in and saves cookies to `e2e/.auth/user.json`
 - Add `e2e/.auth/` to `.gitignore`
 - Authenticated projects depend on the setup project
@@ -193,10 +196,16 @@ Use sparingly for pages with many repeated interactions:
 ```typescript
 // e2e/pages/projects-page.ts
 export class ProjectsPage {
-  constructor(private page: Page) {}
-  async goto() { await this.page.goto("/dashboard/projects"); }
-  async createProject(data: { title: string }) { /* fill + submit */ }
-  async expectProjectVisible(title: string) { /* assert */ }
+	constructor(private page: Page) {}
+	async goto() {
+		await this.page.goto('/dashboard/projects');
+	}
+	async createProject(data: { title: string }) {
+		/* fill + submit */
+	}
+	async expectProjectVisible(title: string) {
+		/* assert */
+	}
 }
 ```
 
