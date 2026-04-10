@@ -2,6 +2,9 @@
 	"$schema": "https://unpkg.com/knip@6/schema-jsonc.json",
 	// Extra entry points not covered by the Next.js plugin (see https://knip.dev/explanations/entry-files)
 	"entry": ["scripts/**/*.{mts,ts}"],
+	// Commitlint loads its config and shared preset dynamically via cosmiconfig.
+	"project": ["!commitlint.config.mts"],
+	"ignoreDependencies": ["@commitlint/config-conventional"],
 	// Drizzle config lives under db/ (default plugin only looks for ./drizzle.config.*)
 	"drizzle": {
 		"config": ["db/drizzle.config.ts"],
