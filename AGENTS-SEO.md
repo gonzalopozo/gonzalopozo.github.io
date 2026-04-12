@@ -4,7 +4,7 @@ SEO and metadata guidelines for the portfolio project. Templates for metadata, O
 
 > **Before implementing any SEO feature (metadata, OG images, sitemap, robots), execute the following skill** — read the SKILL.md and follow its instructions:
 >
-> 1. `.cursor/skills/seo/SKILL.md`
+> 1. `.claude/skills/seo/SKILL.md`
 
 ---
 

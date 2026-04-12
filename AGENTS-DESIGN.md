@@ -4,10 +4,10 @@ Visual design system for the portfolio's public page — theme tokens, bento gri
 
 > **Before applying or extending this design system, execute the following skills** — read each SKILL.md and follow its instructions:
 >
-> 1. `.cursor/skills/shadcn/SKILL.md` (component styling, token usage)
-> 2. `.cursor/skills/tailwind-design-system/SKILL.md` (Tailwind v4 `@theme`, OKLCH)
-> 3. `.cursor/skills/frontend-design/SKILL.md` (visual quality, polish)
-> 4. `.cursor/skills/web-design-guidelines/SKILL.md` (compliance review)
+> 1. `.claude/skills/shadcn/SKILL.md` (component styling, token usage)
+> 2. `.claude/skills/tailwind-design-system/SKILL.md` (Tailwind v4 `@theme`, OKLCH)
+> 3. `.claude/skills/frontend-design/SKILL.md` (visual quality, polish)
+> 4. `.claude/skills/web-design-guidelines/SKILL.md` (compliance review)
 
 **Related coverage in other AGENTS files (do not duplicate):**
 

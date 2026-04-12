@@ -6,16 +6,16 @@ Security guidelines for the portfolio project — all security layers for a Next
 
 > **Before implementing or modifying authentication, execute the following skill** — read the SKILL.md and follow its instructions:
 >
-> 1. `.cursor/skills/better-auth-best-practices/SKILL.md`
+> 1. `.claude/skills/better-auth-best-practices/SKILL.md`
 
 > **Before writing or reviewing database queries, execute the following skill** — read the SKILL.md and follow its instructions:
 >
-> 1. `.cursor/skills/drizzle-orm/SKILL.md`
+> 1. `.claude/skills/drizzle-orm/SKILL.md`
 
 > **Before hardening Server Actions, execute the following skills** — read each SKILL.md and follow its instructions:
 >
-> 1. `.cursor/skills/vercel-react-best-practices/SKILL.md`
-> 2. `.cursor/skills/next-best-practices/SKILL.md`
+> 1. `.claude/skills/vercel-react-best-practices/SKILL.md`
+> 2. `.claude/skills/next-best-practices/SKILL.md`
 
 ---
 

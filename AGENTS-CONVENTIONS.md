@@ -4,7 +4,7 @@ Code conventions for the portfolio project — JSDoc guidelines that go beyond w
 
 > **Before implementing complex type logic, generics, or utility types, execute the following skill** — read the SKILL.md and follow its instructions:
 >
-> 1. `.cursor/skills/typescript-advanced-types/SKILL.md`
+> 1. `.claude/skills/typescript-advanced-types/SKILL.md`
 
 ---
 

@@ -4,16 +4,16 @@ Design patterns and architecture guidelines for the portfolio project.
 
 > **Before refactoring component architecture or splitting components, execute the following skill** — read the SKILL.md and follow its instructions:
 >
-> 1. `.cursor/skills/vercel-composition-patterns/SKILL.md`
+> 1. `.claude/skills/vercel-composition-patterns/SKILL.md`
 
 > **Before implementing Next.js file-system conventions or App Router patterns, execute the following skills** — read each SKILL.md and follow its instructions:
 >
-> 1. `.cursor/skills/next-best-practices/SKILL.md`
-> 2. `.cursor/skills/nextjs-app-router-patterns/SKILL.md`
+> 1. `.claude/skills/next-best-practices/SKILL.md`
+> 2. `.claude/skills/nextjs-app-router-patterns/SKILL.md`
 
 > **Before optimizing Server Actions or React performance, execute the following skill** — read the SKILL.md and follow its instructions:
 >
-> 1. `.cursor/skills/vercel-react-best-practices/SKILL.md`
+> 1. `.claude/skills/vercel-react-best-practices/SKILL.md`
 
 **Related coverage in other AGENTS files (do not duplicate):**
 
