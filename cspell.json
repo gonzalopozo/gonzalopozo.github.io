@@ -49,6 +49,7 @@
 		".cursor",
 		".agents",
 		".codex",
+		".claude",
 		".vscode",
 		"**/*.svg",
 		"**/*.png",

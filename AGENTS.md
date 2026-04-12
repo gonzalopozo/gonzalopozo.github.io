@@ -64,23 +64,22 @@ lib/
 ## Knowledge Resolution Order
 
 1. This file + `AGENTS-*.md` sub-files
-2. Agent Skills (`.cursor/skills/`)
-3. Cursor's indexed docs
-4. Web search (last resort)
+2. Agent Skills (`.claude/skills/`)
+3. Web search (last resort)
 
 ## Common Tasks
 
 > **Before adding a new entity, execute the following skill** — read the SKILL.md and follow its instructions:
 >
-> 1. `.cursor/skills/drizzle-orm/SKILL.md`
+> 1. `.claude/skills/drizzle-orm/SKILL.md`
 
 **Add a new entity**: schema in `db/schema/` → `pnpm db:setup` → actions in `lib/actions/` → Zod schema in `lib/schemas/` → query in `lib/queries/` → dashboard page → public page.
 
 > **Before adding a UI component, execute the following skills** — read each SKILL.md and follow its instructions:
 >
-> 1. `.cursor/skills/shadcn/SKILL.md`
-> 2. `.cursor/skills/frontend-design/SKILL.md`
-> 3. `.cursor/skills/tailwind-design-system/SKILL.md`
+> 1. `.claude/skills/shadcn/SKILL.md`
+> 2. `.claude/skills/frontend-design/SKILL.md`
+> 3. `.claude/skills/tailwind-design-system/SKILL.md`
 > 4. `AGENTS-DESIGN.md` (design tokens, grid vocabulary, card variants)
 
 **Add a UI component**: add in `components/ui/` using Radix primitives + Tailwind + `cn()`.
