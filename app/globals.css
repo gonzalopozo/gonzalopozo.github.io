@@ -130,6 +130,9 @@
 	body {
 		@apply bg-background text-foreground;
 	}
+	.react-grid-item {
+		transition: none !important;
+	}
 	.maplibregl-popup-content {
 		@apply rounded-none! bg-transparent! p-0! shadow-none!;
 	}

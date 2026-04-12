@@ -83,7 +83,9 @@ export function PortfolioGrid({ projectCards }: PorfolioGridProps) {
 	const resolvedSection = sections.find((e) => e.v === section) ?? sections[0];
 	const gridLayouts = resolvedSection.layouts;
 
-	const { width, containerRef, mounted } = useContainerWidth();
+	const { width, containerRef, mounted } = useContainerWidth({
+		measureBeforeMount: true,
+	});
 
 	return (
 		<>
@@ -106,6 +108,8 @@ export function PortfolioGrid({ projectCards }: PorfolioGridProps) {
 						breakpoints={{ lg: 996, md: 768, sm: 0 }}
 						cols={{ lg: 8, md: 4, sm: 1 }}
 						rowHeight={30}
+						margin={[16, 16]}
+						containerPadding={[0, 0]}
 						resizeConfig={{ enabled: false }}
 					>
 						<GridItem
