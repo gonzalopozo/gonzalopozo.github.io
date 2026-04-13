@@ -7,17 +7,20 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import type { ReactNode } from 'react';
 import Image from 'next/image';
-import { RiGithubLine } from 'react-icons/ri';
-import { Map, MapControls } from '@/components/ui/map';
+import { Map, MapMarker, MarkerContent, MarkerPopup, MarkerTooltip } from '@/components/ui/map';
 import { GridItem } from '@/components/public/grid-item';
 import { PORTFOLIO_SECTIONS, type PortfolioSection } from '@/components/public/portfolio-sections';
 import { ModeToggle } from '@/components/theme-toggler';
+import { type Settings } from '@/lib/types';
 
-interface PorfolioGridProps {
+export type InformationAboutMe = Omit<Settings, 'id' | 'updatedAt'>;
+
+interface PortfolioGridProps {
+	infoAboutMe: InformationAboutMe | undefined;
 	projectCards: ReactNode[];
 }
 
-export function PortfolioGrid({ projectCards }: PorfolioGridProps) {
+export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps) {
 	const [section, setSection] = useQueryState(
 		'section',
 		parseAsStringLiteral(PORTFOLIO_SECTIONS),
@@ -119,7 +122,7 @@ export function PortfolioGrid({ projectCards }: PorfolioGridProps) {
 						>
 							<figure className="shrink-0">
 								<Image
-									src="/360.png"
+									src="/cv_pic.png"
 									width={70}
 									height={120}
 									alt="Picture of Gonzalo"
@@ -129,30 +132,44 @@ export function PortfolioGrid({ projectCards }: PorfolioGridProps) {
 							<div>
 								<h3 className="text-primary">Gonzalo</h3>
 								<p className="text-muted-foreground">
-									Apasionado por la tecnología, creo soluciones creativas y
-									funcionales en la web. Siempre aprendiendo algo nuevo.
+									{infoAboutMe!.statusMessage || 'Status message'}
+								</p>
+								<p className="text-muted-foreground">
+									{infoAboutMe!.isEmployed ? 'Con trabajo' : 'Sin trabajo'}
+								</p>
+								<p className="text-muted-foreground">
+									{infoAboutMe!.resumeUrl ? (
+										<a
+											href={infoAboutMe!.resumeUrl}
+											target="_blank"
+											rel="noreferrer"
+										>
+											CV
+										</a>
+									) : (
+										'Link CV'
+									)}
 								</p>
 							</div>
-							<Button
-								asChild
-								variant="default"
-								size="icon"
-								className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-full"
-							>
-								<a
-									href="https://github.com/gonzalopozo"
-									target="_blank"
-									rel="noopener noreferrer"
-									className="inline-flex items-center gap-2"
-									aria-label="GitHub Profile"
-								>
-									<RiGithubLine className="size-5 shrink-0" aria-hidden />
-								</a>
-							</Button>
 						</GridItem>
 						<GridItem variant="map" key="b">
-							<Map center={[-3.916, 40.273]} zoom={13} attributionControl={false}>
-								<MapControls />
+							<Map center={[-3.916, 40.2728]} zoom={13} attributionControl={false}>
+								<MapMarker key={'map-marker'} longitude={-3.916} latitude={40.2728}>
+									<MarkerContent>
+										<div className="size-6 rounded-lg bg-green-500" />
+									</MarkerContent>
+									<MarkerTooltip>Arroyomolinos</MarkerTooltip>
+									<MarkerPopup>
+										<div className="space-y-1">
+											<p className="text-foreground font-medium">
+												Arroyomolinos
+											</p>
+											<p className="text-muted-foreground text-xs">
+												Info de Arroyo
+											</p>
+										</div>
+									</MarkerPopup>
+								</MapMarker>
 							</Map>
 						</GridItem>
 						<GridItem variant="project" key="c">
