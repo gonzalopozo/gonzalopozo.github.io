@@ -26,7 +26,6 @@ Why a separate component: This keeps the public-page skill rendering isolated, r
 
 _**Agent (composer-2-fast)**_
 
-
 Reviewing your implementation against the Step 8 spec. Reading the files.
 
 
@@ -74,7 +73,6 @@ I'm refactoring SkillsPills to properly await nested async SkillIcon components 
 
 _**Agent (composer-2-fast)**_
 
-
 Here’s a concise review of your approach against the Step 8 instructions (no code changes).
 
 ## What matches the spec
@@ -114,13 +112,6 @@ What about now?
 
 _**Agent (composer-2-fast)**_
 
-
-
-
-
-
-_**Agent (composer-2-fast)**_
-
 <tool-use data-tool-type="read" data-tool-name="read_file_v2">
 <details><summary>Tool use: **read_file_v2** • Read file: /home/gonzalo/gonzalopozo.github.io/components/public/skills-pills.tsx</summary>
 
@@ -144,7 +135,6 @@ I've confirmed the icon order is now icon-first, and the component is correctly 
 I found a leading space before name when icon is null in the Badge component. </details></think>
 
 _**Agent (composer-2-fast)**_
-
 
 Here’s a quick pass on the updated file.
 
