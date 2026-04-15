@@ -7,6 +7,11 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import type { ReactNode } from 'react';
 import { Map, MapMarker, MarkerContent, MarkerPopup, MarkerTooltip } from '@/components/ui/map';
+import {
+	ArroyomolinosMarkerPin,
+	ArroyomolinosPopup,
+	ArroyomolinosTooltip,
+} from '@/components/public/map-marker-content';
 import { GridItem } from '@/components/public/grid-item';
 import { InfoGridItemContent } from '@/components/public/info-grid-item-content';
 import { PORTFOLIO_SECTIONS, type PortfolioSection } from '@/components/public/portfolio-sections';
@@ -38,7 +43,7 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 			layouts: {
 				lg: [
 					{ i: 'a', x: 0, y: 0, w: 4, h: 6 },
-					{ i: 'b', x: 4, y: 0, w: 2, h: 6 },
+					{ i: 'b', x: 4, y: 0, w: 20, h: 20 },
 					{ i: 'c', x: 6, y: 0, w: 2, h: 14 },
 					{ i: 'd', x: 0, y: 1, w: 2, h: 14 },
 					{ i: 'e', x: 2, y: 1, w: 4, h: 14 },
@@ -122,18 +127,13 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 							<Map center={[-3.916, 40.2728]} zoom={13} attributionControl={false}>
 								<MapMarker key={'map-marker'} longitude={-3.916} latitude={40.2728}>
 									<MarkerContent>
-										<div className="size-6 rounded-lg bg-green-500" />
+										<ArroyomolinosMarkerPin />
 									</MarkerContent>
-									<MarkerTooltip>Arroyomolinos</MarkerTooltip>
-									<MarkerPopup>
-										<div className="space-y-1">
-											<p className="text-foreground font-medium">
-												Arroyomolinos
-											</p>
-											<p className="text-muted-foreground text-xs">
-												Info de Arroyo
-											</p>
-										</div>
+									<MarkerTooltip>
+										<ArroyomolinosTooltip />
+									</MarkerTooltip>
+									<MarkerPopup closeButton>
+										<ArroyomolinosPopup />
 									</MarkerPopup>
 								</MapMarker>
 							</Map>
