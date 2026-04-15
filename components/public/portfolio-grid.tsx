@@ -165,6 +165,7 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 										closeButton
 										anchor="center"
 										offset={4}
+										className="rounded-4xl border-0 p-0"
 										onOpen={handleMapPopupOpen}
 										onClose={handleMapPopupClose}
 									>

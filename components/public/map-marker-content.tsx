@@ -52,9 +52,8 @@ export function ArroyomolinosTooltip() {
 
 export function ArroyomolinosPopup() {
 	return (
-		<div className="w-44 overflow-hidden">
-			{/* Image placeholder */}
-			<div className="relative h-16 w-full overflow-hidden bg-gradient-to-br from-emerald-500/20 via-teal-500/10 to-sky-500/20">
+		<div className="w-44 overflow-hidden rounded-4xl">
+			<div className="relative h-16 w-full bg-gradient-to-br from-emerald-500/20 via-teal-500/10 to-sky-500/20">
 				<div className="absolute inset-0 flex items-center justify-center gap-1.5">
 					<div className="flex size-6 items-center justify-center rounded-full bg-emerald-500/20">
 						<TbHandFinger className="size-3 text-emerald-600 dark:text-emerald-400" />
@@ -67,7 +66,7 @@ export function ArroyomolinosPopup() {
 			</div>
 
 			{/* Content */}
-			<div className="space-y-1.5 p-2">
+			<div className="space-y-1.5 px-3 pt-2 pb-3">
 				<div className="flex items-baseline gap-1.5">
 					<span className="inline-flex size-1 rounded-full bg-emerald-500" />
 					<h3 className="text-foreground text-[11px] leading-none font-semibold">
