@@ -6,9 +6,9 @@ import { Responsive, useContainerWidth, type Layout } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import type { ReactNode } from 'react';
-import Image from 'next/image';
 import { Map, MapMarker, MarkerContent, MarkerPopup, MarkerTooltip } from '@/components/ui/map';
 import { GridItem } from '@/components/public/grid-item';
+import { InfoGridItemContent } from '@/components/public/info-grid-item-content';
 import { PORTFOLIO_SECTIONS, type PortfolioSection } from '@/components/public/portfolio-sections';
 import { ModeToggle } from '@/components/theme-toggler';
 import { type Settings } from '@/lib/types';
@@ -115,42 +115,8 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 						containerPadding={[0, 0]}
 						resizeConfig={{ enabled: false }}
 					>
-						<GridItem
-							variant="about"
-							className="flex flex-col items-start gap-2"
-							key="a"
-						>
-							<figure className="shrink-0">
-								<Image
-									src="/cv_pic.png"
-									width={70}
-									height={120}
-									alt="Picture of Gonzalo"
-									className="h-auto max-w-full object-contain"
-								/>
-							</figure>
-							<div>
-								<h3 className="text-primary">Gonzalo</h3>
-								<p className="text-muted-foreground">
-									{infoAboutMe!.statusMessage || 'Status message'}
-								</p>
-								<p className="text-muted-foreground">
-									{infoAboutMe!.isEmployed ? 'Con trabajo' : 'Sin trabajo'}
-								</p>
-								<p className="text-muted-foreground">
-									{infoAboutMe!.resumeUrl ? (
-										<a
-											href={infoAboutMe!.resumeUrl}
-											target="_blank"
-											rel="noreferrer"
-										>
-											CV
-										</a>
-									) : (
-										'Link CV'
-									)}
-								</p>
-							</div>
+						<GridItem variant="about" key="a">
+							<InfoGridItemContent infoAboutMe={infoAboutMe!} />
 						</GridItem>
 						<GridItem variant="map" key="b">
 							<Map center={[-3.916, 40.2728]} zoom={13} attributionControl={false}>
