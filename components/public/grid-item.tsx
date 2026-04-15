@@ -52,6 +52,7 @@ export function GridItem({ children, className, variant, ref, ...props }: GridIt
 					className,
 					{
 						'text-card-foreground bg-card': variant !== 'map',
+						'group/map': variant === 'map',
 						'gap-0 p-0 py-0': variant === 'map' || variant === 'about',
 						'grid-rows-[auto repeat(3, 1fr)] grid grid-cols-1 pt-0':
 							variant === 'project',

@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Responsive, useContainerWidth, type Layout } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { Map, MapMarker, MarkerContent, MarkerPopup, MarkerTooltip } from '@/components/ui/map';
 import {
 	ArroyomolinosMarkerPin,
@@ -30,6 +30,28 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 		'section',
 		parseAsStringLiteral(PORTFOLIO_SECTIONS),
 	);
+
+	const [isMapPopupOpen, setIsMapPopupOpen] = useState(false);
+	const [canMapMarkerJiggle, setCanMapMarkerJiggle] = useState(false);
+
+	const handleMapGridMouseEnter = () => {
+		if (!isMapPopupOpen) {
+			setCanMapMarkerJiggle(true);
+		}
+	};
+
+	const handleMapGridMouseLeave = () => {
+		setCanMapMarkerJiggle(false);
+	};
+
+	const handleMapPopupOpen = () => {
+		setIsMapPopupOpen(true);
+		setCanMapMarkerJiggle(false);
+	};
+
+	const handleMapPopupClose = () => {
+		setIsMapPopupOpen(false);
+	};
 
 	const sections: {
 		url: string;
@@ -123,16 +145,29 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 						<GridItem variant="about" key="a">
 							<InfoGridItemContent infoAboutMe={infoAboutMe!} />
 						</GridItem>
-						<GridItem variant="map" key="b">
+						<GridItem
+							variant="map"
+							key="b"
+							onMouseEnter={handleMapGridMouseEnter}
+							onMouseLeave={handleMapGridMouseLeave}
+						>
 							<Map center={[-3.916, 40.2728]} zoom={13} attributionControl={false}>
 								<MapMarker key={'map-marker'} longitude={-3.916} latitude={40.2728}>
 									<MarkerContent>
-										<ArroyomolinosMarkerPin />
+										<ArroyomolinosMarkerPin
+											shouldJiggle={canMapMarkerJiggle && !isMapPopupOpen}
+										/>
 									</MarkerContent>
 									<MarkerTooltip>
 										<ArroyomolinosTooltip />
 									</MarkerTooltip>
-									<MarkerPopup closeButton>
+									<MarkerPopup
+										closeButton
+										anchor="center"
+										offset={4}
+										onOpen={handleMapPopupOpen}
+										onClose={handleMapPopupClose}
+									>
 										<ArroyomolinosPopup />
 									</MarkerPopup>
 								</MapMarker>
