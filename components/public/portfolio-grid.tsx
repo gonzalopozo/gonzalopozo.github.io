@@ -151,8 +151,8 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 							onMouseEnter={handleMapGridMouseEnter}
 							onMouseLeave={handleMapGridMouseLeave}
 						>
-							<Map center={[-3.916, 40.2728]} zoom={13} attributionControl={false}>
-								<MapMarker key={'map-marker'} longitude={-3.916} latitude={40.2728}>
+							<Map center={[-3.916, 40.27]} zoom={13} attributionControl={false}>
+								<MapMarker key={'map-marker'} longitude={-3.916} latitude={40.27}>
 									<MarkerContent>
 										<ArroyomolinosMarkerPin
 											shouldJiggle={canMapMarkerJiggle && !isMapPopupOpen}
@@ -163,6 +163,8 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 									</MarkerTooltip>
 									<MarkerPopup
 										closeButton
+										closeButtonClassName="top-2.5 right-3 rounded-full bg-background/80 p-0.5 opacity-100 shadow-sm backdrop-blur-sm hover:bg-background"
+										focusAfterOpen={false}
 										anchor="center"
 										offset={4}
 										className="rounded-4xl border-0 p-0"

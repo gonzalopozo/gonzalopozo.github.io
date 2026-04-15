@@ -502,6 +502,8 @@ type MarkerPopupProps = {
 	className?: string;
 	/** Show a close button in the popup (default: false) */
 	closeButton?: boolean;
+	/** Additional CSS classes for the close button */
+	closeButtonClassName?: string;
 	/** Callback when popup is opened */
 	onOpen?: () => void;
 	/** Callback when popup is closed */
@@ -512,6 +514,7 @@ function MarkerPopup({
 	children,
 	className,
 	closeButton = false,
+	closeButtonClassName,
 	onOpen,
 	onClose,
 	...popupOptions
@@ -582,7 +585,10 @@ function MarkerPopup({
 				<button
 					type="button"
 					onClick={handleClose}
-					className="ring-offset-background focus:ring-ring absolute top-1 right-1 z-10 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-none"
+					className={cn(
+						'ring-offset-background focus-visible:ring-ring absolute top-1 right-1 z-10 rounded-sm opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+						closeButtonClassName,
+					)}
 					aria-label="Close popup"
 				>
 					<X className="h-4 w-4" />
