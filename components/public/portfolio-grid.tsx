@@ -43,7 +43,7 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 			layouts: {
 				lg: [
 					{ i: 'a', x: 0, y: 0, w: 4, h: 6 },
-					{ i: 'b', x: 4, y: 0, w: 20, h: 20 },
+					{ i: 'b', x: 4, y: 0, w: 2, h: 6 },
 					{ i: 'c', x: 6, y: 0, w: 2, h: 14 },
 					{ i: 'd', x: 0, y: 1, w: 2, h: 14 },
 					{ i: 'e', x: 2, y: 1, w: 4, h: 14 },
