@@ -1,5 +1,6 @@
 'use client';
 
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useQueryState, parseAsStringLiteral } from 'nuqs';
 import { Button } from '@/components/ui/button';
 import { Responsive, useContainerWidth, type Layout } from 'react-grid-layout';
@@ -26,6 +27,7 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 		'section',
 		parseAsStringLiteral(PORTFOLIO_SECTIONS),
 	);
+	const shouldReduceMotion = useReducedMotion();
 
 	const [isMapPopupOpen, setIsMapPopupOpen] = useState(false);
 	const [canMapMarkerJiggle, setCanMapMarkerJiggle] = useState(false);
@@ -113,6 +115,26 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 		measureBeforeMount: true,
 	});
 
+	const backdropEnterTransition = {
+		duration: shouldReduceMotion ? 0.12 : 0.2,
+		ease: 'easeOut' as const,
+	};
+	const backdropExitTransition = {
+		duration: shouldReduceMotion ? 0.1 : 0.16,
+		ease: 'easeOut' as const,
+	};
+	const popupInitial = shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 10, scale: 0.97 };
+	const popupAnimate = shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 };
+	const popupExit = shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 6, scale: 0.985 };
+	const popupEnterTransition = {
+		duration: shouldReduceMotion ? 0.14 : 0.24,
+		ease: 'easeOut' as const,
+	};
+	const popupExitTransition = {
+		duration: shouldReduceMotion ? 0.12 : 0.18,
+		ease: 'easeIn' as const,
+	};
+
 	return (
 		<>
 			<nav className="h-32 px-[3.5vw]">
@@ -163,21 +185,46 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 									</MapMarker>
 								</Map>
 
-								{isMapPopupOpen && (
-									<>
-										<div
+								<AnimatePresence initial={false}>
+									{isMapPopupOpen && (
+										<motion.div
 											aria-hidden="true"
-											className="absolute inset-0 z-10"
+											className="bg-background/12 absolute inset-0 z-10"
 											onClick={handleMapPopupClose}
+											initial={{ opacity: 0 }}
+											animate={{
+												opacity: 1,
+												transition: backdropEnterTransition,
+											}}
+											exit={{
+												opacity: 0,
+												transition: backdropExitTransition,
+											}}
 										/>
-										<div className="pointer-events-none absolute inset-x-2 top-2 bottom-2 z-20 flex items-start justify-center">
+									)}
+								</AnimatePresence>
+
+								<AnimatePresence initial={false}>
+									{isMapPopupOpen && (
+										<motion.div
+											className="pointer-events-none absolute inset-x-2 top-4 bottom-4 z-20 flex items-start justify-center"
+											initial={popupInitial}
+											animate={{
+												...popupAnimate,
+												transition: popupEnterTransition,
+											}}
+											exit={{
+												...popupExit,
+												transition: popupExitTransition,
+											}}
+										>
 											<ArroyomolinosPopup
 												onClose={handleMapPopupClose}
-												className="pointer-events-auto max-h-full max-w-56 sm:max-w-60"
+												className="pointer-events-auto max-w-52 sm:max-w-56"
 											/>
-										</div>
-									</>
-								)}
+										</motion.div>
+									)}
+								</AnimatePresence>
 							</div>
 						</GridItem>
 						<GridItem variant="project" key="c">
