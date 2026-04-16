@@ -158,12 +158,12 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 											shouldJiggle={canMapMarkerJiggle && !isMapPopupOpen}
 										/>
 									</MarkerContent>
-									<MarkerTooltip>
+									{/* <MarkerTooltip>
 										<ArroyomolinosTooltip />
-									</MarkerTooltip>
+									</MarkerTooltip> */}
 									<MarkerPopup
 										closeButton
-										closeButtonClassName="top-2.5 right-3 rounded-full bg-background/80 p-0.5 opacity-100 shadow-sm backdrop-blur-sm hover:bg-background"
+										closeButtonClassName="top-2.5 right-3 rounded-full p-0.5 opacity-100 shadow-sm backdrop-blur-sm hover:bg-background"
 										focusAfterOpen={false}
 										anchor="center"
 										offset={4}

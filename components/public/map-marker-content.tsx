@@ -2,6 +2,7 @@
 
 import { TbHandClick, TbHandFinger } from 'react-icons/tb';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 interface ArroyomolinosMarkerPinProps {
 	shouldJiggle?: boolean;
@@ -52,50 +53,36 @@ export function ArroyomolinosTooltip() {
 
 export function ArroyomolinosPopup() {
 	return (
-		<div className="w-44 overflow-hidden rounded-4xl">
-			<div className="relative h-16 w-full bg-gradient-to-br from-emerald-500/20 via-teal-500/10 to-sky-500/20">
-				<div className="absolute inset-0 flex items-center justify-center gap-1.5">
-					<div className="flex size-6 items-center justify-center rounded-full bg-emerald-500/20">
-						<TbHandFinger className="size-3 text-emerald-600 dark:text-emerald-400" />
-					</div>
-					<span className="text-muted-foreground text-[8px] font-medium tracking-wide uppercase">
-						Foto próximamente
-					</span>
-				</div>
-				<div className="absolute top-0 right-0 size-8 bg-gradient-to-bl from-emerald-400/20 to-transparent" />
-			</div>
-
-			{/* Content */}
-			<div className="space-y-1.5 px-3 pt-2 pb-3">
-				<div className="flex items-baseline gap-1.5">
-					<span className="inline-flex size-1 rounded-full bg-emerald-500" />
-					<h3 className="text-foreground text-[11px] leading-none font-semibold">
-						Arroyomolinos
+		<div className="bg-card border-border/70 w-44 overflow-hidden rounded-4xl border">
+			<figure className="relative h-16 w-full bg-gradient-to-br from-emerald-500/20 via-teal-500/10 to-sky-500/20">
+				<Image
+					src="/arroyomolinos.jpg"
+					alt="Vista de Arroyomolinos, Madrid"
+					fill
+					sizes="11rem"
+					className="object-cover"
+				/>
+				<div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
+				<figcaption className="absolute inset-x-0 bottom-0 space-y-0.5 px-3 pb-2.5">
+					<p className="text-[8px] font-semibold tracking-[0.18em] text-white/85 uppercase">
+						Mi hogar
+					</p>
+					<h3 className="text-[11px] leading-none font-semibold tracking-tight text-white">
+						Arroyomolinos, Madrid
 					</h3>
-					<span className="text-muted-foreground text-[8px]">Madrid</span>
-				</div>
+				</figcaption>
+			</figure>
 
-				<p className="text-muted-foreground text-[9px] leading-snug">
-					El pueblo del suroeste de Madrid donde crecí, rodeado de naturaleza y a un paso
-					de la ciudad.
+			<div className="px-3 py-2.5">
+				<p className="text-[9px] leading-[1.45] text-pretty">
+					<span className="text-foreground font-medium">
+						Nací en Alcorcón, pero a los 4 años me mudé a Arroyomolinos y aquí crecí.
+					</span>{' '}
+					<span className="text-muted-foreground">
+						Me encanta su calma de pueblo, sus zonas verdes y tener Madrid siempre
+						cerca.
+					</span>
 				</p>
-
-				<div className="border-border flex items-center gap-2 border-t pt-1.5">
-					<div className="flex flex-col">
-						<span className="text-foreground text-[9px] font-semibold">28939</span>
-						<span className="text-muted-foreground text-[7px]">C.P.</span>
-					</div>
-					<div className="bg-border h-4 w-px" />
-					<div className="flex flex-col">
-						<span className="text-foreground text-[9px] font-semibold">~35k</span>
-						<span className="text-muted-foreground text-[7px]">Hab.</span>
-					</div>
-					<div className="bg-border h-4 w-px" />
-					<div className="flex flex-col">
-						<span className="text-foreground text-[9px] font-semibold">30 km</span>
-						<span className="text-muted-foreground text-[7px]">De Madrid</span>
-					</div>
-				</div>
 			</div>
 		</div>
 	);
