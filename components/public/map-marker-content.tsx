@@ -61,20 +61,27 @@ export function ArroyomolinosPopup({ className, onClose }: ArroyomolinosPopupPro
 	return (
 		<article
 			className={cn(
-				'bg-card text-card-foreground border-border/70 relative w-full overflow-hidden rounded-[1.375rem] border shadow-lg',
+				'bg-card text-card-foreground border-border/70 relative w-full [transform:translateZ(0)] overflow-hidden rounded-[1.375rem] border shadow-lg',
 				className,
 			)}
 			data-arroyomolinos-panel
 		>
 			{onClose && (
-				<button
-					type="button"
+				<div
+					role="button"
+					tabIndex={0}
 					onClick={onClose}
-					className="border-border/60 bg-background/85 text-foreground hover:bg-background absolute top-2.5 right-2.5 z-10 flex size-6 items-center justify-center rounded-full border backdrop-blur-sm transition-colors focus:outline-none"
+					onKeyDown={(e) => {
+						if (e.key === 'Enter' || e.key === ' ') {
+							e.preventDefault();
+							onClose();
+						}
+					}}
+					className="focus-visible:ring-ring/60 focus-visible:ring-offset-card hover:border-border/80 hover:bg-card/95 hover:text-card-foreground focus-visible:border-border/80 focus-visible:bg-card focus-visible:text-card-foreground border-background/20 bg-background/18 absolute top-2.5 right-2.5 z-10 flex size-7 cursor-pointer appearance-none items-center justify-center rounded-full border text-white/85 transition-[background-color,border-color,color,box-shadow] duration-200 ease-out outline-none select-none hover:shadow-[0_10px_24px_-16px_rgba(15,23,42,0.6)] focus-visible:shadow-[0_10px_24px_-16px_rgba(15,23,42,0.6)] focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
 					aria-label="Cerrar historia de Arroyomolinos"
 				>
-					<X className="size-3" aria-hidden="true" />
-				</button>
+					<X className="size-3.5" aria-hidden="true" />
+				</div>
 			)}
 
 			<figure className="relative aspect-[16/6.75] w-full overflow-hidden bg-gradient-to-br from-emerald-500/20 via-teal-500/10 to-sky-500/20">
