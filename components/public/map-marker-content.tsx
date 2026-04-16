@@ -1,5 +1,6 @@
 'use client';
 
+import { X } from 'lucide-react';
 import { TbHandClick, TbHandFinger } from 'react-icons/tb';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
@@ -45,45 +46,73 @@ export function ArroyomolinosTooltip() {
 				<span className="relative inline-flex size-1.5 rounded-full bg-emerald-500" />
 			</span>
 			<span className="text-[10px] leading-none font-medium">
-				Arroyomolinos, el lugar donde he crecido
+				Arroyomolinos, donde realmente crecí
 			</span>
 		</div>
 	);
 }
 
-export function ArroyomolinosPopup() {
+interface ArroyomolinosPopupProps {
+	className?: string;
+	onClose?: () => void;
+}
+
+export function ArroyomolinosPopup({ className, onClose }: ArroyomolinosPopupProps) {
 	return (
-		<div className="bg-card border-border/70 w-44 overflow-hidden rounded-4xl border">
-			<figure className="relative h-16 w-full bg-gradient-to-br from-emerald-500/20 via-teal-500/10 to-sky-500/20">
+		<article
+			className={cn(
+				'bg-card text-card-foreground border-border/70 relative flex max-h-full w-full flex-col overflow-hidden rounded-[1.5rem] border shadow-lg',
+				className,
+			)}
+			data-arroyomolinos-panel
+		>
+			{onClose && (
+				<button
+					type="button"
+					onClick={onClose}
+					className="border-border/60 bg-background/85 text-foreground hover:bg-background absolute top-3 right-3 z-10 flex size-7 items-center justify-center rounded-full border backdrop-blur-sm transition-colors focus:outline-none"
+					aria-label="Cerrar historia de Arroyomolinos"
+				>
+					<X className="size-3.5" aria-hidden="true" />
+				</button>
+			)}
+
+			<figure className="relative aspect-[16/8.5] w-full shrink-0 overflow-hidden bg-gradient-to-br from-emerald-500/20 via-teal-500/10 to-sky-500/20">
 				<Image
 					src="/arroyomolinos.jpg"
 					alt="Vista de Arroyomolinos, Madrid"
 					fill
-					sizes="11rem"
+					sizes="(max-width: 768px) 16rem, 15rem"
 					className="object-cover"
 				/>
-				<div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
-				<figcaption className="absolute inset-x-0 bottom-0 space-y-0.5 px-3 pb-2.5">
-					<p className="text-[8px] font-semibold tracking-[0.18em] text-white/85 uppercase">
-						Mi hogar
-					</p>
-					<h3 className="text-[11px] leading-none font-semibold tracking-tight text-white">
-						Arroyomolinos, Madrid
-					</h3>
-				</figcaption>
+				<div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/10 to-transparent" />
 			</figure>
 
-			<div className="px-3 py-2.5">
-				<p className="text-[9px] leading-[1.45] text-pretty">
-					<span className="text-foreground font-medium">
-						Nací en Alcorcón, pero a los 4 años me mudé a Arroyomolinos y aquí crecí.
-					</span>{' '}
-					<span className="text-muted-foreground">
-						Me encanta su calma de pueblo, sus zonas verdes y tener Madrid siempre
-						cerca.
-					</span>
-				</p>
+			<div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-4 pt-3 pb-4">
+				<div className="flex flex-col gap-1">
+					<p className="text-muted-foreground text-[10px] font-semibold tracking-[0.18em] uppercase">
+						Mis raíces
+					</p>
+					<h3 className="text-sm leading-tight font-semibold tracking-tight">
+						Arroyomolinos, Madrid
+					</h3>
+				</div>
+
+				<div className="flex flex-col gap-2.5">
+					<p className="text-[11px] leading-relaxed text-pretty">
+						<span className="text-foreground font-medium">
+							Nací en Alcorcón, pero me mudé a Arroyomolinos con 4 años.
+						</span>{' '}
+						Desde entonces, es el lugar que más asocio con mi infancia, con mi familia y
+						con la etapa en la que realmente crecí.
+					</p>
+					<p className="text-muted-foreground text-[11px] leading-relaxed text-pretty">
+						Arroyomolinos tiene esa mezcla de calma residencial, zonas verdes y cercanía
+						con Madrid que hace fácil sentirse en casa. Allí construí una parte
+						importante de mi historia y de la persona que soy hoy.
+					</p>
+				</div>
 			</div>
-		</div>
+		</article>
 	);
 }

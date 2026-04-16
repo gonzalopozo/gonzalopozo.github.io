@@ -6,12 +6,8 @@ import { Responsive, useContainerWidth, type Layout } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import { useState, type ReactNode } from 'react';
-import { Map, MapMarker, MarkerContent, MarkerPopup, MarkerTooltip } from '@/components/ui/map';
-import {
-	ArroyomolinosMarkerPin,
-	ArroyomolinosPopup,
-	ArroyomolinosTooltip,
-} from '@/components/public/map-marker-content';
+import { Map, MapMarker, MarkerContent } from '@/components/ui/map';
+import { ArroyomolinosMarkerPin, ArroyomolinosPopup } from '@/components/public/map-marker-content';
 import { GridItem } from '@/components/public/grid-item';
 import { InfoGridItemContent } from '@/components/public/info-grid-item-content';
 import { PORTFOLIO_SECTIONS, type PortfolioSection } from '@/components/public/portfolio-sections';
@@ -151,30 +147,38 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 							onMouseEnter={handleMapGridMouseEnter}
 							onMouseLeave={handleMapGridMouseLeave}
 						>
-							<Map center={[-3.916, 40.27]} zoom={13} attributionControl={false}>
-								<MapMarker key={'map-marker'} longitude={-3.916} latitude={40.27}>
-									<MarkerContent>
-										<ArroyomolinosMarkerPin
-											shouldJiggle={canMapMarkerJiggle && !isMapPopupOpen}
-										/>
-									</MarkerContent>
-									{/* <MarkerTooltip>
-										<ArroyomolinosTooltip />
-									</MarkerTooltip> */}
-									<MarkerPopup
-										closeButton
-										closeButtonClassName="top-2.5 right-3 rounded-full p-0.5 opacity-100 shadow-sm backdrop-blur-sm hover:bg-background"
-										focusAfterOpen={false}
-										anchor="center"
-										offset={4}
-										className="rounded-4xl border-0 p-0"
-										onOpen={handleMapPopupOpen}
-										onClose={handleMapPopupClose}
+							<div className="relative size-full">
+								<Map center={[-3.916, 40.27]} zoom={13} attributionControl={false}>
+									<MapMarker
+										key={'map-marker'}
+										longitude={-3.916}
+										latitude={40.27}
+										onClick={handleMapPopupOpen}
 									>
-										<ArroyomolinosPopup />
-									</MarkerPopup>
-								</MapMarker>
-							</Map>
+										<MarkerContent>
+											<ArroyomolinosMarkerPin
+												shouldJiggle={canMapMarkerJiggle && !isMapPopupOpen}
+											/>
+										</MarkerContent>
+									</MapMarker>
+								</Map>
+
+								{isMapPopupOpen && (
+									<>
+										<div
+											aria-hidden="true"
+											className="absolute inset-0 z-10"
+											onClick={handleMapPopupClose}
+										/>
+										<div className="pointer-events-none absolute inset-x-2 top-2 bottom-2 z-20 flex items-start justify-center">
+											<ArroyomolinosPopup
+												onClose={handleMapPopupClose}
+												className="pointer-events-auto max-h-full max-w-56 sm:max-w-60"
+											/>
+										</div>
+									</>
+								)}
+							</div>
 						</GridItem>
 						<GridItem variant="project" key="c">
 							{projectCards[0]}
