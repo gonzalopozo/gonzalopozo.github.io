@@ -17,9 +17,9 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 	const isEmployed = infoAboutMe.isEmployed ?? false;
 
 	return (
-		<div className="group/card flex size-full items-start gap-5 px-6 py-5">
+		<div className="group/card grid size-full grid-cols-[auto_minmax(0,1fr)] grid-rows-1 items-start gap-5 overflow-hidden px-6 py-5">
 			{/* Profile image with status indicator */}
-			<div className="relative shrink-0">
+			<div className="relative row-span-full shrink-0 place-self-center">
 				<Image
 					src="/cv_pic.png"
 					width={260}
@@ -62,9 +62,9 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 			</div>
 
 			{/* Content area */}
-			<div className="flex min-w-0 flex-1 flex-col justify-between self-stretch">
+			<div className="grid min-w-0 grid-rows-[15%_65%_20%] justify-between self-stretch">
 				{/* CV download button — top right */}
-				<div className="flex justify-end">
+				<div className="justify-self-end">
 					{infoAboutMe.resumeUrl && (
 						<a
 							href={infoAboutMe.resumeUrl}
@@ -80,7 +80,7 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 				</div>
 
 				{/* Intro text with highlighted name */}
-				<div className="flex flex-col gap-1.5">
+				<div className="self-center">
 					<p className="text-sm leading-relaxed text-pretty">
 						Hey, I&apos;m{' '}
 						<span className="text-primary text-base font-bold tracking-tight">
