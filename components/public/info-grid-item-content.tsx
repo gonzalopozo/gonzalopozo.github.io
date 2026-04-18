@@ -15,6 +15,8 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 	const [, setSection] = useQueryState('section', parseAsStringLiteral(PORTFOLIO_SECTIONS));
 
 	const isEmployed = infoAboutMe.isEmployed ?? false;
+	const statusLabel =
+		infoAboutMe.statusMessage?.trim() || (isEmployed ? 'Working' : 'Open to Work');
 
 	return (
 		<div className="group/card grid size-full grid-cols-[auto_minmax(0,1fr)] grid-rows-1 items-start gap-5 overflow-hidden px-6 py-5">
@@ -29,7 +31,7 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 					priority
 				/>
 
-				{/* Status badge — reveals label on card hover via CSS */}
+				{/* Status badge, reveals label on card hover via CSS */}
 				<div className="absolute right-0 -bottom-1">
 					<div
 						className={cn(
@@ -52,10 +54,10 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 							/>
 						</span>
 						<span
-							className="text-secondary-foreground max-w-0 overflow-hidden text-xs font-medium whitespace-nowrap opacity-0 transition-all duration-300 ease-out group-hover/card:max-w-32 group-hover/card:opacity-100"
+							className="text-secondary-foreground max-w-0 overflow-hidden text-xs font-medium text-ellipsis whitespace-nowrap opacity-0 transition-all duration-300 ease-out group-hover/card:max-w-56 group-hover/card:opacity-100"
 							role="status"
 						>
-							{isEmployed ? 'Working' : 'Open to Work'}
+							{statusLabel}
 						</span>
 					</div>
 				</div>
@@ -70,11 +72,11 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 							href={infoAboutMe.resumeUrl}
 							target="_blank"
 							rel="noopener noreferrer"
-							className="text-muted-foreground hover:text-primary hover:bg-primary/10 flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-colors duration-200 ease-out"
+							className="border-border text-muted-foreground hover:border-primary/40 hover:bg-primary/10 hover:text-primary inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors duration-200 ease-out"
 							aria-label="Download CV"
 						>
 							<FileDown className="size-3.5" aria-hidden="true" />
-							<span>CV</span>
+							<span>Download CV</span>
 						</a>
 					)}
 				</div>
@@ -86,28 +88,30 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 						<span className="text-primary text-base font-bold tracking-tight">
 							Gonzalo
 						</span>
-						, a passionate full stack developer crafting digital experiences from
-						Madrid.
+						, a full-stack developer from Madrid who loves turning ideas into real
+						products people can use. I care about thoughtful interfaces, solid backend
+						foundations, and the kind of curious, collaborative work that keeps
+						improving the product, the code, and the people building it.
 					</p>
-					{infoAboutMe.statusMessage && (
-						<p className="text-muted-foreground line-clamp-2 text-xs leading-relaxed">
-							{infoAboutMe.statusMessage}
-						</p>
-					)}
 				</div>
 
-				{/* Arrow button — label reveals on card hover via CSS */}
+				{/* Arrow button, label reveals on card hover via CSS */}
 				<div className="flex justify-end">
 					<button
 						onClick={() => setSection('About me')}
-						className="text-muted-foreground hover:text-primary flex items-center gap-2 rounded-full transition-colors duration-200 ease-out"
+						className="group/cta hover:bg-secondary/60 flex items-center gap-2 rounded-full pl-0 transition-[padding,background-color] duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:pl-3"
 						aria-label="View more about me"
 					>
-						<span className="max-w-0 overflow-hidden text-xs font-medium whitespace-nowrap opacity-0 transition-all duration-300 ease-out group-hover/card:max-w-24 group-hover/card:opacity-100">
-							About me
+						<span className="grid grid-cols-[0fr] overflow-hidden transition-[grid-template-columns] duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:grid-cols-[1fr]">
+							<span className="min-w-0 text-xs font-medium whitespace-nowrap opacity-0 transition-opacity duration-300 ease-out group-hover/card:opacity-100">
+								About me
+							</span>
 						</span>
-						<span className="bg-secondary group-hover/card:bg-primary group-hover/card:text-primary-foreground flex size-7 items-center justify-center rounded-full transition-colors duration-200 ease-out">
-							<ArrowRight className="size-3.5" aria-hidden="true" />
+						<span className="bg-secondary group-hover/card:bg-primary group-hover/card:text-primary-foreground flex size-7 shrink-0 items-center justify-center rounded-full transition-colors duration-200 ease-out">
+							<ArrowRight
+								className="size-3.5 transition-transform duration-300 ease-out"
+								aria-hidden="true"
+							/>
 						</span>
 					</button>
 				</div>
