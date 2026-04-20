@@ -125,6 +125,7 @@
 
 @theme {
 	--animate-map-marker-jiggle: map-marker-jiggle 520ms ease-in-out infinite;
+	--animate-status-marquee: status-marquee 12s linear infinite;
 
 	@keyframes map-marker-jiggle {
 		0%,
@@ -142,6 +143,15 @@
 		}
 		80% {
 			transform: rotate(5deg) translateY(-1px);
+		}
+	}
+
+	@keyframes status-marquee {
+		0% {
+			transform: translateX(0);
+		}
+		100% {
+			transform: translateX(-50%);
 		}
 	}
 }

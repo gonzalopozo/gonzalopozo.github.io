@@ -3,9 +3,12 @@
 import Image from 'next/image';
 import { ArrowRight, FileDown } from 'lucide-react';
 import { parseAsStringLiteral, useQueryState } from 'nuqs';
+import { useEffect, useRef, useState } from 'react';
 import { PORTFOLIO_SECTIONS } from '@/components/public/portfolio-sections';
 import { cn } from '@/lib/utils';
 import type { Settings } from '@/lib/types';
+
+const STATUS_LABEL_CAP_PX = 80;
 
 interface InfoGridItemContentProps {
 	infoAboutMe: Omit<Settings, 'id' | 'updatedAt'>;
@@ -17,6 +20,15 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 	const isEmployed = infoAboutMe.isEmployed ?? false;
 	const statusLabel =
 		infoAboutMe.statusMessage?.trim() || (isEmployed ? 'Working' : 'Open to Work');
+
+	const statusTrackRef = useRef<HTMLSpanElement>(null);
+	const [isStatusOverflowing, setIsStatusOverflowing] = useState(false);
+
+	useEffect(() => {
+		const el = statusTrackRef.current;
+		if (!el) return;
+		setIsStatusOverflowing(el.scrollWidth > STATUS_LABEL_CAP_PX);
+	}, [statusLabel]);
 
 	return (
 		<div className="group/card grid size-full grid-cols-[auto_minmax(0,1fr)] grid-rows-1 items-start gap-5 overflow-hidden px-6 py-5">
@@ -54,10 +66,31 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 							/>
 						</span>
 						<span
-							className="text-secondary-foreground max-w-0 overflow-hidden text-xs font-medium text-ellipsis whitespace-nowrap opacity-0 transition-all duration-300 ease-out group-hover/card:max-w-56 group-hover/card:opacity-100"
+							className={cn(
+								'text-secondary-foreground relative max-w-0 overflow-hidden text-xs font-medium opacity-0 transition-all duration-300 ease-out',
+								'group-hover/card:max-w-20 group-hover/card:opacity-100',
+								isStatusOverflowing &&
+									'[mask-image:linear-gradient(to_right,black_calc(100%-0.75rem),transparent)]',
+							)}
 							role="status"
 						>
-							{statusLabel}
+							<span
+								ref={statusTrackRef}
+								className={cn(
+									'inline-flex whitespace-nowrap',
+									isStatusOverflowing &&
+										'motion-safe:group-hover/card:animate-status-marquee',
+								)}
+							>
+								<span className={isStatusOverflowing ? 'pr-8' : undefined}>
+									{statusLabel}
+								</span>
+								{isStatusOverflowing && (
+									<span aria-hidden="true" className="pr-8">
+										{statusLabel}
+									</span>
+								)}
+							</span>
 						</span>
 					</div>
 				</div>
