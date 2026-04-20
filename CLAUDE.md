@@ -26,6 +26,12 @@ Personal portfolio with a public page and an admin dashboard (CMS) — Next.js 1
 | `pnpm db:setup`      | Drizzle generate + push |
 | `pnpm knip`          | Detect unused exports   |
 
+## Command Restrictions
+
+Agents must never run `pnpm build`, `pnpm lint`, `pnpm lint:fix`, `pnpm format`,
+`pnpm format:check`, Prettier, ESLint, or formatter/linter/build commands. Leave
+those checks to the user and only mention them as suggested verification steps.
+
 ## Naming Conventions
 
 - **Files**: kebab-case (`social-links.ts`)

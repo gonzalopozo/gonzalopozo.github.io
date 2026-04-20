@@ -17,6 +17,12 @@ Personal portfolio with a public page and an admin dashboard (CMS) — built wit
 | `pnpm start`    | Start production server            |
 | `pnpm test`     | Vitest (watch mode)                |
 
+## Command Restrictions
+
+Agents must never run `pnpm build`, `pnpm lint`, `pnpm lint:fix`, `pnpm format`,
+`pnpm format:check`, Prettier, ESLint, or formatter/linter/build commands. Leave
+those checks to the user and only mention them as suggested verification steps.
+
 ## Tech Stack
 
 | Category   | Technology                                         |
