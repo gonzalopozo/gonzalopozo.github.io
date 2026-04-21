@@ -12,7 +12,6 @@ import {
 	type ResponsiveLayouts,
 } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
-import 'react-resizable/css/styles.css';
 import { useState, type ReactNode } from 'react';
 import { Map, MapMarker, MarkerContent } from '@/components/ui/map';
 import { ArroyomolinosMarkerPin, ArroyomolinosPopup } from '@/components/public/map-marker-content';
@@ -206,7 +205,7 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 						rowHeight={30}
 						margin={[16, 16]}
 						containerPadding={[0, 0]}
-						resizeConfig={{ enabled: false }}
+						resizeConfig={{ enabled: false, handles: [] }}
 						dragConfig={{
 							enabled: currentBreakpoint === 'lg',
 							bounded: true,
