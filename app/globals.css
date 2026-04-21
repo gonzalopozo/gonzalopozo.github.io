@@ -163,8 +163,12 @@
 	body {
 		@apply bg-background text-foreground;
 	}
-	.react-grid-item {
-		transition: none !important;
+	.react-grid-item.react-grid-placeholder {
+		background: var(--color-muted) !important;
+		opacity: 0.4 !important;
+		border: 2px dashed var(--color-border);
+		border-radius: 2rem;
+		transition-duration: 120ms;
 	}
 	.maplibregl-popup-content {
 		@apply rounded-none! bg-transparent! p-0! shadow-none!;

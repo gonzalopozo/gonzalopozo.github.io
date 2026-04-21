@@ -1,9 +1,16 @@
 'use client';
+'use no memo';
 
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useQueryState, parseAsStringLiteral } from 'nuqs';
 import { Button } from '@/components/ui/button';
-import { Responsive, useContainerWidth, type Layout } from 'react-grid-layout';
+import {
+	Responsive,
+	useContainerWidth,
+	type Layout,
+	type LayoutItem,
+	type ResponsiveLayouts,
+} from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import { useState, type ReactNode } from 'react';
@@ -22,6 +29,63 @@ interface PortfolioGridProps {
 	projectCards: ReactNode[];
 }
 
+type GridBreakpoint = 'lg' | 'md' | 'sm';
+type SectionLayouts = ResponsiveLayouts<GridBreakpoint>;
+
+const SEED_LAYOUTS_BY_SECTION: Record<string, SectionLayouts> = {
+	All: {
+		lg: [
+			{ i: 'a', x: 0, y: 0, w: 4, h: 6 },
+			{ i: 'b', x: 4, y: 0, w: 2, h: 6 },
+			{ i: 'c', x: 6, y: 0, w: 2, h: 14 },
+			{ i: 'd', x: 0, y: 1, w: 2, h: 14 },
+			{ i: 'e', x: 2, y: 1, w: 4, h: 14 },
+		],
+		md: [
+			{ i: 'a', x: 0, y: 0, w: 2, h: 8 },
+			{ i: 'b', x: 1, y: 1, w: 3, h: 2 },
+			{ i: 'c', x: 2, y: 2, w: 1, h: 1 },
+		],
+	},
+	'About me': {
+		lg: [
+			{ i: 'd', x: 0, y: 1, w: 1, h: 1 },
+			{ i: 'e', x: 1, y: 2, w: 2, h: 1 },
+			{ i: 'f', x: 3, y: 1, w: 1, h: 1 },
+		],
+		md: [
+			{ i: 'd', x: 0, y: 0, w: 2, h: 8 },
+			{ i: 'e', x: 1, y: 1, w: 3, h: 2 },
+			{ i: 'f', x: 2, y: 2, w: 1, h: 1 },
+		],
+	},
+};
+
+const DRAG_CANCEL_SELECTORS =
+	'button, a, input, textarea, select, [role="button"], .leaflet-container, .leaflet-interactive, .leaflet-control';
+
+function layoutItemEquals(a: LayoutItem, b: LayoutItem): boolean {
+	return a.i === b.i && a.x === b.x && a.y === b.y && a.w === b.w && a.h === b.h;
+}
+
+function layoutArraysEqual(a: Layout | undefined, b: Layout | undefined): boolean {
+	if (a === b) return true;
+	if (!a || !b) return false;
+	if (a.length !== b.length) return false;
+	for (let i = 0; i < a.length; i++) {
+		if (!layoutItemEquals(a[i]!, b[i]!)) return false;
+	}
+	return true;
+}
+
+function shallowEqualLayouts(a: SectionLayouts, b: SectionLayouts): boolean {
+	const keys = new Set<string>([...Object.keys(a), ...Object.keys(b)]);
+	for (const k of keys) {
+		if (!layoutArraysEqual(a[k as GridBreakpoint], b[k as GridBreakpoint])) return false;
+	}
+	return true;
+}
+
 export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps) {
 	const [section, setSection] = useQueryState(
 		'section',
@@ -31,6 +95,9 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 
 	const [isMapPopupOpen, setIsMapPopupOpen] = useState(false);
 	const [canMapMarkerJiggle, setCanMapMarkerJiggle] = useState(false);
+
+	const [layoutsBySection, setLayoutsBySection] =
+		useState<Record<string, SectionLayouts>>(SEED_LAYOUTS_BY_SECTION);
 
 	const handleMapGridMouseEnter = () => {
 		if (!isMapPopupOpen) {
@@ -54,43 +121,12 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 	const sections: {
 		url: string;
 		v: PortfolioSection | null;
-		layouts?: { lg: Layout; md: Layout };
 		GridItems?: ReactNode;
 	}[] = [
-		{
-			url: 'All',
-			v: null,
-			layouts: {
-				lg: [
-					{ i: 'a', x: 0, y: 0, w: 4, h: 6 },
-					{ i: 'b', x: 4, y: 0, w: 2, h: 6 },
-					{ i: 'c', x: 6, y: 0, w: 2, h: 14 },
-					{ i: 'd', x: 0, y: 1, w: 2, h: 14 },
-					{ i: 'e', x: 2, y: 1, w: 4, h: 14 },
-				],
-				md: [
-					{ i: 'a', x: 0, y: 0, w: 2, h: 8 },
-					{ i: 'b', x: 1, y: 1, w: 3, h: 2 },
-					{ i: 'c', x: 2, y: 2, w: 1, h: 1 },
-				],
-			},
-			GridItems: [],
-		},
+		{ url: 'All', v: null, GridItems: [] },
 		{
 			url: 'About me',
 			v: 'About me',
-			layouts: {
-				lg: [
-					{ i: 'd', x: 0, y: 1, w: 1, h: 1 },
-					{ i: 'e', x: 1, y: 2, w: 2, h: 1 },
-					{ i: 'f', x: 3, y: 1, w: 1, h: 1 },
-				],
-				md: [
-					{ i: 'd', x: 0, y: 0, w: 2, h: 8 },
-					{ i: 'e', x: 1, y: 1, w: 3, h: 2 },
-					{ i: 'f', x: 2, y: 2, w: 1, h: 1 },
-				],
-			},
 			GridItems: [
 				<div className="bg-primary w-50" key="d">
 					d
@@ -109,11 +145,23 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 	];
 
 	const resolvedSection = sections.find((e) => e.v === section) ?? sections[0];
-	const gridLayouts = resolvedSection.layouts;
+	const activeUrl = resolvedSection.url;
+	const gridLayouts = layoutsBySection[activeUrl];
 
 	const { width, containerRef, mounted } = useContainerWidth({
 		measureBeforeMount: true,
 	});
+
+	const currentBreakpoint: GridBreakpoint = width >= 996 ? 'lg' : width >= 768 ? 'md' : 'sm';
+
+	function handleLayoutChange(_current: Layout, all: ResponsiveLayouts) {
+		setLayoutsBySection((prev) => {
+			const existing = prev[activeUrl];
+			const next = { ...(existing ?? {}), ...(all as SectionLayouts) };
+			if (existing && shallowEqualLayouts(existing, next)) return prev;
+			return { ...prev, [activeUrl]: next };
+		});
+	}
 
 	const backdropEnterTransition = {
 		duration: shouldReduceMotion ? 0.12 : 0.2,
@@ -159,6 +207,13 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 						margin={[16, 16]}
 						containerPadding={[0, 0]}
 						resizeConfig={{ enabled: false }}
+						dragConfig={{
+							enabled: currentBreakpoint === 'lg',
+							bounded: true,
+							threshold: 3,
+							cancel: DRAG_CANCEL_SELECTORS,
+						}}
+						onLayoutChange={handleLayoutChange}
 					>
 						<GridItem variant="about" key="a">
 							<InfoGridItemContent infoAboutMe={infoAboutMe!} />
