@@ -228,7 +228,14 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 							onMouseLeave={handleMapGridMouseLeave}
 						>
 							<div className="relative size-full">
-								<Map center={[-3.916, 40.27]} zoom={13} attributionControl={false}>
+								<Map
+									center={[-3.916, 40.27]}
+									zoom={13}
+									attributionControl={false}
+									dragPan={false}
+									dragRotate={false}
+									scrollZoom={false}
+								>
 									<MapMarker
 										key={'map-marker'}
 										longitude={-3.916}
