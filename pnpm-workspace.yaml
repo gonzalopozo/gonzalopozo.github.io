@@ -1,6 +1,8 @@
 allowBuilds:
     esbuild: true
 overrides:
+    'eslint>ajv': '^6.12.6'
+    '@eslint/eslintrc>ajv': '^6.12.6'
     esbuild@<=0.24.2: '>=0.25.0'
     next@>=16.1.0-canary.0 <16.1.0-canary.17: '>=16.1.0-canary.17'
     next@>=16.1.0-canary.0 <16.1.5: '>=16.1.5'

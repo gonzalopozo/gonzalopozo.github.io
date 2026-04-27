@@ -25,7 +25,10 @@ export type InformationAboutMe = Omit<Settings, 'id' | 'updatedAt'>;
 
 interface PortfolioGridProps {
 	infoAboutMe: InformationAboutMe | undefined;
-	projectCards: ReactNode[];
+	projectCards: {
+		featured: ReactNode | null;
+		supporting: ReactNode[];
+	};
 }
 
 type GridBreakpoint = 'lg' | 'md' | 'sm';
@@ -152,6 +155,7 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 	});
 
 	const currentBreakpoint: GridBreakpoint = width >= 996 ? 'lg' : width >= 768 ? 'md' : 'sm';
+	const supportingProjectCards = projectCards.supporting.slice(0, 2);
 
 	function handleLayoutChange(_current: Layout, all: ResponsiveLayouts) {
 		setLayoutsBySection((prev) => {
@@ -224,7 +228,14 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 							onMouseLeave={handleMapGridMouseLeave}
 						>
 							<div className="relative size-full">
-								<Map center={[-3.916, 40.27]} zoom={13} attributionControl={false}>
+								<Map
+									center={[-3.916, 40.27]}
+									zoom={13}
+									attributionControl={false}
+									dragPan={false}
+									dragRotate={false}
+									scrollZoom={false}
+								>
 									<MapMarker
 										key={'map-marker'}
 										longitude={-3.916}
@@ -281,15 +292,21 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 								</AnimatePresence>
 							</div>
 						</GridItem>
-						<GridItem variant="project" key="c">
-							{projectCards[0]}
-						</GridItem>
-						<GridItem variant="project" key="d">
-							{projectCards[1]}
-						</GridItem>
-						<GridItem variant="project" key="e">
-							{projectCards[2]}
-						</GridItem>
+						{supportingProjectCards[0] ? (
+							<GridItem variant="project" key="c">
+								{supportingProjectCards[0]}
+							</GridItem>
+						) : null}
+						{supportingProjectCards[1] ? (
+							<GridItem variant="project" key="d">
+								{supportingProjectCards[1]}
+							</GridItem>
+						) : null}
+						{projectCards.featured ? (
+							<GridItem variant="project" key="e">
+								{projectCards.featured}
+							</GridItem>
+						) : null}
 					</Responsive>
 				)}
 			</div>
