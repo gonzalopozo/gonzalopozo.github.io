@@ -17,6 +17,7 @@ import { Map, MapMarker, MarkerContent } from '@/components/ui/map';
 import { ArroyomolinosMarkerPin, ArroyomolinosPopup } from '@/components/public/map-marker-content';
 import { GridItem } from '@/components/public/grid-item';
 import { InfoGridItemContent } from '@/components/public/info-grid-item-content';
+import type { ProjectCardLayout } from '@/components/public/project-grid-item-content';
 import { PORTFOLIO_SECTIONS, type PortfolioSection } from '@/components/public/portfolio-sections';
 import { ModeToggle } from '@/components/theme-toggler';
 import { type Settings } from '@/lib/types';
@@ -26,8 +27,8 @@ export type InformationAboutMe = Omit<Settings, 'id' | 'updatedAt'>;
 interface PortfolioGridProps {
 	infoAboutMe: InformationAboutMe | undefined;
 	projectCards: {
-		featured: ReactNode | null;
-		supporting: ReactNode[];
+		featured: Record<ProjectCardLayout, ReactNode> | null;
+		supporting: Record<ProjectCardLayout, ReactNode>[];
 	};
 }
 
@@ -39,8 +40,8 @@ const SEED_LAYOUTS_BY_SECTION: Record<string, SectionLayouts> = {
 		lg: [
 			{ i: 'a', x: 0, y: 0, w: 4, h: 6 },
 			{ i: 'b', x: 4, y: 0, w: 2, h: 6 },
-			{ i: 'c', x: 6, y: 0, w: 2, h: 14 },
-			{ i: 'd', x: 0, y: 1, w: 2, h: 14 },
+			{ i: 'c', x: 6, y: 0, w: 2, h: 12 },
+			{ i: 'd', x: 0, y: 1, w: 2, h: 12 },
 			{ i: 'e', x: 2, y: 1, w: 4, h: 14 },
 		],
 		md: [
@@ -155,7 +156,14 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 	});
 
 	const currentBreakpoint: GridBreakpoint = width >= 996 ? 'lg' : width >= 768 ? 'md' : 'sm';
-	const supportingProjectCards = projectCards.supporting.slice(0, 2);
+	const supportingProjects = projectCards.supporting.slice(0, 2);
+	const projectSlotLayouts: Layout =
+		layoutsBySection.All?.lg ?? SEED_LAYOUTS_BY_SECTION.All.lg ?? [];
+
+	function getProjectCardLayout(itemId: 'c' | 'd' | 'e'): ProjectCardLayout {
+		const cardHeight = projectSlotLayouts.find((item) => item.i === itemId)?.h ?? 0;
+		return cardHeight >= 12 ? 'vertical-tall' : 'default';
+	}
 
 	function handleLayoutChange(_current: Layout, all: ResponsiveLayouts) {
 		setLayoutsBySection((prev) => {
@@ -199,7 +207,7 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 				</ul>
 			</nav>
 
-			<div ref={containerRef} className="mx-auto max-w-[1200px] px-[3.5vw]">
+			<div ref={containerRef} className="mx-auto max-w-300 px-[3.5vw]">
 				{mounted && (
 					<Responsive
 						layouts={gridLayouts}
@@ -292,19 +300,19 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 								</AnimatePresence>
 							</div>
 						</GridItem>
-						{supportingProjectCards[0] ? (
+						{supportingProjects[0] ? (
 							<GridItem variant="project" key="c">
-								{supportingProjectCards[0]}
+								{supportingProjects[0][getProjectCardLayout('c')]}
 							</GridItem>
 						) : null}
-						{supportingProjectCards[1] ? (
+						{supportingProjects[1] ? (
 							<GridItem variant="project" key="d">
-								{supportingProjectCards[1]}
+								{supportingProjects[1][getProjectCardLayout('d')]}
 							</GridItem>
 						) : null}
 						{projectCards.featured ? (
 							<GridItem variant="project" key="e">
-								{projectCards.featured}
+								{projectCards.featured[getProjectCardLayout('e')]}
 							</GridItem>
 						) : null}
 					</Responsive>

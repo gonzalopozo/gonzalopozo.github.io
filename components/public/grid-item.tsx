@@ -15,6 +15,8 @@ interface GridItemProps {
 
 interface GridItemShowMoreButtonProps {
 	variant: Exclude<GridItemVariant, 'map'>;
+	className?: string;
+	label?: string;
 }
 
 type GridItemComponentProps = ComponentPropsWithRef<'div'> & GridItemProps;
@@ -29,18 +31,22 @@ const VARIANT_CONFIG: Record<
 	project: { section: 'Projects', label: '¡Descubre mis proyectos!' },
 };
 
-export function GridItemShowMoreButton({ variant }: GridItemShowMoreButtonProps) {
+export function GridItemShowMoreButton({ variant, className, label }: GridItemShowMoreButtonProps) {
 	const [section, setSection] = useQueryState(
 		'section',
 		parseAsStringLiteral(PORTFOLIO_SECTIONS),
 	);
-	const { section: targetSection, label } = VARIANT_CONFIG[variant];
+	const { section: targetSection, label: defaultLabel } = VARIANT_CONFIG[variant];
 
 	if (section) {
 		return null;
 	}
 
-	return <Button onClick={() => setSection(targetSection)}>{label}</Button>;
+	return (
+		<Button onClick={() => setSection(targetSection)} className={className}>
+			{label ?? defaultLabel}
+		</Button>
+	);
 }
 
 export function GridItem({ children, className, variant, ref, ...props }: GridItemComponentProps) {
@@ -54,7 +60,8 @@ export function GridItem({ children, className, variant, ref, ...props }: GridIt
 						'group/map': variant === 'map',
 						'gap-0 p-0 py-0':
 							variant === 'map' || variant === 'about' || variant === 'project',
-						'hover:border-primary/30': variant === 'project',
+						'hover:border-primary/30 @container/project-card @container-[size]':
+							variant === 'project',
 					},
 				)}
 			>
