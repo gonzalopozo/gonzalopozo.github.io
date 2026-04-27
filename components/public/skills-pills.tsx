@@ -24,7 +24,7 @@ export function SkillsPills({ skills, limit, className }: SkillsPillsProps) {
 				</Badge>
 			))}
 			{hiddenSkillsCount > 0 ? (
-				<Badge variant="secondary" className="gap-1.5 font-mono">
+				<Badge variant="secondary" className="gap-1.5">
 					+{hiddenSkillsCount}
 				</Badge>
 			) : null}
