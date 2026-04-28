@@ -15,10 +15,7 @@ function renderProjectVariants(project: import('@/lib/types').ProjectInfo) {
 export default async function PublicPage() {
 	const [projects, aboutMe] = await Promise.all([getProjects(), getInfoAboutMe()]);
 
-	const projectCards = {
-		featured: projects[0] ? renderProjectVariants(projects[0]) : null,
-		supporting: projects.slice(1, 3).map((project) => renderProjectVariants(project)),
-	};
+	const projectCards = projects.slice(0, 3).map((project) => renderProjectVariants(project));
 
 	return <PortfolioGrid infoAboutMe={aboutMe} projectCards={projectCards} />;
 }
