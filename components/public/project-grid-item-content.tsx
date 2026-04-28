@@ -23,6 +23,13 @@ interface ProjectGridItemContentProps {
 	layout?: ProjectCardLayout;
 }
 
+interface ProjectMediaProps {
+	project: ProjectInfo;
+	className?: string;
+	overlayClassName: string;
+	sizes: string;
+}
+
 const PROJECT_STATUS_LABELS: Record<ProjectStatus, string> = {
 	active: 'Activo',
 	archived: 'Archivado',
@@ -48,6 +55,36 @@ function getProjectAccessLabel(project: ProjectInfo) {
 	if (project.url) return 'Disponible online';
 	if (project.repoUrl) return 'Código público';
 	return 'Vista privada';
+}
+
+function ProjectMedia({ project, className, overlayClassName, sizes }: ProjectMediaProps) {
+	return (
+		<figure className={className}>
+			{project.ogImageUrl ? (
+				<Image
+					src={project.ogImageUrl}
+					alt={project.title}
+					width={1260}
+					height={630}
+					className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover/project:scale-[1.03]"
+					sizes={sizes}
+				/>
+			) : (
+				<div
+					className="from-primary/25 via-secondary to-accent/30 relative flex h-full w-full flex-col justify-end bg-linear-to-br p-6"
+					aria-hidden="true"
+				>
+					<div className="absolute inset-0 overflow-hidden">
+						<div className="animate-shimmer absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent" />
+					</div>
+					<p className="relative max-w-[12ch] text-2xl font-semibold tracking-tight">
+						{project.title}
+					</p>
+				</div>
+			)}
+			<div className={overlayClassName} />
+		</figure>
+	);
 }
 
 interface ProjectActionButtonProps {
@@ -88,38 +125,21 @@ function DefaultProjectGridItemContent({ project }: ProjectGridItemContentProps)
 	const skills = project.projectSkills.map(({ skill }) => skill);
 
 	return (
-		<div className="group/project relative flex h-full min-h-0 flex-col [@container_project-card_(min-width:380px)_and_(min-height:280px)]:grid [@container_project-card_(min-width:380px)_and_(min-height:280px)]:grid-cols-[minmax(0,0.96fr)_minmax(0,1.04fr)]">
-			<figure className="border-border/60 bg-secondary/40 relative aspect-5/4 min-h-52 overflow-hidden border-b [@container_project-card_(max-height:159px)]:hidden [@container_project-card_(min-width:380px)_and_(min-height:280px)]:aspect-auto [@container_project-card_(min-width:380px)_and_(min-height:280px)]:min-h-0 [@container_project-card_(min-width:380px)_and_(min-height:280px)]:border-r [@container_project-card_(min-width:380px)_and_(min-height:280px)]:border-b-transparent">
-				{project.ogImageUrl ? (
-					<Image
-						src={project.ogImageUrl}
-						alt={project.title}
-						width={1260}
-						height={630}
-						className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover/project:scale-[1.03]"
-						sizes="(max-width: 767px) 100vw, (max-width: 1200px) 40vw, 500px"
-					/>
-				) : (
-					<div
-						className="from-primary/25 via-secondary to-accent/30 relative flex h-full w-full flex-col justify-end bg-linear-to-br p-6"
-						aria-hidden="true"
-					>
-						<div className="absolute inset-0 overflow-hidden">
-							<div className="animate-shimmer absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent" />
-						</div>
-						<p className="relative max-w-[12ch] text-2xl font-semibold tracking-tight">
-							{project.title}
-						</p>
-					</div>
-				)}
-				<div className="from-background/60 pointer-events-none absolute inset-0 bg-linear-to-t via-transparent to-transparent" />
-			</figure>
+		<div className="group/project relative flex h-full min-h-0 flex-col [@container_project-card_(min-width:380px)_and_(min-height:280px)]:grid [@container_project-card_(min-width:380px)_and_(min-height:280px)]:grid-cols-[minmax(0,0.96fr)_minmax(0,1.04fr)] [@container_project-card_(min-width:380px)_and_(min-height:280px)]:grid-rows-[minmax(0,1fr)_auto]">
+			<CardHeader className="gap-0 pb-0 [@container_project-card_(max-height:159px)]:hidden [@container_project-card_(min-width:380px)_and_(min-height:280px)]:col-start-1 [@container_project-card_(min-width:380px)_and_(min-height:280px)]:row-span-2">
+				<ProjectMedia
+					project={project}
+					sizes="(max-width: 767px) 100vw, (max-width: 1200px) 40vw, 500px"
+					overlayClassName="from-background/60 pointer-events-none absolute inset-0 bg-linear-to-t via-transparent to-transparent"
+					className="-mx-6 border-border/60 bg-secondary/40 relative aspect-5/4 min-h-52 overflow-hidden border-b [@container_project-card_(min-width:380px)_and_(min-height:280px)]:aspect-auto [@container_project-card_(min-width:380px)_and_(min-height:280px)]:min-h-0 [@container_project-card_(min-width:380px)_and_(min-height:280px)]:border-r [@container_project-card_(min-width:380px)_and_(min-height:280px)]:border-b-transparent"
+				/>
+			</CardHeader>
 			<div
 				aria-hidden="true"
 				className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(135deg,color-mix(in_oklch,var(--color-primary)_12%,transparent),color-mix(in_oklch,var(--color-accent)_8%,transparent))] [@container_project-card_(max-height:159px)]:block"
 			/>
 
-			<div className="relative z-1 flex h-full min-h-0 flex-col px-6 py-5 [@container_project-card_(max-height:159px)]:py-3">
+			<CardContent className="relative z-1 flex h-full min-h-0 flex-col py-5 [@container_project-card_(max-height:159px)]:py-3 [@container_project-card_(min-width:380px)_and_(min-height:280px)]:col-start-2 [@container_project-card_(min-width:380px)_and_(min-height:280px)]:row-start-1">
 				<div className="flex flex-1 flex-col content-start items-start gap-3">
 					<div className="flex flex-wrap items-center gap-2">
 						<Badge
@@ -138,7 +158,7 @@ function DefaultProjectGridItemContent({ project }: ProjectGridItemContentProps)
 							{getProjectAccessLabel(project)}
 						</Badge>
 					</div>
-					<div className="w-full space-y-1.5">
+					<div className="flex w-full flex-col gap-1.5">
 						<CardTitle className="text-xl tracking-tight text-balance">
 							{project.title}
 						</CardTitle>
@@ -184,8 +204,10 @@ function DefaultProjectGridItemContent({ project }: ProjectGridItemContentProps)
 						</a>
 					) : null}
 				</div>
+			</CardContent>
 
-				<div className="border-border/60 mt-auto flex flex-wrap items-center justify-between gap-3 border-t pt-4 [@container_project-card_(max-height:279px)]:hidden">
+			<CardFooter className="[@container_project-card_(max-height:279px)]:hidden [@container_project-card_(min-width:380px)_and_(min-height:280px)]:col-start-2 [@container_project-card_(min-width:380px)_and_(min-height:280px)]:row-start-2">
+				<div className="border-border/60 flex w-full flex-wrap items-center justify-between gap-3 border-t pt-4">
 					<div className="flex flex-col gap-1">
 						<span className="text-muted-foreground text-xs tracking-[0.18em] uppercase">
 							Última actualización
@@ -210,7 +232,7 @@ function DefaultProjectGridItemContent({ project }: ProjectGridItemContentProps)
 						<GridItemShowMoreButton variant="project" />
 					</div>
 				</div>
-			</div>
+			</CardFooter>
 		</div>
 	);
 }
@@ -221,33 +243,16 @@ function TallProjectGridItemContent({ project }: ProjectGridItemContentProps) {
 
 	return (
 		<div className="group/project flex h-full min-h-0 flex-col">
-			<figure className="border-border/60 bg-secondary/40 relative aspect-video min-h-36 overflow-hidden border-b [@container_project-card_(max-height:340px)]:min-h-22 [@container_project-card_(max-height:440px)_and_(min-height:341px)]:min-h-28">
-				{project.ogImageUrl ? (
-					<Image
-						src={project.ogImageUrl}
-						alt={project.title}
-						width={1260}
-						height={630}
-						className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover/project:scale-[1.03]"
-						sizes="(max-width: 767px) 100vw, (max-width: 1200px) 38vw, 520px"
-					/>
-				) : (
-					<div
-						className="from-primary/25 via-secondary to-accent/30 relative flex h-full w-full flex-col justify-end bg-linear-to-br p-6"
-						aria-hidden="true"
-					>
-						<div className="absolute inset-0 overflow-hidden">
-							<div className="animate-shimmer absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent" />
-						</div>
-						<p className="relative max-w-[12ch] text-2xl font-semibold tracking-tight">
-							{project.title}
-						</p>
-					</div>
-				)}
-				<div className="from-background/72 pointer-events-none absolute inset-0 bg-linear-to-t via-transparent to-transparent" />
-			</figure>
+			<CardHeader className="gap-0 pb-0">
+				<ProjectMedia
+					project={project}
+					sizes="(max-width: 767px) 100vw, (max-width: 1200px) 38vw, 520px"
+					overlayClassName="from-background/72 pointer-events-none absolute inset-0 bg-linear-to-t via-transparent to-transparent"
+					className="-mx-6 border-border/60 bg-secondary/40 relative aspect-video min-h-36 overflow-hidden border-b [@container_project-card_(max-height:340px)]:min-h-22 [@container_project-card_(max-height:440px)_and_(min-height:341px)]:min-h-28"
+				/>
+			</CardHeader>
 
-			<div className="flex h-full min-h-0 flex-col px-6 py-6 sm:px-7 [@container_project-card_(max-height:340px)]:gap-2 [@container_project-card_(max-width:360px)]:px-3.5 [@container_project-card_(max-width:360px)]:py-3.5">
+			<CardContent className="flex h-full min-h-0 flex-1 flex-col py-6 sm:px-7 [@container_project-card_(max-width:360px)]:px-3.5 [@container_project-card_(max-width:360px)]:py-3.5">
 				<div className="flex flex-1 flex-col gap-5">
 					<div className="flex flex-col gap-1.5">
 						<div className="flex items-start gap-2">
@@ -284,8 +289,10 @@ function TallProjectGridItemContent({ project }: ProjectGridItemContentProps) {
 						</span>
 					</p>
 				</div>
+			</CardContent>
 
-				<div className="mt-auto flex flex-col gap-2 pt-5">
+			<CardFooter className="sm:px-7 [@container_project-card_(max-width:360px)]:px-3.5">
+				<div className="flex w-full flex-col gap-2 pt-5">
 					{actionCount ? (
 						<div
 							className={cn('grid gap-2', {
@@ -318,7 +325,7 @@ function TallProjectGridItemContent({ project }: ProjectGridItemContentProps) {
 						className="h-10 w-full justify-center rounded-full"
 					/>
 				</div>
-			</div>
+			</CardFooter>
 		</div>
 	);
 }
