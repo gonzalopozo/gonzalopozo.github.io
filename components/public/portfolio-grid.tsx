@@ -26,10 +26,7 @@ export type InformationAboutMe = Omit<Settings, 'id' | 'updatedAt'>;
 
 interface PortfolioGridProps {
 	infoAboutMe: InformationAboutMe | undefined;
-	projectCards: {
-		featured: Record<ProjectCardLayout, ReactNode> | null;
-		supporting: Record<ProjectCardLayout, ReactNode>[];
-	};
+	projectCards: Record<ProjectCardLayout, ReactNode>[];
 }
 
 type GridBreakpoint = 'lg' | 'md' | 'sm';
@@ -156,7 +153,6 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 	});
 
 	const currentBreakpoint: GridBreakpoint = width >= 996 ? 'lg' : width >= 768 ? 'md' : 'sm';
-	const supportingProjects = projectCards.supporting.slice(0, 2);
 	const projectSlotLayouts: Layout =
 		layoutsBySection.All?.lg ?? SEED_LAYOUTS_BY_SECTION.All.lg ?? [];
 
@@ -300,21 +296,13 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 								</AnimatePresence>
 							</div>
 						</GridItem>
-						{supportingProjects[0] ? (
-							<GridItem variant="project" key="c">
-								{supportingProjects[0][getProjectCardLayout('c')]}
+					{(['c', 'd', 'e'] as const).map((slot, index) =>
+						projectCards[index] ? (
+							<GridItem variant="project" key={slot}>
+								{projectCards[index][getProjectCardLayout(slot)]}
 							</GridItem>
-						) : null}
-						{supportingProjects[1] ? (
-							<GridItem variant="project" key="d">
-								{supportingProjects[1][getProjectCardLayout('d')]}
-							</GridItem>
-						) : null}
-						{projectCards.featured ? (
-							<GridItem variant="project" key="e">
-								{projectCards.featured[getProjectCardLayout('e')]}
-							</GridItem>
-						) : null}
+						) : null,
+					)}
 					</Responsive>
 				)}
 			</div>
