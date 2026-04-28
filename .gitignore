@@ -65,3 +65,4 @@ node_modules/
 
 # ChatGPT Codex
 .codex
+.codex/config.toml
