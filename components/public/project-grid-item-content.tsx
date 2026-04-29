@@ -131,7 +131,7 @@ function DefaultProjectGridItemContent({ project }: ProjectGridItemContentProps)
 					project={project}
 					sizes="(max-width: 767px) 100vw, (max-width: 1200px) 40vw, 500px"
 					overlayClassName="from-background/60 pointer-events-none absolute inset-0 bg-linear-to-t via-transparent to-transparent"
-					className="-mx-6 border-border/60 bg-secondary/40 relative aspect-5/4 min-h-52 overflow-hidden border-b [@container_project-card_(min-width:380px)_and_(min-height:280px)]:aspect-auto [@container_project-card_(min-width:380px)_and_(min-height:280px)]:min-h-0 [@container_project-card_(min-width:380px)_and_(min-height:280px)]:border-r [@container_project-card_(min-width:380px)_and_(min-height:280px)]:border-b-transparent"
+					className="border-border/60 bg-secondary/40 relative -mx-6 aspect-5/4 min-h-52 overflow-hidden border-b [@container_project-card_(min-width:380px)_and_(min-height:280px)]:aspect-auto [@container_project-card_(min-width:380px)_and_(min-height:280px)]:min-h-0 [@container_project-card_(min-width:380px)_and_(min-height:280px)]:border-r [@container_project-card_(min-width:380px)_and_(min-height:280px)]:border-b-transparent"
 				/>
 			</CardHeader>
 			<div
@@ -248,7 +248,7 @@ function TallProjectGridItemContent({ project }: ProjectGridItemContentProps) {
 					project={project}
 					sizes="(max-width: 767px) 100vw, (max-width: 1200px) 38vw, 520px"
 					overlayClassName="from-background/72 pointer-events-none absolute inset-0 bg-linear-to-t via-transparent to-transparent"
-					className="-mx-6 border-border/60 bg-secondary/40 relative aspect-video min-h-36 overflow-hidden border-b [@container_project-card_(max-height:340px)]:min-h-22 [@container_project-card_(max-height:440px)_and_(min-height:341px)]:min-h-28"
+					className="border-border/60 bg-secondary/40 relative -mx-6 aspect-video min-h-36 overflow-hidden border-b [@container_project-card_(max-height:340px)]:min-h-22 [@container_project-card_(max-height:440px)_and_(min-height:341px)]:min-h-28"
 				/>
 			</CardHeader>
 
@@ -277,7 +277,7 @@ function TallProjectGridItemContent({ project }: ProjectGridItemContentProps) {
 					{skills.length ? (
 						<SkillsPills
 							skills={skills}
-							limit={4}
+							limit={6}
 							className="gap-3 [@container_project-card_(max-width:360px)]:gap-1.5"
 						/>
 					) : null}
