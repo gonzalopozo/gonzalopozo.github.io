@@ -252,7 +252,7 @@ function TallProjectGridItemContent({ project }: ProjectGridItemContentProps) {
 				/>
 			</CardHeader>
 
-			<CardContent className="flex h-full min-h-0 flex-1 flex-col py-6 sm:px-7 [@container_project-card_(max-width:360px)]:px-3.5 [@container_project-card_(max-width:360px)]:py-3.5">
+			<CardContent className="flex h-full min-h-0 flex-1 flex-col pt-6 pb-0 sm:px-7 [@container_project-card_(max-width:360px)]:px-3.5 [@container_project-card_(max-width:360px)]:pt-3.5 [@container_project-card_(max-width:360px)]:pb-0">
 				<div className="flex flex-1 flex-col gap-5">
 					<div className="flex flex-col gap-1.5">
 						<div className="flex items-start gap-2">
@@ -292,7 +292,7 @@ function TallProjectGridItemContent({ project }: ProjectGridItemContentProps) {
 			</CardContent>
 
 			<CardFooter className="sm:px-7 [@container_project-card_(max-width:360px)]:px-3.5">
-				<div className="flex w-full flex-col gap-2 pt-5">
+				<div className="flex w-full flex-col gap-2 pt-2">
 					{actionCount ? (
 						<div
 							className={cn('grid gap-2', {
