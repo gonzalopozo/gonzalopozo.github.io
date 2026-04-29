@@ -21,6 +21,7 @@ import type { ProjectCardLayout } from '@/components/public/project-grid-item-co
 import { PORTFOLIO_SECTIONS, type PortfolioSection } from '@/components/public/portfolio-sections';
 import { ModeToggle } from '@/components/theme-toggler';
 import { type Settings } from '@/lib/types';
+import { FaGithub } from 'react-icons/fa';
 
 export type InformationAboutMe = Omit<Settings, 'id' | 'updatedAt'>;
 
@@ -38,8 +39,10 @@ const SEED_LAYOUTS_BY_SECTION: Record<string, SectionLayouts> = {
 			{ i: 'a', x: 0, y: 0, w: 4, h: 6 },
 			{ i: 'b', x: 4, y: 0, w: 2, h: 6 },
 			{ i: 'c', x: 6, y: 0, w: 2, h: 12 },
-			{ i: 'd', x: 0, y: 1, w: 2, h: 12 },
-			{ i: 'e', x: 2, y: 1, w: 4, h: 14 },
+			{ i: 'd', x: 0, y: 1, w: 2, h: 6 },
+			{ i: 'e', x: 2, y: 1, w: 2, h: 6 },
+			{ i: 'f', x: 4, y: 1, w: 2, h: 12 },
+			{ i: 'g', x: 0, y: 2, w: 4, h: 14 },
 		],
 		md: [
 			{ i: 'a', x: 0, y: 0, w: 2, h: 8 },
@@ -296,13 +299,22 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 								</AnimatePresence>
 							</div>
 						</GridItem>
-					{(['c', 'd', 'e'] as const).map((slot, index) =>
-						projectCards[index] ? (
-							<GridItem variant="project" key={slot}>
-								{projectCards[index][getProjectCardLayout(slot)]}
-							</GridItem>
-						) : null,
-					)}
+						<GridItem variant="contact" key="d">
+							{/* <div className='size-full bg-[#24292E] grid place-items-center'> */}
+							<div className="grid size-full place-items-center bg-[#66696D]">
+								<FaGithub color="white" className="size-14" />
+							</div>
+						</GridItem>
+						<GridItem variant="contact" key="e">
+							<div className="grid h-full w-full place-items-center">hola</div>
+						</GridItem>
+						{(['c', 'f', 'g'] as const).map((slot, index) =>
+							projectCards[index] ? (
+								<GridItem variant="project" key={slot}>
+									{projectCards[index][getProjectCardLayout(slot)]}
+								</GridItem>
+							) : null,
+						)}
 					</Responsive>
 				)}
 			</div>

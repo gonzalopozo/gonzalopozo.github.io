@@ -59,7 +59,10 @@ export function GridItem({ children, className, variant, ref, ...props }: GridIt
 						'text-card-foreground bg-card': variant !== 'map',
 						'group/map': variant === 'map',
 						'gap-0 p-0 py-0':
-							variant === 'map' || variant === 'about' || variant === 'project',
+							variant === 'map' ||
+							variant === 'about' ||
+							variant === 'project' ||
+							variant === 'contact',
 						'hover:border-primary/30 @container/project-card @container-[size]':
 							variant === 'project',
 					},
@@ -67,9 +70,10 @@ export function GridItem({ children, className, variant, ref, ...props }: GridIt
 			>
 				{children}
 
-				{variant !== 'project' && variant !== 'map' && variant !== 'about' && (
-					<GridItemShowMoreButton variant={variant} />
-				)}
+				{variant !== 'project' &&
+					variant !== 'map' &&
+					variant !== 'about' &&
+					variant !== 'contact' && <GridItemShowMoreButton variant={variant} />}
 			</Card>
 		</div>
 	);
