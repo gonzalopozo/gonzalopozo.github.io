@@ -52,3 +52,15 @@ export interface Settings {
 	statusMessage: string | null;
 	updatedAt: Date;
 }
+
+export interface Track {
+	status: 'now-playing' | 'last-played';
+	trackName: string;
+	artistName: string;
+	albumName: string | null;
+	artworkUrl: string | null;
+	lastFmUrl: string | null;
+	// spotifySearchUrl: string | null
+	playedAtUnix: number | null;
+	playedAtLabel: string | null;
+}

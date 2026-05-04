@@ -93,3 +93,7 @@ turbopack
 Turbopack
 WCAG
 wcag
+
+# Lastfm / Spotify
+recenttracks
+spotify

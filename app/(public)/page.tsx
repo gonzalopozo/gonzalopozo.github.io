@@ -3,6 +3,7 @@ import { ProjectGridItemContent } from '@/components/public/project-grid-item-co
 import { getInfoAboutMe } from '@/lib/queries/about-me';
 import { getProjects } from '@/lib/queries/projects';
 import type { ProjectCardLayout } from '@/components/public/project-grid-item-content';
+import { getTrack } from '@/lib/queries/last-fm';
 
 function renderProjectVariants(project: import('@/lib/types').ProjectInfo) {
 	const variants: Record<ProjectCardLayout, React.ReactNode> = {
@@ -13,7 +14,11 @@ function renderProjectVariants(project: import('@/lib/types').ProjectInfo) {
 }
 
 export default async function PublicPage() {
-	const [projects, aboutMe] = await Promise.all([getProjects(), getInfoAboutMe()]);
+	const [projects, aboutMe, track] = await Promise.all([
+		getProjects(),
+		getInfoAboutMe(),
+		getTrack(),
+	]);
 
 	const projectCards = projects.slice(0, 3).map((project) => renderProjectVariants(project));
 
