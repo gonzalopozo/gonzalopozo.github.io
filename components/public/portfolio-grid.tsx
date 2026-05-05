@@ -20,10 +20,9 @@ import { InfoGridItemContent } from '@/components/public/info-grid-item-content'
 import type { ProjectCardLayout } from '@/components/public/project-grid-item-content';
 import { PORTFOLIO_SECTIONS, type PortfolioSection } from '@/components/public/portfolio-sections';
 import { ModeToggle } from '@/components/theme-toggler';
-import { type Settings } from '@/lib/types';
+import { type Settings, type Track } from '@/lib/types';
 import { FaGithub } from 'react-icons/fa';
 import { ArrowUpRight } from 'lucide-react';
-import { type Track } from '@/lib/types';
 import Image from 'next/image';
 
 export type InformationAboutMe = Omit<Settings, 'id' | 'updatedAt'>;
