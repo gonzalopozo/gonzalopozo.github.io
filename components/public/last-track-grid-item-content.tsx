@@ -23,21 +23,35 @@ export function LastTrackGridItemContent({ track }: LastTrackGridItemContentProp
 	const Inner = (
 		<>
 			{hasArtwork ? (
-				<Image
-					src={artworkUrl!}
-					alt=""
-					fill
-					sizes="(min-width: 996px) 25vw, (min-width: 768px) 50vw, 100vw"
-					className="object-cover transition-transform duration-700 ease-out motion-safe:group-hover/music:scale-[1.04]"
-					aria-hidden="true"
-				/>
+				<div
+					className={cn(
+						'absolute inset-0',
+						isOnline && 'motion-safe:animate-now-playing-cover motion-reduce:scale-[1.015]',
+					)}
+				>
+					<Image
+						src={artworkUrl!}
+						alt=""
+						fill
+						sizes="(min-width: 996px) 25vw, (min-width: 768px) 50vw, 100vw"
+						className="object-cover transition-transform duration-700 ease-out motion-safe:group-hover/music:scale-[1.04]"
+						aria-hidden="true"
+					/>
+				</div>
 			) : (
-				<div className="from-primary/25 via-card to-card absolute inset-0 bg-gradient-to-br">
+				<div
+					className={cn(
+						'from-primary/25 via-card to-card absolute inset-0 bg-gradient-to-br',
+						isOnline && 'from-primary/35 via-accent/10 motion-safe:animate-now-playing-cover',
+					)}
+				>
 					<div className="absolute inset-0 grid place-items-center">
 						<Music className="text-primary/40 size-10" aria-hidden="true" />
 					</div>
 				</div>
 			)}
+
+			{isOnline && <NowPlayingAtmosphere onArtwork={hasArtwork} />}
 
 			{hasArtwork && (
 				<>
@@ -60,8 +74,14 @@ export function LastTrackGridItemContent({ track }: LastTrackGridItemContentProp
 
 			<span
 				className={cn(
-					'absolute top-3 right-3 z-10 inline-flex items-center gap-1.5 rounded-full px-2 py-1 text-[10px] font-medium tracking-wide uppercase backdrop-blur-md',
-					hasArtwork ? 'bg-black/40 text-white/95' : 'bg-foreground/10 text-foreground',
+					'absolute top-3 right-3 z-10 inline-flex items-center gap-1.5 rounded-full border px-2 py-1 text-[10px] font-medium tracking-wide uppercase backdrop-blur-md transition-colors',
+					isOnline
+						? hasArtwork
+							? 'border-accent/30 bg-black/50 text-white/95 shadow-lg shadow-accent/20'
+							: 'border-primary/30 bg-primary/10 text-foreground shadow-lg shadow-primary/15'
+						: hasArtwork
+							? 'border-white/10 bg-black/40 text-white/95'
+							: 'border-foreground/10 bg-foreground/10 text-foreground',
 				)}
 			>
 				{isOnline ? (
@@ -125,16 +145,42 @@ export function LastTrackGridItemContent({ track }: LastTrackGridItemContentProp
 	);
 }
 
+function NowPlayingAtmosphere({ onArtwork }: { onArtwork: boolean }) {
+	return (
+		<div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+			<span
+				className={cn(
+					'absolute -top-12 -right-10 size-32 rounded-full blur-2xl motion-safe:animate-now-playing-glow motion-reduce:opacity-40',
+					onArtwork ? 'bg-accent/45' : 'bg-primary/25',
+				)}
+			/>
+			<span
+				className={cn(
+					'absolute top-8 -left-20 h-14 w-[150%] rotate-[-14deg] motion-safe:animate-now-playing-sweep motion-reduce:hidden',
+					onArtwork ? 'bg-white/20' : 'bg-primary/10',
+				)}
+			/>
+		</div>
+	);
+}
+
 function NowPlayingEqualiser({ onArtwork }: { onArtwork: boolean }) {
 	const barClass = cn(
-		'block h-full w-[2px] origin-bottom rounded-full motion-reduce:scale-y-[0.6]',
-		onArtwork ? 'bg-accent' : 'bg-primary',
+		'block h-full w-[2px] origin-bottom rounded-full bg-current motion-reduce:scale-y-[0.65]',
 	);
 	return (
-		<span className="flex h-3 items-end gap-[2px]" aria-hidden="true">
+		<span
+			className={cn(
+				'relative flex h-3.5 items-end gap-[2px]',
+				onArtwork ? 'text-accent' : 'text-primary',
+			)}
+			aria-hidden="true"
+		>
+			<span className="absolute -inset-1 rounded-full bg-current opacity-20 blur-sm motion-safe:animate-now-playing-glow motion-reduce:opacity-20" />
 			<span className={cn(barClass, 'motion-safe:animate-eq-bar-1')} />
 			<span className={cn(barClass, 'motion-safe:animate-eq-bar-2')} />
 			<span className={cn(barClass, 'motion-safe:animate-eq-bar-3')} />
+			<span className={cn(barClass, 'motion-safe:animate-eq-bar-4')} />
 		</span>
 	);
 }
