@@ -22,6 +22,7 @@ import { PORTFOLIO_SECTIONS, type PortfolioSection } from '@/components/public/p
 import { ModeToggle } from '@/components/theme-toggler';
 import { type Settings } from '@/lib/types';
 import { FaGithub } from 'react-icons/fa';
+import { ArrowUpRight } from 'lucide-react';
 import { type Track } from '@/lib/types';
 import Image from 'next/image';
 
@@ -332,9 +333,20 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 							</div>
 						</GridItem>
 						<GridItem variant="contact" key="e">
-							{/* <div className='size-full bg-[#24292E] grid place-items-center'> */}
-							<div className="grid size-full place-items-center bg-[#66696D]">
-								<FaGithub color="white" className="size-14" />
+							<div className="relative grid size-full place-items-center bg-[#66696D]">
+								<FaGithub aria-hidden="true" className="size-14 text-white/95" />
+								<a
+									href="https://github.com/gonzalopozo"
+									target="_blank"
+									rel="noopener noreferrer"
+									aria-label="Visit Gonzalo's GitHub profile"
+									className="group absolute bottom-4 left-4 inline-flex size-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/85 backdrop-blur-sm transition-colors duration-200 ease-out hover:border-white/35 hover:bg-white/15 hover:text-white focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#66696D] focus-visible:outline-none"
+								>
+									<ArrowUpRight
+										aria-hidden="true"
+										className="size-4 transition-transform duration-200 ease-out group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+									/>
+								</a>
 							</div>
 						</GridItem>
 						{(['c', 'f', 'g'] as const).map((slot, index) =>
