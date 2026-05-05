@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { PORTFOLIO_SECTIONS, type PortfolioSection } from '@/components/public/portfolio-sections';
 
-export type GridItemVariant = 'about' | 'project' | 'experience' | 'contact' | 'map';
+export type GridItemVariant = 'about' | 'project' | 'experience' | 'contact' | 'map' | 'music';
 
 interface GridItemProps {
 	variant: GridItemVariant;
@@ -62,9 +62,11 @@ export function GridItem({ children, className, variant, ref, ...props }: GridIt
 							variant === 'map' ||
 							variant === 'about' ||
 							variant === 'project' ||
-							variant === 'contact',
+							variant === 'contact' ||
+							variant === 'music',
 						'hover:border-primary/30 @container/project-card @container-[size]':
 							variant === 'project',
+						'group/music isolate': variant === 'music',
 					},
 				)}
 			>
@@ -73,7 +75,8 @@ export function GridItem({ children, className, variant, ref, ...props }: GridIt
 				{variant !== 'project' &&
 					variant !== 'map' &&
 					variant !== 'about' &&
-					variant !== 'contact' && <GridItemShowMoreButton variant={variant} />}
+					variant !== 'contact' &&
+					variant !== 'music' && <GridItemShowMoreButton variant={variant} />}
 			</Card>
 		</div>
 	);

@@ -17,13 +17,12 @@ import { Map, MapMarker, MarkerContent } from '@/components/ui/map';
 import { ArroyomolinosMarkerPin, ArroyomolinosPopup } from '@/components/public/map-marker-content';
 import { GridItem } from '@/components/public/grid-item';
 import { InfoGridItemContent } from '@/components/public/info-grid-item-content';
+import { LastTrackGridItemContent } from '@/components/public/last-track-grid-item-content';
 import type { ProjectCardLayout } from '@/components/public/project-grid-item-content';
 import { PORTFOLIO_SECTIONS, type PortfolioSection } from '@/components/public/portfolio-sections';
 import { ModeToggle } from '@/components/theme-toggler';
-import { type Settings } from '@/lib/types';
+import { type Settings, type Track } from '@/lib/types';
 import { FaGithub } from 'react-icons/fa';
-import { type Track } from '@/lib/types';
-import Image from 'next/image';
 
 export type InformationAboutMe = Omit<Settings, 'id' | 'updatedAt'>;
 
@@ -302,34 +301,8 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 								</AnimatePresence>
 							</div>
 						</GridItem>
-						<GridItem variant="contact" key="d">
-							<div className="grid h-full w-full grid-cols-3 grid-rows-3 place-items-center">
-								{lastTrack ? (
-									<>
-										{lastTrack.artworkUrl ? (
-											<Image
-												src={lastTrack.artworkUrl}
-												alt="Portada del album"
-												className="col-start-3"
-												width={174}
-												height={174}
-											/>
-										) : null}
-
-										<p className="col-span-3">
-											{lastTrack.isOnline
-												? 'Online | Escuchando:'
-												: 'Offline | Ultima canción:'}{' '}
-											{lastTrack.trackName}
-										</p>
-										<p className="col-span-3">
-											Album: {lastTrack.albumName} de {lastTrack.artistName}
-										</p>
-									</>
-								) : (
-									'error'
-								)}
-							</div>
+						<GridItem variant="music" key="d">
+							<LastTrackGridItemContent track={lastTrack} />
 						</GridItem>
 						<GridItem variant="contact" key="e">
 							{/* <div className='size-full bg-[#24292E] grid place-items-center'> */}
