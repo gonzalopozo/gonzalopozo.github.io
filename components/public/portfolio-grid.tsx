@@ -332,18 +332,18 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 							</div>
 						</GridItem>
 						<GridItem variant="contact" key="e">
-							<div className="relative grid size-full place-items-center bg-[#66696D]">
+							<div className="group/card relative grid size-full place-items-center bg-[#66696D]">
 								<FaGithub aria-hidden="true" className="size-14 text-white/95" />
 								<a
 									href="https://github.com/gonzalopozo"
 									target="_blank"
 									rel="noopener noreferrer"
 									aria-label="Visit Gonzalo's GitHub profile"
-									className="group absolute bottom-4 left-4 inline-flex size-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/85 backdrop-blur-sm transition-colors duration-200 ease-out hover:border-white/40 focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#66696D] focus-visible:outline-none"
+									className="absolute bottom-4 left-4 inline-flex size-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/85 backdrop-blur-sm transition-all duration-200 ease-out group-hover/card:border-white/40 hover:border-2 hover:border-white/60 focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#66696D] focus-visible:outline-none"
 								>
 									<ArrowUpRight
 										aria-hidden="true"
-										className="size-4 transition-transform duration-200 ease-out group-hover:scale-110"
+										className="size-4 transition-transform duration-200 ease-out group-hover/card:scale-110"
 									/>
 								</a>
 							</div>
