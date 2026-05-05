@@ -24,7 +24,6 @@ import { ModeToggle } from '@/components/theme-toggler';
 import { type Settings, type Track } from '@/lib/types';
 import { FaGithub } from 'react-icons/fa';
 import { ArrowUpRight } from 'lucide-react';
-import { type Track } from '@/lib/types';
 import Image from 'next/image';
 
 export type InformationAboutMe = Omit<Settings, 'id' | 'updatedAt'>;
