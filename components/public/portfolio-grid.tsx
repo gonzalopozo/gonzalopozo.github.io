@@ -22,12 +22,15 @@ import { PORTFOLIO_SECTIONS, type PortfolioSection } from '@/components/public/p
 import { ModeToggle } from '@/components/theme-toggler';
 import { type Settings } from '@/lib/types';
 import { FaGithub } from 'react-icons/fa';
+import { type Track } from '@/lib/types';
+import Image from 'next/image';
 
 export type InformationAboutMe = Omit<Settings, 'id' | 'updatedAt'>;
 
 interface PortfolioGridProps {
 	infoAboutMe: InformationAboutMe | undefined;
 	projectCards: Record<ProjectCardLayout, ReactNode>[];
+	lastTrack: Track | null;
 }
 
 type GridBreakpoint = 'lg' | 'md' | 'sm';
@@ -89,7 +92,7 @@ function shallowEqualLayouts(a: SectionLayouts, b: SectionLayouts): boolean {
 	return true;
 }
 
-export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps) {
+export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: PortfolioGridProps) {
 	const [section, setSection] = useQueryState(
 		'section',
 		parseAsStringLiteral(PORTFOLIO_SECTIONS),
@@ -300,13 +303,39 @@ export function PortfolioGrid({ infoAboutMe, projectCards }: PortfolioGridProps)
 							</div>
 						</GridItem>
 						<GridItem variant="contact" key="d">
+							<div className="grid h-full w-full grid-cols-3 grid-rows-3 place-items-center">
+								{lastTrack ? (
+									<>
+										{lastTrack.artworkUrl ? (
+											<Image
+												src={lastTrack.artworkUrl}
+												alt="Portada del album"
+												className="col-start-3"
+												width={174}
+												height={174}
+											/>
+										) : null}
+
+										<p className="col-span-3">
+											{lastTrack.isOnline
+												? 'Online | Escuchando:'
+												: 'Offline | Ultima canción:'}{' '}
+											{lastTrack.trackName}
+										</p>
+										<p className="col-span-3">
+											Album: {lastTrack.albumName} de {lastTrack.artistName}
+										</p>
+									</>
+								) : (
+									'error'
+								)}
+							</div>
+						</GridItem>
+						<GridItem variant="contact" key="e">
 							{/* <div className='size-full bg-[#24292E] grid place-items-center'> */}
 							<div className="grid size-full place-items-center bg-[#66696D]">
 								<FaGithub color="white" className="size-14" />
 							</div>
-						</GridItem>
-						<GridItem variant="contact" key="e">
-							<div className="grid h-full w-full place-items-center">hola</div>
 						</GridItem>
 						{(['c', 'f', 'g'] as const).map((slot, index) =>
 							projectCards[index] ? (

@@ -26,7 +26,7 @@ export async function getTrack(): Promise<Track | null> {
 	const isNowPlaying = trackJSON['@attr']?.nowplaying === 'true';
 
 	return {
-		status: isNowPlaying ? 'now-playing' : 'last-played',
+		isOnline: isNowPlaying,
 		trackName: trackJSON.name,
 		artistName: trackJSON.artist?.['#text'] ?? null,
 		albumName: trackJSON.album?.['#text'] ?? null,

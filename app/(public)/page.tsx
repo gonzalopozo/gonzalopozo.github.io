@@ -22,5 +22,5 @@ export default async function PublicPage() {
 
 	const projectCards = projects.slice(0, 3).map((project) => renderProjectVariants(project));
 
-	return <PortfolioGrid infoAboutMe={aboutMe} projectCards={projectCards} />;
+	return <PortfolioGrid infoAboutMe={aboutMe} projectCards={projectCards} lastTrack={track} />;
 }

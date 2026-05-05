@@ -11,7 +11,10 @@ const nextConfig: NextConfig = {
 		optimizePackageImports: ['lucide-react', 'react-icons', '@radix-ui/react-icons'],
 	},
 	images: {
-		remotePatterns: [new URL(`${process.env.BLOB_PUBLIC_HOSTNAME}/**`)],
+		remotePatterns: [
+			new URL(`${process.env.BLOB_PUBLIC_HOSTNAME}/**`),
+			new URL('https://lastfm.freetls.fastly.net/**'),
+		],
 	},
 };
 

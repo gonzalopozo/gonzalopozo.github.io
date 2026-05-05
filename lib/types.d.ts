@@ -54,7 +54,7 @@ export interface Settings {
 }
 
 export interface Track {
-	status: 'now-playing' | 'last-played';
+	isOnline: boolean;
 	trackName: string;
 	artistName: string;
 	albumName: string | null;
