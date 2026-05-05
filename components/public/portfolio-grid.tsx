@@ -339,7 +339,7 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 									target="_blank"
 									rel="noopener noreferrer"
 									aria-label="Visit Gonzalo's GitHub profile"
-									className="absolute bottom-4 left-4 inline-flex size-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/85 backdrop-blur-sm transition-all duration-200 ease-out group-hover/card:border-white/40 hover:border-2 hover:border-white/60 focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#66696D] focus-visible:outline-none"
+									className="absolute bottom-4 left-4 inline-flex size-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/85 shadow-[inset_0_0_0_0_rgb(255_255_255/0)] backdrop-blur-sm transition-[border-color,box-shadow] duration-200 ease-out group-hover/card:border-white/40 hover:shadow-[inset_0_0_0_2px_rgb(255_255_255/0.55)] focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#66696D] focus-visible:outline-none"
 								>
 									<ArrowUpRight
 										aria-hidden="true"
