@@ -127,6 +127,9 @@
 	--animate-map-marker-jiggle: map-marker-jiggle 520ms ease-in-out infinite;
 	--animate-status-marquee: status-marquee 12s linear infinite;
 	--animate-shimmer: shimmer 3s ease-in-out infinite;
+	--animate-eq-bar-1: eq-bar 0.9s ease-in-out infinite alternate;
+	--animate-eq-bar-2: eq-bar 1.3s ease-in-out infinite alternate;
+	--animate-eq-bar-3: eq-bar 1.1s ease-in-out infinite alternate;
 
 	@keyframes map-marker-jiggle {
 		0%,
@@ -165,6 +168,15 @@
 		}
 		100% {
 			transform: translateX(100%);
+		}
+	}
+
+	@keyframes eq-bar {
+		0% {
+			transform: scaleY(0.25);
+		}
+		100% {
+			transform: scaleY(1);
 		}
 	}
 }
