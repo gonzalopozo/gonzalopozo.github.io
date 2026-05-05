@@ -127,9 +127,13 @@
 	--animate-map-marker-jiggle: map-marker-jiggle 520ms ease-in-out infinite;
 	--animate-status-marquee: status-marquee 12s linear infinite;
 	--animate-shimmer: shimmer 3s ease-in-out infinite;
-	--animate-eq-bar-1: eq-bar 0.9s ease-in-out infinite alternate;
-	--animate-eq-bar-2: eq-bar 1.3s ease-in-out infinite alternate;
-	--animate-eq-bar-3: eq-bar 1.1s ease-in-out infinite alternate;
+	--animate-now-playing-cover: now-playing-cover 6s ease-in-out infinite;
+	--animate-now-playing-glow: now-playing-glow 3.2s ease-in-out infinite;
+	--animate-now-playing-sweep: now-playing-sweep 4.8s ease-in-out infinite;
+	--animate-eq-bar-1: eq-bar-1 940ms ease-in-out infinite;
+	--animate-eq-bar-2: eq-bar-2 1120ms ease-in-out infinite;
+	--animate-eq-bar-3: eq-bar-3 860ms ease-in-out infinite;
+	--animate-eq-bar-4: eq-bar-4 1280ms ease-in-out infinite;
 
 	@keyframes map-marker-jiggle {
 		0%,
@@ -171,12 +175,91 @@
 		}
 	}
 
-	@keyframes eq-bar {
+	@keyframes now-playing-cover {
 		0% {
-			transform: scaleY(0.25);
+			transform: scale(1);
+		}
+		50% {
+			transform: scale(1.035);
 		}
 		100% {
+			transform: scale(1);
+		}
+	}
+
+	@keyframes now-playing-glow {
+		0%,
+		100% {
+			opacity: 0.28;
+			transform: scale(0.96);
+		}
+		50% {
+			opacity: 0.62;
+			transform: scale(1.08);
+		}
+	}
+
+	@keyframes now-playing-sweep {
+		0%,
+		100% {
+			opacity: 0.1;
+			transform: translate3d(-18%, 16%, 0) rotate(-8deg);
+		}
+		50% {
+			opacity: 0.24;
+			transform: translate3d(14%, -10%, 0) rotate(7deg);
+		}
+	}
+
+	@keyframes eq-bar-1 {
+		0%,
+		100% {
+			transform: scaleY(0.32);
+		}
+		35% {
+			transform: scaleY(0.88);
+		}
+		70% {
+			transform: scaleY(0.5);
+		}
+	}
+
+	@keyframes eq-bar-2 {
+		0%,
+		100% {
+			transform: scaleY(0.74);
+		}
+		40% {
+			transform: scaleY(0.28);
+		}
+		78% {
 			transform: scaleY(1);
+		}
+	}
+
+	@keyframes eq-bar-3 {
+		0%,
+		100% {
+			transform: scaleY(0.42);
+		}
+		48% {
+			transform: scaleY(1);
+		}
+		82% {
+			transform: scaleY(0.64);
+		}
+	}
+
+	@keyframes eq-bar-4 {
+		0%,
+		100% {
+			transform: scaleY(0.88);
+		}
+		42% {
+			transform: scaleY(0.36);
+		}
+		76% {
+			transform: scaleY(0.72);
 		}
 	}
 }

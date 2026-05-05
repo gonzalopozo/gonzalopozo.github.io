@@ -24,7 +24,7 @@ export async function getTrack(): Promise<Track | null> {
 
 	const trackJSON = tracks[0];
 	const isNowPlaying = trackJSON['@attr']?.nowplaying === 'true';
-	const rawArtworkUrl: string | undefined = trackJSON.image?.[3]?.['#text'];
+	const rawArtworkUrl: string | undefined = trackJSON.image?.[2]?.['#text'];
 	// Last.fm returns this MD5 hash for tracks with no album art — treat as null.
 	const artworkUrl =
 		rawArtworkUrl && !rawArtworkUrl.includes('2a96cbd8b46e442fc41c2b86b821562f')
