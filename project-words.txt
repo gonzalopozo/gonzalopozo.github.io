@@ -97,3 +97,4 @@ wcag
 # Lastfm / Spotify
 recenttracks
 spotify
+nowplaying
