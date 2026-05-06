@@ -47,6 +47,7 @@ const SEED_LAYOUTS_BY_SECTION: Record<string, SectionLayouts> = {
 			{ i: 'e', x: 2, y: 1, w: 2, h: 6 },
 			{ i: 'f', x: 4, y: 1, w: 2, h: 12 },
 			{ i: 'g', x: 0, y: 2, w: 4, h: 14 },
+			{ i: 'i', x: 6, y: 2, w: 2, h: 6 },
 		],
 		md: [
 			{ i: 'a', x: 0, y: 0, w: 2, h: 8 },
@@ -322,6 +323,7 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 								</GridItem>
 							) : null,
 						)}
+						<GridItem variant="contact" key="i"></GridItem>
 					</Responsive>
 				)}
 			</div>
