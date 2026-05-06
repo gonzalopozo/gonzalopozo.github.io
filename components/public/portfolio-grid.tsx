@@ -18,12 +18,12 @@ import { ArroyomolinosMarkerPin, ArroyomolinosPopup } from '@/components/public/
 import { GridItem } from '@/components/public/grid-item';
 import { InfoGridItemContent } from '@/components/public/info-grid-item-content';
 import { LastTrackGridItemContent } from '@/components/public/last-track-grid-item-content';
+import { SocialLinkGridItemContent } from '@/components/public/social-link-grid-item-content';
 import type { ProjectCardLayout } from '@/components/public/project-grid-item-content';
 import { PORTFOLIO_SECTIONS, type PortfolioSection } from '@/components/public/portfolio-sections';
 import { ModeToggle } from '@/components/theme-toggler';
 import { type Settings, type Track } from '@/lib/types';
 import { FaGithub } from 'react-icons/fa';
-import { ArrowUpRight } from 'lucide-react';
 import Image from 'next/image';
 
 export type InformationAboutMe = Omit<Settings, 'id' | 'updatedAt'>;
@@ -307,21 +307,13 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 							<LastTrackGridItemContent track={lastTrack} />
 						</GridItem>
 						<GridItem variant="contact" key="e">
-							<div className="group/card relative grid size-full place-items-center bg-[#66696D]">
+							<SocialLinkGridItemContent
+								backgroundColor="#66696D"
+								url="https://github.com/gonzalopozo"
+								ariaLabel="Visit Gonzalo's GitHub profile"
+							>
 								<FaGithub aria-hidden="true" className="size-14 text-white/95" />
-								<a
-									href="https://github.com/gonzalopozo"
-									target="_blank"
-									rel="noopener noreferrer"
-									aria-label="Visit Gonzalo's GitHub profile"
-									className="absolute bottom-4 left-4 inline-flex size-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/85 shadow-[inset_0_0_0_0_rgb(255_255_255/0)] backdrop-blur-sm transition-[border-color,box-shadow] duration-200 ease-out group-hover/card:border-white/40 hover:shadow-[inset_0_0_0_2px_rgb(255_255_255/0.55)] focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#66696D] focus-visible:outline-none"
-								>
-									<ArrowUpRight
-										aria-hidden="true"
-										className="size-4 transition-transform duration-200 ease-out group-hover/card:scale-110"
-									/>
-								</a>
-							</div>
+							</SocialLinkGridItemContent>
 						</GridItem>
 						{(['c', 'f', 'g'] as const).map((slot, index) =>
 							projectCards[index] ? (
