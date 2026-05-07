@@ -14,7 +14,7 @@ interface GridItemProps {
 }
 
 interface GridItemShowMoreButtonProps {
-	variant: Exclude<GridItemVariant, 'map'>;
+	variant: Exclude<GridItemVariant, 'map' | 'music'>;
 	className?: string;
 	label?: string;
 }
@@ -22,7 +22,7 @@ interface GridItemShowMoreButtonProps {
 type GridItemComponentProps = ComponentPropsWithRef<'div'> & GridItemProps;
 
 const VARIANT_CONFIG: Record<
-	Exclude<GridItemVariant, 'map'>,
+	Exclude<GridItemVariant, 'map' | 'music'>,
 	{ section: PortfolioSection; label: string }
 > = {
 	about: { section: 'About me', label: '¡Conoce más de mí!' },

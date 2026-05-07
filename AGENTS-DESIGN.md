@@ -397,7 +397,7 @@ A colored pill that slides behind the active nav item, animated with Motion's `l
 
 ### 5.3 Theme Toggle
 
-Place the theme toggle as the last element in the navbar, visually separated with subtle spacing. Use the existing `ModeToggle` component. Inside the pill navbar, render it as an icon-only button (`size="icon"`) with `rounded-full`.
+Do not place the theme toggle in the navbar. Use `BB8ThemeSwitcher` in portfolio grid slot `i`, where it has enough space for the full BB-8 interaction.
 
 ### 5.4 Placement & Responsiveness
 
@@ -531,13 +531,13 @@ Replace the current `IconContext.Provider` approach with explicit token-based st
 </a>
 ```
 
-### 8.4 Theme Toggle in Navbar
+### 8.4 Theme Toggle in Grid
 
-Use the existing `ModeToggle` component. Style it to match the navbar's pill aesthetic:
+Use `BB8ThemeSwitcher` inside the existing portfolio grid item with key `i`. Keep the switcher centered in the card:
 
-- `rounded-full` shape
-- Same padding as other nav items
-- No outline/border — blends into the navbar
+- Full-card centering
+- No visible explanatory copy
+- Accessible switch semantics and focus state
 
 ---
 

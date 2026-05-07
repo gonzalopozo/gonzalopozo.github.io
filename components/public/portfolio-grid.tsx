@@ -19,12 +19,11 @@ import { GridItem } from '@/components/public/grid-item';
 import { InfoGridItemContent } from '@/components/public/info-grid-item-content';
 import { LastTrackGridItemContent } from '@/components/public/last-track-grid-item-content';
 import { SocialLinkGridItemContent } from '@/components/public/social-link-grid-item-content';
+import { BB8ThemeSwitcher } from '@/components/public/bb8-theme-switcher';
 import type { ProjectCardLayout } from '@/components/public/project-grid-item-content';
 import { PORTFOLIO_SECTIONS, type PortfolioSection } from '@/components/public/portfolio-sections';
-import { ModeToggle } from '@/components/theme-toggler';
 import { type Settings, type Track } from '@/lib/types';
 import { FaGithub } from 'react-icons/fa';
-import Image from 'next/image';
 
 export type InformationAboutMe = Omit<Settings, 'id' | 'updatedAt'>;
 
@@ -70,7 +69,7 @@ const SEED_LAYOUTS_BY_SECTION: Record<string, SectionLayouts> = {
 };
 
 const DRAG_CANCEL_SELECTORS =
-	'button, a, input, textarea, select, [role="button"], .leaflet-container, .leaflet-interactive, .leaflet-control';
+	'button, a, input, textarea, select, [role="button"], .bb8-theme-switcher, .leaflet-container, .leaflet-interactive, .leaflet-control';
 
 function layoutItemEquals(a: LayoutItem, b: LayoutItem): boolean {
 	return a.i === b.i && a.x === b.x && a.y === b.y && a.w === b.w && a.h === b.h;
@@ -164,7 +163,7 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 	const projectSlotLayouts: Layout =
 		layoutsBySection.All?.lg ?? SEED_LAYOUTS_BY_SECTION.All.lg ?? [];
 
-	function getProjectCardLayout(itemId: 'c' | 'd' | 'e'): ProjectCardLayout {
+	function getProjectCardLayout(itemId: 'c' | 'f' | 'g'): ProjectCardLayout {
 		const cardHeight = projectSlotLayouts.find((item) => item.i === itemId)?.h ?? 0;
 		return cardHeight >= 12 ? 'vertical-tall' : 'default';
 	}
@@ -207,7 +206,6 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 							<Button onClick={() => setSection(s.v)}>{s.url}</Button>
 						</li>
 					))}
-					<ModeToggle />
 				</ul>
 			</nav>
 
@@ -323,7 +321,9 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 								</GridItem>
 							) : null,
 						)}
-						<GridItem variant="contact" key="i"></GridItem>
+						<GridItem variant="contact" key="i">
+							<BB8ThemeSwitcher />
+						</GridItem>
 					</Responsive>
 				)}
 			</div>
