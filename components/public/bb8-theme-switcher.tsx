@@ -1,25 +1,56 @@
 'use client';
 
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { useTheme } from 'next-themes';
+
+const THEME_WRITE_DELAY_MS = 460;
+type ResolvedTheme = 'light' | 'dark';
 
 export function BB8ThemeSwitcher() {
 	const controlId = useId();
 	const { theme, resolvedTheme, setTheme } = useTheme();
 	const [mounted, setMounted] = useState(false);
+	const [visualTheme, setVisualTheme] = useState<ResolvedTheme>('light');
+	const themeWriteTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	useEffect(() => {
 		setMounted(true);
 	}, []);
 
-	const actualTheme = theme === 'system' ? resolvedTheme : theme;
-	const isDark = mounted && actualTheme === 'dark';
+	useEffect(() => {
+		if (!mounted || !resolvedTheme) return;
+
+		setVisualTheme(resolvedTheme === 'dark' ? 'dark' : 'light');
+	}, [mounted, resolvedTheme]);
+
+	useEffect(() => {
+		return () => {
+			if (themeWriteTimeoutRef.current) {
+				clearTimeout(themeWriteTimeoutRef.current);
+			}
+		};
+	}, []);
+
+	const isDark = mounted && visualTheme === 'dark';
 	const nextTheme = isDark ? 'light' : 'dark';
 
 	function handleThemeChange() {
 		if (!mounted || !resolvedTheme) return;
 
-		setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
+		setVisualTheme((currentTheme) => {
+			const nextResolvedTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+			if (themeWriteTimeoutRef.current) {
+				clearTimeout(themeWriteTimeoutRef.current);
+			}
+
+			themeWriteTimeoutRef.current = setTimeout(() => {
+				setTheme(nextResolvedTheme);
+				themeWriteTimeoutRef.current = null;
+			}, THEME_WRITE_DELAY_MS);
+
+			return nextResolvedTheme;
+		});
 	}
 
 	return (
@@ -31,7 +62,7 @@ export function BB8ThemeSwitcher() {
 			>
 				<input
 					id={controlId}
-					className="bb8-theme-switcher__checkbox sr-only"
+					className="bb8-theme-switcher__checkbox"
 					type="checkbox"
 					role="switch"
 					checked={isDark}
