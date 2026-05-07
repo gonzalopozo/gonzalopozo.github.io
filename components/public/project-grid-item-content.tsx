@@ -1,7 +1,6 @@
 import Image from 'next/image';
-import { ArrowUpRight, Code2, Github, type LucideIcon } from 'lucide-react';
+import { ArrowUpRight, Github, type LucideIcon } from 'lucide-react';
 import { GridItemShowMoreButton } from '@/components/public/grid-item';
-import { SkillIcon } from '@/components/public/skill-icon';
 import { SkillsPills } from '@/components/public/skills-pills';
 import { StatusIndicator } from '@/components/public/status-indicator';
 import { Badge } from '@/components/ui/badge';
@@ -16,11 +15,8 @@ import {
 import { cn } from '@/lib/utils';
 import type { ProjectInfo, ProjectStatus } from '@/lib/types';
 
-export type ProjectCardLayout = 'default' | 'vertical-tall';
-
 interface ProjectGridItemContentProps {
 	project: ProjectInfo;
-	layout?: ProjectCardLayout;
 }
 
 interface ProjectMediaProps {
@@ -49,12 +45,6 @@ function formatProjectDate(date: Date, format: 'summary' | 'full' = 'summary') {
 			: { month: 'short', year: 'numeric' };
 
 	return new Intl.DateTimeFormat('es-ES', dateFormat).format(new Date(date));
-}
-
-function getProjectAccessLabel(project: ProjectInfo) {
-	if (project.url) return 'Disponible online';
-	if (project.repoUrl) return 'Código público';
-	return 'Vista privada';
 }
 
 function ProjectMedia({ project, className, overlayClassName, sizes }: ProjectMediaProps) {
@@ -121,123 +111,7 @@ function ProjectActionButton({
 	);
 }
 
-function DefaultProjectGridItemContent({ project }: ProjectGridItemContentProps) {
-	const skills = project.projectSkills.map(({ skill }) => skill);
-
-	return (
-		<div className="group/project relative flex h-full min-h-0 flex-col [@container_project-card_(min-width:380px)_and_(min-height:280px)]:grid [@container_project-card_(min-width:380px)_and_(min-height:280px)]:grid-cols-[minmax(0,0.96fr)_minmax(0,1.04fr)] [@container_project-card_(min-width:380px)_and_(min-height:280px)]:grid-rows-[minmax(0,1fr)_auto]">
-			<CardHeader className="gap-0 pb-0 [@container_project-card_(max-height:159px)]:hidden [@container_project-card_(min-width:380px)_and_(min-height:280px)]:col-start-1 [@container_project-card_(min-width:380px)_and_(min-height:280px)]:row-span-2">
-				<ProjectMedia
-					project={project}
-					sizes="(max-width: 767px) 100vw, (max-width: 1200px) 40vw, 500px"
-					overlayClassName="from-background/60 pointer-events-none absolute inset-0 bg-linear-to-t via-transparent to-transparent"
-					className="border-border/60 bg-secondary/40 relative -mx-6 aspect-5/4 min-h-52 overflow-hidden border-b [@container_project-card_(min-width:380px)_and_(min-height:280px)]:aspect-auto [@container_project-card_(min-width:380px)_and_(min-height:280px)]:min-h-0 [@container_project-card_(min-width:380px)_and_(min-height:280px)]:border-r [@container_project-card_(min-width:380px)_and_(min-height:280px)]:border-b-transparent"
-				/>
-			</CardHeader>
-			<div
-				aria-hidden="true"
-				className="pointer-events-none absolute inset-0 hidden bg-[linear-gradient(135deg,color-mix(in_oklch,var(--color-primary)_12%,transparent),color-mix(in_oklch,var(--color-accent)_8%,transparent))] [@container_project-card_(max-height:159px)]:block"
-			/>
-
-			<CardContent className="relative z-1 flex h-full min-h-0 flex-col py-5 [@container_project-card_(max-height:159px)]:py-3 [@container_project-card_(min-width:380px)_and_(min-height:280px)]:col-start-2 [@container_project-card_(min-width:380px)_and_(min-height:280px)]:row-start-1">
-				<div className="flex flex-1 flex-col content-start items-start gap-3">
-					<div className="flex flex-wrap items-center gap-2">
-						<Badge
-							variant={PROJECT_STATUS_BADGE_VARIANTS[project.status]}
-							className="gap-2"
-						>
-							<StatusIndicator status={project.status} className="shrink-0" />
-							<span className="[@container_project-card_(max-height:159px)]:hidden">
-								{PROJECT_STATUS_LABELS[project.status]}
-							</span>
-						</Badge>
-						<Badge
-							variant="outline"
-							className="[@container_project-card_(max-height:279px)]:hidden"
-						>
-							{getProjectAccessLabel(project)}
-						</Badge>
-					</div>
-					<div className="flex w-full flex-col gap-1.5">
-						<CardTitle className="text-xl tracking-tight text-balance">
-							{project.title}
-						</CardTitle>
-						<CardDescription className="line-clamp-4 leading-6 [@container_project-card_(max-height:159px)]:hidden [@container_project-card_(max-height:279px)]:line-clamp-2">
-							{project.description}
-						</CardDescription>
-					</div>
-				</div>
-
-				<div className="mt-4 flex flex-col gap-3 [@container_project-card_(max-height:159px)]:hidden">
-					<p className="text-muted-foreground flex items-center gap-2 text-xs font-medium tracking-[0.18em] uppercase [@container_project-card_(max-height:279px)]:hidden">
-						<Code2 className="text-primary size-4" aria-hidden="true" />
-						Stack principal
-					</p>
-					<SkillsPills skills={skills} limit={6} />
-				</div>
-
-				<div className="mt-auto hidden items-center gap-1.5 [@container_project-card_(max-height:159px)]:flex">
-					{skills.slice(0, 2).map(({ id, name, icon }) => (
-						<Badge
-							variant="secondary"
-							key={`${id}-${name}`}
-							className="gap-1.5 text-xs"
-						>
-							{icon ? <SkillIcon iconFullName={icon} /> : null}
-							{name}
-						</Badge>
-					))}
-					{skills.length > 2 ? (
-						<Badge variant="secondary" className="font-mono text-xs">
-							+{skills.length - 2}
-						</Badge>
-					) : null}
-					{project.url ? (
-						<a
-							href={project.url}
-							target="_blank"
-							rel="noopener noreferrer"
-							className="text-muted-foreground hover:text-primary ml-auto transition-colors"
-							aria-label="Ver proyecto"
-						>
-							<ArrowUpRight className="size-4" aria-hidden="true" />
-						</a>
-					) : null}
-				</div>
-			</CardContent>
-
-			<CardFooter className="[@container_project-card_(max-height:279px)]:hidden [@container_project-card_(min-width:380px)_and_(min-height:280px)]:col-start-2 [@container_project-card_(min-width:380px)_and_(min-height:280px)]:row-start-2">
-				<div className="border-border/60 flex w-full flex-wrap items-center justify-between gap-3 border-t pt-4">
-					<div className="flex flex-col gap-1">
-						<span className="text-muted-foreground text-xs tracking-[0.18em] uppercase">
-							Última actualización
-						</span>
-						<span className="text-sm font-medium">
-							{formatProjectDate(project.updatedAt)}
-						</span>
-					</div>
-					<div className="flex flex-wrap items-center gap-2">
-						<ProjectActionButton
-							href={project.repoUrl}
-							icon={Github}
-							label="Código"
-							variant="ghost"
-						/>
-						<ProjectActionButton
-							href={project.url}
-							icon={ArrowUpRight}
-							label="Ver proyecto"
-							variant="default"
-						/>
-						<GridItemShowMoreButton variant="project" />
-					</div>
-				</div>
-			</CardFooter>
-		</div>
-	);
-}
-
-function TallProjectGridItemContent({ project }: ProjectGridItemContentProps) {
+export function ProjectGridItemContent({ project }: ProjectGridItemContentProps) {
 	const skills = project.projectSkills.map(({ skill }) => skill);
 	const actionCount = Number(Boolean(project.repoUrl)) + Number(Boolean(project.url));
 
@@ -328,15 +202,4 @@ function TallProjectGridItemContent({ project }: ProjectGridItemContentProps) {
 			</CardFooter>
 		</div>
 	);
-}
-
-export function ProjectGridItemContent({
-	project,
-	layout = 'default',
-}: ProjectGridItemContentProps) {
-	if (layout === 'vertical-tall') {
-		return <TallProjectGridItemContent project={project} layout={layout} />;
-	}
-
-	return <DefaultProjectGridItemContent project={project} layout={layout} />;
 }
