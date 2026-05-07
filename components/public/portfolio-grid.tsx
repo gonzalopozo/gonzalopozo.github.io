@@ -20,7 +20,6 @@ import { InfoGridItemContent } from '@/components/public/info-grid-item-content'
 import { LastTrackGridItemContent } from '@/components/public/last-track-grid-item-content';
 import { SocialLinkGridItemContent } from '@/components/public/social-link-grid-item-content';
 import { BB8ThemeSwitcher } from '@/components/public/bb8-theme-switcher';
-import type { ProjectCardLayout } from '@/components/public/project-grid-item-content';
 import { PORTFOLIO_SECTIONS, type PortfolioSection } from '@/components/public/portfolio-sections';
 import { type Settings, type Track } from '@/lib/types';
 import { FaGithub } from 'react-icons/fa';
@@ -29,7 +28,7 @@ export type InformationAboutMe = Omit<Settings, 'id' | 'updatedAt'>;
 
 interface PortfolioGridProps {
 	infoAboutMe: InformationAboutMe | undefined;
-	projectCards: Record<ProjectCardLayout, ReactNode>[];
+	projectCards: ReactNode[];
 	lastTrack: Track | null;
 }
 
@@ -160,13 +159,6 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 	});
 
 	const currentBreakpoint: GridBreakpoint = width >= 996 ? 'lg' : width >= 768 ? 'md' : 'sm';
-	const projectSlotLayouts: Layout =
-		layoutsBySection.All?.lg ?? SEED_LAYOUTS_BY_SECTION.All.lg ?? [];
-
-	function getProjectCardLayout(itemId: 'c' | 'f' | 'g'): ProjectCardLayout {
-		const cardHeight = projectSlotLayouts.find((item) => item.i === itemId)?.h ?? 0;
-		return cardHeight >= 12 ? 'vertical-tall' : 'default';
-	}
 
 	function handleLayoutChange(_current: Layout, all: ResponsiveLayouts) {
 		setLayoutsBySection((prev) => {
@@ -317,7 +309,7 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 						{(['c', 'f', 'g'] as const).map((slot, index) =>
 							projectCards[index] ? (
 								<GridItem variant="project" key={slot}>
-									{projectCards[index][getProjectCardLayout(slot)]}
+									{projectCards[index]}
 								</GridItem>
 							) : null,
 						)}
