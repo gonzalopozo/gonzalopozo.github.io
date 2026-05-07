@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState, type CSSProperties } from 'react';
 import { createPortal } from 'react-dom';
 import { useTheme } from 'next-themes';
 
-const THEME_WRITE_DELAY_MS = 460;
+const THEME_WRITE_DELAY_MS = 360;
 const THEME_REVEAL_DURATION_MS = 1120;
 type ResolvedTheme = 'light' | 'dark';
 const THEME_REVEAL_COLORS: Record<ResolvedTheme, string> = {
@@ -16,6 +16,7 @@ type ThemeReveal = {
 	theme: ResolvedTheme;
 	x: number;
 	y: number;
+	radius: number;
 };
 
 export function BB8ThemeSwitcher() {
@@ -60,6 +61,9 @@ export function BB8ThemeSwitcher() {
 			const switcherRect = switcherRef.current?.getBoundingClientRect();
 			const revealX = switcherRect ? switcherRect.left + switcherRect.width / 2 : window.innerWidth / 2;
 			const revealY = switcherRect ? switcherRect.top + switcherRect.height / 2 : window.innerHeight / 2;
+			const revealRadius =
+				Math.hypot(Math.max(revealX, window.innerWidth - revealX), Math.max(revealY, window.innerHeight - revealY)) +
+				24;
 
 			if (themeWriteTimeoutRef.current) {
 				clearTimeout(themeWriteTimeoutRef.current);
@@ -73,6 +77,7 @@ export function BB8ThemeSwitcher() {
 				theme: nextResolvedTheme,
 				x: revealX,
 				y: revealY,
+				radius: revealRadius,
 			});
 
 			themeWriteTimeoutRef.current = setTimeout(() => {
@@ -149,6 +154,7 @@ export function BB8ThemeSwitcher() {
 							{
 								'--theme-reveal-x': `${themeReveal.x}px`,
 								'--theme-reveal-y': `${themeReveal.y}px`,
+								'--theme-reveal-radius': `${themeReveal.radius}px`,
 								'--theme-reveal-color': THEME_REVEAL_COLORS[themeReveal.theme],
 							} as CSSProperties
 						}
