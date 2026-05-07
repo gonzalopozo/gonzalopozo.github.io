@@ -242,7 +242,7 @@ function TallProjectGridItemContent({ project }: ProjectGridItemContentProps) {
 	const actionCount = Number(Boolean(project.repoUrl)) + Number(Boolean(project.url));
 
 	return (
-		<div className="group/project flex h-full min-h-0 flex-col">
+		<div className="group/project grid h-full min-h-0 grid-rows-[auto_minmax(0,1fr)_auto]">
 			<CardHeader className="gap-0 pb-0">
 				<ProjectMedia
 					project={project}
@@ -252,8 +252,8 @@ function TallProjectGridItemContent({ project }: ProjectGridItemContentProps) {
 				/>
 			</CardHeader>
 
-			<CardContent className="flex h-full min-h-0 flex-1 flex-col pt-6 pb-0 sm:px-7 [@container_project-card_(max-width:360px)]:px-3.5 [@container_project-card_(max-width:360px)]:pt-3.5 [@container_project-card_(max-width:360px)]:pb-0">
-				<div className="flex flex-1 flex-col gap-5">
+			<CardContent className="flex min-h-0 flex-col overflow-hidden pt-6 pb-0 sm:px-7 [@container_project-card_(max-width:360px)]:px-3.5 [@container_project-card_(max-width:360px)]:pt-3.5 [@container_project-card_(max-width:360px)]:pb-0">
+				<div className="flex min-h-0 flex-col gap-5 overflow-hidden">
 					<div className="flex flex-col gap-1.5">
 						<div className="flex items-start gap-2">
 							<Badge
@@ -291,7 +291,7 @@ function TallProjectGridItemContent({ project }: ProjectGridItemContentProps) {
 				</div>
 			</CardContent>
 
-			<CardFooter className="sm:px-7 [@container_project-card_(max-width:360px)]:px-3.5">
+			<CardFooter className="pb-5 sm:px-7 [@container_project-card_(max-width:360px)]:px-3.5 [@container_project-card_(max-width:360px)]:pb-4">
 				<div className="flex w-full flex-col gap-2 pt-2">
 					{actionCount ? (
 						<div
