@@ -26,6 +26,7 @@ const defaultStyles = {
 };
 
 type Theme = 'light' | 'dark';
+const MAP_THEME_LOADED_EVENT = 'portfolio-map-theme-loaded';
 
 // Check document class for theme (works with next-themes, etc.)
 function getDocumentTheme(): Theme | null {
@@ -181,6 +182,7 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
 	const [isStyleLoaded, setIsStyleLoaded] = useState(false);
 	const currentStyleRef = useRef<MapStyleOption | null>(null);
 	const styleTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const pendingThemeStyleRef = useRef<Theme | null>(null);
 	const internalUpdateRef = useRef(false);
 	const resolvedTheme = useResolvedTheme(themeProp);
 
@@ -232,6 +234,14 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
 			// else we have to force update every layer on setStyle change
 			styleTimeoutRef.current = setTimeout(() => {
 				setIsStyleLoaded(true);
+				if (pendingThemeStyleRef.current) {
+					document.dispatchEvent(
+						new CustomEvent(MAP_THEME_LOADED_EVENT, {
+							detail: { theme: pendingThemeStyleRef.current },
+						}),
+					);
+					pendingThemeStyleRef.current = null;
+				}
 				if (projection) {
 					map.setProjection(projection);
 				}
@@ -301,6 +311,7 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
 
 		clearStyleTimeout();
 		currentStyleRef.current = newStyle;
+		pendingThemeStyleRef.current = resolvedTheme;
 		setIsStyleLoaded(false);
 
 		mapInstance.setStyle(newStyle, { diff: true });

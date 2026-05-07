@@ -1,32 +1,98 @@
 'use client';
 
-import { useEffect, useId, useRef, useState, type CSSProperties } from 'react';
-import { createPortal } from 'react-dom';
+import { useEffect, useId, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
+import * as MotionReact from 'motion/react';
 import { useTheme } from 'next-themes';
 
-const THEME_WRITE_DELAY_MS = 360;
-const THEME_REVEAL_DURATION_MS = 1120;
+const THEME_REVEAL_DURATION_MS = 820;
+const MAP_THEME_WAIT_TIMEOUT_MS = 650;
+const MAP_THEME_LOADED_EVENT = 'portfolio-map-theme-loaded';
 type ResolvedTheme = 'light' | 'dark';
-const THEME_REVEAL_COLORS: Record<ResolvedTheme, string> = {
-	dark: 'oklch(0.12 0.025 275)',
-	light: 'oklch(0.975 0.008 270)',
+
+type ViewTransitionKeyframes = {
+	clipPath?: string[];
+	opacity?: number[];
 };
-type ThemeReveal = {
-	id: number;
-	theme: ResolvedTheme;
-	x: number;
-	y: number;
-	radius: number;
+
+type ViewTransitionOptions = {
+	duration?: number;
+	ease?: string | number[];
+	interrupt?: 'wait' | 'immediate';
 };
+
+type ViewTransitionAnimation = {
+	finished: Promise<unknown>;
+};
+
+type ViewTransitionBuilder = PromiseLike<ViewTransitionAnimation> & {
+	new: (keyframes: ViewTransitionKeyframes, options?: ViewTransitionOptions) => ViewTransitionBuilder;
+	old: (keyframes: ViewTransitionKeyframes, options?: ViewTransitionOptions) => ViewTransitionBuilder;
+};
+
+type AnimateView = (
+	update: () => void | Promise<void>,
+	options?: ViewTransitionOptions,
+) => ViewTransitionBuilder;
+
+const animateView = (MotionReact as unknown as { animateView?: AnimateView }).animateView;
+
+function applyDocumentTheme(theme: ResolvedTheme) {
+	const root = document.documentElement;
+	root.classList.remove('light', 'dark');
+	root.classList.add(theme);
+	root.style.colorScheme = theme;
+}
+
+function getRevealGeometry(originElement: HTMLElement | null) {
+	const originRect = originElement?.getBoundingClientRect();
+	const x = originRect ? originRect.left + originRect.width / 2 : window.innerWidth / 2;
+	const y = originRect ? originRect.top + originRect.height / 2 : window.innerHeight / 2;
+	const radius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y)) + 24;
+
+	return {
+		from: `circle(0px at ${x}px ${y}px)`,
+		to: `circle(${radius}px at ${x}px ${y}px)`,
+	};
+}
+
+function hasMapInstance() {
+	return Boolean(document.querySelector('.maplibregl-map, .maplibregl-canvas'));
+}
+
+function waitForMapTheme(theme: ResolvedTheme) {
+	if (!hasMapInstance()) {
+		return Promise.resolve();
+	}
+
+	return new Promise<void>((resolve) => {
+		const timeoutId = window.setTimeout(done, MAP_THEME_WAIT_TIMEOUT_MS);
+
+		function done() {
+			window.clearTimeout(timeoutId);
+			document.removeEventListener(MAP_THEME_LOADED_EVENT, handleMapThemeLoaded);
+			resolve();
+		}
+
+		function handleMapThemeLoaded(event: Event) {
+			const detail = (event as CustomEvent<{ theme?: ResolvedTheme }>).detail;
+
+			if (detail?.theme === theme) {
+				done();
+			}
+		}
+
+		document.addEventListener(MAP_THEME_LOADED_EVENT, handleMapThemeLoaded);
+	});
+}
 
 export function BB8ThemeSwitcher() {
 	const controlId = useId();
 	const { theme, resolvedTheme, setTheme } = useTheme();
 	const [mounted, setMounted] = useState(false);
 	const [visualTheme, setVisualTheme] = useState<ResolvedTheme>('light');
-	const [themeReveal, setThemeReveal] = useState<ThemeReveal | null>(null);
-	const themeWriteTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-	const themeRevealTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const [isTransitioning, setIsTransitioning] = useState(false);
+	const shouldReduceMotion = MotionReact.useReducedMotion();
 	const switcherRef = useRef<HTMLLabelElement>(null);
 
 	useEffect(() => {
@@ -39,59 +105,66 @@ export function BB8ThemeSwitcher() {
 		setVisualTheme(resolvedTheme === 'dark' ? 'dark' : 'light');
 	}, [mounted, resolvedTheme]);
 
-	useEffect(() => {
-		return () => {
-			if (themeWriteTimeoutRef.current) {
-				clearTimeout(themeWriteTimeoutRef.current);
-			}
-			if (themeRevealTimeoutRef.current) {
-				clearTimeout(themeRevealTimeoutRef.current);
-			}
-		};
-	}, []);
-
 	const isDark = mounted && visualTheme === 'dark';
 	const nextTheme = isDark ? 'light' : 'dark';
 
-	function handleThemeChange() {
-		if (!mounted || !resolvedTheme) return;
-
-		setVisualTheme((currentTheme) => {
-			const nextResolvedTheme = currentTheme === 'dark' ? 'light' : 'dark';
-			const switcherRect = switcherRef.current?.getBoundingClientRect();
-			const revealX = switcherRect ? switcherRect.left + switcherRect.width / 2 : window.innerWidth / 2;
-			const revealY = switcherRect ? switcherRect.top + switcherRect.height / 2 : window.innerHeight / 2;
-			const revealRadius =
-				Math.hypot(Math.max(revealX, window.innerWidth - revealX), Math.max(revealY, window.innerHeight - revealY)) +
-				24;
-
-			if (themeWriteTimeoutRef.current) {
-				clearTimeout(themeWriteTimeoutRef.current);
-			}
-			if (themeRevealTimeoutRef.current) {
-				clearTimeout(themeRevealTimeoutRef.current);
-			}
-
-			setThemeReveal({
-				id: Date.now(),
-				theme: nextResolvedTheme,
-				x: revealX,
-				y: revealY,
-				radius: revealRadius,
-			});
-
-			themeWriteTimeoutRef.current = setTimeout(() => {
-				setTheme(nextResolvedTheme);
-				themeWriteTimeoutRef.current = null;
-			}, THEME_WRITE_DELAY_MS);
-
-			themeRevealTimeoutRef.current = setTimeout(() => {
-				setThemeReveal(null);
-				themeRevealTimeoutRef.current = null;
-			}, THEME_REVEAL_DURATION_MS);
-
-			return nextResolvedTheme;
+	function commitTheme(nextResolvedTheme: ResolvedTheme) {
+		applyDocumentTheme(nextResolvedTheme);
+		flushSync(() => {
+			setVisualTheme(nextResolvedTheme);
+			setTheme(nextResolvedTheme);
 		});
+	}
+
+	async function handleThemeChange() {
+		if (!mounted || !resolvedTheme || isTransitioning) return;
+
+		const nextResolvedTheme = visualTheme === 'dark' ? 'light' : 'dark';
+
+		if (shouldReduceMotion || !animateView || !('startViewTransition' in document)) {
+			commitTheme(nextResolvedTheme);
+			return;
+		}
+
+		const revealGeometry = getRevealGeometry(switcherRef.current);
+
+		setIsTransitioning(true);
+
+		try {
+			const transition = await animateView(
+				async () => {
+					commitTheme(nextResolvedTheme);
+					await waitForMapTheme(nextResolvedTheme);
+				},
+				{
+					duration: THEME_REVEAL_DURATION_MS / 1000,
+					ease: [0.22, 1, 0.36, 1],
+					interrupt: 'immediate',
+				},
+			)
+				.old(
+					{
+						opacity: [1, 1],
+					},
+					{
+						duration: THEME_REVEAL_DURATION_MS / 1000,
+					},
+				)
+				.new(
+					{
+						clipPath: [revealGeometry.from, revealGeometry.to],
+						opacity: [1, 1],
+					},
+					{
+						duration: THEME_REVEAL_DURATION_MS / 1000,
+						ease: [0.22, 1, 0.36, 1],
+					},
+				);
+
+			await transition.finished;
+		} finally {
+			setIsTransitioning(false);
+		}
 	}
 
 	return (
@@ -108,7 +181,7 @@ export function BB8ThemeSwitcher() {
 					type="checkbox"
 					role="switch"
 					checked={isDark}
-					disabled={!mounted}
+					disabled={!mounted || isTransitioning}
 					aria-checked={isDark}
 					aria-label={`Switch to ${nextTheme} theme`}
 					onChange={handleThemeChange}
@@ -144,24 +217,6 @@ export function BB8ThemeSwitcher() {
 					</span>
 				</span>
 			</label>
-			{themeReveal && (
-				createPortal(
-					<span
-						key={themeReveal.id}
-						className="theme-change-reveal"
-						aria-hidden="true"
-						style={
-							{
-								'--theme-reveal-x': `${themeReveal.x}px`,
-								'--theme-reveal-y': `${themeReveal.y}px`,
-								'--theme-reveal-radius': `${themeReveal.radius}px`,
-								'--theme-reveal-color': THEME_REVEAL_COLORS[themeReveal.theme],
-							} as CSSProperties
-						}
-					/>,
-					document.body,
-				)
-			)}
 		</div>
 	);
 }
