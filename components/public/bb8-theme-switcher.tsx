@@ -1,17 +1,32 @@
 'use client';
 
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState, type CSSProperties } from 'react';
+import { createPortal } from 'react-dom';
 import { useTheme } from 'next-themes';
 
 const THEME_WRITE_DELAY_MS = 460;
+const THEME_REVEAL_DURATION_MS = 1120;
 type ResolvedTheme = 'light' | 'dark';
+const THEME_REVEAL_COLORS: Record<ResolvedTheme, string> = {
+	dark: 'oklch(0.12 0.025 275)',
+	light: 'oklch(0.975 0.008 270)',
+};
+type ThemeReveal = {
+	id: number;
+	theme: ResolvedTheme;
+	x: number;
+	y: number;
+};
 
 export function BB8ThemeSwitcher() {
 	const controlId = useId();
 	const { theme, resolvedTheme, setTheme } = useTheme();
 	const [mounted, setMounted] = useState(false);
 	const [visualTheme, setVisualTheme] = useState<ResolvedTheme>('light');
+	const [themeReveal, setThemeReveal] = useState<ThemeReveal | null>(null);
 	const themeWriteTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const themeRevealTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const switcherRef = useRef<HTMLLabelElement>(null);
 
 	useEffect(() => {
 		setMounted(true);
@@ -28,6 +43,9 @@ export function BB8ThemeSwitcher() {
 			if (themeWriteTimeoutRef.current) {
 				clearTimeout(themeWriteTimeoutRef.current);
 			}
+			if (themeRevealTimeoutRef.current) {
+				clearTimeout(themeRevealTimeoutRef.current);
+			}
 		};
 	}, []);
 
@@ -39,15 +57,33 @@ export function BB8ThemeSwitcher() {
 
 		setVisualTheme((currentTheme) => {
 			const nextResolvedTheme = currentTheme === 'dark' ? 'light' : 'dark';
+			const switcherRect = switcherRef.current?.getBoundingClientRect();
+			const revealX = switcherRect ? switcherRect.left + switcherRect.width / 2 : window.innerWidth / 2;
+			const revealY = switcherRect ? switcherRect.top + switcherRect.height / 2 : window.innerHeight / 2;
 
 			if (themeWriteTimeoutRef.current) {
 				clearTimeout(themeWriteTimeoutRef.current);
 			}
+			if (themeRevealTimeoutRef.current) {
+				clearTimeout(themeRevealTimeoutRef.current);
+			}
+
+			setThemeReveal({
+				id: Date.now(),
+				theme: nextResolvedTheme,
+				x: revealX,
+				y: revealY,
+			});
 
 			themeWriteTimeoutRef.current = setTimeout(() => {
 				setTheme(nextResolvedTheme);
 				themeWriteTimeoutRef.current = null;
 			}, THEME_WRITE_DELAY_MS);
+
+			themeRevealTimeoutRef.current = setTimeout(() => {
+				setThemeReveal(null);
+				themeRevealTimeoutRef.current = null;
+			}, THEME_REVEAL_DURATION_MS);
 
 			return nextResolvedTheme;
 		});
@@ -56,6 +92,7 @@ export function BB8ThemeSwitcher() {
 	return (
 		<div className="flex size-full min-h-36 items-center justify-center px-4 pt-4 pb-6 sm:pb-8 lg:pb-10">
 			<label
+				ref={switcherRef}
 				className="bb8-theme-switcher"
 				data-theme-preference={theme ?? 'system'}
 				htmlFor={controlId}
@@ -102,6 +139,23 @@ export function BB8ThemeSwitcher() {
 					</span>
 				</span>
 			</label>
+			{themeReveal && (
+				createPortal(
+					<span
+						key={themeReveal.id}
+						className="theme-change-reveal"
+						aria-hidden="true"
+						style={
+							{
+								'--theme-reveal-x': `${themeReveal.x}px`,
+								'--theme-reveal-y': `${themeReveal.y}px`,
+								'--theme-reveal-color': THEME_REVEAL_COLORS[themeReveal.theme],
+							} as CSSProperties
+						}
+					/>,
+					document.body,
+				)
+			)}
 		</div>
 	);
 }
