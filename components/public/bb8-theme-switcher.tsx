@@ -4,7 +4,7 @@ import { useEffect, useId, useRef, useState } from 'react';
 import * as MotionReact from 'motion/react';
 import { useTheme } from 'next-themes';
 
-const BB8_VISUAL_LEAD_MS = 140;
+const BB8_VISUAL_LEAD_MS = 80;
 const THEME_REVEAL_DURATION_MS = 900;
 const MAP_THEME_SETTLE_TIMEOUT_MS = 900;
 const MAP_THEME_LOADED_EVENT = 'portfolio-map-theme-loaded';
@@ -95,6 +95,7 @@ export function BB8ThemeSwitcher() {
 	const switcherRef = useRef<HTMLLabelElement>(null);
 	const isTransitioningRef = useRef(false);
 	const themeRevealTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const themeRevealFrameRef = useRef<number | null>(null);
 
 	useEffect(() => {
 		setMounted(true);
@@ -110,6 +111,9 @@ export function BB8ThemeSwitcher() {
 		return () => {
 			if (themeRevealTimeoutRef.current) {
 				clearTimeout(themeRevealTimeoutRef.current);
+			}
+			if (themeRevealFrameRef.current) {
+				window.cancelAnimationFrame(themeRevealFrameRef.current);
 			}
 
 			isTransitioningRef.current = false;
@@ -131,7 +135,7 @@ export function BB8ThemeSwitcher() {
 			return;
 		}
 
-		const mapSettled = waitForMapTheme(nextResolvedTheme);
+		void waitForMapTheme(nextResolvedTheme);
 		const transition = await animateView(
 			() => {
 				commitTheme(nextResolvedTheme);
@@ -161,7 +165,7 @@ export function BB8ThemeSwitcher() {
 				},
 			);
 
-		await Promise.allSettled([transition.finished, mapSettled]);
+		await transition.finished;
 	}
 
 	async function handleThemeChange() {
@@ -185,8 +189,12 @@ export function BB8ThemeSwitcher() {
 		themeRevealTimeoutRef.current = setTimeout(() => {
 			themeRevealTimeoutRef.current = null;
 
-			revealTheme(nextResolvedTheme, revealGeometry).finally(() => {
-				isTransitioningRef.current = false;
+			themeRevealFrameRef.current = window.requestAnimationFrame(() => {
+				themeRevealFrameRef.current = null;
+
+				revealTheme(nextResolvedTheme, revealGeometry).finally(() => {
+					isTransitioningRef.current = false;
+				});
 			});
 		}, BB8_VISUAL_LEAD_MS);
 	}
