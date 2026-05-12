@@ -4,9 +4,9 @@ import { useEffect, useId, useRef, useState } from 'react';
 import * as MotionReact from 'motion/react';
 import { useTheme } from 'next-themes';
 
-const BB8_VISUAL_LEAD_MS = 150;
+const BB8_VISUAL_LEAD_MS = 250;
 const THEME_REVEAL_DURATION_MS = 600;
-const MAP_THEME_SETTLE_TIMEOUT_MS = 600;
+const MAP_THEME_SETTLE_TIMEOUT_MS = 1200;
 const MAP_THEME_LOADED_EVENT = 'portfolio-map-theme-loaded';
 type ResolvedTheme = 'light' | 'dark';
 
@@ -122,7 +122,7 @@ export function BB8ThemeSwitcher() {
 			return;
 		}
 
-		await waitForMapTheme(nextResolvedTheme);
+		void waitForMapTheme(nextResolvedTheme);
 		const durationSeconds = THEME_REVEAL_DURATION_MS / 1000;
 
 		const transition = await animateView(

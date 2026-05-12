@@ -297,10 +297,18 @@
 		mix-blend-mode: normal;
 	}
 
-	::view-transition-group(bb8-theme-switcher),
-	::view-transition-old(bb8-theme-switcher),
+	::view-transition-group(bb8-theme-switcher) {
+		animation-duration: 0s;
+	}
+
+	::view-transition-old(bb8-theme-switcher) {
+		animation: none;
+		opacity: 0;
+	}
+
 	::view-transition-new(bb8-theme-switcher) {
 		animation: none;
+		opacity: 1;
 	}
 
 	.bb8-theme-switcher {
