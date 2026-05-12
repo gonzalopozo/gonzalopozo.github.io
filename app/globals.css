@@ -288,7 +288,7 @@
 
 @layer components {
 	::view-transition-group(root) {
-		animation-duration: 900ms;
+		animation-duration: 600ms;
 		animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 	}
 
@@ -301,7 +301,6 @@
 	::view-transition-old(bb8-theme-switcher),
 	::view-transition-new(bb8-theme-switcher) {
 		animation: none;
-		opacity: 0;
 	}
 
 	.bb8-theme-switcher {
@@ -318,7 +317,7 @@
 			)
 			no-repeat;
 		--radius: 99em;
-		--transition: 0.4s;
+		--transition: 0.25s;
 		--accent: #de7d2f;
 		--bb8-bg: #fff;
 		position: relative;
@@ -428,7 +427,7 @@
 		filter: blur(0.125em) drop-shadow(-0.313em -0.188em #e0dfdfae)
 			drop-shadow(-0.625em -0.188em #bbbbbbae)
 			drop-shadow(-1em 0.063em #cfcfcfae);
-		transition: 0.6s;
+		transition: 0.3s;
 	}
 
 	.bb8-toggle__cloud:nth-last-child(3) {
@@ -439,7 +438,7 @@
 		background: #ffffffae;
 		filter: blur(0.125em) drop-shadow(0.438em 0.188em #ffffffae)
 			drop-shadow(-0.625em 0.313em #ffffffae);
-		transition: 0.8s;
+		transition: 0.35s;
 	}
 
 	.bb8-toggle__star {
@@ -463,7 +462,7 @@
 			1.875em 0.625em,
 			-3.125em 1.875em,
 			1.25em 2.813em;
-		transition: 0.2s;
+		transition: 0.15s;
 	}
 
 	.bb8-toggle__star:nth-child(2) {
@@ -475,7 +474,7 @@
 			0.625em 0.938em,
 			-3.125em 1.25em,
 			1.25em -1.563em;
-		transition: 0.3s;
+		transition: 0.2s;
 	}
 
 	.bb8-toggle__star:nth-child(3) {
@@ -495,28 +494,28 @@
 		left: 1.875em;
 		width: 0.125em;
 		height: 0.125em;
-		transition: 0.5s;
+		transition: var(--transition);
 	}
 
 	.bb8-toggle__star:nth-child(5) {
 		left: 5em;
 		width: 0.125em;
 		height: 0.125em;
-		transition: 0.6s;
+		transition: 0.3s;
 	}
 
 	.bb8-toggle__star:nth-child(6) {
 		left: 2.5em;
 		width: 0.125em;
 		height: 0.125em;
-		transition: 0.7s;
+		transition: 0.3s;
 	}
 
 	.bb8-toggle__star:nth-child(7) {
 		left: 3.438em;
 		width: 0.125em;
 		height: 0.125em;
-		transition: 0.8s;
+		transition: 0.35s;
 	}
 
 	.gomrassen,
@@ -569,7 +568,7 @@
 		box-shadow:
 			0 0 0.125em #ffffff52,
 			0 0 0.125em #6e8ea24b;
-		transition: 0.6s;
+		transition: 0.3s;
 	}
 
 	.chenini {
@@ -579,7 +578,7 @@
 		box-shadow:
 			0 0 0.125em #ffffff52,
 			0 0 0.125em #6e8ea24b;
-		transition: 0.8s;
+		transition: 0.35s;
 	}
 
 	.tatto-1,
@@ -606,7 +605,7 @@
 		box-shadow:
 			0 0 0.438em #e6ad5c3d,
 			0 0 0.438em #d755494f;
-		transition: 0.7s;
+		transition: 0.3s;
 	}
 
 	.bb8 {
