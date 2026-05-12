@@ -5,6 +5,7 @@ import { flushSync } from 'react-dom';
 import * as MotionReact from 'motion/react';
 import { useTheme } from 'next-themes';
 
+const BB8_VISUAL_TRANSITION_MS = 420;
 const THEME_REVEAL_DURATION_MS = 820;
 const MAP_THEME_WAIT_TIMEOUT_MS = 650;
 const MAP_THEME_LOADED_EVENT = 'portfolio-map-theme-loaded';
@@ -91,9 +92,10 @@ export function BB8ThemeSwitcher() {
 	const { theme, resolvedTheme, setTheme } = useTheme();
 	const [mounted, setMounted] = useState(false);
 	const [visualTheme, setVisualTheme] = useState<ResolvedTheme>('light');
-	const [isTransitioning, setIsTransitioning] = useState(false);
 	const shouldReduceMotion = MotionReact.useReducedMotion();
 	const switcherRef = useRef<HTMLLabelElement>(null);
+	const isTransitioningRef = useRef(false);
+	const themeRevealTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	useEffect(() => {
 		setMounted(true);
@@ -104,6 +106,16 @@ export function BB8ThemeSwitcher() {
 
 		setVisualTheme(resolvedTheme === 'dark' ? 'dark' : 'light');
 	}, [mounted, resolvedTheme]);
+
+	useEffect(() => {
+		return () => {
+			if (themeRevealTimeoutRef.current) {
+				clearTimeout(themeRevealTimeoutRef.current);
+			}
+
+			isTransitioningRef.current = false;
+		};
+	}, []);
 
 	const isDark = mounted && visualTheme === 'dark';
 	const nextTheme = isDark ? 'light' : 'dark';
@@ -116,55 +128,70 @@ export function BB8ThemeSwitcher() {
 		});
 	}
 
+	async function revealTheme(nextResolvedTheme: ResolvedTheme, revealGeometry: ReturnType<typeof getRevealGeometry>) {
+		if (shouldReduceMotion || !animateView || !('startViewTransition' in document)) {
+			commitTheme(nextResolvedTheme);
+			return;
+		}
+
+		const transition = await animateView(
+			async () => {
+				commitTheme(nextResolvedTheme);
+				await waitForMapTheme(nextResolvedTheme);
+			},
+			{
+				duration: THEME_REVEAL_DURATION_MS / 1000,
+				ease: [0.22, 1, 0.36, 1],
+				interrupt: 'immediate',
+			},
+		)
+			.old(
+				{
+					opacity: [1, 1],
+				},
+				{
+					duration: THEME_REVEAL_DURATION_MS / 1000,
+				},
+			)
+			.new(
+				{
+					clipPath: [revealGeometry.from, revealGeometry.to],
+					opacity: [1, 1],
+				},
+				{
+					duration: THEME_REVEAL_DURATION_MS / 1000,
+					ease: [0.22, 1, 0.36, 1],
+				},
+			);
+
+		await transition.finished;
+	}
+
 	async function handleThemeChange() {
-		if (!mounted || !resolvedTheme || isTransitioning) return;
+		if (!mounted || !resolvedTheme || isTransitioningRef.current) return;
 
 		const nextResolvedTheme = visualTheme === 'dark' ? 'light' : 'dark';
+		const revealGeometry = getRevealGeometry(switcherRef.current);
 
 		if (shouldReduceMotion || !animateView || !('startViewTransition' in document)) {
 			commitTheme(nextResolvedTheme);
 			return;
 		}
 
-		const revealGeometry = getRevealGeometry(switcherRef.current);
+		isTransitioningRef.current = true;
+		setVisualTheme(nextResolvedTheme);
 
-		setIsTransitioning(true);
-
-		try {
-			const transition = await animateView(
-				async () => {
-					commitTheme(nextResolvedTheme);
-					await waitForMapTheme(nextResolvedTheme);
-				},
-				{
-					duration: THEME_REVEAL_DURATION_MS / 1000,
-					ease: [0.22, 1, 0.36, 1],
-					interrupt: 'immediate',
-				},
-			)
-				.old(
-					{
-						opacity: [1, 1],
-					},
-					{
-						duration: THEME_REVEAL_DURATION_MS / 1000,
-					},
-				)
-				.new(
-					{
-						clipPath: [revealGeometry.from, revealGeometry.to],
-						opacity: [1, 1],
-					},
-					{
-						duration: THEME_REVEAL_DURATION_MS / 1000,
-						ease: [0.22, 1, 0.36, 1],
-					},
-				);
-
-			await transition.finished;
-		} finally {
-			setIsTransitioning(false);
+		if (themeRevealTimeoutRef.current) {
+			clearTimeout(themeRevealTimeoutRef.current);
 		}
+
+		themeRevealTimeoutRef.current = setTimeout(() => {
+			themeRevealTimeoutRef.current = null;
+
+			revealTheme(nextResolvedTheme, revealGeometry).finally(() => {
+				isTransitioningRef.current = false;
+			});
+		}, BB8_VISUAL_TRANSITION_MS);
 	}
 
 	return (
@@ -181,7 +208,7 @@ export function BB8ThemeSwitcher() {
 					type="checkbox"
 					role="switch"
 					checked={isDark}
-					disabled={!mounted || isTransitioning}
+					disabled={!mounted}
 					aria-checked={isDark}
 					aria-label={`Switch to ${nextTheme} theme`}
 					onChange={handleThemeChange}
