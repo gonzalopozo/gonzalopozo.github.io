@@ -1,13 +1,12 @@
 'use client';
 
 import { useEffect, useId, useRef, useState } from 'react';
-import { flushSync } from 'react-dom';
 import * as MotionReact from 'motion/react';
 import { useTheme } from 'next-themes';
 
-const BB8_VISUAL_TRANSITION_MS = 420;
-const THEME_REVEAL_DURATION_MS = 820;
-const MAP_THEME_WAIT_TIMEOUT_MS = 650;
+const BB8_VISUAL_LEAD_MS = 140;
+const THEME_REVEAL_DURATION_MS = 900;
+const MAP_THEME_SETTLE_TIMEOUT_MS = 900;
 const MAP_THEME_LOADED_EVENT = 'portfolio-map-theme-loaded';
 type ResolvedTheme = 'light' | 'dark';
 
@@ -67,7 +66,7 @@ function waitForMapTheme(theme: ResolvedTheme) {
 	}
 
 	return new Promise<void>((resolve) => {
-		const timeoutId = window.setTimeout(done, MAP_THEME_WAIT_TIMEOUT_MS);
+		const timeoutId = window.setTimeout(done, MAP_THEME_SETTLE_TIMEOUT_MS);
 
 		function done() {
 			window.clearTimeout(timeoutId);
@@ -122,10 +121,8 @@ export function BB8ThemeSwitcher() {
 
 	function commitTheme(nextResolvedTheme: ResolvedTheme) {
 		applyDocumentTheme(nextResolvedTheme);
-		flushSync(() => {
-			setVisualTheme(nextResolvedTheme);
-			setTheme(nextResolvedTheme);
-		});
+		setVisualTheme(nextResolvedTheme);
+		setTheme(nextResolvedTheme);
 	}
 
 	async function revealTheme(nextResolvedTheme: ResolvedTheme, revealGeometry: ReturnType<typeof getRevealGeometry>) {
@@ -134,14 +131,14 @@ export function BB8ThemeSwitcher() {
 			return;
 		}
 
+		const mapSettled = waitForMapTheme(nextResolvedTheme);
 		const transition = await animateView(
-			async () => {
+			() => {
 				commitTheme(nextResolvedTheme);
-				await waitForMapTheme(nextResolvedTheme);
 			},
 			{
 				duration: THEME_REVEAL_DURATION_MS / 1000,
-				ease: [0.22, 1, 0.36, 1],
+				ease: [0.16, 1, 0.3, 1],
 				interrupt: 'immediate',
 			},
 		)
@@ -160,11 +157,11 @@ export function BB8ThemeSwitcher() {
 				},
 				{
 					duration: THEME_REVEAL_DURATION_MS / 1000,
-					ease: [0.22, 1, 0.36, 1],
+					ease: [0.16, 1, 0.3, 1],
 				},
 			);
 
-		await transition.finished;
+		await Promise.allSettled([transition.finished, mapSettled]);
 	}
 
 	async function handleThemeChange() {
@@ -191,7 +188,7 @@ export function BB8ThemeSwitcher() {
 			revealTheme(nextResolvedTheme, revealGeometry).finally(() => {
 				isTransitioningRef.current = false;
 			});
-		}, BB8_VISUAL_TRANSITION_MS);
+		}, BB8_VISUAL_LEAD_MS);
 	}
 
 	return (

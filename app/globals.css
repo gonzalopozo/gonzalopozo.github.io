@@ -287,9 +287,21 @@
 }
 
 @layer components {
+	::view-transition-group(root) {
+		animation-duration: 900ms;
+		animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+	}
+
 	::view-transition-old(root),
 	::view-transition-new(root) {
 		mix-blend-mode: normal;
+	}
+
+	::view-transition-group(bb8-theme-switcher),
+	::view-transition-old(bb8-theme-switcher),
+	::view-transition-new(bb8-theme-switcher) {
+		animation: none;
+		opacity: 0;
 	}
 
 	.bb8-theme-switcher {
@@ -316,6 +328,7 @@
 		line-height: 1;
 		padding-top: 1.05em;
 		touch-action: manipulation;
+		view-transition-name: bb8-theme-switcher;
 	}
 
 	.bb8-theme-switcher,
