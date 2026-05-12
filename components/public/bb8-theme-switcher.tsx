@@ -4,9 +4,9 @@ import { useEffect, useId, useRef, useState } from 'react';
 import * as MotionReact from 'motion/react';
 import { useTheme } from 'next-themes';
 
-const BB8_VISUAL_LEAD_MS = 80;
-const THEME_REVEAL_DURATION_MS = 900;
-const MAP_THEME_SETTLE_TIMEOUT_MS = 900;
+const BB8_VISUAL_LEAD_MS = 150;
+const THEME_REVEAL_DURATION_MS = 600;
+const MAP_THEME_SETTLE_TIMEOUT_MS = 600;
 const MAP_THEME_LOADED_EVENT = 'portfolio-map-theme-loaded';
 type ResolvedTheme = 'light' | 'dark';
 
@@ -36,13 +36,6 @@ type AnimateView = (
 ) => ViewTransitionBuilder;
 
 const animateView = (MotionReact as unknown as { animateView?: AnimateView }).animateView;
-
-function applyDocumentTheme(theme: ResolvedTheme) {
-	const root = document.documentElement;
-	root.classList.remove('light', 'dark');
-	root.classList.add(theme);
-	root.style.colorScheme = theme;
-}
 
 function getRevealGeometry(originElement: HTMLElement | null) {
 	const originRect = originElement?.getBoundingClientRect();
@@ -123,25 +116,21 @@ export function BB8ThemeSwitcher() {
 	const isDark = mounted && visualTheme === 'dark';
 	const nextTheme = isDark ? 'light' : 'dark';
 
-	function commitTheme(nextResolvedTheme: ResolvedTheme) {
-		applyDocumentTheme(nextResolvedTheme);
-		setVisualTheme(nextResolvedTheme);
-		setTheme(nextResolvedTheme);
-	}
-
 	async function revealTheme(nextResolvedTheme: ResolvedTheme, revealGeometry: ReturnType<typeof getRevealGeometry>) {
 		if (shouldReduceMotion || !animateView || !('startViewTransition' in document)) {
-			commitTheme(nextResolvedTheme);
+			setTheme(nextResolvedTheme);
 			return;
 		}
 
-		void waitForMapTheme(nextResolvedTheme);
+		await waitForMapTheme(nextResolvedTheme);
+		const durationSeconds = THEME_REVEAL_DURATION_MS / 1000;
+
 		const transition = await animateView(
 			() => {
-				commitTheme(nextResolvedTheme);
+				setTheme(nextResolvedTheme);
 			},
 			{
-				duration: THEME_REVEAL_DURATION_MS / 1000,
+				duration: durationSeconds,
 				ease: [0.16, 1, 0.3, 1],
 				interrupt: 'immediate',
 			},
@@ -151,7 +140,7 @@ export function BB8ThemeSwitcher() {
 					opacity: [1, 1],
 				},
 				{
-					duration: THEME_REVEAL_DURATION_MS / 1000,
+					duration: durationSeconds,
 				},
 			)
 			.new(
@@ -160,7 +149,7 @@ export function BB8ThemeSwitcher() {
 					opacity: [1, 1],
 				},
 				{
-					duration: THEME_REVEAL_DURATION_MS / 1000,
+					duration: durationSeconds,
 					ease: [0.16, 1, 0.3, 1],
 				},
 			);
@@ -175,7 +164,7 @@ export function BB8ThemeSwitcher() {
 		const revealGeometry = getRevealGeometry(switcherRef.current);
 
 		if (shouldReduceMotion || !animateView || !('startViewTransition' in document)) {
-			commitTheme(nextResolvedTheme);
+			setTheme(nextResolvedTheme);
 			return;
 		}
 
