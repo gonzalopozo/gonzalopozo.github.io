@@ -64,7 +64,7 @@ export function GridItem({ children, className, variant, ref, ...props }: GridIt
 							variant === 'project' ||
 							variant === 'contact' ||
 							variant === 'music',
-						'hover:border-primary/30 @container/project-card @container-[size]':
+						'@container/project-card @container-[size]':
 							variant === 'project',
 						'group/music isolate': variant === 'music',
 					},
