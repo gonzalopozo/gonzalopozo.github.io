@@ -100,7 +100,7 @@ function ProjectActionButton({
 	if (!href) return null;
 
 	return (
-		<Button asChild variant={variant} size={size} className={cn('rounded-full', className)}>
+		<Button asChild variant={variant} size={size} className={cn('rounded-2xl', className)}>
 			<a
 				href={href}
 				target="_blank"
@@ -115,7 +115,7 @@ function ProjectActionButton({
 }
 
 const horizontalActionTileClassName =
-	'h-full min-h-11 w-full rounded-lg border border-border/60 bg-secondary/35 px-0 text-muted-foreground shadow-none hover:border-primary/40 hover:bg-primary/10 hover:text-primary focus-visible:ring-2 focus-visible:ring-ring/50 active:scale-[0.98]';
+	'h-full min-h-11 w-full rounded-2xl border border-border/60 bg-secondary/35 px-0 text-muted-foreground shadow-none hover:border-primary/40 hover:bg-primary/10 hover:text-primary focus-visible:ring-2 focus-visible:ring-ring/50 active:scale-[0.98]';
 
 interface ProjectGridItemContentVariantProps {
 	project: ProjectInfo;

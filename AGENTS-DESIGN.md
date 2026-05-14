@@ -211,15 +211,22 @@ Font stack is already configured in `app/layout.tsx`:
 
 ### 2.8 Border Radius
 
-| Element                  | Class                             | Value          | Purpose                              |
-| ------------------------ | --------------------------------- | -------------- | ------------------------------------ |
-| Grid cards               | `rounded-4xl`                     | 2rem (32px)    | Signature aesthetic — generous, soft |
-| Pill navbar              | `rounded-full`                    | 9999px         | Capsule shape                        |
-| Nav active indicator     | `rounded-full`                    | 9999px         | Pill highlight inside navbar         |
-| shadcn components        | `rounded-lg` (default `--radius`) | 0.5rem (8px)   | Buttons, inputs, dialogs             |
-| Nested elements in cards | `rounded-xl`                      | 0.75rem (12px) | Tags, badges, inner containers       |
+| Element                                  | Class                              | Value          | Purpose                              |
+| ---------------------------------------- | ---------------------------------- | -------------- | ------------------------------------ |
+| Grid cards                               | `rounded-4xl`                      | 2rem (32px)    | Signature aesthetic — generous, soft |
+| Normal rectangular button inside a card  | `rounded-2xl`                      | 1rem (16px)    | Button shape with clear card nesting |
+| Square icon button inside a card         | `rounded-2xl`                      | 1rem (16px)    | Tool/action tile, not a pill         |
+| Large prominent button inside a card     | `rounded-[1.25rem]`                | 1.25rem (20px) | Bigger action without full capsule   |
+| Pill / CTA button                        | `rounded-full`                     | 9999px         | Soft capsule CTA                     |
+| Button flush with card bottom edge       | `rounded-t-2xl rounded-b-4xl`      | 16px / 32px    | Outer bottom corners align to card   |
+| Pill navbar                              | `rounded-full`                     | 9999px         | Capsule shape                        |
+| Nav active indicator                     | `rounded-full`                     | 9999px         | Pill highlight inside navbar         |
+| shadcn components                        | `rounded-lg` (default `--radius`)  | 0.5rem (8px)   | Base radius before explicit override |
+| Other nested elements in cards           | `rounded-xl`                       | 0.75rem (12px) | Tags, badges, inner containers       |
 
-Keep `--radius: 0.5rem` as the shadcn base. Grid card radius is applied directly via `className`, not through the `--radius` variable.
+Keep `--radius: 0.5rem` as the shadcn base. Grid card and public card-control radii are applied directly via Tailwind utility classes, not through the `--radius` variable.
+
+When a card control touches an outer card edge, align only the exterior corners to the card radius. For a full-width button attached to the bottom of a grid card, use `rounded-t-2xl rounded-b-4xl`. For partial-edge controls, apply `rounded-bl-4xl` and/or `rounded-br-4xl` only to the corners that touch the card edge.
 
 > If `rounded-4xl` is not available in Tailwind v4 defaults, define it in `@theme`:
 >
@@ -508,7 +515,7 @@ The `variant="map"` applies `p-0` and `overflow-hidden` clips the map to `rounde
 | CTA button           | `bg-primary text-primary-foreground hover:bg-primary/90`     | Default shadcn Button                    |
 | Accent CTA           | `bg-accent text-accent-foreground hover:bg-accent/90`        | High-emphasis actions                    |
 | Ghost button         | `hover:bg-secondary hover:text-secondary-foreground`         | Low-emphasis, in-card actions            |
-| Icon button          | `rounded-full` variant, `size="icon"`                        | GitHub, external link icons              |
+| Icon button          | `rounded-2xl` with `size="icon"`                              | GitHub, external link icons              |
 
 ### 8.2 Card-Level vs Element-Level Click Areas
 
