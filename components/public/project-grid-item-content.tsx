@@ -25,7 +25,6 @@ interface ProjectGridItemContentProps {
 interface ProjectMediaProps {
 	project: ProjectInfo;
 	className?: string;
-	overlayClassName: string;
 	sizes: string;
 }
 
@@ -50,7 +49,7 @@ function formatProjectDate(date: Date, format: 'summary' | 'full' = 'summary') {
 	return new Intl.DateTimeFormat('es-ES', dateFormat).format(new Date(date));
 }
 
-function ProjectMedia({ project, className, overlayClassName, sizes }: ProjectMediaProps) {
+function ProjectMedia({ project, className, sizes }: ProjectMediaProps) {
 	return (
 		<figure className={className}>
 			{project.ogImageUrl ? (
@@ -75,7 +74,6 @@ function ProjectMedia({ project, className, overlayClassName, sizes }: ProjectMe
 					</p>
 				</div>
 			)}
-			<div className={overlayClassName} />
 		</figure>
 	);
 }
@@ -131,7 +129,6 @@ function ProjectGridItemVerticalContent({
 				<ProjectMedia
 					project={project}
 					sizes="(max-width: 767px) 100vw, (max-width: 1200px) 38vw, 520px"
-					overlayClassName="from-background/72 pointer-events-none absolute inset-0 bg-linear-to-t via-transparent to-transparent"
 					className="border-border/60 bg-secondary/40 relative -mx-6 aspect-video min-h-36 overflow-hidden border-b [@container_project-card_(max-height:340px)]:min-h-22 [@container_project-card_(max-height:440px)_and_(min-height:341px)]:min-h-28"
 				/>
 			</CardHeader>
@@ -217,14 +214,12 @@ function ProjectGridItemVerticalContent({
 function ProjectGridItemHorizontalContent({
 	project,
 	skills,
-	actionCount,
 }: ProjectGridItemContentVariantProps) {
 	return (
 		<div className="group/project grid h-full min-h-0 grid-cols-[minmax(12rem,0.78fr)_minmax(0,1.22fr)] [@container_project-card_(max-width:480px)]:grid-cols-1 [@container_project-card_(max-width:480px)]:grid-rows-[minmax(6rem,0.75fr)_minmax(0,1fr)]">
 			<ProjectMedia
 				project={project}
 				sizes="(max-width: 767px) 100vw, (max-width: 1200px) 22vw, 260px"
-				overlayClassName="from-background/60 pointer-events-none absolute inset-0 bg-linear-to-r via-transparent to-transparent [@container_project-card_(max-width:480px)]:bg-linear-to-t"
 				className="border-border/60 bg-secondary/40 relative min-h-0 overflow-hidden border-r [@container_project-card_(max-width:480px)]:border-r-0 [@container_project-card_(max-width:480px)]:border-b"
 			/>
 
@@ -264,41 +259,28 @@ function ProjectGridItemHorizontalContent({
 					</p>
 				</div>
 
-				<CardFooter className="flex min-h-0 w-full flex-col items-stretch gap-2 p-0 [@container_project-card_(max-width:480px)]:flex-row">
-					{actionCount ? (
-						<div
-							className={cn(
-								'grid gap-2 [@container_project-card_(max-width:480px)]:flex-1',
-								{
-									'grid-cols-1': actionCount === 1,
-									'grid-cols-1 [@container_project-card_(max-width:480px)]:grid-cols-2':
-										actionCount === 2,
-								},
-							)}
-						>
-							<ProjectActionButton
-								href={project.repoUrl}
-								icon={Github}
-								label="Ver repositorio"
-								variant="outline"
-								iconOnly
-								className="h-11 w-full justify-center px-0 [@container_project-card_(max-width:480px)]:h-10"
-							/>
-							<ProjectActionButton
-								href={project.url}
-								icon={ArrowUpRight}
-								label="Abrir proyecto"
-								variant="outline"
-								iconOnly
-								className="h-11 w-full justify-center px-0 [@container_project-card_(max-width:480px)]:h-10"
-							/>
-						</div>
-					) : null}
+				<CardFooter className="grid min-h-0 w-full auto-rows-fr grid-cols-1 gap-2 p-0 [@container_project-card_(max-width:480px)]:auto-cols-fr [@container_project-card_(max-width:480px)]:grid-flow-col [@container_project-card_(max-width:480px)]:grid-rows-1">
+					<ProjectActionButton
+						href={project.repoUrl}
+						icon={Github}
+						label="Ver repositorio"
+						variant="outline"
+						iconOnly
+						className="h-full min-h-11 w-full justify-center px-0"
+					/>
+					<ProjectActionButton
+						href={project.url}
+						icon={ArrowUpRight}
+						label="Abrir proyecto"
+						variant="outline"
+						iconOnly
+						className="h-full min-h-11 w-full justify-center px-0"
+					/>
 
 					<GridItemShowMoreButton
 						variant="project"
 						label="View more"
-						className="mt-auto h-14 w-full justify-center rounded-full px-3 text-xs [@container_project-card_(max-width:480px)]:mt-0 [@container_project-card_(max-width:480px)]:h-10 [@container_project-card_(max-width:480px)]:flex-1"
+						className="h-full min-h-11 w-full justify-center rounded-full px-3 text-xs"
 					/>
 				</CardFooter>
 			</CardContent>

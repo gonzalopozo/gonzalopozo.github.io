@@ -67,3 +67,4 @@ node_modules/
 .codex
 .codex/config.toml
 .claude/settings.local.json
+.opencode/plugins/emdash-notifications.js
