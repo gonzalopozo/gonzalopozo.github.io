@@ -1,6 +1,7 @@
 'use client';
 
 import type { ComponentPropsWithRef } from 'react';
+import { ArrowRight } from 'lucide-react';
 import { parseAsStringLiteral, useQueryState } from 'nuqs';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
@@ -15,7 +16,11 @@ interface GridItemProps {
 
 interface GridItemShowMoreButtonProps {
 	variant: Exclude<GridItemVariant, 'map' | 'music'>;
+	buttonSize?: 'default' | 'sm' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg';
+	buttonVariant?: 'default' | 'ghost' | 'outline' | 'secondary';
 	className?: string;
+	icon?: 'arrow-right';
+	iconOnly?: boolean;
 	label?: string;
 }
 
@@ -31,20 +36,37 @@ const VARIANT_CONFIG: Record<
 	project: { section: 'Projects', label: '¡Descubre mis proyectos!' },
 };
 
-export function GridItemShowMoreButton({ variant, className, label }: GridItemShowMoreButtonProps) {
+export function GridItemShowMoreButton({
+	variant,
+	buttonSize,
+	buttonVariant,
+	className,
+	icon,
+	iconOnly,
+	label,
+}: GridItemShowMoreButtonProps) {
 	const [section, setSection] = useQueryState(
 		'section',
 		parseAsStringLiteral(PORTFOLIO_SECTIONS),
 	);
 	const { section: targetSection, label: defaultLabel } = VARIANT_CONFIG[variant];
+	const resolvedLabel = label ?? defaultLabel;
+	const Icon = icon === 'arrow-right' ? ArrowRight : null;
 
 	if (section) {
 		return null;
 	}
 
 	return (
-		<Button onClick={() => setSection(targetSection)} className={className}>
-			{label ?? defaultLabel}
+		<Button
+			onClick={() => setSection(targetSection)}
+			size={buttonSize}
+			variant={buttonVariant}
+			className={className}
+			aria-label={iconOnly ? resolvedLabel : undefined}
+		>
+			{Icon ? <Icon data-icon="inline-start" aria-hidden="true" /> : null}
+			{iconOnly ? <span className="sr-only">{resolvedLabel}</span> : resolvedLabel}
 		</Button>
 	);
 }
