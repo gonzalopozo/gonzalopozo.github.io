@@ -15,8 +15,11 @@ import {
 import { cn } from '@/lib/utils';
 import type { ProjectInfo, ProjectStatus } from '@/lib/types';
 
+type ProjectGridItemContentVariant = 'vertical' | 'horizontal';
+
 interface ProjectGridItemContentProps {
 	project: ProjectInfo;
+	variant?: ProjectGridItemContentVariant;
 }
 
 interface ProjectMediaProps {
@@ -111,10 +114,17 @@ function ProjectActionButton({
 	);
 }
 
-export function ProjectGridItemContent({ project }: ProjectGridItemContentProps) {
-	const skills = project.projectSkills.map(({ skill }) => skill);
-	const actionCount = Number(Boolean(project.repoUrl)) + Number(Boolean(project.url));
+interface ProjectGridItemContentVariantProps {
+	project: ProjectInfo;
+	skills: ProjectInfo['projectSkills'][number]['skill'][];
+	actionCount: number;
+}
 
+function ProjectGridItemVerticalContent({
+	project,
+	skills,
+	actionCount,
+}: ProjectGridItemContentVariantProps) {
 	return (
 		<div className="group/project grid h-full min-h-0 grid-rows-[auto_minmax(0,1fr)_auto]">
 			<CardHeader className="gap-0 pb-0">
@@ -201,5 +211,123 @@ export function ProjectGridItemContent({ project }: ProjectGridItemContentProps)
 				</div>
 			</CardFooter>
 		</div>
+	);
+}
+
+function ProjectGridItemHorizontalContent({
+	project,
+	skills,
+	actionCount,
+}: ProjectGridItemContentVariantProps) {
+	return (
+		<div className="group/project grid h-full min-h-0 grid-cols-[minmax(12rem,0.78fr)_minmax(0,1.22fr)] [@container_project-card_(max-width:480px)]:grid-cols-1 [@container_project-card_(max-width:480px)]:grid-rows-[minmax(6rem,0.75fr)_minmax(0,1fr)]">
+			<ProjectMedia
+				project={project}
+				sizes="(max-width: 767px) 100vw, (max-width: 1200px) 22vw, 260px"
+				overlayClassName="from-background/60 pointer-events-none absolute inset-0 bg-linear-to-r via-transparent to-transparent [@container_project-card_(max-width:480px)]:bg-linear-to-t"
+				className="border-border/60 bg-secondary/40 relative min-h-0 overflow-hidden border-r [@container_project-card_(max-width:480px)]:border-r-0 [@container_project-card_(max-width:480px)]:border-b"
+			/>
+
+			<CardContent className="grid min-h-0 grid-cols-[minmax(0,1fr)_5.75rem] gap-3 overflow-hidden py-4 pr-4 [@container_project-card_(max-width:480px)]:grid-cols-1 [@container_project-card_(max-width:480px)]:grid-rows-[minmax(0,1fr)_auto] [@container_project-card_(max-width:480px)]:gap-2.5 [@container_project-card_(max-width:480px)]:py-3.5 [@container_project-card_(max-width:480px)]:pr-3.5">
+				<div className="flex min-h-0 flex-col gap-2 overflow-hidden">
+					<div className="flex min-h-0 flex-col gap-1.5 overflow-hidden">
+						<Badge
+							variant={PROJECT_STATUS_BADGE_VARIANTS[project.status]}
+							className="w-fit gap-2"
+						>
+							<StatusIndicator status={project.status} className="shrink-0" />
+							{PROJECT_STATUS_LABELS[project.status]}
+						</Badge>
+
+						<CardTitle className="line-clamp-2 text-base leading-tight tracking-tight text-balance [@container_project-card_(max-width:360px)]:text-[0.9375rem]">
+							{project.title}
+						</CardTitle>
+
+						<CardDescription className="line-clamp-2 text-xs leading-relaxed [@container_project-card_(max-width:360px)]:line-clamp-1">
+							{project.description}
+						</CardDescription>
+					</div>
+
+					{skills.length ? (
+						<SkillsPills
+							skills={skills}
+							limit={4}
+							className="gap-1.5 overflow-hidden [@container_project-card_(max-width:360px)]:hidden"
+						/>
+					) : null}
+
+					<p className="text-muted-foreground mt-auto truncate text-xs">
+						Actualizado en:{' '}
+						<span className="text-foreground font-medium">
+							{formatProjectDate(project.updatedAt, 'full')}
+						</span>
+					</p>
+				</div>
+
+				<CardFooter className="flex min-h-0 w-full flex-col items-stretch gap-2 p-0 [@container_project-card_(max-width:480px)]:flex-row">
+					{actionCount ? (
+						<div
+							className={cn(
+								'grid gap-2 [@container_project-card_(max-width:480px)]:flex-1',
+								{
+									'grid-cols-1': actionCount === 1,
+									'grid-cols-1 [@container_project-card_(max-width:480px)]:grid-cols-2':
+										actionCount === 2,
+								},
+							)}
+						>
+							<ProjectActionButton
+								href={project.repoUrl}
+								icon={Github}
+								label="Ver repositorio"
+								variant="outline"
+								iconOnly
+								className="h-11 w-full justify-center px-0 [@container_project-card_(max-width:480px)]:h-10"
+							/>
+							<ProjectActionButton
+								href={project.url}
+								icon={ArrowUpRight}
+								label="Abrir proyecto"
+								variant="outline"
+								iconOnly
+								className="h-11 w-full justify-center px-0 [@container_project-card_(max-width:480px)]:h-10"
+							/>
+						</div>
+					) : null}
+
+					<GridItemShowMoreButton
+						variant="project"
+						label="View more"
+						className="mt-auto h-14 w-full justify-center rounded-full px-3 text-xs [@container_project-card_(max-width:480px)]:mt-0 [@container_project-card_(max-width:480px)]:h-10 [@container_project-card_(max-width:480px)]:flex-1"
+					/>
+				</CardFooter>
+			</CardContent>
+		</div>
+	);
+}
+
+export function ProjectGridItemContent({
+	project,
+	variant = 'vertical',
+}: ProjectGridItemContentProps) {
+	const skills = project.projectSkills.map(({ skill }) => skill);
+	const actionCount = Number(Boolean(project.repoUrl)) + Number(Boolean(project.url));
+
+	if (variant === 'horizontal') {
+		return (
+			<ProjectGridItemHorizontalContent
+				project={project}
+				skills={skills}
+				actionCount={actionCount}
+			/>
+		);
+	}
+
+	return (
+		<ProjectGridItemVerticalContent
+			project={project}
+			skills={skills}
+			actionCount={actionCount}
+		/>
 	);
 }
