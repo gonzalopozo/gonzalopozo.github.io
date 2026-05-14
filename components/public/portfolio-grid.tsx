@@ -213,7 +213,7 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 		<>
 			<nav
 				aria-label="Portfolio sections"
-				className="fixed inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-50 flex justify-center px-[3.5vw] sm:sticky sm:top-0 sm:bottom-auto sm:z-40 sm:h-24 sm:items-center sm:py-5"
+				className="flex justify-center px-[3.5vw] py-5 sm:h-24 sm:items-center sm:py-5"
 			>
 				<ul className="border-border/70 bg-card/90 shadow-foreground/10 flex max-w-[calc(100vw-1rem)] items-center gap-1 rounded-full border p-1 shadow-2xl backdrop-blur-xl sm:gap-1.5 sm:p-1.5">
 					{sections.map(({ url, v, Icon }) => {
@@ -272,7 +272,7 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 				</ul>
 			</nav>
 
-			<div ref={containerRef} className="mx-auto max-w-300 px-[3.5vw] pb-24 sm:pb-0">
+			<div ref={containerRef} className="mx-auto max-w-300 px-[3.5vw]">
 				{mounted && (
 					<Responsive
 						layouts={gridLayouts}
