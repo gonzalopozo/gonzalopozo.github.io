@@ -82,6 +82,7 @@ interface ProjectActionButtonProps {
 	href: string | null;
 	icon: LucideIcon;
 	label: string;
+	size?: 'sm' | 'icon';
 	variant: 'default' | 'ghost' | 'outline' | 'secondary';
 	className?: string;
 	iconOnly?: boolean;
@@ -91,6 +92,7 @@ function ProjectActionButton({
 	href,
 	icon: Icon,
 	label,
+	size = 'sm',
 	variant,
 	className,
 	iconOnly,
@@ -98,7 +100,7 @@ function ProjectActionButton({
 	if (!href) return null;
 
 	return (
-		<Button asChild variant={variant} size="sm" className={cn('rounded-full', className)}>
+		<Button asChild variant={variant} size={size} className={cn('rounded-full', className)}>
 			<a
 				href={href}
 				target="_blank"
@@ -111,6 +113,9 @@ function ProjectActionButton({
 		</Button>
 	);
 }
+
+const horizontalActionTileClassName =
+	'h-full min-h-11 w-full rounded-lg border border-border/60 bg-secondary/35 px-0 text-muted-foreground shadow-none hover:border-primary/40 hover:bg-primary/10 hover:text-primary focus-visible:ring-2 focus-visible:ring-ring/50 active:scale-[0.98]';
 
 interface ProjectGridItemContentVariantProps {
 	project: ProjectInfo;
@@ -223,7 +228,7 @@ function ProjectGridItemHorizontalContent({
 				className="border-border/60 bg-secondary/40 relative min-h-0 overflow-hidden border-r [@container_project-card_(max-width:480px)]:border-r-0 [@container_project-card_(max-width:480px)]:border-b"
 			/>
 
-			<CardContent className="grid min-h-0 grid-cols-[minmax(0,1fr)_5.75rem] gap-3 overflow-hidden py-4 pr-4 [@container_project-card_(max-width:480px)]:grid-cols-1 [@container_project-card_(max-width:480px)]:grid-rows-[minmax(0,1fr)_auto] [@container_project-card_(max-width:480px)]:gap-2.5 [@container_project-card_(max-width:480px)]:py-3.5 [@container_project-card_(max-width:480px)]:pr-3.5">
+			<CardContent className="grid min-h-0 grid-cols-[minmax(0,1fr)_3.5rem] gap-3 overflow-hidden py-4 pr-4 [@container_project-card_(max-width:480px)]:grid-cols-1 [@container_project-card_(max-width:480px)]:grid-rows-[minmax(0,1fr)_auto] [@container_project-card_(max-width:480px)]:gap-2.5 [@container_project-card_(max-width:480px)]:py-3.5 [@container_project-card_(max-width:480px)]:pr-3.5">
 				<div className="flex min-h-0 flex-col gap-2 overflow-hidden">
 					<div className="flex min-h-0 flex-col gap-1.5 overflow-hidden">
 						<Badge
@@ -259,28 +264,34 @@ function ProjectGridItemHorizontalContent({
 					</p>
 				</div>
 
-				<CardFooter className="grid min-h-0 w-full auto-rows-fr grid-cols-1 gap-2 p-0 [@container_project-card_(max-width:480px)]:auto-cols-fr [@container_project-card_(max-width:480px)]:grid-flow-col [@container_project-card_(max-width:480px)]:grid-rows-1">
+				<CardFooter className="grid min-h-0 w-full auto-rows-fr grid-cols-1 gap-1.5 p-0 [@container_project-card_(max-width:480px)]:auto-cols-fr [@container_project-card_(max-width:480px)]:grid-flow-col [@container_project-card_(max-width:480px)]:grid-rows-1">
 					<ProjectActionButton
 						href={project.repoUrl}
 						icon={Github}
 						label="Ver repositorio"
-						variant="outline"
+						size="icon"
+						variant="ghost"
 						iconOnly
-						className="h-full min-h-11 w-full justify-center px-0"
+						className={horizontalActionTileClassName}
 					/>
 					<ProjectActionButton
 						href={project.url}
 						icon={ArrowUpRight}
 						label="Abrir proyecto"
-						variant="outline"
+						size="icon"
+						variant="ghost"
 						iconOnly
-						className="h-full min-h-11 w-full justify-center px-0"
+						className={horizontalActionTileClassName}
 					/>
 
 					<GridItemShowMoreButton
 						variant="project"
+						buttonSize="icon"
+						buttonVariant="ghost"
+						icon="arrow-right"
+						iconOnly
 						label="View more"
-						className="h-full min-h-11 w-full justify-center rounded-full px-3 text-xs"
+						className={horizontalActionTileClassName}
 					/>
 				</CardFooter>
 			</CardContent>
