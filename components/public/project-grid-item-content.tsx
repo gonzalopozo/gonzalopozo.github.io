@@ -230,33 +230,31 @@ function ProjectGridItemHorizontalContent({
 
 			<CardContent className="grid min-h-0 grid-cols-[minmax(0,1fr)_3.5rem] gap-3 overflow-hidden py-4 pr-4 [@container_project-card_(max-width:480px)]:grid-cols-1 [@container_project-card_(max-width:480px)]:grid-rows-[minmax(0,1fr)_auto] [@container_project-card_(max-width:480px)]:gap-2.5 [@container_project-card_(max-width:480px)]:py-3.5 [@container_project-card_(max-width:480px)]:pr-3.5">
 				<div className="flex min-h-0 flex-col gap-2 overflow-hidden">
-					<div className="flex min-h-0 flex-col gap-1.5 overflow-hidden">
-						<Badge
-							variant={PROJECT_STATUS_BADGE_VARIANTS[project.status]}
-							className="w-fit gap-2"
-						>
-							<StatusIndicator status={project.status} className="shrink-0" />
-							{PROJECT_STATUS_LABELS[project.status]}
-						</Badge>
+					<Badge
+						variant={PROJECT_STATUS_BADGE_VARIANTS[project.status]}
+						className="w-fit shrink-0 gap-2"
+					>
+						<StatusIndicator status={project.status} className="shrink-0" />
+						{PROJECT_STATUS_LABELS[project.status]}
+					</Badge>
 
-						<CardTitle className="line-clamp-2 text-base leading-tight tracking-tight text-balance [@container_project-card_(max-width:360px)]:text-[0.9375rem]">
-							{project.title}
-						</CardTitle>
+					<CardTitle className="line-clamp-2 shrink-0 text-base leading-tight tracking-tight text-balance [@container_project-card_(max-width:360px)]:text-[0.9375rem]">
+						{project.title}
+					</CardTitle>
 
-						<CardDescription className="line-clamp-2 text-xs leading-relaxed [@container_project-card_(max-width:360px)]:line-clamp-1">
-							{project.description}
-						</CardDescription>
-					</div>
+					<CardDescription className="flex-1 text-xs leading-relaxed">
+						{project.description}
+					</CardDescription>
 
 					{skills.length ? (
 						<SkillsPills
 							skills={skills}
 							limit={4}
-							className="gap-1.5 overflow-hidden [@container_project-card_(max-width:360px)]:hidden"
+							className="shrink-0 gap-1.5 overflow-hidden [@container_project-card_(max-width:360px)]:hidden"
 						/>
 					) : null}
 
-					<p className="text-muted-foreground mt-auto truncate text-xs">
+					<p className="text-muted-foreground mt-auto shrink-0 truncate text-xs">
 						Actualizado en:{' '}
 						<span className="text-foreground font-medium">
 							{formatProjectDate(project.updatedAt, 'full')}
