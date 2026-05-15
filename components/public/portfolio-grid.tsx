@@ -236,9 +236,9 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 		<>
 			<nav
 				aria-label="Portfolio sections"
-				className="flex justify-center px-[3.5vw] py-5 sm:h-24 sm:items-center sm:py-5"
+				className="mb-12 flex justify-center px-[3.5vw] pt-12"
 			>
-				<ul className="border-border/70 bg-card/90 shadow-foreground/10 flex max-w-[calc(100vw-1rem)] items-center gap-1 rounded-full border p-1 shadow-2xl backdrop-blur-xl sm:gap-1.5 sm:p-1.5">
+				<ul className="border-border/70 bg-card/90 shadow-foreground/10 flex h-10 max-w-[calc(100vw-1rem)] items-center gap-1 rounded-full border px-1 py-0.5 shadow-2xl backdrop-blur-xl">
 					{sections.map(({ url, v, Icon }) => {
 						const isActive = activeUrl === url;
 
@@ -248,10 +248,10 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 									aria-current={isActive ? 'page' : undefined}
 									aria-label={isActive ? undefined : `Show ${url} section`}
 									className={cn(
-										'group/nav relative isolate flex h-10 touch-manipulation items-center overflow-hidden rounded-full outline-none transition-[background-color,box-shadow,color,transform,width] duration-200 ease-out focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.99] sm:h-12',
+										'group/nav relative isolate flex h-8 touch-manipulation items-center overflow-hidden rounded-full outline-none transition-[background-color,box-shadow,color,transform,width] duration-200 ease-out focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.99]',
 										isActive
-											? 'w-[clamp(7rem,36vw,8rem)] justify-start pl-0.5 pr-3 text-primary-foreground sm:w-auto sm:min-w-40 sm:pl-1 sm:pr-5'
-											: 'size-10 justify-center text-muted-foreground hover:text-foreground sm:size-12',
+											? 'w-[clamp(7rem,36vw,8rem)] justify-start pl-0.5 pr-2.5 text-primary-foreground sm:w-auto sm:min-w-32 sm:pr-3'
+											: 'size-8 justify-center text-muted-foreground hover:text-foreground',
 									)}
 									onClick={() => setSection(v)}
 									type="button"
@@ -266,20 +266,20 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 
 									<span
 										className={cn(
-											'relative z-10 grid size-9 shrink-0 place-items-center rounded-full transition-colors duration-200 ease-out sm:size-10',
+											'relative z-10 grid size-7 shrink-0 place-items-center rounded-full transition-colors duration-200 ease-out',
 											isActive
 												? 'bg-primary-foreground/15 text-primary-foreground'
 												: 'bg-secondary text-muted-foreground group-hover/nav:bg-secondary/80 group-hover/nav:text-foreground',
 										)}
 									>
-										<Icon aria-hidden="true" className="size-5" />
+										<Icon aria-hidden="true" className="size-4" />
 									</span>
 
 									<AnimatePresence initial={false}>
 										{isActive && (
 											<motion.span
 												animate={navLabelAnimate}
-												className="relative z-10 min-w-0 truncate pl-2.5 text-sm font-semibold"
+												className="relative z-10 min-w-0 truncate pl-2 text-sm font-semibold"
 												exit={navLabelExit}
 												initial={navLabelInitial}
 												transition={navLabelTransition}
