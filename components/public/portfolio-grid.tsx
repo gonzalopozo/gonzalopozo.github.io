@@ -46,14 +46,14 @@ type SectionLayouts = ResponsiveLayouts<GridBreakpoint>;
 const SEED_LAYOUTS_BY_SECTION: Record<string, SectionLayouts> = {
 	All: {
 		lg: [
-			{ i: 'a', x: 0, y: 0, w: 4, h: 6 },
-			{ i: 'b', x: 4, y: 0, w: 2, h: 6 },
-			{ i: 'c', x: 6, y: 0, w: 2, h: 12 },
-			{ i: 'd', x: 0, y: 1, w: 2, h: 6 },
-			{ i: 'e', x: 2, y: 1, w: 2, h: 6 },
-			{ i: 'f', x: 4, y: 1, w: 2, h: 12 },
-			{ i: 'g', x: 0, y: 2, w: 4, h: 6 },
-			{ i: 'i', x: 6, y: 2, w: 2, h: 6 },
+			{ i: 'a', x: 0, y: 0, w: 2, h: 6 },
+			{ i: 'b', x: 2, y: 0, w: 1, h: 6 },
+			{ i: 'c', x: 3, y: 0, w: 1, h: 12 },
+			{ i: 'd', x: 0, y: 1, w: 1, h: 6 },
+			{ i: 'e', x: 1, y: 1, w: 1, h: 6 },
+			{ i: 'f', x: 2, y: 1, w: 1, h: 12 },
+			{ i: 'g', x: 0, y: 2, w: 2, h: 6 },
+			{ i: 'i', x: 3, y: 2, w: 1, h: 6 },
 		],
 		md: [
 			{ i: 'a', x: 0, y: 0, w: 4, h: 8 },
@@ -92,6 +92,14 @@ const SEED_LAYOUTS_BY_SECTION: Record<string, SectionLayouts> = {
 
 const DRAG_CANCEL_SELECTORS =
 	'button, a, input, textarea, select, [role="button"], .bb8-theme-switcher, .leaflet-container, .leaflet-interactive, .leaflet-control';
+const GRID_MAX_WIDTH_PX = 1308.6;
+const GRID_ROW_HEIGHT_PX = 34.5;
+const GRID_ITEM_MARGIN: [number, number] = [16, 16];
+const GRID_COLUMNS_BY_BREAKPOINT: Record<GridBreakpoint, number> = {
+	lg: 4,
+	md: 4,
+	sm: 1,
+};
 
 function layoutItemEquals(a: LayoutItem, b: LayoutItem): boolean {
 	return a.i === b.i && a.x === b.x && a.y === b.y && a.w === b.w && a.h === b.h;
@@ -287,15 +295,19 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 				</ul>
 			</nav>
 
-			<div ref={containerRef} className="mx-auto max-w-300 px-[3.5vw]">
+			<div
+				ref={containerRef}
+				className="mx-auto px-[3.5vw]"
+				style={{ maxWidth: GRID_MAX_WIDTH_PX }}
+			>
 				{mounted && (
 					<Responsive
 						layouts={gridLayouts}
 						width={width}
 						breakpoints={{ lg: 996, md: 768, sm: 0 }}
-						cols={{ lg: 8, md: 4, sm: 1 }}
-						rowHeight={30}
-						margin={[16, 16]}
+						cols={GRID_COLUMNS_BY_BREAKPOINT}
+						rowHeight={GRID_ROW_HEIGHT_PX}
+						margin={GRID_ITEM_MARGIN}
 						containerPadding={[0, 0]}
 						resizeConfig={{ enabled: false, handles: [] }}
 						dragConfig={{
