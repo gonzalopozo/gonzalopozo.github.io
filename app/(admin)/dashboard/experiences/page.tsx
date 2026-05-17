@@ -25,6 +25,7 @@ export default async function ExperiencesDashboardPage() {
 						columns: {
 							id: true,
 							name: true,
+							icon: true,
 						},
 					},
 				},

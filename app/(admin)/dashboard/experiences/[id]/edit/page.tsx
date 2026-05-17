@@ -28,6 +28,7 @@ export default async function UpdateExperienceDashboardPage(props: {
 						columns: {
 							id: true,
 							name: true,
+							icon: true,
 						},
 					},
 				},
