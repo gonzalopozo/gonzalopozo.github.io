@@ -216,10 +216,7 @@ function ProjectGridItemVerticalContent({
 	);
 }
 
-function ProjectGridItemHorizontalContent({
-	project,
-	skills,
-}: ProjectGridItemContentVariantProps) {
+function ProjectGridItemHorizontalContent({ project, skills }: ProjectGridItemContentVariantProps) {
 	return (
 		<div className="group/project grid h-full min-h-0 grid-cols-[minmax(12rem,0.78fr)_minmax(0,1.22fr)] [@container_project-card_(max-width:480px)]:grid-cols-1 [@container_project-card_(max-width:480px)]:grid-rows-[minmax(6rem,0.75fr)_minmax(0,1fr)]">
 			<ProjectMedia

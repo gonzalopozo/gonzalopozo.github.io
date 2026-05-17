@@ -317,13 +317,7 @@
 		--toggle-height: 5.625em;
 		--bb8-diameter: 4.375em;
 		--toggle-offset: calc((var(--toggle-height) - var(--bb8-diameter)) / 2);
-		--toggle-bg: linear-gradient(
-				#2c4770,
-				#070e2b 35%,
-				#628cac 50% 70%,
-				#a6c5d4
-			)
-			no-repeat;
+		--toggle-bg: linear-gradient(#2c4770, #070e2b 35%, #628cac 50% 70%, #a6c5d4) no-repeat;
 		--radius: 99em;
 		--transition: 0.25s;
 		--accent: #de7d2f;
@@ -421,8 +415,8 @@
 		width: 0.875em;
 		height: 0.625em;
 		background: linear-gradient(to top right, #ffffffae, #ffffffae);
-		filter: blur(0.125em) drop-shadow(0.313em 0.313em #ffffffae)
-			drop-shadow(-0.625em 0 #fff) drop-shadow(-0.938em -0.125em #fff);
+		filter: blur(0.125em) drop-shadow(0.313em 0.313em #ffffffae) drop-shadow(-0.625em 0 #fff)
+			drop-shadow(-0.938em -0.125em #fff);
 		transition: var(--transition);
 	}
 
@@ -433,8 +427,7 @@
 		height: 0.375em;
 		background: #dfdedeae;
 		filter: blur(0.125em) drop-shadow(-0.313em -0.188em #e0dfdfae)
-			drop-shadow(-0.625em -0.188em #bbbbbbae)
-			drop-shadow(-1em 0.063em #cfcfcfae);
+			drop-shadow(-0.625em -0.188em #bbbbbbae) drop-shadow(-1em 0.063em #cfcfcfae);
 		transition: 0.3s;
 	}
 
@@ -679,11 +672,7 @@
 		height: 0.563em;
 		background:
 			radial-gradient(0.125em circle at 0.25em 0.375em, red, transparent),
-			radial-gradient(
-				0.063em circle at 0.375em 0.188em,
-				var(--bb8-bg) 50%,
-				transparent 100%
-			),
+			radial-gradient(0.063em circle at 0.375em 0.188em, var(--bb8-bg) 50%, transparent 100%),
 			linear-gradient(45deg, #000 0.188em, dimgray 0.313em 0.375em, #000 0.5em);
 		border-radius: var(--radius);
 		box-shadow:
@@ -846,42 +835,28 @@
 		transition: var(--transition);
 	}
 
-	.bb8-theme-switcher__checkbox:checked
-		+ .bb8-toggle__container
-		.bb8-toggle__star:nth-child(1) {
+	.bb8-theme-switcher__checkbox:checked + .bb8-toggle__container .bb8-toggle__star:nth-child(1) {
 		top: 0.625em;
 	}
 
-	.bb8-theme-switcher__checkbox:checked
-		+ .bb8-toggle__container
-		.bb8-toggle__star:nth-child(2) {
+	.bb8-theme-switcher__checkbox:checked + .bb8-toggle__container .bb8-toggle__star:nth-child(2) {
 		top: 1.875em;
 	}
 
-	.bb8-theme-switcher__checkbox:checked
-		+ .bb8-toggle__container
-		.bb8-toggle__star:nth-child(3) {
+	.bb8-theme-switcher__checkbox:checked + .bb8-toggle__container .bb8-toggle__star:nth-child(3) {
 		top: 1.25em;
 	}
 
-	.bb8-theme-switcher__checkbox:checked
-		+ .bb8-toggle__container
-		.bb8-toggle__star:nth-child(4),
-	.bb8-theme-switcher__checkbox:checked
-		+ .bb8-toggle__container
-		.bb8-toggle__star:nth-child(5) {
+	.bb8-theme-switcher__checkbox:checked + .bb8-toggle__container .bb8-toggle__star:nth-child(4),
+	.bb8-theme-switcher__checkbox:checked + .bb8-toggle__container .bb8-toggle__star:nth-child(5) {
 		top: 3.438em;
 	}
 
-	.bb8-theme-switcher__checkbox:checked
-		+ .bb8-toggle__container
-		.bb8-toggle__star:nth-child(6) {
+	.bb8-theme-switcher__checkbox:checked + .bb8-toggle__container .bb8-toggle__star:nth-child(6) {
 		top: 0.313em;
 	}
 
-	.bb8-theme-switcher__checkbox:checked
-		+ .bb8-toggle__container
-		.bb8-toggle__star:nth-child(7) {
+	.bb8-theme-switcher__checkbox:checked + .bb8-toggle__container .bb8-toggle__star:nth-child(7) {
 		top: 1.875em;
 	}
 

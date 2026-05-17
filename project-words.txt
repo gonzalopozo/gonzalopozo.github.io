@@ -99,3 +99,9 @@ wcag
 recenttracks
 spotify
 nowplaying
+
+# CSSapp/globals.css:522:3 - Unknown word (gomrassen)
+hermes
+chenini
+gomrassen
+tatto

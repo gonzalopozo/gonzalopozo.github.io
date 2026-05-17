@@ -11,13 +11,15 @@ export default async function PublicPage() {
 		getTrack(),
 	]);
 
-	const projectCards = projects.slice(0, 3).map((project, index) => (
-		<ProjectGridItemContent
-			key={project.id}
-			project={project}
-			variant={index === 2 ? 'horizontal' : 'vertical'}
-		/>
-	));
+	const projectCards = projects
+		.slice(0, 3)
+		.map((project, index) => (
+			<ProjectGridItemContent
+				key={project.id}
+				project={project}
+				variant={index === 2 ? 'horizontal' : 'vertical'}
+			/>
+		));
 
 	return <PortfolioGrid infoAboutMe={aboutMe} projectCards={projectCards} lastTrack={track} />;
 }

@@ -3,14 +3,7 @@
 
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
 import { useQueryState, parseAsStringLiteral } from 'nuqs';
-import {
-	Briefcase,
-	History,
-	LayoutGrid,
-	Send,
-	UserRound,
-	type LucideIcon,
-} from 'lucide-react';
+import { Briefcase, History, LayoutGrid, Send, UserRound, type LucideIcon } from 'lucide-react';
 import {
 	Responsive,
 	useContainerWidth,
@@ -248,17 +241,17 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 									aria-current={isActive ? 'page' : undefined}
 									aria-label={isActive ? undefined : `Show ${url} section`}
 									className={cn(
-										'group/nav relative isolate flex h-8 touch-manipulation items-center overflow-hidden rounded-full outline-none transition-[background-color,box-shadow,color,transform,width] duration-200 ease-out focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.99]',
+										'group/nav focus-visible:ring-ring focus-visible:ring-offset-background relative isolate flex h-8 touch-manipulation items-center overflow-hidden rounded-full transition-[background-color,box-shadow,color,transform,width] duration-200 ease-out outline-none focus-visible:ring-2 focus-visible:ring-offset-2 active:scale-[0.99]',
 										isActive
-											? 'w-[clamp(7rem,36vw,8rem)] justify-start pl-0.5 pr-2.5 text-primary-foreground sm:w-auto sm:min-w-32 sm:pr-3'
-											: 'size-8 justify-center text-muted-foreground hover:text-foreground',
+											? 'text-primary-foreground w-[clamp(7rem,36vw,8rem)] justify-start pr-2.5 pl-0.5 sm:w-auto sm:min-w-32 sm:pr-3'
+											: 'text-muted-foreground hover:text-foreground size-8 justify-center',
 									)}
 									onClick={() => setSection(v)}
 									type="button"
 								>
 									{isActive && (
 										<motion.span
-											className="absolute inset-0 rounded-full bg-primary shadow-lg shadow-primary/25"
+											className="bg-primary shadow-primary/25 absolute inset-0 rounded-full shadow-lg"
 											layoutId="portfolio-nav-indicator"
 											transition={navIndicatorTransition}
 										/>
