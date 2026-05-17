@@ -43,6 +43,7 @@ type AnimateView = (
 
 const animateView = (MotionReact as unknown as { animateView?: AnimateView }).animateView;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function subscribeToClientMount(_onStoreChange: () => void) {
 	return () => {};
 }
