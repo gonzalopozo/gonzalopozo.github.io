@@ -7,19 +7,12 @@ export const metadata: Metadata = {
 	description: 'Manage your portfolio content',
 };
 
-const mockUser = {
-	id: '1',
-	name: 'Admin User',
-	email: 'admin@example.com',
-	image: null,
-};
-
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<div className="bg-background flex min-h-screen">
 			<AdminSidebar />
 			<div className="flex flex-1 flex-col">
-				<AdminHeader user={mockUser} />
+				<AdminHeader />
 				<main className="flex-1 p-6">{children}</main>
 			</div>
 		</div>
