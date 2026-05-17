@@ -70,6 +70,7 @@ unixepoch
 # Technical / comments
 lockfiles
 subcomponents
+unrs
 
 # Documentation (AGENTS-*.md) — acronyms & product terms
 bento

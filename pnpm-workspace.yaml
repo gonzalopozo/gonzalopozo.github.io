@@ -1,5 +1,9 @@
 allowBuilds:
+    '@prisma/engines': true
     esbuild: true
+    prisma: true
+    sharp: true
+    unrs-resolver: true
 overrides:
     'eslint>ajv': '^6.12.6'
     '@eslint/eslintrc>ajv': '^6.12.6'
