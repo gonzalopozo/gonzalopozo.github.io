@@ -2,8 +2,9 @@
 
 import { db } from '@/db';
 import { employmentHistory, siteSettings } from '@/db/schema/portfolio';
+import { PUBLIC_SETTINGS_CACHE_TAG } from '@/lib/cache-tags';
 import { eq } from 'drizzle-orm/sql';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, updateTag } from 'next/cache';
 
 export async function updateSiteSettings(formData: FormData) {
 	const isEmployed = formData.get('isEmployed')
@@ -31,5 +32,6 @@ export async function updateSiteSettings(formData: FormData) {
 		})
 		.where(eq(siteSettings.id, existingSettings.id));
 
+	updateTag(PUBLIC_SETTINGS_CACHE_TAG);
 	revalidatePath('/dashboard/settings');
 }

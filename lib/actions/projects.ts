@@ -5,7 +5,8 @@ import { projects, projectSkills } from '@/db/schema/portfolio';
 import { and, eq, gte, lte, ne, sql } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 import { type ProjectStatus } from '@/lib/types';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, updateTag } from 'next/cache';
+import { PUBLIC_PROJECTS_CACHE_TAG } from '@/lib/cache-tags';
 import { getServerSession } from '@/lib/server-session';
 import { deleteOldImageInVercelBlob, saveImageInVercelBlob } from '@/lib/og-image';
 
@@ -72,6 +73,7 @@ export async function createProject(formData: FormData) {
 		}
 	}
 
+	updateTag(PUBLIC_PROJECTS_CACHE_TAG);
 	redirect('/dashboard/projects');
 }
 
@@ -180,6 +182,7 @@ export async function updateProject(id: number, formData: FormData) {
 		}
 	}
 
+	updateTag(PUBLIC_PROJECTS_CACHE_TAG);
 	redirect('/dashboard/projects');
 }
 
@@ -195,6 +198,7 @@ export async function deleteProject(id: number) {
 
 	await db.delete(projects).where(eq(projects.id, id));
 
+	updateTag(PUBLIC_PROJECTS_CACHE_TAG);
 	revalidatePath('/dashboard/projects');
 }
 
@@ -222,6 +226,7 @@ export async function updateProjectOrder(projectId: number, newOrder: number): P
 			),
 		);
 
+	updateTag(PUBLIC_PROJECTS_CACHE_TAG);
 	revalidatePath('/dashboard/projects');
 
 	return project.title;
@@ -257,6 +262,6 @@ export async function refreshProjectOgImage(projectId: number): Promise<void | n
 		await deleteOldImageInVercelBlob(previousOgUrl);
 	}
 
-	revalidatePath('/');
+	updateTag(PUBLIC_PROJECTS_CACHE_TAG);
 	revalidatePath('/dashboard/projects');
 }

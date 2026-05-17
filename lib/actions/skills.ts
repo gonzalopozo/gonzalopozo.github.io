@@ -2,9 +2,10 @@
 
 import { db } from '@/db';
 import { skills } from '@/db/schema/portfolio';
+import { PUBLIC_PROJECTS_CACHE_TAG } from '@/lib/cache-tags';
 import type { SkillType } from '@/lib/types';
 import { eq } from 'drizzle-orm';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, updateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 export async function createSkill(formData: FormData) {
@@ -20,6 +21,7 @@ export async function createSkill(formData: FormData) {
 		url,
 	});
 
+	updateTag(PUBLIC_PROJECTS_CACHE_TAG);
 	redirect('/dashboard/skills');
 }
 
@@ -39,11 +41,13 @@ export async function updateSkill(id: number, formData: FormData) {
 		})
 		.where(eq(skills.id, id));
 
+	updateTag(PUBLIC_PROJECTS_CACHE_TAG);
 	redirect('/dashboard/skills');
 }
 
 export async function deleteSkill(id: number) {
 	await db.delete(skills).where(eq(skills.id, id));
 
+	updateTag(PUBLIC_PROJECTS_CACHE_TAG);
 	revalidatePath('/dashboard/skills');
 }

@@ -1,13 +1,13 @@
 import { PortfolioGrid } from '@/components/public/portfolio-grid';
 import { ProjectGridItemContent } from '@/components/public/project-grid-item-content';
-import { getInfoAboutMe } from '@/lib/queries/about-me';
-import { getProjects } from '@/lib/queries/projects';
+import { getPublicInfoAboutMe } from '@/lib/queries/about-me';
+import { getPublicProjects } from '@/lib/queries/projects';
 import { getTrack } from '@/lib/queries/last-fm';
 
 export default async function PublicPage() {
 	const [projects, aboutMe, track] = await Promise.all([
-		getProjects(),
-		getInfoAboutMe(),
+		getPublicProjects(),
+		getPublicInfoAboutMe(),
 		getTrack(),
 	]);
 

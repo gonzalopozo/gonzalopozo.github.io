@@ -1,10 +1,12 @@
 import 'server-only';
+import { cacheLife, cacheTag } from 'next/cache';
 import { db } from '@/db';
+import { PUBLIC_SETTINGS_CACHE_TAG } from '@/lib/cache-tags';
 import { type Settings } from '@/lib/types';
 
 type InformationAboutMe = Omit<Settings, 'id' | 'updatedAt'>;
 
-export async function getInfoAboutMe(): Promise<InformationAboutMe | undefined> {
+async function findInfoAboutMe(): Promise<InformationAboutMe | undefined> {
 	return await db.query.siteSettings.findFirst({
 		columns: {
 			isEmployed: true,
@@ -12,4 +14,16 @@ export async function getInfoAboutMe(): Promise<InformationAboutMe | undefined> 
 			statusMessage: true,
 		},
 	});
+}
+
+export async function getInfoAboutMe(): Promise<InformationAboutMe | undefined> {
+	return await findInfoAboutMe();
+}
+
+export async function getPublicInfoAboutMe(): Promise<InformationAboutMe | undefined> {
+	'use cache';
+	cacheLife('hours');
+	cacheTag(PUBLIC_SETTINGS_CACHE_TAG);
+
+	return await findInfoAboutMe();
 }
