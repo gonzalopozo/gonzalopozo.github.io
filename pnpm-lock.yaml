@@ -148,6 +148,9 @@ importers:
       '@commitlint/config-conventional':
         specifier: ^20.5.0
         version: 20.5.0
+      '@commitlint/types':
+        specifier: ^20.5.0
+        version: 20.5.0
       '@cspell/dict-es-es':
         specifier: ^3.0.8
         version: 3.0.8
