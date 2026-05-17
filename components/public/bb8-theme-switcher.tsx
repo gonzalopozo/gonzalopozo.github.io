@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState, useSyncExternalStore } from 'react';
 import * as MotionReact from 'motion/react';
 import { useTheme } from 'next-themes';
 
@@ -26,8 +26,14 @@ type ViewTransitionAnimation = {
 };
 
 type ViewTransitionBuilder = PromiseLike<ViewTransitionAnimation> & {
-	new: (keyframes: ViewTransitionKeyframes, options?: ViewTransitionOptions) => ViewTransitionBuilder;
-	old: (keyframes: ViewTransitionKeyframes, options?: ViewTransitionOptions) => ViewTransitionBuilder;
+	new: (
+		keyframes: ViewTransitionKeyframes,
+		options?: ViewTransitionOptions,
+	) => ViewTransitionBuilder;
+	old: (
+		keyframes: ViewTransitionKeyframes,
+		options?: ViewTransitionOptions,
+	) => ViewTransitionBuilder;
 };
 
 type AnimateView = (
@@ -37,11 +43,24 @@ type AnimateView = (
 
 const animateView = (MotionReact as unknown as { animateView?: AnimateView }).animateView;
 
+function subscribeToClientMount(_onStoreChange: () => void) {
+	return () => {};
+}
+
+function getClientSnapshot() {
+	return true;
+}
+
+function getServerSnapshot() {
+	return false;
+}
+
 function getRevealGeometry(originElement: HTMLElement | null) {
 	const originRect = originElement?.getBoundingClientRect();
 	const x = originRect ? originRect.left + originRect.width / 2 : window.innerWidth / 2;
 	const y = originRect ? originRect.top + originRect.height / 2 : window.innerHeight / 2;
-	const radius = Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y)) + 24;
+	const radius =
+		Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y)) + 24;
 
 	return {
 		from: `circle(0px at ${x}px ${y}px)`,
@@ -82,26 +101,23 @@ function waitForMapTheme(theme: ResolvedTheme) {
 export function BB8ThemeSwitcher() {
 	const controlId = useId();
 	const { theme, resolvedTheme, setTheme } = useTheme();
-	const [mounted, setMounted] = useState(false);
-	const [visualTheme, setVisualTheme] = useState<ResolvedTheme>('light');
+	const mounted = useSyncExternalStore(
+		subscribeToClientMount,
+		getClientSnapshot,
+		getServerSnapshot,
+	);
+	const [optimisticVisualTheme, setOptimisticVisualTheme] = useState<ResolvedTheme | null>(null);
 	const shouldReduceMotion = MotionReact.useReducedMotion();
 	const switcherRef = useRef<HTMLLabelElement>(null);
+	const isComponentMountedRef = useRef(true);
 	const isTransitioningRef = useRef(false);
 	const themeRevealTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 	const themeRevealFrameRef = useRef<number | null>(null);
 
 	useEffect(() => {
-		setMounted(true);
-	}, []);
-
-	useEffect(() => {
-		if (!mounted || !resolvedTheme) return;
-
-		setVisualTheme(resolvedTheme === 'dark' ? 'dark' : 'light');
-	}, [mounted, resolvedTheme]);
-
-	useEffect(() => {
 		return () => {
+			isComponentMountedRef.current = false;
+
 			if (themeRevealTimeoutRef.current) {
 				clearTimeout(themeRevealTimeoutRef.current);
 			}
@@ -113,10 +129,15 @@ export function BB8ThemeSwitcher() {
 		};
 	}, []);
 
+	const resolvedVisualTheme: ResolvedTheme = resolvedTheme === 'dark' ? 'dark' : 'light';
+	const visualTheme = optimisticVisualTheme ?? resolvedVisualTheme;
 	const isDark = mounted && visualTheme === 'dark';
 	const nextTheme = isDark ? 'light' : 'dark';
 
-	async function revealTheme(nextResolvedTheme: ResolvedTheme, revealGeometry: ReturnType<typeof getRevealGeometry>) {
+	async function revealTheme(
+		nextResolvedTheme: ResolvedTheme,
+		revealGeometry: ReturnType<typeof getRevealGeometry>,
+	) {
 		if (shouldReduceMotion || !animateView || !('startViewTransition' in document)) {
 			setTheme(nextResolvedTheme);
 			return;
@@ -169,7 +190,7 @@ export function BB8ThemeSwitcher() {
 		}
 
 		isTransitioningRef.current = true;
-		setVisualTheme(nextResolvedTheme);
+		setOptimisticVisualTheme(nextResolvedTheme);
 
 		if (themeRevealTimeoutRef.current) {
 			clearTimeout(themeRevealTimeoutRef.current);
@@ -183,6 +204,10 @@ export function BB8ThemeSwitcher() {
 
 				revealTheme(nextResolvedTheme, revealGeometry).finally(() => {
 					isTransitioningRef.current = false;
+
+					if (isComponentMountedRef.current) {
+						setOptimisticVisualTheme(null);
+					}
 				});
 			});
 		}, BB8_VISUAL_LEAD_MS);
