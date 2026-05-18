@@ -3,7 +3,7 @@
 import { db } from '@/db';
 import { experiences, experienceSkills } from '@/db/schema/portfolio';
 import { getServerSession } from '@/lib/server-session';
-import { and, eq, sql } from 'drizzle-orm';
+import { and, eq, inArray, sql } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 
@@ -110,37 +110,29 @@ export async function updateExperience(id: number, formData: FormData) {
 		},
 	});
 
-	// Insert new skills that don't exist yet
-	for (const skillToReview of experienceSkillsToReview) {
-		const alreadyExists = formerExperienceSkills.some(
-			(formerSkill) =>
-				formerSkill.experienceId === skillToReview.experienceId &&
-				formerSkill.skillId === skillToReview.skillId,
-		);
+	const formerExperienceSkillIds = new Set(formerExperienceSkills.map((skill) => skill.skillId));
+	const experienceSkillsToInsert = experienceSkillsToReview.filter(
+		(skillToReview) => !formerExperienceSkillIds.has(skillToReview.skillId),
+	);
 
-		if (!alreadyExists) {
-			await db.insert(experienceSkills).values(skillToReview);
-		}
+	if (experienceSkillsToInsert.length > 0) {
+		await db.insert(experienceSkills).values(experienceSkillsToInsert);
 	}
 
-	// Delete skills that were removed
-	for (const formerSkill of formerExperienceSkills) {
-		const stillExists = experienceSkillsToReview.some(
-			(skillToReview) =>
-				skillToReview.experienceId === formerSkill.experienceId &&
-				skillToReview.skillId === formerSkill.skillId,
-		);
+	const nextExperienceSkillIds = new Set(experienceSkillsToReview.map((skill) => skill.skillId));
+	const experienceSkillIdsToDelete = formerExperienceSkills
+		.filter((formerSkill) => !nextExperienceSkillIds.has(formerSkill.skillId))
+		.map((formerSkill) => formerSkill.skillId);
 
-		if (!stillExists) {
-			await db
-				.delete(experienceSkills)
-				.where(
-					and(
-						eq(experienceSkills.experienceId, id),
-						eq(experienceSkills.skillId, formerSkill.skillId),
-					),
-				);
-		}
+	if (experienceSkillIdsToDelete.length > 0) {
+		await db
+			.delete(experienceSkills)
+			.where(
+				and(
+					eq(experienceSkills.experienceId, id),
+					inArray(experienceSkills.skillId, experienceSkillIdsToDelete),
+				),
+			);
 	}
 
 	redirect('/dashboard/experiences');

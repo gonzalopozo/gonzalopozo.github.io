@@ -2,7 +2,7 @@
 
 import { db } from '@/db';
 import { projects, projectSkills } from '@/db/schema/portfolio';
-import { and, eq, gte, lte, ne, sql } from 'drizzle-orm';
+import { and, eq, gte, inArray, lte, ne, sql } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 import { type ProjectStatus } from '@/lib/types';
 import { revalidatePath, updateTag } from 'next/cache';
@@ -117,37 +117,29 @@ export async function updateProject(id: number, formData: FormData) {
 		},
 	});
 
-	// Insert new skills that don't exist yet
-	for (const skillToReview of projectSkillsToReview) {
-		const alreadyExists = formerProjectSkills.some(
-			(formerSkill) =>
-				formerSkill.projectId === skillToReview.projectId &&
-				formerSkill.skillId === skillToReview.skillId,
-		);
+	const formerProjectSkillIds = new Set(formerProjectSkills.map((skill) => skill.skillId));
+	const projectSkillsToInsert = projectSkillsToReview.filter(
+		(skillToReview) => !formerProjectSkillIds.has(skillToReview.skillId),
+	);
 
-		if (!alreadyExists) {
-			await db.insert(projectSkills).values(skillToReview);
-		}
+	if (projectSkillsToInsert.length > 0) {
+		await db.insert(projectSkills).values(projectSkillsToInsert);
 	}
 
-	// Delete skills that were removed
-	for (const formerSkill of formerProjectSkills) {
-		const stillExists = projectSkillsToReview.some(
-			(skillToReview) =>
-				skillToReview.projectId === formerSkill.projectId &&
-				skillToReview.skillId === formerSkill.skillId,
-		);
+	const nextProjectSkillIds = new Set(projectSkillsToReview.map((skill) => skill.skillId));
+	const projectSkillIdsToDelete = formerProjectSkills
+		.filter((formerSkill) => !nextProjectSkillIds.has(formerSkill.skillId))
+		.map((formerSkill) => formerSkill.skillId);
 
-		if (!stillExists) {
-			await db
-				.delete(projectSkills)
-				.where(
-					and(
-						eq(projectSkills.projectId, id),
-						eq(projectSkills.skillId, formerSkill.skillId),
-					),
-				);
-		}
+	if (projectSkillIdsToDelete.length > 0) {
+		await db
+			.delete(projectSkills)
+			.where(
+				and(
+					eq(projectSkills.projectId, id),
+					inArray(projectSkills.skillId, projectSkillIdsToDelete),
+				),
+			);
 	}
 
 	if (url && url !== oldUrls[0].url) {
