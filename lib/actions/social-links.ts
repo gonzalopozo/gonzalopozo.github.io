@@ -2,11 +2,15 @@
 
 import { db } from '@/db';
 import { socialLinks } from '@/db/schema/portfolio';
+import { getServerSession } from '@/lib/server-session';
 import { eq, sql } from 'drizzle-orm';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 export async function createSocialLink(formData: FormData) {
+	const session = await getServerSession();
+	if (!session) redirect('/login');
+
 	const name = formData.get('name') as string;
 	const url = formData.get('url') as string;
 	const icon = formData.get('icon') ? (formData.get('icon') as string) : undefined;
@@ -27,6 +31,9 @@ export async function createSocialLink(formData: FormData) {
 }
 
 export async function updateSocialLink(id: number, formData: FormData) {
+	const session = await getServerSession();
+	if (!session) redirect('/login');
+
 	const name = formData.get('name') as string;
 	const url = formData.get('url') ? (formData.get('url') as string) : undefined;
 	const icon = formData.get('icon') ? (formData.get('icon') as string) : undefined;
@@ -45,6 +52,9 @@ export async function updateSocialLink(id: number, formData: FormData) {
 }
 
 export async function deleteSocialLink(id: number) {
+	const session = await getServerSession();
+	if (!session) redirect('/login');
+
 	await db.delete(socialLinks).where(eq(socialLinks.id, id));
 
 	revalidatePath('/dashboard/social-links');

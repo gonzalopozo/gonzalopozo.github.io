@@ -16,6 +16,9 @@ interface ProjectSkill {
 }
 
 export async function createProject(formData: FormData) {
+	const session = await getServerSession();
+	if (!session) redirect('/login');
+
 	const title = formData.get('title') as string;
 	const description = formData.get('description') as string;
 	const url = formData.get('url') ? (formData.get('url') as string) : undefined;
@@ -78,6 +81,9 @@ export async function createProject(formData: FormData) {
 }
 
 export async function updateProject(id: number, formData: FormData) {
+	const session = await getServerSession();
+	if (!session) redirect('/login');
+
 	const title = formData.get('title') as string;
 	const description = formData.get('description') as string;
 	const url = formData.get('url') ? (formData.get('url') as string) : undefined;
@@ -187,6 +193,9 @@ export async function updateProject(id: number, formData: FormData) {
 }
 
 export async function deleteProject(id: number) {
+	const session = await getServerSession();
+	if (!session) redirect('/login');
+
 	const [oldUrl] = await db
 		.select({ ogImageUrl: projects.ogImageUrl })
 		.from(projects)
@@ -203,6 +212,9 @@ export async function deleteProject(id: number) {
 }
 
 export async function updateProjectOrder(projectId: number, newOrder: number): Promise<string> {
+	const session = await getServerSession();
+	if (!session) redirect('/login');
+
 	const [project] = await db
 		.select({ order: projects.order, title: projects.title })
 		.from(projects)

@@ -2,6 +2,7 @@
 
 import { db } from '@/db';
 import { experiences, experienceSkills } from '@/db/schema/portfolio';
+import { getServerSession } from '@/lib/server-session';
 import { and, eq, sql } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
@@ -12,6 +13,9 @@ interface ExperienceSkill {
 }
 
 export async function createExperience(formData: FormData) {
+	const session = await getServerSession();
+	if (!session) redirect('/login');
+
 	const role = formData.get('role') as string;
 	const company = formData.get('company') as string;
 	const companyUrl = formData.get('companyUrl')
@@ -59,6 +63,9 @@ export async function createExperience(formData: FormData) {
 }
 
 export async function updateExperience(id: number, formData: FormData) {
+	const session = await getServerSession();
+	if (!session) redirect('/login');
+
 	const role = formData.get('role') as string;
 	const company = formData.get('company') as string;
 	const companyUrl = formData.get('companyUrl')
@@ -140,6 +147,9 @@ export async function updateExperience(id: number, formData: FormData) {
 }
 
 export async function deleteExperience(id: number) {
+	const session = await getServerSession();
+	if (!session) redirect('/login');
+
 	await db.delete(experiences).where(eq(experiences.id, id));
 
 	revalidatePath('/dashboard/experiences');

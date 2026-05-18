@@ -3,10 +3,15 @@
 import { db } from '@/db';
 import { employmentHistory, siteSettings } from '@/db/schema/portfolio';
 import { PUBLIC_SETTINGS_CACHE_TAG } from '@/lib/cache-tags';
+import { getServerSession } from '@/lib/server-session';
 import { eq } from 'drizzle-orm/sql';
 import { revalidatePath, updateTag } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 export async function updateSiteSettings(formData: FormData) {
+	const session = await getServerSession();
+	if (!session) redirect('/login');
+
 	const isEmployed = formData.get('isEmployed')
 		? (formData.get('isEmployed') as string)
 		: undefined;
