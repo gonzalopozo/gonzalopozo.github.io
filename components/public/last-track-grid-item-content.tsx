@@ -168,12 +168,12 @@ function NowPlayingAtmosphere({ onArtwork }: { onArtwork: boolean }) {
 
 function NowPlayingEqualiser({ onArtwork }: { onArtwork: boolean }) {
 	const barClass = cn(
-		`block h-full w-[2px] origin-bottom rounded-full bg-current motion-reduce:scale-y-[0.65]`,
+		`block h-full w-0.5 origin-bottom rounded-full bg-current motion-reduce:scale-y-[0.65]`,
 	);
 	return (
 		<span
 			className={cn(
-				'relative flex h-3.5 items-end gap-[2px]',
+				'relative flex h-3.5 items-end gap-0.5',
 				onArtwork ? 'text-accent' : 'text-primary',
 			)}
 			aria-hidden="true"

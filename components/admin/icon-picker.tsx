@@ -224,7 +224,7 @@ export function IconPicker({ fullName }: IconPickerProps) {
 										<p className="mt-1 text-sm font-medium">
 											Search for an icon
 										</p>
-										<p className="max-w-[200px] text-xs text-pretty text-muted-foreground">
+										<p className="max-w-50 text-xs text-pretty text-muted-foreground">
 											Type to search across {Object.keys(PACK_LOADERS).length}{' '}
 											icon packs
 										</p>

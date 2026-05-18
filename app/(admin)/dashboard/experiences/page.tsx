@@ -118,7 +118,7 @@ export default async function ExperiencesDashboardPage() {
 										<TableCell>
 											<div className="font-medium">{experience.role}</div>
 											{experience.description && (
-												<p className="max-w-[200px] truncate text-xs text-muted-foreground">
+												<p className="max-w-50 truncate text-xs text-muted-foreground">
 													{experience.description}
 												</p>
 											)}
@@ -160,7 +160,7 @@ export default async function ExperiencesDashboardPage() {
 											)}
 										</TableCell>
 										<TableCell>
-											<div className="flex max-w-[150px] flex-wrap gap-1">
+											<div className="flex max-w-37.5 flex-wrap gap-1">
 												{experience.experienceSkills.length > 0 ? (
 													experience.experienceSkills
 														.slice(0, 3)

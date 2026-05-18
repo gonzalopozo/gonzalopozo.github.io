@@ -119,7 +119,7 @@ export function ProjectsTable({
 						<TableHead className="w-8"></TableHead>
 						<TableHead className="w-16">Orden</TableHead>
 						<TableHead>Título</TableHead>
-						<TableHead className="max-w-[200px]">Descripción</TableHead>
+						<TableHead className="max-w-50">Descripción</TableHead>
 						<TableHead>Estado</TableHead>
 						<TableHead>Skills</TableHead>
 						<TableHead>Enlaces</TableHead>
@@ -136,7 +136,7 @@ export function ProjectsTable({
 								</Badge>
 							</TableCell>
 							<TableCell className="font-medium">{project.title}</TableCell>
-							<TableCell className="max-w-[200px]">
+							<TableCell className="max-w-50">
 								<p className="truncate text-sm text-muted-foreground">
 									{project.description || '—'}
 								</p>
@@ -147,7 +147,7 @@ export function ProjectsTable({
 								</Badge>
 							</TableCell>
 							<TableCell>
-								<div className="flex max-w-[150px] flex-wrap gap-1">
+								<div className="flex max-w-37.5 flex-wrap gap-1">
 									{project.projectSkills.length > 0 ? (
 										project.projectSkills.slice(0, 3).map(({ skill }) => (
 											<Badge

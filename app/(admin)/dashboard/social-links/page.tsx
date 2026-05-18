@@ -103,7 +103,7 @@ export default async function SocialLinksDashboardPage() {
 													href={socialLink.url}
 													target="_blank"
 													rel="noopener noreferrer"
-													className="inline-flex max-w-[200px] items-center gap-1 truncate text-sm text-primary hover:underline"
+													className="inline-flex max-w-50 items-center gap-1 truncate text-sm text-primary hover:underline"
 												>
 													{socialLink.url}
 													<ExternalLink className="size-3 shrink-0" />

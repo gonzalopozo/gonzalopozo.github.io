@@ -68,7 +68,7 @@ export function SkillsMultiSelect({
 						aria-controls="skills-select-options"
 						aria-label="Select skills"
 						tabIndex={0}
-						className="flex h-10 min-w-[200px] cursor-pointer items-center justify-start gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none"
+						className="flex h-10 min-w-50 cursor-pointer items-center justify-start gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none"
 						onClick={() => setOpen(!open)}
 						onKeyDown={(e) => {
 							if (e.key === 'Enter' || e.key === ' ') {

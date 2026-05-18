@@ -39,7 +39,7 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 					width={260}
 					height={260}
 					alt="Gonzalo Pozo, Full Stack Developer"
-					className="size-[130px] rounded-full object-cover transition-transform duration-300 ease-out group-hover/card:scale-[1.03]"
+					className="size-32.5 rounded-full object-cover transition-transform duration-300 ease-out group-hover/card:scale-[1.03]"
 					priority
 				/>
 
