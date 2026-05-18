@@ -88,17 +88,14 @@ function IconPreview({ iconName, iconPackage, className }: IconPreviewProps) {
 		};
 	}, [iconName, iconPackage]);
 
-	if (!(iconPackage in PACK_LOADERS)) return null;
-
-	const isReady = loaded?.name === iconName && loaded?.pack === iconPackage;
-
-	if (!isReady) {
-		return <Skeleton className={cn('rounded-sm', className ?? 'size-4')} />;
-	}
-
-	if (!loaded.Icon) return null;
-
-	return <loaded.Icon className={cn('shrink-0', className ?? 'size-4')} aria-hidden />;
+	return !(iconPackage in PACK_LOADERS) ? null : loaded?.name === iconName &&
+	  loaded?.pack === iconPackage ? (
+		loaded.Icon ? (
+			<loaded.Icon className={cn('shrink-0', className ?? 'size-4')} aria-hidden />
+		) : null
+	) : (
+		<Skeleton className={cn('rounded-sm', className ?? 'size-4')} />
+	);
 }
 
 /* ── Skeleton for dynamic import loading ────────────────────── */
