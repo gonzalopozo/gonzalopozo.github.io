@@ -2,6 +2,7 @@ import { defineConfig, globalIgnores } from 'eslint/config';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import nextVitals from 'eslint-config-next/core-web-vitals';
 import nextTs from 'eslint-config-next/typescript';
+import betterTailwindcss from 'eslint-plugin-better-tailwindcss';
 import vitest from '@vitest/eslint-plugin';
 import reactCompiler from 'eslint-plugin-react-compiler';
 import globals from 'globals';
@@ -59,6 +60,18 @@ export default defineConfig([
 		files: ['app/**/*.{ts,tsx}', 'components/**/*.{ts,tsx}'],
 		rules: {
 			'no-console': ['warn', { allow: ['warn', 'error'] }],
+		},
+	},
+
+	// Tailwind class linting/order for JSX and common class composition helpers (`cn`, `clsx`, `cva`, etc.).
+	{
+		...betterTailwindcss.configs.recommended,
+		name: 'portfolio/better-tailwindcss',
+		files: ['**/*.{js,jsx,mjs,ts,tsx,mts,cts}'],
+		settings: {
+			'better-tailwindcss': {
+				entryPoint: './app/globals.css',
+			},
 		},
 	},
 

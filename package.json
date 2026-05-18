@@ -102,6 +102,7 @@
 		"eslint": "^9.39.3",
 		"eslint-config-next": "16.1.6",
 		"eslint-config-prettier": "^10.1.8",
+		"eslint-plugin-better-tailwindcss": "^4.5.0",
 		"eslint-plugin-react-compiler": "19.1.0-rc.2",
 		"globals": "^17.4.0",
 		"husky": "^9.1.7",
