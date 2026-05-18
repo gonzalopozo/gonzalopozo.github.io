@@ -76,6 +76,14 @@ export default defineConfig([
 		},
 		rules: {
 			...betterTailwindcss.configs.recommended.rules,
+			'better-tailwindcss/enforce-consistent-line-wrapping': [
+				'warn',
+				{
+					classesPerLine: 0,
+					preferSingleLine: true,
+					printWidth: 0,
+				},
+			],
 			'better-tailwindcss/no-unknown-classes': [
 				'error',
 				{
