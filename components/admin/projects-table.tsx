@@ -14,7 +14,7 @@ import { type ProjectInfo } from '@/lib/types';
 import { Pencil, ExternalLink, Trash, Github } from 'lucide-react';
 import Link from 'next/link';
 // import { SortableRow } from "@/components/admin/sortable-row";
-import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { type ReactNode, useRef, useState } from 'react';
 import { useDroppable, DragDropProvider } from '@dnd-kit/react';
 import { isSortable, useSortable } from '@dnd-kit/react/sortable';
 import { RxDragHandleDots2, RxUpdate } from 'react-icons/rx';
@@ -45,6 +45,11 @@ interface ProjectsTableProps {
 	refreshOgImage: (id: number) => Promise<void | null>;
 }
 
+interface ProjectOrderDraft {
+	serverProjectsKey: string;
+	projectOrder: number[];
+}
+
 function formatDate(date: Date) {
 	return new Date(date).toLocaleDateString('es-ES', {
 		year: 'numeric',
@@ -71,17 +76,41 @@ function getStatusLabel(status: string): string {
 	return labels[status] || status;
 }
 
+function getOrderedProjects(serverProjects: ProjectInfo[], projectOrder: number[] | null) {
+	if (!projectOrder) return serverProjects;
+
+	const projectsById = new Map(serverProjects.map((project) => [project.id, project]));
+	const orderedProjects: ProjectInfo[] = [];
+
+	for (const projectId of projectOrder) {
+		const project = projectsById.get(projectId);
+		if (!project) continue;
+
+		orderedProjects.push(project);
+		projectsById.delete(projectId);
+	}
+
+	return [...orderedProjects, ...projectsById.values()].map((project, index) => ({
+		...project,
+		order: index + 1,
+	}));
+}
+
 export function ProjectsTable({
 	projects: serverProjects,
 	onDelete,
 	refreshOgImage,
 }: ProjectsTableProps) {
-	const [projects, setProjects] = useState(serverProjects);
+	const [projectOrderDraft, setProjectOrderDraft] = useState<ProjectOrderDraft | null>(null);
+	const serverProjectsKey = serverProjects
+		.map((project) => `${project.id}:${project.order}`)
+		.join(',');
+	const projectOrder =
+		projectOrderDraft?.serverProjectsKey === serverProjectsKey
+			? projectOrderDraft.projectOrder
+			: null;
+	const projects = getOrderedProjects(serverProjects, projectOrder);
 	const { ref } = useDroppable({ id: 'droppable' });
-
-	useEffect(() => {
-		setProjects(serverProjects);
-	}, [serverProjects]);
 
 	return (
 		<DragDropProvider
@@ -90,14 +119,18 @@ export function ProjectsTable({
 				if (isSortable(source)) {
 					const projectId = source.id as number;
 					const newOrder = source.index + 1;
+					const oldIndex = projects.findIndex((p) => p.id === projectId);
 
-					setProjects((prev) => {
-						const oldIndex = prev.findIndex((p) => p.id === projectId);
-						if (oldIndex === -1) return prev;
-						const reordered = [...prev];
-						const [moved] = reordered.splice(oldIndex, 1);
-						reordered.splice(source.index, 0, moved);
-						return reordered.map((p, i) => ({ ...p, order: i + 1 }));
+					if (oldIndex === -1) return;
+
+					const reordered = [...projects];
+					const [moved] = reordered.splice(oldIndex, 1);
+					if (!moved) return;
+
+					reordered.splice(source.index, 0, moved);
+					setProjectOrderDraft({
+						serverProjectsKey,
+						projectOrder: reordered.map((project) => project.id),
 					});
 
 					try {
@@ -108,7 +141,7 @@ export function ProjectsTable({
 							);
 					} catch {
 						toast.error('Error al actualizar el orden');
-						setProjects(serverProjects);
+						setProjectOrderDraft(null);
 					}
 				}
 			}}
