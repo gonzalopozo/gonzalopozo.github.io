@@ -12,7 +12,7 @@ import {
 	CommandList,
 } from '@/components/ui/command';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useEffect, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
 import type { IconType } from 'react-icons';
 import { cn } from '@/lib/utils';
 import { Check, ChevronsUpDown, Search } from 'lucide-react';
@@ -126,6 +126,7 @@ export function IconPicker({ fullName }: IconPickerProps) {
 	const [selectedIcon, setSelectedIcon] = useState<string | null>(fullName ?? null);
 	const [debouncedQuery, setDebouncedQuery] = useState<string | null>(null);
 	const [searchQuery, setSearchQuery] = useState('');
+	const listId = useId();
 
 	useEffect(() => {
 		const id = setTimeout(() => {
@@ -149,7 +150,9 @@ export function IconPicker({ fullName }: IconPickerProps) {
 					<Button
 						variant="outline"
 						role="combobox"
+						aria-controls={listId}
 						aria-expanded={open}
+						aria-haspopup="listbox"
 						aria-label={selected ? `Selected icon: ${selected.name}` : 'Select an icon'}
 						className={cn(
 							'h-auto min-h-11 w-full justify-between px-3 py-2 font-normal',
@@ -197,7 +200,7 @@ export function IconPicker({ fullName }: IconPickerProps) {
 							onValueChange={setSearchQuery}
 							spellCheck={false}
 						/>
-						<CommandList>
+						<CommandList id={listId}>
 							<CommandEmpty>
 								{searchQuery ? (
 									<div className="flex flex-col items-center gap-1.5 py-8">
