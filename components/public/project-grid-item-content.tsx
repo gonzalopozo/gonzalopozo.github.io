@@ -40,13 +40,17 @@ const PROJECT_STATUS_BADGE_VARIANTS: Record<ProjectStatus, 'default' | 'secondar
 	'in-progress': 'secondary',
 };
 
-function formatProjectDate(date: Date, format: 'summary' | 'full' = 'summary') {
-	const dateFormat: Intl.DateTimeFormatOptions =
-		format === 'full'
-			? { day: '2-digit', month: '2-digit', year: 'numeric' }
-			: { month: 'short', year: 'numeric' };
+const PROJECT_DATE_FORMATTERS: Record<'summary' | 'full', Intl.DateTimeFormat> = {
+	summary: new Intl.DateTimeFormat('es-ES', { month: 'short', year: 'numeric' }),
+	full: new Intl.DateTimeFormat('es-ES', {
+		day: '2-digit',
+		month: '2-digit',
+		year: 'numeric',
+	}),
+};
 
-	return new Intl.DateTimeFormat('es-ES', dateFormat).format(new Date(date));
+function formatProjectDate(date: Date, format: 'summary' | 'full' = 'summary') {
+	return PROJECT_DATE_FORMATTERS[format].format(new Date(date));
 }
 
 function ProjectMedia({ project, className, sizes }: ProjectMediaProps) {
