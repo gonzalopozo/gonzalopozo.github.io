@@ -47,9 +47,7 @@ export default async function UpdateSocialLinkDashboardPage(props: {
 					<CardDescription>Actualiza los campos que necesites modificar</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<form action={updateSocialLink.bind(null, Number(id))} className="
-       space-y-6
-     ">
+					<form action={updateSocialLink.bind(null, Number(id))} className="space-y-6">
 						{/* Name Field */}
 						<div className="space-y-2">
 							<Label htmlFor="name">Nombre</Label>

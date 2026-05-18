@@ -9,18 +9,12 @@ export const metadata: Metadata = {
 };
 
 function AdminSidebarFallback() {
-	return <aside className="
-   hidden w-64 border-r border-border bg-card
-   lg:block
- " />;
+	return <aside className="hidden w-64 border-r border-border bg-card lg:block" />;
 }
 
 function AdminHeaderFallback() {
 	return (
-		<header className="
-    flex h-16 items-center justify-between border-b border-border bg-card px-4
-    lg:px-6
-  " />
+		<header className="flex h-16 items-center justify-between border-b border-border bg-card px-4 lg:px-6" />
 	);
 }
 

@@ -105,9 +105,7 @@ function IconPreview({ iconName, iconPackage, className }: IconPreviewProps) {
 
 export function IconPickerSkeleton() {
 	return (
-		<div className="
-    flex h-11 w-full items-center gap-3 rounded-md border border-input px-3
-  ">
+		<div className="flex h-11 w-full items-center gap-3 rounded-md border border-input px-3">
 			<Skeleton className="size-8 rounded-md" />
 			<div className="flex flex-col gap-1">
 				<Skeleton className="h-3.5 w-24" />
@@ -163,9 +161,7 @@ export function IconPicker({ fullName }: IconPickerProps) {
 					>
 						{selected ? (
 							<span className="flex items-center gap-3">
-								<span className="
-          flex size-8 items-center justify-center rounded-md bg-muted
-        ">
+								<span className="flex size-8 items-center justify-center rounded-md bg-muted">
 									<IconPreview
 										iconName={selected.name}
 										iconPackage={selected.pack}
@@ -183,10 +179,7 @@ export function IconPicker({ fullName }: IconPickerProps) {
 							</span>
 						) : (
 							<span className="flex items-center gap-3">
-								<span className="
-          flex size-8 items-center justify-center rounded-md border
-          border-dashed border-muted-foreground/25
-        ">
+								<span className="flex size-8 items-center justify-center rounded-md border border-dashed border-muted-foreground/25">
 									<Search
 										className="size-3.5 text-muted-foreground/50"
 										aria-hidden="true"
@@ -222,9 +215,7 @@ export function IconPicker({ fullName }: IconPickerProps) {
 									</div>
 								) : (
 									<div className="flex flex-col items-center gap-1.5 py-8">
-										<div className="
-            flex size-10 items-center justify-center rounded-lg bg-muted
-          ">
+										<div className="flex size-10 items-center justify-center rounded-lg bg-muted">
 											<Search
 												className="size-5 text-muted-foreground"
 												aria-hidden="true"
@@ -259,10 +250,7 @@ export function IconPicker({ fullName }: IconPickerProps) {
 											>
 												<span
 													className={cn(
-														`
-                flex size-8 items-center justify-center rounded-md
-                transition-colors
-              `,
+														`flex size-8 items-center justify-center rounded-md transition-colors`,
 														isSelected
 															? 'bg-primary/10 text-primary'
 															: 'bg-muted',

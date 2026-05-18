@@ -41,10 +41,7 @@ export function AdminHeader() {
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
 	return (
-		<header className="
-    flex h-16 items-center justify-between border-b border-border bg-card px-4
-    lg:px-6
-  ">
+		<header className="flex h-16 items-center justify-between border-b border-border bg-card px-4 lg:px-6">
 			<div className="flex items-center gap-4">
 				<Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
 					<SheetTrigger asChild>
@@ -57,10 +54,7 @@ export function AdminHeader() {
 						<div className="flex h-16 items-center border-b border-border px-3 pr-12">
 							<Link
 								href="/dashboard"
-								className="
-          flex items-center gap-3 rounded-md bg-accent px-3 py-2 text-sm
-          font-medium text-accent-foreground
-        "
+								className="flex items-center gap-3 rounded-md bg-accent px-3 py-2 text-sm font-medium text-accent-foreground"
 								onClick={() => setMobileMenuOpen(false)}
 							>
 								<Boxes className="size-4" />
@@ -78,16 +72,10 @@ export function AdminHeader() {
 										href={item.href}
 										onClick={() => setMobileMenuOpen(false)}
 										className={cn(
-											`
-             flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium
-             transition-colors
-           `,
+											`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors`,
 											isActive
 												? 'bg-accent text-accent-foreground'
-												: `
-              text-muted-foreground
-              hover:bg-accent hover:text-accent-foreground
-            `,
+												: `text-muted-foreground hover:bg-accent hover:text-accent-foreground`,
 										)}
 									>
 										<item.icon className="size-4" />
@@ -101,10 +89,7 @@ export function AdminHeader() {
 				<div className="lg:hidden">
 					<Link
 						href="/dashboard"
-						className="
-        flex items-center gap-3 rounded-md bg-accent px-3 py-2 text-sm
-        font-medium text-accent-foreground
-      "
+						className="flex items-center gap-3 rounded-md bg-accent px-3 py-2 text-sm font-medium text-accent-foreground"
 					>
 						<Boxes className="size-4" />
 						<span>Dashboard</span>

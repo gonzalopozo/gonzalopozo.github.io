@@ -27,10 +27,7 @@ export function LastTrackGridItemContent({ track }: LastTrackGridItemContentProp
 					className={cn(
 						'absolute inset-0',
 						isOnline &&
-							`
-         motion-safe:animate-now-playing-cover
-         motion-reduce:scale-[1.015]
-       `,
+							`motion-safe:animate-now-playing-cover motion-reduce:scale-[1.015]`,
 					)}
 				>
 					<Image
@@ -38,10 +35,7 @@ export function LastTrackGridItemContent({ track }: LastTrackGridItemContentProp
 						alt=""
 						fill
 						sizes="(min-width: 996px) 25vw, (min-width: 768px) 50vw, 100vw"
-						className="
-        object-cover transition-transform duration-700 ease-out
-        motion-safe:group-hover/music:scale-[1.04]
-      "
+						className="object-cover transition-transform duration-700 ease-out motion-safe:group-hover/music:scale-[1.04]"
 						aria-hidden="true"
 					/>
 				</div>
@@ -50,10 +44,7 @@ export function LastTrackGridItemContent({ track }: LastTrackGridItemContentProp
 					className={cn(
 						'absolute inset-0 bg-linear-to-br from-primary/25 via-card to-card',
 						isOnline &&
-							`
-         from-primary/35 via-accent/10
-         motion-safe:animate-now-playing-cover
-       `,
+							`from-primary/35 via-accent/10 motion-safe:animate-now-playing-cover`,
 					)}
 				>
 					<div className="absolute inset-0 grid place-items-center">
@@ -66,30 +57,16 @@ export function LastTrackGridItemContent({ track }: LastTrackGridItemContentProp
 
 			{hasArtwork && (
 				<>
-					<div className="
-       pointer-events-none absolute inset-x-0 top-0 h-20 bg-linear-to-b
-       from-black/55 to-transparent
-     " />
-					<div className="
-       pointer-events-none absolute inset-x-0 bottom-0 h-3/5 bg-linear-to-t
-       from-black/85 via-black/45 to-transparent transition-[background-image]
-       duration-300
-       motion-safe:group-hover/music:from-black/90
-     " />
+					<div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-linear-to-b from-black/55 to-transparent" />
+					<div className="pointer-events-none absolute inset-x-0 bottom-0 h-3/5 bg-linear-to-t from-black/85 via-black/45 to-transparent transition-[background-image] duration-300 motion-safe:group-hover/music:from-black/90" />
 				</>
 			)}
 
 			<span
 				className={cn(
-					`
-       absolute top-3 left-3 z-10 font-mono text-[10px] tracking-wide
-       transition-colors
-     `,
+					`absolute top-3 left-3 z-10 font-mono text-[10px] tracking-wide transition-colors`,
 					hasArtwork
-						? `
-        text-white/70
-        group-hover/music:text-white
-      `
+						? `text-white/70 group-hover/music:text-white`
 						: 'text-muted-foreground',
 				)}
 				aria-hidden="true"
@@ -99,18 +76,11 @@ export function LastTrackGridItemContent({ track }: LastTrackGridItemContentProp
 
 			<span
 				className={cn(
-					`
-       absolute top-3 right-3 z-10 inline-flex items-center gap-1.5 rounded-full
-       border px-2 py-1 text-[10px] font-medium tracking-wide uppercase
-       backdrop-blur-md transition-colors
-     `,
+					`absolute top-3 right-3 z-10 inline-flex items-center gap-1.5 rounded-full border px-2 py-1 text-[10px] font-medium tracking-wide uppercase backdrop-blur-md transition-colors`,
 					isOnline
 						? hasArtwork
 							? 'border-accent/30 bg-black/50 text-white/95 shadow-lg shadow-accent/20'
-							: `
-         border-primary/30 bg-primary/10 text-foreground shadow-lg
-         shadow-primary/15
-       `
+							: `border-primary/30 bg-primary/10 text-foreground shadow-lg shadow-primary/15`
 						: hasArtwork
 							? 'border-white/10 bg-black/40 text-white/95'
 							: 'border-foreground/10 bg-foreground/10 text-foreground',
@@ -182,21 +152,13 @@ function NowPlayingAtmosphere({ onArtwork }: { onArtwork: boolean }) {
 		<div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
 			<span
 				className={cn(
-					`
-       absolute -top-12 -right-10 size-32 rounded-full blur-2xl
-       motion-safe:animate-now-playing-glow
-       motion-reduce:opacity-40
-     `,
+					`absolute -top-12 -right-10 size-32 rounded-full blur-2xl motion-safe:animate-now-playing-glow motion-reduce:opacity-40`,
 					onArtwork ? 'bg-accent/45' : 'bg-primary/25',
 				)}
 			/>
 			<span
 				className={cn(
-					`
-       absolute top-8 -left-20 h-14 w-[150%] rotate-[-14deg]
-       motion-safe:animate-now-playing-sweep
-       motion-reduce:hidden
-     `,
+					`absolute top-8 -left-20 h-14 w-[150%] rotate-[-14deg] motion-safe:animate-now-playing-sweep motion-reduce:hidden`,
 					onArtwork ? 'bg-white/20' : 'bg-primary/10',
 				)}
 			/>
@@ -206,10 +168,7 @@ function NowPlayingAtmosphere({ onArtwork }: { onArtwork: boolean }) {
 
 function NowPlayingEqualiser({ onArtwork }: { onArtwork: boolean }) {
 	const barClass = cn(
-		`
-    block h-full w-[2px] origin-bottom rounded-full bg-current
-    motion-reduce:scale-y-[0.65]
-  `,
+		`block h-full w-[2px] origin-bottom rounded-full bg-current motion-reduce:scale-y-[0.65]`,
 	);
 	return (
 		<span
@@ -219,11 +178,7 @@ function NowPlayingEqualiser({ onArtwork }: { onArtwork: boolean }) {
 			)}
 			aria-hidden="true"
 		>
-			<span className="
-     absolute -inset-1 rounded-full bg-current opacity-20 blur-sm
-     motion-safe:animate-now-playing-glow
-     motion-reduce:opacity-20
-   " />
+			<span className="absolute -inset-1 rounded-full bg-current opacity-20 blur-sm motion-safe:animate-now-playing-glow motion-reduce:opacity-20" />
 			<span className={cn(barClass, 'motion-safe:animate-eq-bar-1')} />
 			<span className={cn(barClass, 'motion-safe:animate-eq-bar-2')} />
 			<span className={cn(barClass, 'motion-safe:animate-eq-bar-3')} />
@@ -250,17 +205,12 @@ function formatRelative(unix: number | null, fallback: string | null): string {
 function MusicEmptyState() {
 	return (
 		<div className="relative size-full overflow-hidden">
-			<div className="
-     absolute inset-0 bg-linear-to-br from-primary/20 via-card to-card
-   " />
+			<div className="absolute inset-0 bg-linear-to-br from-primary/20 via-card to-card" />
 			<div className="absolute inset-0 grid place-items-center">
 				<Music className="size-10 text-primary/40" aria-hidden="true" />
 			</div>
 			<span
-				className="
-      absolute top-3 left-3 font-mono text-[10px] tracking-wide
-      text-muted-foreground
-    "
+				className="absolute top-3 left-3 font-mono text-[10px] tracking-wide text-muted-foreground"
 				aria-hidden="true"
 			>
 				last.fm

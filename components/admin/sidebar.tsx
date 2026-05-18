@@ -33,18 +33,12 @@ export function AdminSidebar() {
 	const pathname = usePathname();
 
 	return (
-		<aside className="
-    hidden w-64 border-r border-border bg-card
-    lg:block
-  ">
+		<aside className="hidden w-64 border-r border-border bg-card lg:block">
 			<div className="flex h-full flex-col">
 				<div className="flex h-16 items-center border-b border-border px-3">
 					<Link
 						href="/dashboard"
-						className="
-        flex w-full items-center gap-3 rounded-md bg-accent px-3 py-2 text-sm
-        font-medium text-accent-foreground
-      "
+						className="flex w-full items-center gap-3 rounded-md bg-accent px-3 py-2 text-sm font-medium text-accent-foreground"
 					>
 						<Boxes className="size-4" />
 						<span>Dashboard</span>
@@ -60,16 +54,10 @@ export function AdminSidebar() {
 								key={link.name}
 								href={link.href}
 								className={cn(
-									`
-           flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium
-           transition-colors
-         `,
+									`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors`,
 									isActive
 										? 'bg-accent text-accent-foreground'
-										: `
-            text-muted-foreground
-            hover:bg-accent hover:text-accent-foreground
-          `,
+										: `text-muted-foreground hover:bg-accent hover:text-accent-foreground`,
 								)}
 							>
 								<link.icon className="size-4" />

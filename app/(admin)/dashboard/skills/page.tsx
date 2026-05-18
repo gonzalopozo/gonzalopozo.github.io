@@ -123,10 +123,7 @@ export default async function SkillsDashboardPage() {
 													href={skill.url}
 													target="_blank"
 													rel="noopener noreferrer"
-													className="
-               inline-flex items-center gap-1 text-sm text-primary
-               hover:underline
-             "
+													className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
 												>
 													Enlace
 													<ExternalLink className="size-3" />

@@ -68,13 +68,7 @@ export function SkillsMultiSelect({
 						aria-controls="skills-select-options"
 						aria-label="Select skills"
 						tabIndex={0}
-						className="
-        flex h-10 min-w-[200px] cursor-pointer items-center justify-start gap-2
-        rounded-md border border-input bg-background px-4 py-2 text-sm
-        font-medium
-        hover:bg-accent hover:text-accent-foreground
-        focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none
-      "
+						className="flex h-10 min-w-[200px] cursor-pointer items-center justify-start gap-2 rounded-md border border-input bg-background px-4 py-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none"
 						onClick={() => setOpen(!open)}
 						onKeyDown={(e) => {
 							if (e.key === 'Enter' || e.key === ' ') {
@@ -98,10 +92,7 @@ export function SkillsMultiSelect({
 									{selectedSkills.slice(0, 3).map((skill) => (
 										<span
 											key={skill.id}
-											className="
-             inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5
-             text-xs font-medium text-primary
-           "
+											className="inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary"
 										>
 											{skill.name}
 										</span>
@@ -122,11 +113,7 @@ export function SkillsMultiSelect({
 								<button
 									type="button"
 									aria-label="Clear selection"
-									className="
-           z-10 rounded-sm opacity-50
-           hover:opacity-100
-           focus:ring-2 focus:ring-ring focus:outline-none
-         "
+									className="z-10 rounded-sm opacity-50 hover:opacity-100 focus:ring-2 focus:ring-ring focus:outline-none"
 									onClick={handleClear}
 								>
 									<X className="size-4 shrink-0" />

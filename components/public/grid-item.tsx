@@ -73,10 +73,7 @@ export function GridItemShowMoreButton({
 
 export function GridItem({ children, className, variant, ref, ...props }: GridItemComponentProps) {
 	return (
-		<div ref={ref} className={cn(`
-    cursor-grab
-    active:cursor-grabbing
-  `, className)} {...props}>
+		<div ref={ref} className={cn(`cursor-grab active:cursor-grabbing`, className)} {...props}>
 			<Card
 				className={cn(
 					'size-full min-h-0 min-w-0 overflow-hidden rounded-4xl bg-card shadow-none',

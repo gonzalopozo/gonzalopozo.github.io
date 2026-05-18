@@ -175,10 +175,7 @@ export function ProjectsTable({
 											href={project.url}
 											target="_blank"
 											rel="noopener noreferrer"
-											className="
-             inline-flex items-center text-primary
-             hover:text-primary/80
-           "
+											className="inline-flex items-center text-primary hover:text-primary/80"
 											title="Ver proyecto"
 										>
 											<ExternalLink className="size-4" />
@@ -189,10 +186,7 @@ export function ProjectsTable({
 											href={project.repoUrl}
 											target="_blank"
 											rel="noopener noreferrer"
-											className="
-             inline-flex items-center text-muted-foreground
-             hover:text-foreground
-           "
+											className="inline-flex items-center text-muted-foreground hover:text-foreground"
 											title="Ver repositorio"
 										>
 											<Github className="size-4" />

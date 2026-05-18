@@ -144,13 +144,7 @@ export default async function UpdateProjectDashboardPage(props: {
 							<select
 								name="status"
 								id="status"
-								className="
-          flex h-9 w-full rounded-md border border-input bg-background px-3 py-1
-          text-sm shadow-xs transition-[color,box-shadow] outline-none
-          focus-visible:border-ring focus-visible:ring-[3px]
-          focus-visible:ring-ring/50
-          dark:bg-input/30
-        "
+								className="flex h-9 w-full rounded-md border border-input bg-background px-3 py-1 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 dark:bg-input/30"
 								defaultValue={project.status}
 							>
 								<option value="in-progress">En progreso</option>

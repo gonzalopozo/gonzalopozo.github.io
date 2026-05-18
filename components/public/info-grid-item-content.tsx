@@ -31,10 +31,7 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 	}, [statusLabel]);
 
 	return (
-		<div className="
-    group/card grid size-full grid-cols-[auto_minmax(0,1fr)] grid-rows-1
-    items-start gap-5 overflow-hidden px-6 py-5
-  ">
+		<div className="group/card grid size-full grid-cols-[auto_minmax(0,1fr)] grid-rows-1 items-start gap-5 overflow-hidden px-6 py-5">
 			{/* Profile image with status indicator */}
 			<div className="relative row-span-full shrink-0 place-self-center">
 				<Image
@@ -42,11 +39,7 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 					width={260}
 					height={260}
 					alt="Gonzalo Pozo, Full Stack Developer"
-					className="
-       size-[130px] rounded-full object-cover transition-transform duration-300
-       ease-out
-       group-hover/card:scale-[1.03]
-     "
+					className="size-[130px] rounded-full object-cover transition-transform duration-300 ease-out group-hover/card:scale-[1.03]"
 					priority
 				/>
 
@@ -54,23 +47,14 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 				<div className="absolute right-0 -bottom-1">
 					<div
 						className={cn(
-							`
-         flex items-center gap-0 rounded-full border-[3px] border-card
-         bg-secondary p-0 transition-all duration-300 ease-out
-       `,
-							`
-         group-hover/card:gap-1.5 group-hover/card:px-2.5
-         group-hover/card:py-0.5
-       `,
+							`flex items-center gap-0 rounded-full border-[3px] border-card bg-secondary p-0 transition-all duration-300 ease-out`,
+							`group-hover/card:gap-1.5 group-hover/card:px-2.5 group-hover/card:py-0.5`,
 						)}
 					>
 						<span className="relative flex size-3 shrink-0">
 							<span
 								className={cn(
-									`
-           absolute inline-flex size-full rounded-full opacity-75
-           motion-safe:animate-ping
-         `,
+									`absolute inline-flex size-full rounded-full opacity-75 motion-safe:animate-ping`,
 									isEmployed ? 'bg-status-active' : 'bg-accent',
 								)}
 							/>
@@ -83,11 +67,7 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 						</span>
 						<span
 							className={cn(
-								`
-          relative max-w-0 overflow-hidden text-xs font-medium
-          text-secondary-foreground opacity-0 transition-all duration-300
-          ease-out
-        `,
+								`relative max-w-0 overflow-hidden text-xs font-medium text-secondary-foreground opacity-0 transition-all duration-300 ease-out`,
 								'group-hover/card:max-w-20 group-hover/card:opacity-100',
 								isStatusOverflowing &&
 									`mask-[linear-gradient(to_right,black_calc(100%-0.75rem),transparent)]`,
@@ -117,9 +97,7 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 			</div>
 
 			{/* Content area */}
-			<div className="
-     grid min-w-0 grid-rows-[15%_65%_20%] justify-between self-stretch
-   ">
+			<div className="grid min-w-0 grid-rows-[15%_65%_20%] justify-between self-stretch">
 				{/* CV download button — top right */}
 				<div className="justify-self-end">
 					{infoAboutMe.resumeUrl && (
@@ -127,12 +105,7 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 							href={infoAboutMe.resumeUrl}
 							target="_blank"
 							rel="noopener noreferrer"
-							className="
-         inline-flex items-center gap-1.5 rounded-full border border-border px-3
-         py-1 text-xs font-medium text-muted-foreground transition-colors
-         duration-200 ease-out
-         hover:border-primary/40 hover:bg-primary/10 hover:text-primary
-       "
+							className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground transition-colors duration-200 ease-out hover:border-primary/40 hover:bg-primary/10 hover:text-primary"
 							aria-label="Download CV"
 						>
 							<FileDown className="size-3.5" aria-hidden="true" />
@@ -159,33 +132,15 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 				<div className="flex justify-end">
 					<button
 						onClick={() => setSection('About me')}
-						className="
-        group/cta flex items-center gap-2 rounded-full pl-0
-        transition-[padding,background-color] duration-400
-        ease-[cubic-bezier(0.22,1,0.36,1)]
-        group-hover/card:pl-3
-        hover:bg-secondary/60
-      "
+						className="group/cta flex items-center gap-2 rounded-full pl-0 transition-[padding,background-color] duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:pl-3 hover:bg-secondary/60"
 						aria-label="View more about me"
 					>
-						<span className="
-        grid grid-cols-[0fr] overflow-hidden transition-[grid-template-columns]
-        duration-400 ease-[cubic-bezier(0.22,1,0.36,1)]
-        group-hover/card:grid-cols-[1fr]
-      ">
-							<span className="
-         min-w-0 text-xs font-medium whitespace-nowrap opacity-0
-         transition-opacity duration-300 ease-out
-         group-hover/card:opacity-100
-       ">
+						<span className="grid grid-cols-[0fr] overflow-hidden transition-[grid-template-columns] duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:grid-cols-[1fr]">
+							<span className="min-w-0 text-xs font-medium whitespace-nowrap opacity-0 transition-opacity duration-300 ease-out group-hover/card:opacity-100">
 								About me
 							</span>
 						</span>
-						<span className="
-        flex size-7 shrink-0 items-center justify-center rounded-full
-        bg-secondary transition-colors duration-200 ease-out
-        group-hover/card:bg-primary group-hover/card:text-primary-foreground
-      ">
+						<span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-secondary transition-colors duration-200 ease-out group-hover/card:bg-primary group-hover/card:text-primary-foreground">
 							<ArrowRight
 								className="size-3.5 transition-transform duration-300 ease-out"
 								aria-hidden="true"

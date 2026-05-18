@@ -133,10 +133,7 @@ export default async function ExperiencesDashboardPage() {
 														href={experience.companyUrl}
 														target="_blank"
 														rel="noopener noreferrer"
-														className="
-                text-primary
-                hover:text-primary/80
-              "
+														className="text-primary hover:text-primary/80"
 													>
 														<ExternalLink className="size-3" />
 													</a>
@@ -144,9 +141,7 @@ export default async function ExperiencesDashboardPage() {
 											</div>
 										</TableCell>
 										<TableCell>
-											<div className="
-             flex items-center gap-1.5 text-sm text-muted-foreground
-           ">
+											<div className="flex items-center gap-1.5 text-sm text-muted-foreground">
 												<Calendar className="size-3.5" />
 												{formatDateRange(
 													experience.startDate,
@@ -156,9 +151,7 @@ export default async function ExperiencesDashboardPage() {
 										</TableCell>
 										<TableCell>
 											{experience.location ? (
-												<div className="
-              flex items-center gap-1.5 text-sm text-muted-foreground
-            ">
+												<div className="flex items-center gap-1.5 text-sm text-muted-foreground">
 													<MapPin className="size-3.5" />
 													{experience.location}
 												</div>

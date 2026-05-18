@@ -17,10 +17,7 @@ export function ClearInvalidSessionForm() {
 				ref={formRef}
 				action="/api/auth/clear-invalid-session"
 				method="post"
-				className="
-      flex w-full max-w-sm flex-col items-center gap-4 rounded-md border
-      border-border bg-card p-6 text-center text-card-foreground
-    "
+				className="flex w-full max-w-sm flex-col items-center gap-4 rounded-md border border-border bg-card p-6 text-center text-card-foreground"
 			>
 				<Spinner className="size-5 text-muted-foreground" />
 				<div className="space-y-1">
