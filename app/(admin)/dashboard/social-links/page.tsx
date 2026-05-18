@@ -30,7 +30,7 @@ export default async function SocialLinksDashboardPage() {
 			{/* Header */}
 			<div className="flex items-center justify-between">
 				<div>
-					<h1 className="text-3xl font-bold tracking-tight">Social Links</h1>
+					<h1 className="text-3xl font-semibold tracking-tight">Social Links</h1>
 					<p className="mt-1 text-muted-foreground">
 						Gestiona tus enlaces a redes sociales
 					</p>

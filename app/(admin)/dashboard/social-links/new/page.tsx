@@ -17,7 +17,7 @@ export default async function NewSocialLinkDashboardPage() {
 					</Link>
 				</Button>
 				<div>
-					<h1 className="text-3xl font-bold tracking-tight">Nuevo Enlace Social</h1>
+					<h1 className="text-3xl font-semibold tracking-tight">Nuevo Enlace Social</h1>
 					<p className="mt-1 text-muted-foreground">
 						Añade un nuevo enlace a tus redes sociales
 					</p>

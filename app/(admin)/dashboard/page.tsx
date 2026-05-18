@@ -11,7 +11,7 @@ export default async function AdminDashboard() {
 
 	return (
 		<div className="flex h-screen flex-col items-center justify-center">
-			<h1 className="text-2xl font-bold">You are logged in:</h1>
+			<h1 className="text-2xl font-semibold">You are logged in:</h1>
 			<ul className="mt-4 list-inside list-disc text-left text-sm">
 				<li className="border-b border-gray-200 p-2 text-lg font-bold text-gray-500">
 					ID: {session!.user.id}

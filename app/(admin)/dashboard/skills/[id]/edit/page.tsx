@@ -42,7 +42,7 @@ export default async function UpdateSkillDashboardPage(props: { params: Promise<
 					</Link>
 				</Button>
 				<div>
-					<h1 className="text-3xl font-bold tracking-tight text-pretty">
+					<h1 className="text-3xl font-semibold tracking-tight text-pretty">
 						Editar Habilidad
 					</h1>
 					<p className="mt-1 text-muted-foreground">

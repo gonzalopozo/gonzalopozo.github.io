@@ -23,7 +23,7 @@ export default async function NewExperienceDashboardPage() {
 					</Link>
 				</Button>
 				<div>
-					<h1 className="text-3xl font-bold tracking-tight">Nueva Experiencia</h1>
+					<h1 className="text-3xl font-semibold tracking-tight">Nueva Experiencia</h1>
 					<p className="mt-1 text-muted-foreground">
 						Añade una nueva experiencia laboral a tu portfolio
 					</p>
