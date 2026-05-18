@@ -10,7 +10,7 @@ export function LogOutButton() {
 	const [loading, setLoading] = useState(false);
 	const { push } = useRouter();
 
-	const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
+	const signOutUser = async (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
 		setLoading(true);
 
@@ -31,7 +31,7 @@ export function LogOutButton() {
 	return (
 		<>
 			<button
-				onClick={handleClick}
+				onClick={signOutUser}
 				className="cursor-pointer rounded-md border-2 border-red-500 bg-white px-4 py-2 font-bold text-red-500 transition-colors duration-300 hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
 				disabled={loading}
 			>
