@@ -1,9 +1,19 @@
+import type { Metadata } from 'next';
 import { Suspense } from 'react';
 import { PortfolioGrid } from '@/components/public/portfolio-grid';
 import { ProjectGridItemContent } from '@/components/public/project-grid-item-content';
 import { getPublicInfoAboutMe } from '@/lib/queries/about-me';
 import { getPublicProjects } from '@/lib/queries/projects';
 import { getTrack } from '@/lib/queries/last-fm';
+
+export const metadata: Metadata = {
+	title: 'Gonzalo Pozo - Full Stack Developer',
+	description:
+		'Portfolio of Gonzalo Pozo, a full stack developer building Next.js, React, TypeScript, and Tailwind CSS web experiences.',
+	alternates: {
+		canonical: 'https://gonzalopozo.dev',
+	},
+};
 
 function PortfolioGridFallback() {
 	const cells = [
