@@ -11,6 +11,9 @@ import type { UserConfig } from '@commitlint/types';
 
 const config: UserConfig = {
 	extends: ['@commitlint/config-conventional'],
+	rules: {
+		'header-max-length': [2, 'always', 140],
+	},
 	// Git merge/revert commits are not Conventional Commits; allow them so hooks do not block pulls/merges.
 	ignores: [
 		(message) => /^Merge\b/m.test(message),
