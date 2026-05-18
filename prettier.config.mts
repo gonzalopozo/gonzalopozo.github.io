@@ -8,9 +8,6 @@ import type { Config } from 'prettier';
  *
  * @see https://prettier.io/docs/en/configuration.html
  * @see https://prettier.io/docs/en/configuration.html#typescript-configuration-files
- *
- * `prettier-plugin-tailwindcss` must be listed last so it can read other plugins’ output.
- * @see https://github.com/tailwindlabs/prettier-plugin-tailwindcss
  */
 const config: Config = {
 	semi: true,
@@ -24,7 +21,6 @@ const config: Config = {
 	bracketSameLine: false,
 	arrowParens: 'always',
 	endOfLine: 'lf',
-	plugins: ['prettier-plugin-tailwindcss'],
 };
 
 export default config;

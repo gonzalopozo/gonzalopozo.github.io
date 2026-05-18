@@ -45,7 +45,7 @@ those checks to the user and only mention them as suggested verification steps.
 - No `console.log` in `app/` and `components/` (`console.warn`/`console.error` OK)
 - React Compiler is enabled — never use `useMemo`, `useCallback`, or `React.memo`
 - ESLint flat config (`eslint.config.mts`) with React Compiler plugin at error level
-- Prettier with `prettier-plugin-tailwindcss` (always last plugin)
+- Tailwind class linting and autofix live in `eslint-plugin-better-tailwindcss`
 
 ## Architecture Patterns
 
