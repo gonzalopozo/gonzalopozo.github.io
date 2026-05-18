@@ -13,6 +13,8 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 
+const EMPTY_SELECTED_IDS: number[] = [];
+
 interface Skill {
 	id: number;
 	name: string;
@@ -31,23 +33,26 @@ interface SkillsMultiSelectProps {
 export function SkillsMultiSelect({
 	skills,
 	name = 'skills',
-	defaultValue = [],
-	placeholder = 'Search skills...',
+	defaultValue = EMPTY_SELECTED_IDS,
+	placeholder = 'Search skills…',
 }: SkillsMultiSelectProps) {
 	const [open, setOpen] = useState(false);
-	const [selectedIds, setSelectedIds] = useState<number[]>(defaultValue);
+	const [selectedIdsOverride, setSelectedIdsOverride] = useState<number[] | null>(null);
+	const selectedIds = selectedIdsOverride ?? defaultValue;
 
 	const handleSelect = (skillId: number) => {
-		setSelectedIds((current) =>
-			current.includes(skillId)
-				? current.filter((id) => id !== skillId)
-				: [...current, skillId],
-		);
+		setSelectedIdsOverride((current) => {
+			const currentSelectedIds = current ?? defaultValue;
+
+			return currentSelectedIds.includes(skillId)
+				? currentSelectedIds.filter((id) => id !== skillId)
+				: [...currentSelectedIds, skillId];
+		});
 	};
 
 	const handleClear = (e: React.MouseEvent) => {
 		e.stopPropagation();
-		setSelectedIds([]);
+		setSelectedIdsOverride([]);
 	};
 
 	const selectedSkills = skills.filter((skill) => selectedIds.includes(skill.id));
@@ -104,7 +109,7 @@ export function SkillsMultiSelect({
 									)}
 								</div>
 							) : (
-								<span className="text-muted-foreground">Select skills...</span>
+								<span className="text-muted-foreground">Select skills…</span>
 							)}
 						</div>
 
