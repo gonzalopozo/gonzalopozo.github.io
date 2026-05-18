@@ -1,14 +1,12 @@
+import { ClearInvalidSessionForm } from '@/components/auth/clear-invalid-session-form';
 import { LogOutButton } from '@/components/auth/logout';
 import { getServerSession } from '@/lib/server-session';
-import { redirect } from 'next/navigation';
 
 export default async function AdminDashboard() {
 	const session = await getServerSession();
 
 	if (!session) {
-		// Redirect to Route Handler that clears invalid cookies
-		// This prevents redirect loop with proxy's optimistic check
-		redirect('/api/auth/clear-invalid-session');
+		return <ClearInvalidSessionForm />;
 	}
 
 	return (
