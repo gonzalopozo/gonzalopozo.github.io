@@ -44,16 +44,11 @@ export async function createProject(formData: FormData) {
 		})
 		.returning({ insertedId: projects.id });
 
-	console.log('projectIdData', projectIdData);
-	console.log('projectSkillsData', projectSkillsData);
-
 	const newProjectId = projectIdData[0].insertedId;
 
 	const projectSkillsInsert: ProjectSkill[] = projectSkillsData.map((skill) => {
 		return { projectId: newProjectId, skillId: skill };
 	});
-
-	console.log('projectSkillsInsert', projectSkillsInsert);
 
 	await db.insert(projectSkills).values(projectSkillsInsert);
 
@@ -68,11 +63,11 @@ export async function createProject(formData: FormData) {
 						.set({ ogImageUrl: uploadedImageUrl })
 						.where(eq(projects.id, newProjectId));
 				} catch (e) {
-					console.log(e);
+					console.error(e);
 				}
 			}
 		} catch (e) {
-			console.log(e);
+			console.error(e);
 		}
 	}
 
@@ -170,11 +165,11 @@ export async function updateProject(id: number, formData: FormData) {
 						await deleteOldImageInVercelBlob(oldOpenGraphImageUrl);
 					}
 				} catch (e) {
-					console.log(e);
+					console.error(e);
 				}
 			}
 		} catch (e) {
-			console.log(e);
+			console.error(e);
 		}
 	} else if (!url) {
 		if (oldOpenGraphImageUrl) {
@@ -183,7 +178,7 @@ export async function updateProject(id: number, formData: FormData) {
 			try {
 				await db.update(projects).set({ ogImageUrl: null }).where(eq(projects.id, id));
 			} catch (e) {
-				console.log(e);
+				console.error(e);
 			}
 		}
 	}
@@ -265,7 +260,7 @@ export async function refreshProjectOgImage(projectId: number): Promise<void | n
 			.set({ ogImageUrl: uploadedImageUrl })
 			.where(eq(projects.id, projectId));
 	} catch (e) {
-		console.log(e);
+		console.error(e);
 		return null;
 	}
 
