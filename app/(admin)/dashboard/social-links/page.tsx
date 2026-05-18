@@ -109,11 +109,13 @@ export default async function SocialLinksDashboardPage() {
 													<ExternalLink className="size-3 shrink-0" />
 												</a>
 											) : (
-												<span className="text-muted-foreground">—</span>
+												<span className="text-muted-foreground">
+													Sin URL
+												</span>
 											)}
 										</TableCell>
 										<TableCell className="font-mono text-sm">
-											{socialLink.icon || '—'}
+											{socialLink.icon || 'Sin icono'}
 										</TableCell>
 										<TableCell className="text-sm text-muted-foreground">
 											{formatDate(socialLink.createdAt)}

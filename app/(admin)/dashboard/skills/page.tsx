@@ -114,7 +114,7 @@ export default async function SkillsDashboardPage() {
 													/>
 												</div>
 											) : (
-												'—'
+												'Sin icono'
 											)}
 										</TableCell>
 										<TableCell>
@@ -129,7 +129,9 @@ export default async function SkillsDashboardPage() {
 													<ExternalLink className="size-3" />
 												</a>
 											) : (
-												<span className="text-muted-foreground">—</span>
+												<span className="text-muted-foreground">
+													Sin URL
+												</span>
 											)}
 										</TableCell>
 										<TableCell className="text-sm text-muted-foreground">

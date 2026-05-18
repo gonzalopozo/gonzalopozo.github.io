@@ -138,7 +138,7 @@ export function ProjectsTable({
 							<TableCell className="font-medium">{project.title}</TableCell>
 							<TableCell className="max-w-50">
 								<p className="truncate text-sm text-muted-foreground">
-									{project.description || '—'}
+									{project.description || 'Sin descripción'}
 								</p>
 							</TableCell>
 							<TableCell>
@@ -159,7 +159,9 @@ export function ProjectsTable({
 											</Badge>
 										))
 									) : (
-										<span className="text-sm text-muted-foreground">—</span>
+										<span className="text-sm text-muted-foreground">
+											Sin habilidades
+										</span>
 									)}
 									{project.projectSkills.length > 3 && (
 										<Badge variant="secondary" className="text-xs">
@@ -193,7 +195,7 @@ export function ProjectsTable({
 										</a>
 									)}
 									{!project.url && !project.repoUrl && (
-										<span className="text-muted-foreground">—</span>
+										<span className="text-muted-foreground">Sin enlaces</span>
 									)}
 								</div>
 							</TableCell>

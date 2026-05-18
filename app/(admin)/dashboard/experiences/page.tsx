@@ -44,7 +44,7 @@ export default async function ExperiencesDashboardPage() {
 	const formatDateRange = (startDate: Date | null, endDate: Date | null) => {
 		const start = formatDate(startDate);
 		const end = endDate ? formatDate(endDate) : 'Presente';
-		if (!start) return '—';
+		if (!start) return 'Sin fecha';
 		return `${start} - ${end}`;
 	};
 
@@ -156,7 +156,9 @@ export default async function ExperiencesDashboardPage() {
 													{experience.location}
 												</div>
 											) : (
-												<span className="text-muted-foreground">—</span>
+												<span className="text-muted-foreground">
+													Sin ubicación
+												</span>
 											)}
 										</TableCell>
 										<TableCell>
@@ -175,7 +177,7 @@ export default async function ExperiencesDashboardPage() {
 														))
 												) : (
 													<span className="text-sm text-muted-foreground">
-														—
+														Sin habilidades
 													</span>
 												)}
 												{experience.experienceSkills.length > 3 && (
