@@ -24,7 +24,7 @@ export default async function NewProjectDashboardPage() {
 				</Button>
 				<div>
 					<h1 className="text-3xl font-bold tracking-tight">Nuevo Proyecto</h1>
-					<p className="text-muted-foreground mt-1">
+					<p className="mt-1 text-muted-foreground">
 						Añade un nuevo proyecto a tu portfolio
 					</p>
 				</div>
@@ -70,7 +70,7 @@ export default async function NewProjectDashboardPage() {
 								id="url"
 								placeholder="https://miproyecto.com"
 							/>
-							<p className="text-muted-foreground text-xs">
+							<p className="text-xs text-muted-foreground">
 								Enlace a la versión desplegada del proyecto (opcional)
 							</p>
 						</div>
@@ -84,7 +84,7 @@ export default async function NewProjectDashboardPage() {
 								id="repoUrl"
 								placeholder="https://github.com/usuario/proyecto"
 							/>
-							<p className="text-muted-foreground text-xs">
+							<p className="text-xs text-muted-foreground">
 								Enlace al repositorio en GitHub, GitLab, etc. (opcional)
 							</p>
 						</div>
@@ -93,7 +93,7 @@ export default async function NewProjectDashboardPage() {
 						<div className="space-y-2">
 							<Label>Tecnologías utilizadas</Label>
 							<SkillsMultiSelect skills={skillsList} name="skillIds" />
-							<p className="text-muted-foreground text-xs">
+							<p className="text-xs text-muted-foreground">
 								Selecciona las tecnologías y herramientas usadas en el proyecto
 							</p>
 						</div>
@@ -104,7 +104,13 @@ export default async function NewProjectDashboardPage() {
 							<select
 								name="status"
 								id="status"
-								className="border-input bg-background focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 flex h-9 w-full rounded-md border px-3 py-1 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px]"
+								className="
+          flex h-9 w-full rounded-md border border-input bg-background px-3 py-1
+          text-sm shadow-xs transition-[color,box-shadow] outline-none
+          focus-visible:border-ring focus-visible:ring-[3px]
+          focus-visible:ring-ring/50
+          dark:bg-input/30
+        "
 							>
 								<option value="in-progress">En progreso</option>
 								<option value="active">Activo</option>

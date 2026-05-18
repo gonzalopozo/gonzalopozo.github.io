@@ -55,9 +55,9 @@ export default async function UpdateProjectDashboardPage(props: {
 				</Button>
 				<div>
 					<h1 className="text-3xl font-bold tracking-tight">Editar Proyecto</h1>
-					<p className="text-muted-foreground mt-1">
+					<p className="mt-1 text-muted-foreground">
 						Modifica los datos de{' '}
-						<span className="text-foreground font-medium">{project.title}</span>
+						<span className="font-medium text-foreground">{project.title}</span>
 					</p>
 				</div>
 			</div>
@@ -105,7 +105,7 @@ export default async function UpdateProjectDashboardPage(props: {
 								placeholder="https://miproyecto.com"
 								defaultValue={project.url ?? ''}
 							/>
-							<p className="text-muted-foreground text-xs">
+							<p className="text-xs text-muted-foreground">
 								Enlace a la versión desplegada del proyecto (opcional)
 							</p>
 						</div>
@@ -120,7 +120,7 @@ export default async function UpdateProjectDashboardPage(props: {
 								placeholder="https://github.com/usuario/proyecto"
 								defaultValue={project.repoUrl ?? ''}
 							/>
-							<p className="text-muted-foreground text-xs">
+							<p className="text-xs text-muted-foreground">
 								Enlace al repositorio en GitHub, GitLab, etc. (opcional)
 							</p>
 						</div>
@@ -133,7 +133,7 @@ export default async function UpdateProjectDashboardPage(props: {
 								defaultValue={projectSkill}
 								name="skillIds"
 							/>
-							<p className="text-muted-foreground text-xs">
+							<p className="text-xs text-muted-foreground">
 								Selecciona las tecnologías y herramientas usadas en el proyecto
 							</p>
 						</div>
@@ -144,7 +144,13 @@ export default async function UpdateProjectDashboardPage(props: {
 							<select
 								name="status"
 								id="status"
-								className="border-input bg-background focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 flex h-9 w-full rounded-md border px-3 py-1 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px]"
+								className="
+          flex h-9 w-full rounded-md border border-input bg-background px-3 py-1
+          text-sm shadow-xs transition-[color,box-shadow] outline-none
+          focus-visible:border-ring focus-visible:ring-[3px]
+          focus-visible:ring-ring/50
+          dark:bg-input/30
+        "
 								defaultValue={project.status}
 							>
 								<option value="in-progress">En progreso</option>

@@ -58,16 +58,25 @@ function ProjectMedia({ project, className, sizes }: ProjectMediaProps) {
 					alt={project.title}
 					width={1260}
 					height={630}
-					className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover/project:scale-[1.03]"
+					className="
+       size-full object-cover transition-transform duration-500 ease-out
+       group-hover/project:scale-[1.03]
+     "
 					sizes={sizes}
 				/>
 			) : (
 				<div
-					className="from-primary/25 via-secondary to-accent/30 relative flex h-full w-full flex-col justify-end bg-linear-to-br p-6"
+					className="
+       relative flex size-full flex-col justify-end bg-linear-to-br
+       from-primary/25 via-secondary to-accent/30 p-6
+     "
 					aria-hidden="true"
 				>
 					<div className="absolute inset-0 overflow-hidden">
-						<div className="animate-shimmer absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent" />
+						<div className="
+        absolute inset-0 animate-shimmer bg-linear-to-r from-transparent
+        via-white/10 to-transparent
+      " />
 					</div>
 					<p className="relative max-w-[12ch] text-2xl font-semibold tracking-tight">
 						{project.title}
@@ -129,16 +138,29 @@ function ProjectGridItemVerticalContent({
 	actionCount,
 }: ProjectGridItemContentVariantProps) {
 	return (
-		<div className="group/project grid h-full min-h-0 grid-rows-[auto_minmax(0,1fr)_auto]">
+		<div className="
+    group/project grid h-full min-h-0 grid-rows-[auto_minmax(0,1fr)_auto]
+  ">
 			<CardHeader className="gap-0 pb-0">
 				<ProjectMedia
 					project={project}
 					sizes="(max-width: 767px) 100vw, (max-width: 1200px) 38vw, 520px"
-					className="border-border/60 bg-secondary/40 relative -mx-6 aspect-video min-h-36 overflow-hidden border-b [@container_project-card_(max-height:340px)]:min-h-22 [@container_project-card_(max-height:440px)_and_(min-height:341px)]:min-h-28"
+					className="
+       relative -mx-6 aspect-video min-h-36 overflow-hidden border-b
+       border-border/60 bg-secondary/40
+       [@container_project-card_(max-height:340px)]:min-h-22
+       [@container_project-card_(max-height:440px)_and_(min-height:341px)]:min-h-28
+     "
 				/>
 			</CardHeader>
 
-			<CardContent className="flex min-h-0 flex-col overflow-hidden pt-6 pb-0 sm:px-7 [@container_project-card_(max-width:360px)]:px-3.5 [@container_project-card_(max-width:360px)]:pt-3.5 [@container_project-card_(max-width:360px)]:pb-0">
+			<CardContent className="
+     flex min-h-0 flex-col overflow-hidden pt-6 pb-0
+     sm:px-7
+     [@container_project-card_(max-width:360px)]:px-3.5
+     [@container_project-card_(max-width:360px)]:pt-3.5
+     [@container_project-card_(max-width:360px)]:pb-0
+   ">
 				<div className="flex min-h-0 flex-col gap-5 overflow-hidden">
 					<div className="flex flex-col gap-1.5">
 						<div className="flex items-start gap-2">
@@ -151,11 +173,19 @@ function ProjectGridItemVerticalContent({
 							</Badge>
 						</div>
 
-						<CardTitle className="text-lg leading-tight tracking-tight text-balance sm:text-xl [@container_project-card_(max-width:360px)]:text-[1.0625rem]">
+						<CardTitle className="
+        text-lg/tight tracking-tight text-balance
+        sm:text-xl
+        [@container_project-card_(max-width:360px)]:text-[1.0625rem]
+      ">
 							{project.title}
 						</CardTitle>
 
-						<CardDescription className="line-clamp-3 text-sm leading-relaxed [@container_project-card_(max-height:340px)]:line-clamp-1 [@container_project-card_(max-height:440px)_and_(min-height:341px)]:line-clamp-2">
+						<CardDescription className="
+        line-clamp-3 text-sm/relaxed
+        [@container_project-card_(max-height:340px)]:line-clamp-1
+        [@container_project-card_(max-height:440px)_and_(min-height:341px)]:line-clamp-2
+      ">
 							{project.description}
 						</CardDescription>
 					</div>
@@ -164,20 +194,28 @@ function ProjectGridItemVerticalContent({
 						<SkillsPills
 							skills={skills}
 							limit={6}
-							className="gap-3 [@container_project-card_(max-width:360px)]:gap-1.5"
+							className="
+         gap-3
+         [@container_project-card_(max-width:360px)]:gap-1.5
+       "
 						/>
 					) : null}
 
-					<p className="text-muted-foreground text-xs">
+					<p className="text-xs text-muted-foreground">
 						Actualizado en:{' '}
-						<span className="text-foreground font-medium">
+						<span className="font-medium text-foreground">
 							{formatProjectDate(project.updatedAt, 'full')}
 						</span>
 					</p>
 				</div>
 			</CardContent>
 
-			<CardFooter className="pb-5 sm:px-7 [@container_project-card_(max-width:360px)]:px-3.5 [@container_project-card_(max-width:360px)]:pb-4">
+			<CardFooter className="
+     pb-5
+     sm:px-7
+     [@container_project-card_(max-width:360px)]:px-3.5
+     [@container_project-card_(max-width:360px)]:pb-4
+   ">
 				<div className="flex w-full flex-col gap-2 pt-2">
 					{actionCount ? (
 						<div
@@ -218,14 +256,31 @@ function ProjectGridItemVerticalContent({
 
 function ProjectGridItemHorizontalContent({ project, skills }: ProjectGridItemContentVariantProps) {
 	return (
-		<div className="group/project grid h-full min-h-0 grid-cols-[minmax(12rem,0.78fr)_minmax(0,1.22fr)] [@container_project-card_(max-width:480px)]:grid-cols-1 [@container_project-card_(max-width:480px)]:grid-rows-[minmax(6rem,0.75fr)_minmax(0,1fr)]">
+		<div className="
+    group/project grid h-full min-h-0
+    grid-cols-[minmax(12rem,0.78fr)_minmax(0,1.22fr)]
+    [@container_project-card_(max-width:480px)]:grid-cols-1
+    [@container_project-card_(max-width:480px)]:grid-rows-[minmax(6rem,0.75fr)_minmax(0,1fr)]
+  ">
 			<ProjectMedia
 				project={project}
 				sizes="(max-width: 767px) 100vw, (max-width: 1200px) 22vw, 260px"
-				className="border-border/60 bg-secondary/40 relative min-h-0 overflow-hidden border-r [@container_project-card_(max-width:480px)]:border-r-0 [@container_project-card_(max-width:480px)]:border-b"
+				className="
+      relative min-h-0 overflow-hidden border-r border-border/60 bg-secondary/40
+      [@container_project-card_(max-width:480px)]:border-r-0
+      [@container_project-card_(max-width:480px)]:border-b
+    "
 			/>
 
-			<CardContent className="grid min-h-0 grid-cols-[minmax(0,1fr)_3.5rem] gap-3 overflow-hidden py-4 pr-4 [@container_project-card_(max-width:480px)]:grid-cols-1 [@container_project-card_(max-width:480px)]:grid-rows-[minmax(0,1fr)_auto] [@container_project-card_(max-width:480px)]:gap-2.5 [@container_project-card_(max-width:480px)]:py-3.5 [@container_project-card_(max-width:480px)]:pr-3.5">
+			<CardContent className="
+     grid min-h-0 grid-cols-[minmax(0,1fr)_3.5rem] gap-3 overflow-hidden py-4
+     pr-4
+     [@container_project-card_(max-width:480px)]:grid-cols-1
+     [@container_project-card_(max-width:480px)]:grid-rows-[minmax(0,1fr)_auto]
+     [@container_project-card_(max-width:480px)]:gap-2.5
+     [@container_project-card_(max-width:480px)]:py-3.5
+     [@container_project-card_(max-width:480px)]:pr-3.5
+   ">
 				<div className="flex min-h-0 flex-col gap-2 overflow-hidden">
 					<Badge
 						variant={PROJECT_STATUS_BADGE_VARIANTS[project.status]}
@@ -235,11 +290,14 @@ function ProjectGridItemHorizontalContent({ project, skills }: ProjectGridItemCo
 						{PROJECT_STATUS_LABELS[project.status]}
 					</Badge>
 
-					<CardTitle className="line-clamp-2 shrink-0 text-base leading-tight tracking-tight text-balance [@container_project-card_(max-width:360px)]:text-[0.9375rem]">
+					<CardTitle className="
+       line-clamp-2 shrink-0 text-base/tight tracking-tight text-balance
+       [@container_project-card_(max-width:360px)]:text-[0.9375rem]
+     ">
 						{project.title}
 					</CardTitle>
 
-					<CardDescription className="flex-1 text-xs leading-relaxed">
+					<CardDescription className="flex-1 text-xs/relaxed">
 						{project.description}
 					</CardDescription>
 
@@ -247,19 +305,27 @@ function ProjectGridItemHorizontalContent({ project, skills }: ProjectGridItemCo
 						<SkillsPills
 							skills={skills}
 							limit={4}
-							className="shrink-0 gap-1.5 overflow-hidden [@container_project-card_(max-width:360px)]:hidden"
+							className="
+         shrink-0 gap-1.5 overflow-hidden
+         [@container_project-card_(max-width:360px)]:hidden
+       "
 						/>
 					) : null}
 
-					<p className="text-muted-foreground mt-auto shrink-0 truncate text-xs">
+					<p className="mt-auto shrink-0 truncate text-xs text-muted-foreground">
 						Actualizado en:{' '}
-						<span className="text-foreground font-medium">
+						<span className="font-medium text-foreground">
 							{formatProjectDate(project.updatedAt, 'full')}
 						</span>
 					</p>
 				</div>
 
-				<CardFooter className="grid min-h-0 w-full auto-rows-fr grid-cols-1 gap-1.5 p-0 [@container_project-card_(max-width:480px)]:auto-cols-fr [@container_project-card_(max-width:480px)]:grid-flow-col [@container_project-card_(max-width:480px)]:grid-rows-1">
+				<CardFooter className="
+      grid min-h-0 w-full auto-rows-fr grid-cols-1 gap-1.5 p-0
+      [@container_project-card_(max-width:480px)]:auto-cols-fr
+      [@container_project-card_(max-width:480px)]:grid-flow-col
+      [@container_project-card_(max-width:480px)]:grid-rows-1
+    ">
 					<ProjectActionButton
 						href={project.repoUrl}
 						icon={Github}

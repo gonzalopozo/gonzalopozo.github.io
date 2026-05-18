@@ -55,10 +55,10 @@ export default async function UpdateExperienceDashboardPage(props: {
 				</Button>
 				<div>
 					<h1 className="text-3xl font-bold tracking-tight">Editar Experiencia</h1>
-					<p className="text-muted-foreground mt-1">
+					<p className="mt-1 text-muted-foreground">
 						Modifica los datos de{' '}
-						<span className="text-foreground font-medium">{experience.role}</span> en{' '}
-						<span className="text-foreground font-medium">{experience.company}</span>
+						<span className="font-medium text-foreground">{experience.role}</span> en{' '}
+						<span className="font-medium text-foreground">{experience.company}</span>
 					</p>
 				</div>
 			</div>
@@ -107,7 +107,7 @@ export default async function UpdateExperienceDashboardPage(props: {
 								placeholder="https://empresa.com"
 								defaultValue={experience.companyUrl ?? ''}
 							/>
-							<p className="text-muted-foreground text-xs">
+							<p className="text-xs text-muted-foreground">
 								Enlace al sitio web de la empresa (opcional)
 							</p>
 						</div>
@@ -122,7 +122,7 @@ export default async function UpdateExperienceDashboardPage(props: {
 								placeholder="URL o nombre del logo"
 								defaultValue={experience.companyLogo ?? ''}
 							/>
-							<p className="text-muted-foreground text-xs">
+							<p className="text-xs text-muted-foreground">
 								URL de la imagen del logo (opcional)
 							</p>
 						</div>
@@ -166,7 +166,7 @@ export default async function UpdateExperienceDashboardPage(props: {
 											: ''
 									}
 								/>
-								<p className="text-muted-foreground text-xs">
+								<p className="text-xs text-muted-foreground">
 									Dejar vacío si es tu trabajo actual
 								</p>
 							</div>
@@ -192,7 +192,7 @@ export default async function UpdateExperienceDashboardPage(props: {
 								defaultValue={experienceSkills}
 								name="skillIds"
 							/>
-							<p className="text-muted-foreground text-xs">
+							<p className="text-xs text-muted-foreground">
 								Selecciona las tecnologías y herramientas usadas en esta experiencia
 							</p>
 						</div>

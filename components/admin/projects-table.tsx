@@ -137,7 +137,7 @@ export function ProjectsTable({
 							</TableCell>
 							<TableCell className="font-medium">{project.title}</TableCell>
 							<TableCell className="max-w-[200px]">
-								<p className="text-muted-foreground truncate text-sm">
+								<p className="truncate text-sm text-muted-foreground">
 									{project.description || '—'}
 								</p>
 							</TableCell>
@@ -159,7 +159,7 @@ export function ProjectsTable({
 											</Badge>
 										))
 									) : (
-										<span className="text-muted-foreground text-sm">—</span>
+										<span className="text-sm text-muted-foreground">—</span>
 									)}
 									{project.projectSkills.length > 3 && (
 										<Badge variant="secondary" className="text-xs">
@@ -175,7 +175,10 @@ export function ProjectsTable({
 											href={project.url}
 											target="_blank"
 											rel="noopener noreferrer"
-											className="text-primary hover:text-primary/80 inline-flex items-center"
+											className="
+             inline-flex items-center text-primary
+             hover:text-primary/80
+           "
 											title="Ver proyecto"
 										>
 											<ExternalLink className="size-4" />
@@ -186,7 +189,10 @@ export function ProjectsTable({
 											href={project.repoUrl}
 											target="_blank"
 											rel="noopener noreferrer"
-											className="text-muted-foreground hover:text-foreground inline-flex items-center"
+											className="
+             inline-flex items-center text-muted-foreground
+             hover:text-foreground
+           "
 											title="Ver repositorio"
 										>
 											<Github className="size-4" />
@@ -197,7 +203,7 @@ export function ProjectsTable({
 									)}
 								</div>
 							</TableCell>
-							<TableCell className="text-muted-foreground text-sm">
+							<TableCell className="text-sm text-muted-foreground">
 								{formatDate(project.updatedAt)}
 							</TableCell>
 							<TableCell className="text-right">

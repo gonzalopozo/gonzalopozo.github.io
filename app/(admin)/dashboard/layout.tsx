@@ -9,18 +9,24 @@ export const metadata: Metadata = {
 };
 
 function AdminSidebarFallback() {
-	return <aside className="border-border bg-card hidden w-64 border-r lg:block" />;
+	return <aside className="
+   hidden w-64 border-r border-border bg-card
+   lg:block
+ " />;
 }
 
 function AdminHeaderFallback() {
 	return (
-		<header className="border-border bg-card flex h-16 items-center justify-between border-b px-4 lg:px-6" />
+		<header className="
+    flex h-16 items-center justify-between border-b border-border bg-card px-4
+    lg:px-6
+  " />
 	);
 }
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
 	return (
-		<div className="bg-background flex min-h-screen">
+		<div className="flex min-h-screen bg-background">
 			<Suspense fallback={<AdminSidebarFallback />}>
 				<AdminSidebar />
 			</Suspense>

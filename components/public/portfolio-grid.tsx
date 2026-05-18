@@ -160,13 +160,13 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 			v: 'About me',
 			Icon: UserRound,
 			GridItems: [
-				<div className="bg-primary w-50" key="d">
+				<div className="w-50 bg-primary" key="d">
 					d
 				</div>,
-				<div className="bg-accent w-50" key="e">
+				<div className="w-50 bg-accent" key="e">
 					e
 				</div>,
-				<div className="bg-secondary w-50" key="f">
+				<div className="w-50 bg-secondary" key="f">
 					f
 				</div>,
 			],
@@ -231,7 +231,11 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 				aria-label="Portfolio sections"
 				className="mb-12 flex justify-center px-[3.5vw] pt-12"
 			>
-				<ul className="border-border/70 bg-card/90 shadow-foreground/10 flex h-10 max-w-[calc(100vw-1rem)] items-center gap-1 rounded-full border px-1 py-0.5 shadow-2xl backdrop-blur-xl">
+				<ul className="
+      flex h-10 max-w-[calc(100vw-1rem)] items-center gap-1 rounded-full border
+      border-border/70 bg-card/90 px-1 py-0.5 shadow-2xl shadow-foreground/10
+      backdrop-blur-xl
+    ">
 					{sections.map(({ url, v, Icon }) => {
 						const isActive = activeUrl === url;
 
@@ -241,17 +245,35 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 									aria-current={isActive ? 'page' : undefined}
 									aria-label={isActive ? undefined : `Show ${url} section`}
 									className={cn(
-										'group/nav focus-visible:ring-ring focus-visible:ring-offset-background relative isolate flex h-8 touch-manipulation items-center overflow-hidden rounded-full transition-[background-color,box-shadow,color,transform,width] duration-200 ease-out outline-none focus-visible:ring-2 focus-visible:ring-offset-2 active:scale-[0.99]',
+										`
+            group/nav relative isolate flex h-8 touch-manipulation items-center
+            overflow-hidden rounded-full
+            transition-[background-color,box-shadow,color,transform,width]
+            duration-200 ease-out outline-none
+            focus-visible:ring-2 focus-visible:ring-ring
+            focus-visible:ring-offset-2 focus-visible:ring-offset-background
+            active:scale-[0.99]
+          `,
 										isActive
-											? 'text-primary-foreground w-[clamp(7rem,36vw,8rem)] justify-start pr-2.5 pl-0.5 sm:w-auto sm:min-w-32 sm:pr-3'
-											: 'text-muted-foreground hover:text-foreground size-8 justify-center',
+											? `
+             w-[clamp(7rem,36vw,8rem)] justify-start pr-2.5 pl-0.5
+             text-primary-foreground
+             sm:w-auto sm:min-w-32 sm:pr-3
+           `
+											: `
+             size-8 justify-center text-muted-foreground
+             hover:text-foreground
+           `,
 									)}
 									onClick={() => setSection(v)}
 									type="button"
 								>
 									{isActive && (
 										<motion.span
-											className="bg-primary shadow-primary/25 absolute inset-0 rounded-full shadow-lg"
+											className="
+             absolute inset-0 rounded-full bg-primary shadow-lg
+             shadow-primary/25
+           "
 											layoutId="portfolio-nav-indicator"
 											transition={navIndicatorTransition}
 										/>
@@ -259,10 +281,16 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 
 									<span
 										className={cn(
-											'relative z-10 grid size-7 shrink-0 place-items-center rounded-full transition-colors duration-200 ease-out',
+											`
+             relative z-10 grid size-7 shrink-0 place-items-center rounded-full
+             transition-colors duration-200 ease-out
+           `,
 											isActive
 												? 'bg-primary-foreground/15 text-primary-foreground'
-												: 'bg-secondary text-muted-foreground group-hover/nav:bg-secondary/80 group-hover/nav:text-foreground',
+												: `
+              bg-secondary text-muted-foreground
+              group-hover/nav:bg-secondary/80 group-hover/nav:text-foreground
+            `,
 										)}
 									>
 										<Icon aria-hidden="true" className="size-4" />
@@ -272,7 +300,9 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 										{isActive && (
 											<motion.span
 												animate={navLabelAnimate}
-												className="relative z-10 min-w-0 truncate pl-2 text-sm font-semibold"
+												className="
+              relative z-10 min-w-0 truncate pl-2 text-sm font-semibold
+            "
 												exit={navLabelExit}
 												initial={navLabelInitial}
 												transition={navLabelTransition}
@@ -347,7 +377,7 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 									{isMapPopupOpen && (
 										<motion.div
 											aria-hidden="true"
-											className="bg-background/12 absolute inset-0 z-10"
+											className="absolute inset-0 z-10 bg-background/12"
 											onClick={handleMapPopupClose}
 											initial={{ opacity: 0 }}
 											animate={{
@@ -365,7 +395,10 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 								<AnimatePresence initial={false}>
 									{isMapPopupOpen && (
 										<motion.div
-											className="pointer-events-none absolute inset-x-2 top-4 bottom-4 z-20 flex items-start justify-center"
+											className="
+             pointer-events-none absolute inset-x-2 inset-y-4 z-20 flex
+             items-start justify-center
+           "
 											initial={popupInitial}
 											animate={{
 												...popupAnimate,
@@ -378,7 +411,10 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 										>
 											<ArroyomolinosPopup
 												onClose={handleMapPopupClose}
-												className="pointer-events-auto max-w-52 sm:max-w-56"
+												className="
+              pointer-events-auto max-w-52
+              sm:max-w-56
+            "
 											/>
 										</motion.div>
 									)}

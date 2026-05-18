@@ -93,7 +93,7 @@ function IconPreview({ iconName, iconPackage, className }: IconPreviewProps) {
 	const isReady = loaded?.name === iconName && loaded?.pack === iconPackage;
 
 	if (!isReady) {
-		return <Skeleton className={cn('rounded', className ?? 'size-4')} />;
+		return <Skeleton className={cn('rounded-sm', className ?? 'size-4')} />;
 	}
 
 	if (!loaded.Icon) return null;
@@ -105,7 +105,9 @@ function IconPreview({ iconName, iconPackage, className }: IconPreviewProps) {
 
 export function IconPickerSkeleton() {
 	return (
-		<div className="border-input flex h-11 w-full items-center gap-3 rounded-md border px-3">
+		<div className="
+    flex h-11 w-full items-center gap-3 rounded-md border border-input px-3
+  ">
 			<Skeleton className="size-8 rounded-md" />
 			<div className="flex flex-col gap-1">
 				<Skeleton className="h-3.5 w-24" />
@@ -161,7 +163,9 @@ export function IconPicker({ fullName }: IconPickerProps) {
 					>
 						{selected ? (
 							<span className="flex items-center gap-3">
-								<span className="bg-muted flex size-8 items-center justify-center rounded-md">
+								<span className="
+          flex size-8 items-center justify-center rounded-md bg-muted
+        ">
 									<IconPreview
 										iconName={selected.name}
 										iconPackage={selected.pack}
@@ -169,19 +173,22 @@ export function IconPicker({ fullName }: IconPickerProps) {
 									/>
 								</span>
 								<span className="flex flex-col items-start gap-0.5">
-									<span className="text-foreground text-sm font-medium">
+									<span className="text-sm font-medium text-foreground">
 										{selected.name}
 									</span>
-									<span className="text-muted-foreground text-xs">
+									<span className="text-xs text-muted-foreground">
 										{PACK_LABELS[selected.pack] ?? selected.pack}
 									</span>
 								</span>
 							</span>
 						) : (
 							<span className="flex items-center gap-3">
-								<span className="border-muted-foreground/25 flex size-8 items-center justify-center rounded-md border border-dashed">
+								<span className="
+          flex size-8 items-center justify-center rounded-md border
+          border-dashed border-muted-foreground/25
+        ">
 									<Search
-										className="text-muted-foreground/50 size-3.5"
+										className="size-3.5 text-muted-foreground/50"
 										aria-hidden="true"
 									/>
 								</span>
@@ -205,26 +212,28 @@ export function IconPicker({ fullName }: IconPickerProps) {
 								{searchQuery ? (
 									<div className="flex flex-col items-center gap-1.5 py-8">
 										<Search
-											className="text-muted-foreground/30 size-8"
+											className="size-8 text-muted-foreground/30"
 											aria-hidden="true"
 										/>
 										<p className="mt-1 text-sm font-medium">No icons found</p>
-										<p className="text-muted-foreground text-xs">
+										<p className="text-xs text-muted-foreground">
 											Try a different search term…
 										</p>
 									</div>
 								) : (
 									<div className="flex flex-col items-center gap-1.5 py-8">
-										<div className="bg-muted flex size-10 items-center justify-center rounded-lg">
+										<div className="
+            flex size-10 items-center justify-center rounded-lg bg-muted
+          ">
 											<Search
-												className="text-muted-foreground size-5"
+												className="size-5 text-muted-foreground"
 												aria-hidden="true"
 											/>
 										</div>
 										<p className="mt-1 text-sm font-medium">
 											Search for an icon
 										</p>
-										<p className="text-muted-foreground max-w-[200px] text-xs text-pretty">
+										<p className="max-w-[200px] text-xs text-pretty text-muted-foreground">
 											Type to search across {Object.keys(PACK_LOADERS).length}{' '}
 											icon packs
 										</p>
@@ -250,7 +259,10 @@ export function IconPicker({ fullName }: IconPickerProps) {
 											>
 												<span
 													className={cn(
-														'flex size-8 items-center justify-center rounded-md transition-colors',
+														`
+                flex size-8 items-center justify-center rounded-md
+                transition-colors
+              `,
 														isSelected
 															? 'bg-primary/10 text-primary'
 															: 'bg-muted',
@@ -264,13 +276,13 @@ export function IconPicker({ fullName }: IconPickerProps) {
 												</span>
 												<span className="flex min-w-0 flex-1 flex-col gap-0.5">
 													<span className="truncate text-sm">{name}</span>
-													<span className="text-muted-foreground text-xs">
+													<span className="text-xs text-muted-foreground">
 														{PACK_LABELS[pack] ?? pack}
 													</span>
 												</span>
 												{isSelected && (
 													<Check
-														className="text-primary size-4 shrink-0"
+														className="size-4 shrink-0 text-primary"
 														aria-hidden="true"
 													/>
 												)}

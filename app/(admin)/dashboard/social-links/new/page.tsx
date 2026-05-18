@@ -18,7 +18,7 @@ export default async function NewSocialLinkDashboardPage() {
 				</Button>
 				<div>
 					<h1 className="text-3xl font-bold tracking-tight">Nuevo Enlace Social</h1>
-					<p className="text-muted-foreground mt-1">
+					<p className="mt-1 text-muted-foreground">
 						Añade un nuevo enlace a tus redes sociales
 					</p>
 				</div>
@@ -48,7 +48,7 @@ export default async function NewSocialLinkDashboardPage() {
 						<div className="space-y-2">
 							<Label htmlFor="url">URL</Label>
 							<Input type="url" name="url" id="url" placeholder="https://..." />
-							<p className="text-muted-foreground text-xs">
+							<p className="text-xs text-muted-foreground">
 								Enlace a tu perfil en la red social
 							</p>
 						</div>
@@ -62,7 +62,7 @@ export default async function NewSocialLinkDashboardPage() {
 								id="icon"
 								placeholder="Ej: github, linkedin, twitter..."
 							/>
-							<p className="text-muted-foreground text-xs">
+							<p className="text-xs text-muted-foreground">
 								Nombre del icono para mostrar (opcional)
 							</p>
 						</div>

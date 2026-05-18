@@ -68,7 +68,13 @@ export function SkillsMultiSelect({
 						aria-controls="skills-select-options"
 						aria-label="Select skills"
 						tabIndex={0}
-						className="border-input bg-background hover:bg-accent hover:text-accent-foreground focus:ring-ring flex h-10 min-w-[200px] cursor-pointer items-center justify-start gap-2 rounded-md border px-4 py-2 text-sm font-medium focus:ring-2 focus:ring-offset-2 focus:outline-none"
+						className="
+        flex h-10 min-w-[200px] cursor-pointer items-center justify-start gap-2
+        rounded-md border border-input bg-background px-4 py-2 text-sm
+        font-medium
+        hover:bg-accent hover:text-accent-foreground
+        focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-none
+      "
 						onClick={() => setOpen(!open)}
 						onKeyDown={(e) => {
 							if (e.key === 'Enter' || e.key === ' ') {
@@ -78,7 +84,7 @@ export function SkillsMultiSelect({
 						}}
 					>
 						<ListFilter
-							className="text-muted-foreground size-4 shrink-0"
+							className="size-4 shrink-0 text-muted-foreground"
 							aria-hidden="true"
 						/>
 
@@ -92,13 +98,16 @@ export function SkillsMultiSelect({
 									{selectedSkills.slice(0, 3).map((skill) => (
 										<span
 											key={skill.id}
-											className="bg-primary/10 text-primary inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium"
+											className="
+             inline-flex items-center rounded-full bg-primary/10 px-2 py-0.5
+             text-xs font-medium text-primary
+           "
 										>
 											{skill.name}
 										</span>
 									))}
 									{selectedSkills.length > 3 && (
-										<span className="text-muted-foreground text-xs">
+										<span className="text-xs text-muted-foreground">
 											+{selectedSkills.length - 3} more
 										</span>
 									)}
@@ -113,7 +122,11 @@ export function SkillsMultiSelect({
 								<button
 									type="button"
 									aria-label="Clear selection"
-									className="focus:ring-ring z-10 rounded-sm opacity-50 hover:opacity-100 focus:ring-2 focus:outline-none"
+									className="
+           z-10 rounded-sm opacity-50
+           hover:opacity-100
+           focus:ring-2 focus:ring-ring focus:outline-none
+         "
 									onClick={handleClear}
 								>
 									<X className="size-4 shrink-0" />
@@ -145,7 +158,7 @@ export function SkillsMultiSelect({
 									>
 										<Check
 											className={cn(
-												'mr-2 h-4 w-4',
+												'mr-2 size-4',
 												selectedIds.includes(skill.id)
 													? 'opacity-100'
 													: 'opacity-0',

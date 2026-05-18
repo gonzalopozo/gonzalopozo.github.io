@@ -71,7 +71,17 @@ export default defineConfig([
 		settings: {
 			'better-tailwindcss': {
 				entryPoint: './app/globals.css',
+				detectComponentClasses: true,
 			},
+		},
+		rules: {
+			...betterTailwindcss.configs.recommended.rules,
+			'better-tailwindcss/no-unknown-classes': [
+				'error',
+				{
+					ignore: ['^toaster$'],
+				},
+			],
 		},
 	},
 

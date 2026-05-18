@@ -31,7 +31,7 @@ export default async function SocialLinksDashboardPage() {
 			<div className="flex items-center justify-between">
 				<div>
 					<h1 className="text-3xl font-bold tracking-tight">Social Links</h1>
-					<p className="text-muted-foreground mt-1">
+					<p className="mt-1 text-muted-foreground">
 						Gestiona tus enlaces a redes sociales
 					</p>
 				</div>
@@ -47,13 +47,13 @@ export default async function SocialLinksDashboardPage() {
 			{socialLinksData.length === 0 ? (
 				<Card className="border-dashed">
 					<CardContent className="flex flex-col items-center justify-center py-16">
-						<div className="bg-muted mb-4 rounded-full p-4">
-							<Link2 className="text-muted-foreground size-8" />
+						<div className="mb-4 rounded-full bg-muted p-4">
+							<Link2 className="size-8 text-muted-foreground" />
 						</div>
 						<h3 className="mb-2 text-lg font-semibold">
 							No hay enlaces sociales todavía
 						</h3>
-						<p className="text-muted-foreground mb-6 max-w-sm text-center">
+						<p className="mb-6 max-w-sm text-center text-muted-foreground">
 							Comienza añadiendo tus perfiles de redes sociales para mostrarlos en tu
 							portfolio.
 						</p>
@@ -103,7 +103,11 @@ export default async function SocialLinksDashboardPage() {
 													href={socialLink.url}
 													target="_blank"
 													rel="noopener noreferrer"
-													className="text-primary inline-flex max-w-[200px] items-center gap-1 truncate text-sm hover:underline"
+													className="
+               inline-flex max-w-[200px] items-center gap-1 truncate text-sm
+               text-primary
+               hover:underline
+             "
 												>
 													{socialLink.url}
 													<ExternalLink className="size-3 shrink-0" />
@@ -115,10 +119,10 @@ export default async function SocialLinksDashboardPage() {
 										<TableCell className="font-mono text-sm">
 											{socialLink.icon || '—'}
 										</TableCell>
-										<TableCell className="text-muted-foreground text-sm">
+										<TableCell className="text-sm text-muted-foreground">
 											{formatDate(socialLink.createdAt)}
 										</TableCell>
-										<TableCell className="text-muted-foreground text-sm">
+										<TableCell className="text-sm text-muted-foreground">
 											{formatDate(socialLink.updatedAt)}
 										</TableCell>
 										<TableCell className="text-right">

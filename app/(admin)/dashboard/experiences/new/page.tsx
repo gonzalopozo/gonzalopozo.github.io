@@ -24,7 +24,7 @@ export default async function NewExperienceDashboardPage() {
 				</Button>
 				<div>
 					<h1 className="text-3xl font-bold tracking-tight">Nueva Experiencia</h1>
-					<p className="text-muted-foreground mt-1">
+					<p className="mt-1 text-muted-foreground">
 						Añade una nueva experiencia laboral a tu portfolio
 					</p>
 				</div>
@@ -71,7 +71,7 @@ export default async function NewExperienceDashboardPage() {
 								id="companyUrl"
 								placeholder="https://empresa.com"
 							/>
-							<p className="text-muted-foreground text-xs">
+							<p className="text-xs text-muted-foreground">
 								Enlace al sitio web de la empresa (opcional)
 							</p>
 						</div>
@@ -85,7 +85,7 @@ export default async function NewExperienceDashboardPage() {
 								id="companyLogo"
 								placeholder="URL o nombre del logo"
 							/>
-							<p className="text-muted-foreground text-xs">
+							<p className="text-xs text-muted-foreground">
 								URL de la imagen del logo (opcional)
 							</p>
 						</div>
@@ -110,7 +110,7 @@ export default async function NewExperienceDashboardPage() {
 							<div className="space-y-2">
 								<Label htmlFor="endDate">Fecha de fin</Label>
 								<Input type="date" name="endDate" id="endDate" />
-								<p className="text-muted-foreground text-xs">
+								<p className="text-xs text-muted-foreground">
 									Dejar vacío si es tu trabajo actual
 								</p>
 							</div>
@@ -131,7 +131,7 @@ export default async function NewExperienceDashboardPage() {
 						<div className="space-y-2">
 							<Label>Tecnologías utilizadas</Label>
 							<SkillsMultiSelect skills={skillsList} name="skillIds" />
-							<p className="text-muted-foreground text-xs">
+							<p className="text-xs text-muted-foreground">
 								Selecciona las tecnologías y herramientas usadas en esta experiencia
 							</p>
 						</div>

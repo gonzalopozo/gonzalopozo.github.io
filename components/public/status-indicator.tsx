@@ -13,16 +13,16 @@ export const StatusIndicator = ({ className, status }: StatusIndicatorProps) => 
 				: 'bg-status-archived';
 
 	return (
-		<span className={cn('relative inline-flex h-2 w-2 align-middle', className)}>
+		<span className={cn('relative inline-flex size-2 align-middle', className)}>
 			{status !== 'archived' && (
 				<span
 					className={cn(
-						'absolute inline-flex h-full w-full animate-ping rounded-full opacity-75',
+						'absolute inline-flex size-full animate-ping rounded-full opacity-75',
 						bgClass,
 					)}
 				/>
 			)}
-			<span className={cn('relative inline-flex h-2 w-2 rounded-full', bgClass)} />
+			<span className={cn('relative inline-flex size-2 rounded-full', bgClass)} />
 		</span>
 	);
 };

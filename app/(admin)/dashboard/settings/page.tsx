@@ -17,11 +17,11 @@ export default async function SettingsDashboardPage() {
 		return (
 			<Card className="border-dashed">
 				<CardContent className="flex flex-col items-center justify-center py-16">
-					<div className="bg-muted mb-4 rounded-full p-4">
-						<SettingsIcon className="text-muted-foreground size-8" />
+					<div className="mb-4 rounded-full bg-muted p-4">
+						<SettingsIcon className="size-8 text-muted-foreground" />
 					</div>
 					<h3 className="mb-2 text-lg font-semibold">No hay configuración todavía</h3>
-					<p className="text-muted-foreground max-w-sm text-center">
+					<p className="max-w-sm text-center text-muted-foreground">
 						No se encontró ninguna configuración del sitio.
 					</p>
 				</CardContent>
@@ -35,7 +35,7 @@ export default async function SettingsDashboardPage() {
 			<div className="flex items-center justify-between">
 				<div>
 					<h1 className="text-3xl font-bold tracking-tight">Configuración</h1>
-					<p className="text-muted-foreground mt-1">
+					<p className="mt-1 text-muted-foreground">
 						Gestiona la configuración de tu portfolio y estado laboral
 					</p>
 				</div>
@@ -47,7 +47,7 @@ export default async function SettingsDashboardPage() {
 				<Card>
 					<CardHeader>
 						<div className="flex items-center gap-2">
-							<Briefcase className="text-muted-foreground size-5" />
+							<Briefcase className="size-5 text-muted-foreground" />
 							<CardTitle>Estado Laboral</CardTitle>
 						</div>
 						<CardDescription>
@@ -60,7 +60,7 @@ export default async function SettingsDashboardPage() {
 						<div className="flex items-center justify-between">
 							<div className="space-y-1">
 								<Label htmlFor="isEmployed">Actualmente empleado</Label>
-								<p className="text-muted-foreground text-sm">
+								<p className="text-sm text-muted-foreground">
 									Desactiva si estás abierto a nuevas oportunidades
 								</p>
 							</div>
@@ -86,7 +86,7 @@ export default async function SettingsDashboardPage() {
 								rows={2}
 								defaultValue={settings.statusMessage ?? ''}
 							/>
-							<p className="text-muted-foreground text-xs">
+							<p className="text-xs text-muted-foreground">
 								Mensaje opcional que se mostrará junto a tu estado laboral
 							</p>
 						</div>
@@ -97,7 +97,7 @@ export default async function SettingsDashboardPage() {
 				<Card>
 					<CardHeader>
 						<div className="flex items-center gap-2">
-							<FileText className="text-muted-foreground size-5" />
+							<FileText className="size-5 text-muted-foreground" />
 							<CardTitle>Currículum</CardTitle>
 						</div>
 						<CardDescription>
@@ -114,7 +114,7 @@ export default async function SettingsDashboardPage() {
 								placeholder="https://drive.google.com/..."
 								defaultValue={settings.resumeUrl}
 							/>
-							<p className="text-muted-foreground text-xs">
+							<p className="text-xs text-muted-foreground">
 								Enlace a Google Drive, Dropbox u otro servicio de almacenamiento
 							</p>
 						</div>

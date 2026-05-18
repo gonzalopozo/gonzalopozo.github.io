@@ -33,9 +33,9 @@ export default async function UpdateSocialLinkDashboardPage(props: {
 				</Button>
 				<div>
 					<h1 className="text-3xl font-bold tracking-tight">Editar Enlace Social</h1>
-					<p className="text-muted-foreground mt-1">
+					<p className="mt-1 text-muted-foreground">
 						Modifica los datos de{' '}
-						<span className="text-foreground font-medium">{socialLinkResult.name}</span>
+						<span className="font-medium text-foreground">{socialLinkResult.name}</span>
 					</p>
 				</div>
 			</div>
@@ -47,7 +47,9 @@ export default async function UpdateSocialLinkDashboardPage(props: {
 					<CardDescription>Actualiza los campos que necesites modificar</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<form action={updateSocialLink.bind(null, Number(id))} className="space-y-6">
+					<form action={updateSocialLink.bind(null, Number(id))} className="
+       space-y-6
+     ">
 						{/* Name Field */}
 						<div className="space-y-2">
 							<Label htmlFor="name">Nombre</Label>
@@ -71,7 +73,7 @@ export default async function UpdateSocialLinkDashboardPage(props: {
 								placeholder="https://..."
 								defaultValue={socialLinkResult.url || ''}
 							/>
-							<p className="text-muted-foreground text-xs">
+							<p className="text-xs text-muted-foreground">
 								Enlace a tu perfil en la red social
 							</p>
 						</div>
@@ -86,7 +88,7 @@ export default async function UpdateSocialLinkDashboardPage(props: {
 								placeholder="Ej: github, linkedin, twitter..."
 								defaultValue={socialLinkResult.icon || ''}
 							/>
-							<p className="text-muted-foreground text-xs">
+							<p className="text-xs text-muted-foreground">
 								Nombre del icono para mostrar (opcional)
 							</p>
 						</div>

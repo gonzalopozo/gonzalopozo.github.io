@@ -29,7 +29,7 @@ export default async function NewSkillDashboardPage() {
 					<h1 className="text-3xl font-bold tracking-tight text-pretty">
 						Nueva Habilidad
 					</h1>
-					<p className="text-muted-foreground mt-1">
+					<p className="mt-1 text-muted-foreground">
 						Añade una nueva habilidad o tecnología a tu portfolio
 					</p>
 				</div>
@@ -60,7 +60,13 @@ export default async function NewSkillDashboardPage() {
 							<select
 								name="type"
 								id="type"
-								className="border-input bg-background focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 flex h-9 w-full rounded-md border px-3 py-1 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px]"
+								className="
+          flex h-9 w-full rounded-md border border-input bg-background px-3 py-1
+          text-sm shadow-xs transition-[color,box-shadow] outline-none
+          focus-visible:border-ring focus-visible:ring-[3px]
+          focus-visible:ring-ring/50
+          dark:bg-input/30
+        "
 								required
 							>
 								<option value="fullstack">Full Stack</option>
@@ -88,7 +94,7 @@ export default async function NewSkillDashboardPage() {
 								placeholder="https://…"
 								autoComplete="off"
 							/>
-							<p className="text-muted-foreground text-xs">
+							<p className="text-xs text-muted-foreground">
 								Enlace a documentación o recurso oficial (opcional)
 							</p>
 						</div>

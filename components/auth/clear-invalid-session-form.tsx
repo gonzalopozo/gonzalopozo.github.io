@@ -17,12 +17,15 @@ export function ClearInvalidSessionForm() {
 				ref={formRef}
 				action="/api/auth/clear-invalid-session"
 				method="post"
-				className="border-border bg-card text-card-foreground flex w-full max-w-sm flex-col items-center gap-4 rounded-md border p-6 text-center"
+				className="
+      flex w-full max-w-sm flex-col items-center gap-4 rounded-md border
+      border-border bg-card p-6 text-center text-card-foreground
+    "
 			>
-				<Spinner className="text-muted-foreground size-5" />
+				<Spinner className="size-5 text-muted-foreground" />
 				<div className="space-y-1">
 					<h1 className="text-base font-semibold">Session expired</h1>
-					<p className="text-muted-foreground text-sm">
+					<p className="text-sm text-muted-foreground">
 						Redirecting you to sign in again.
 					</p>
 				</div>

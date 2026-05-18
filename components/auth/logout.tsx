@@ -32,7 +32,12 @@ export function LogOutButton() {
 		<>
 			<button
 				onClick={handleClick}
-				className="cursor-pointer rounded-md border-2 border-red-500 bg-white px-4 py-2 font-bold text-red-500 transition-colors duration-300 hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
+				className="
+      cursor-pointer rounded-md border-2 border-red-500 bg-white px-4 py-2
+      font-bold text-red-500 transition-colors duration-300
+      hover:bg-red-50 hover:text-red-600
+      disabled:cursor-not-allowed disabled:opacity-50
+    "
 				disabled={loading}
 			>
 				{loading && <Spinner className="size-6 text-green-400" />} Sign out!

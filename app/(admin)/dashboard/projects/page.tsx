@@ -15,7 +15,7 @@ export default async function ProjectsDashboardPage() {
 			<div className="flex items-center justify-between">
 				<div>
 					<h1 className="text-3xl font-bold tracking-tight">Proyectos</h1>
-					<p className="text-muted-foreground mt-1">
+					<p className="mt-1 text-muted-foreground">
 						Gestiona tus proyectos del portfolio
 					</p>
 				</div>
@@ -31,11 +31,11 @@ export default async function ProjectsDashboardPage() {
 			{projectsData.length === 0 ? (
 				<Card className="border-dashed">
 					<CardContent className="flex flex-col items-center justify-center py-16">
-						<div className="bg-muted mb-4 rounded-full p-4">
-							<FolderKanban className="text-muted-foreground size-8" />
+						<div className="mb-4 rounded-full bg-muted p-4">
+							<FolderKanban className="size-8 text-muted-foreground" />
 						</div>
 						<h3 className="mb-2 text-lg font-semibold">No hay proyectos todavía</h3>
-						<p className="text-muted-foreground mb-6 max-w-sm text-center">
+						<p className="mb-6 max-w-sm text-center text-muted-foreground">
 							Comienza añadiendo tus primeros proyectos para mostrarlos en tu
 							portfolio.
 						</p>

@@ -45,9 +45,9 @@ export default async function UpdateSkillDashboardPage(props: { params: Promise<
 					<h1 className="text-3xl font-bold tracking-tight text-pretty">
 						Editar Habilidad
 					</h1>
-					<p className="text-muted-foreground mt-1">
+					<p className="mt-1 text-muted-foreground">
 						Modifica los datos de{' '}
-						<span className="text-foreground font-medium">{skill.name}</span>
+						<span className="font-medium text-foreground">{skill.name}</span>
 					</p>
 				</div>
 			</div>
@@ -79,7 +79,13 @@ export default async function UpdateSkillDashboardPage(props: { params: Promise<
 								name="type"
 								id="type"
 								defaultValue={skill.type}
-								className="border-input bg-background focus-visible:border-ring focus-visible:ring-ring/50 dark:bg-input/30 flex h-9 w-full rounded-md border px-3 py-1 text-sm shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px]"
+								className="
+          flex h-9 w-full rounded-md border border-input bg-background px-3 py-1
+          text-sm shadow-xs transition-[color,box-shadow] outline-none
+          focus-visible:border-ring focus-visible:ring-[3px]
+          focus-visible:ring-ring/50
+          dark:bg-input/30
+        "
 							>
 								<option value="fullstack">Full Stack</option>
 								<option value="frontend">Frontend</option>
@@ -107,7 +113,7 @@ export default async function UpdateSkillDashboardPage(props: { params: Promise<
 								defaultValue={skill.url || ''}
 								autoComplete="off"
 							/>
-							<p className="text-muted-foreground text-xs">
+							<p className="text-xs text-muted-foreground">
 								Enlace a la documentación oficial o sitio web (opcional)
 							</p>
 						</div>

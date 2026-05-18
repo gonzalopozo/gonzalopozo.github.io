@@ -54,7 +54,7 @@ export default async function ExperiencesDashboardPage() {
 			<div className="flex items-center justify-between">
 				<div>
 					<h1 className="text-3xl font-bold tracking-tight">Experiencias</h1>
-					<p className="text-muted-foreground mt-1">
+					<p className="mt-1 text-muted-foreground">
 						Gestiona tu experiencia laboral y profesional
 					</p>
 				</div>
@@ -70,11 +70,11 @@ export default async function ExperiencesDashboardPage() {
 			{experiencesData.length === 0 ? (
 				<Card className="border-dashed">
 					<CardContent className="flex flex-col items-center justify-center py-16">
-						<div className="bg-muted mb-4 rounded-full p-4">
-							<Briefcase className="text-muted-foreground size-8" />
+						<div className="mb-4 rounded-full bg-muted p-4">
+							<Briefcase className="size-8 text-muted-foreground" />
 						</div>
 						<h3 className="mb-2 text-lg font-semibold">No hay experiencias todavía</h3>
-						<p className="text-muted-foreground mb-6 max-w-sm text-center">
+						<p className="mb-6 max-w-sm text-center text-muted-foreground">
 							Comienza añadiendo tu primera experiencia laboral para mostrarla en tu
 							portfolio.
 						</p>
@@ -118,7 +118,7 @@ export default async function ExperiencesDashboardPage() {
 										<TableCell>
 											<div className="font-medium">{experience.role}</div>
 											{experience.description && (
-												<p className="text-muted-foreground max-w-[200px] truncate text-xs">
+												<p className="max-w-[200px] truncate text-xs text-muted-foreground">
 													{experience.description}
 												</p>
 											)}
@@ -133,7 +133,10 @@ export default async function ExperiencesDashboardPage() {
 														href={experience.companyUrl}
 														target="_blank"
 														rel="noopener noreferrer"
-														className="text-primary hover:text-primary/80"
+														className="
+                text-primary
+                hover:text-primary/80
+              "
 													>
 														<ExternalLink className="size-3" />
 													</a>
@@ -141,7 +144,9 @@ export default async function ExperiencesDashboardPage() {
 											</div>
 										</TableCell>
 										<TableCell>
-											<div className="text-muted-foreground flex items-center gap-1.5 text-sm">
+											<div className="
+             flex items-center gap-1.5 text-sm text-muted-foreground
+           ">
 												<Calendar className="size-3.5" />
 												{formatDateRange(
 													experience.startDate,
@@ -151,7 +156,9 @@ export default async function ExperiencesDashboardPage() {
 										</TableCell>
 										<TableCell>
 											{experience.location ? (
-												<div className="text-muted-foreground flex items-center gap-1.5 text-sm">
+												<div className="
+              flex items-center gap-1.5 text-sm text-muted-foreground
+            ">
 													<MapPin className="size-3.5" />
 													{experience.location}
 												</div>
@@ -174,7 +181,7 @@ export default async function ExperiencesDashboardPage() {
 															</Badge>
 														))
 												) : (
-													<span className="text-muted-foreground text-sm">
+													<span className="text-sm text-muted-foreground">
 														—
 													</span>
 												)}

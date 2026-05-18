@@ -41,7 +41,7 @@ export default async function SkillsDashboardPage() {
 			<div className="flex items-center justify-between">
 				<div>
 					<h1 className="text-3xl font-bold tracking-tight">Skills</h1>
-					<p className="text-muted-foreground mt-1">
+					<p className="mt-1 text-muted-foreground">
 						Gestiona tus habilidades y tecnologías
 					</p>
 				</div>
@@ -57,11 +57,11 @@ export default async function SkillsDashboardPage() {
 			{skillsData.length === 0 ? (
 				<Card className="border-dashed">
 					<CardContent className="flex flex-col items-center justify-center py-16">
-						<div className="bg-muted mb-4 rounded-full p-4">
-							<Plus className="text-muted-foreground size-8" />
+						<div className="mb-4 rounded-full bg-muted p-4">
+							<Plus className="size-8 text-muted-foreground" />
 						</div>
 						<h3 className="mb-2 text-lg font-semibold">No hay skills todavía</h3>
-						<p className="text-muted-foreground mb-6 max-w-sm text-center">
+						<p className="mb-6 max-w-sm text-center text-muted-foreground">
 							Comienza añadiendo tus primeras habilidades y tecnologías para
 							mostrarlas en tu portfolio.
 						</p>
@@ -96,7 +96,7 @@ export default async function SkillsDashboardPage() {
 							<TableBody>
 								{skillsData.map((skill) => (
 									<TableRow key={skill.id}>
-										<TableCell className="text-muted-foreground font-mono text-xs">
+										<TableCell className="font-mono text-xs text-muted-foreground">
 											{skill.id}
 										</TableCell>
 										<TableCell className="font-medium">{skill.name}</TableCell>
@@ -123,7 +123,10 @@ export default async function SkillsDashboardPage() {
 													href={skill.url}
 													target="_blank"
 													rel="noopener noreferrer"
-													className="text-primary inline-flex items-center gap-1 text-sm hover:underline"
+													className="
+               inline-flex items-center gap-1 text-sm text-primary
+               hover:underline
+             "
 												>
 													Enlace
 													<ExternalLink className="size-3" />
@@ -132,10 +135,10 @@ export default async function SkillsDashboardPage() {
 												<span className="text-muted-foreground">—</span>
 											)}
 										</TableCell>
-										<TableCell className="text-muted-foreground text-sm">
+										<TableCell className="text-sm text-muted-foreground">
 											{formatDate(skill.createdAt)}
 										</TableCell>
-										<TableCell className="text-muted-foreground text-sm">
+										<TableCell className="text-sm text-muted-foreground">
 											{formatDate(skill.updatedAt)}
 										</TableCell>
 										<TableCell className="text-right">
