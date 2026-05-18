@@ -127,9 +127,16 @@ export async function updateProject(id: number, formData: FormData) {
 	}
 
 	const nextProjectSkillIds = new Set(projectSkillsToReview.map((skill) => skill.skillId));
-	const projectSkillIdsToDelete = formerProjectSkills
-		.filter((formerSkill) => !nextProjectSkillIds.has(formerSkill.skillId))
-		.map((formerSkill) => formerSkill.skillId);
+	const projectSkillIdsToDelete = formerProjectSkills.reduce<number[]>(
+		(skillIds, formerSkill) => {
+			if (!nextProjectSkillIds.has(formerSkill.skillId)) {
+				skillIds.push(formerSkill.skillId);
+			}
+
+			return skillIds;
+		},
+		[],
+	);
 
 	if (projectSkillIdsToDelete.length > 0) {
 		await db

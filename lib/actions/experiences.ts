@@ -120,9 +120,16 @@ export async function updateExperience(id: number, formData: FormData) {
 	}
 
 	const nextExperienceSkillIds = new Set(experienceSkillsToReview.map((skill) => skill.skillId));
-	const experienceSkillIdsToDelete = formerExperienceSkills
-		.filter((formerSkill) => !nextExperienceSkillIds.has(formerSkill.skillId))
-		.map((formerSkill) => formerSkill.skillId);
+	const experienceSkillIdsToDelete = formerExperienceSkills.reduce<number[]>(
+		(skillIds, formerSkill) => {
+			if (!nextExperienceSkillIds.has(formerSkill.skillId)) {
+				skillIds.push(formerSkill.skillId);
+			}
+
+			return skillIds;
+		},
+		[],
+	);
 
 	if (experienceSkillIdsToDelete.length > 0) {
 		await db
