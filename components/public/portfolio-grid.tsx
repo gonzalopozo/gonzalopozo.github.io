@@ -1,7 +1,7 @@
 'use client';
 'use no memo';
 
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
+import { AnimatePresence, LazyMotion, domAnimation, m, useReducedMotion } from 'motion/react';
 import { useQueryState, parseAsStringLiteral } from 'nuqs';
 import { Briefcase, History, LayoutGrid, Send, UserRound, type LucideIcon } from 'lucide-react';
 import {
@@ -217,6 +217,8 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 	const navIndicatorTransition = shouldReduceMotion
 		? { duration: 0.01, ease: 'linear' as const }
 		: { type: 'spring' as const, stiffness: 420, damping: 34, mass: 0.9 };
+	const navIndicatorInitial = shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96 };
+	const navIndicatorAnimate = shouldReduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1 };
 	const navLabelInitial = shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: -4 };
 	const navLabelAnimate = shouldReduceMotion ? { opacity: 1 } : { opacity: 1, x: 0 };
 	const navLabelExit = shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: -4 };
@@ -226,7 +228,7 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 	};
 
 	return (
-		<>
+		<LazyMotion features={domAnimation}>
 			<nav
 				aria-label="Portfolio sections"
 				className="mb-12 flex justify-center px-[3.5vw] pt-12"
@@ -250,9 +252,10 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 									type="button"
 								>
 									{isActive && (
-										<motion.span
+										<m.span
 											className="absolute inset-0 rounded-full bg-primary shadow-lg shadow-primary/25"
-											layoutId="portfolio-nav-indicator"
+											initial={navIndicatorInitial}
+											animate={navIndicatorAnimate}
 											transition={navIndicatorTransition}
 										/>
 									)}
@@ -270,7 +273,7 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 
 									<AnimatePresence initial={false}>
 										{isActive && (
-											<motion.span
+											<m.span
 												animate={navLabelAnimate}
 												className="relative z-10 min-w-0 truncate pl-2 text-sm font-semibold"
 												exit={navLabelExit}
@@ -278,7 +281,7 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 												transition={navLabelTransition}
 											>
 												{url}
-											</motion.span>
+											</m.span>
 										)}
 									</AnimatePresence>
 								</button>
@@ -345,7 +348,7 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 
 								<AnimatePresence initial={false}>
 									{isMapPopupOpen && (
-										<motion.div
+										<m.div
 											aria-hidden="true"
 											className="absolute inset-0 z-10 bg-background/12"
 											onClick={handleMapPopupClose}
@@ -364,7 +367,7 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 
 								<AnimatePresence initial={false}>
 									{isMapPopupOpen && (
-										<motion.div
+										<m.div
 											className="pointer-events-none absolute inset-x-2 inset-y-4 z-20 flex items-start justify-center"
 											initial={popupInitial}
 											animate={{
@@ -380,7 +383,7 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 												onClose={handleMapPopupClose}
 												className="pointer-events-auto max-w-52 sm:max-w-56"
 											/>
-										</motion.div>
+										</m.div>
 									)}
 								</AnimatePresence>
 							</div>
@@ -410,6 +413,6 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 					</Responsive>
 				)}
 			</div>
-		</>
+		</LazyMotion>
 	);
 }
