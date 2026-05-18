@@ -8,7 +8,7 @@ import { toast } from 'sonner';
 
 export function LogOutButton() {
 	const [loading, setLoading] = useState(false);
-	const router = useRouter();
+	const { push } = useRouter();
 
 	const handleClick = async (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
@@ -18,7 +18,7 @@ export function LogOutButton() {
 			fetchOptions: {
 				onSuccess: () => {
 					toast.success('Signed out successfully');
-					router.push('/login');
+					push('/login');
 				},
 				onError: (error) => {
 					toast.error(`Failed to sign out: ${error.error.message}`);

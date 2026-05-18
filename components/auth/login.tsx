@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 export function LoginForm() {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-	const router = useRouter();
+	const { push } = useRouter();
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -26,7 +26,7 @@ export function LoginForm() {
 			{
 				onSuccess: () => {
 					toast.success('Signed in successfully');
-					router.push('/dashboard');
+					push('/dashboard');
 				},
 				onError: (ctx) => {
 					toast.error(`Failed to sign in: ${ctx.error.message}`);
