@@ -72,6 +72,7 @@ export default defineConfig([
 			'better-tailwindcss': {
 				entryPoint: './app/globals.css',
 				detectComponentClasses: true,
+				rootFontSize: 16,
 			},
 		},
 		rules: {
