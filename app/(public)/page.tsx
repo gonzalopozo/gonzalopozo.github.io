@@ -48,7 +48,7 @@ function PortfolioGridFallback() {
 						<div className="size-8 rounded-full bg-secondary motion-safe:animate-pulse" />
 					</div>
 				</nav>
-				<div className="mx-auto px-[3.5vw]" style={{ maxWidth: 1308.6 }}>
+				<div className="mx-auto px-[3.5vw] pb-25" style={{ maxWidth: 1308.6 }}>
 					<div className="grid auto-rows-[223px] grid-cols-1 gap-4 md:grid-cols-4 lg:grid-cols-4">
 						{cells.map(({ id, className }) => (
 							<div
