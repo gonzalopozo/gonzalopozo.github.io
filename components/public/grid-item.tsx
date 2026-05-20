@@ -76,7 +76,7 @@ export function GridItem({ children, className, variant, ref, ...props }: GridIt
 		<div ref={ref} className={cn(`cursor-grab active:cursor-grabbing`, className)} {...props}>
 			<Card
 				className={cn(
-					'size-full min-h-0 min-w-0 overflow-hidden rounded-4xl bg-card shadow-none',
+					'size-full min-h-0 min-w-0 overflow-hidden rounded-4xl border-0 bg-card shadow-none',
 					{
 						'bg-card text-card-foreground': variant !== 'map',
 						'group/map': variant === 'map',
