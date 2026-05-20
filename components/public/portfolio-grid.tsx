@@ -125,6 +125,7 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 
 	const [isMapPopupOpen, setIsMapPopupOpen] = useState(false);
 	const [canMapMarkerJiggle, setCanMapMarkerJiggle] = useState(false);
+	const [isGridEntering, setIsGridEntering] = useState(true);
 
 	const [layoutsBySection, setLayoutsBySection] =
 		useState<Record<string, SectionLayouts>>(SEED_LAYOUTS_BY_SECTION);
@@ -226,6 +227,12 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 		duration: shouldReduceMotion ? 0.01 : 0.16,
 		ease: 'easeOut' as const,
 	};
+	const gridEntranceInitial = shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 32 };
+	const gridEntranceAnimate = shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 };
+	const gridEntranceTransition = {
+		duration: shouldReduceMotion ? 0.12 : 0.36,
+		ease: 'easeOut' as const,
+	};
 
 	return (
 		<LazyMotion features={domAnimation}>
@@ -297,120 +304,133 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 				style={{ maxWidth: GRID_MAX_WIDTH_PX }}
 			>
 				{mounted && (
-					<Responsive
-						layouts={gridLayouts}
-						width={width}
-						breakpoints={{ lg: 996, md: 768, sm: 0 }}
-						cols={GRID_COLUMNS_BY_BREAKPOINT}
-						rowHeight={GRID_ROW_HEIGHT_PX}
-						margin={GRID_ITEM_MARGIN}
-						containerPadding={[0, 0]}
-						resizeConfig={{ enabled: false, handles: [] }}
-						dragConfig={{
-							enabled: currentBreakpoint === 'lg',
-							bounded: true,
-							threshold: 3,
-							cancel: DRAG_CANCEL_SELECTORS,
-						}}
-						onLayoutChange={handleLayoutChange}
+					<m.div
+						initial={gridEntranceInitial}
+						animate={gridEntranceAnimate}
+						transition={gridEntranceTransition}
+						onAnimationComplete={() => setIsGridEntering(false)}
 					>
-						<GridItem variant="about" key="a">
-							<InfoGridItemContent infoAboutMe={infoAboutMe!} />
-						</GridItem>
-						<GridItem
-							variant="map"
-							key="b"
-							onMouseEnter={handleMapGridMouseEnter}
-							onMouseLeave={handleMapGridMouseLeave}
+						<Responsive
+							className={cn(isGridEntering && 'portfolio-grid-entering')}
+							layouts={gridLayouts}
+							width={width}
+							breakpoints={{ lg: 996, md: 768, sm: 0 }}
+							cols={GRID_COLUMNS_BY_BREAKPOINT}
+							rowHeight={GRID_ROW_HEIGHT_PX}
+							margin={GRID_ITEM_MARGIN}
+							containerPadding={[0, 0]}
+							resizeConfig={{ enabled: false, handles: [] }}
+							dragConfig={{
+								enabled: currentBreakpoint === 'lg',
+								bounded: true,
+								threshold: 3,
+								cancel: DRAG_CANCEL_SELECTORS,
+							}}
+							onLayoutChange={handleLayoutChange}
 						>
-							<div className="relative size-full">
-								<Map
-									center={[-3.916, 40.27]}
-									zoom={13}
-									attributionControl={false}
-									dragPan={false}
-									dragRotate={false}
-									scrollZoom={false}
-								>
-									<MapMarker
-										key={'map-marker'}
-										longitude={-3.916}
-										latitude={40.27}
-										onClick={handleMapPopupOpen}
-									>
-										<MarkerContent>
-											<ArroyomolinosMarkerPin
-												shouldJiggle={canMapMarkerJiggle && !isMapPopupOpen}
-											/>
-										</MarkerContent>
-									</MapMarker>
-								</Map>
-
-								<AnimatePresence initial={false}>
-									{isMapPopupOpen && (
-										<m.div
-											aria-hidden="true"
-											className="absolute inset-0 z-10 bg-background/12"
-											onClick={handleMapPopupClose}
-											initial={{ opacity: 0 }}
-											animate={{
-												opacity: 1,
-												transition: backdropEnterTransition,
-											}}
-											exit={{
-												opacity: 0,
-												transition: backdropExitTransition,
-											}}
-										/>
-									)}
-								</AnimatePresence>
-
-								<AnimatePresence initial={false}>
-									{isMapPopupOpen && (
-										<m.div
-											className="pointer-events-none absolute inset-x-2 inset-y-4 z-20 flex items-start justify-center"
-											initial={popupInitial}
-											animate={{
-												...popupAnimate,
-												transition: popupEnterTransition,
-											}}
-											exit={{
-												...popupExit,
-												transition: popupExitTransition,
-											}}
-										>
-											<ArroyomolinosPopup
-												onClose={handleMapPopupClose}
-												className="pointer-events-auto max-w-52 sm:max-w-56"
-											/>
-										</m.div>
-									)}
-								</AnimatePresence>
-							</div>
-						</GridItem>
-						<GridItem variant="music" key="d">
-							<LastTrackGridItemContent track={lastTrack} />
-						</GridItem>
-						<GridItem variant="contact" key="e">
-							<SocialLinkGridItemContent
-								backgroundColor="#66696D"
-								url="https://github.com/gonzalopozo"
-								ariaLabel="Visit Gonzalo's GitHub profile"
+							<GridItem variant="about" key="a">
+								<InfoGridItemContent infoAboutMe={infoAboutMe!} />
+							</GridItem>
+							<GridItem
+								variant="map"
+								key="b"
+								onMouseEnter={handleMapGridMouseEnter}
+								onMouseLeave={handleMapGridMouseLeave}
 							>
-								<FaGithub aria-hidden="true" className="size-14 text-white/95" />
-							</SocialLinkGridItemContent>
-						</GridItem>
-						{(['c', 'f', 'g'] as const).map((slot, index) =>
-							projectCards[index] ? (
-								<GridItem variant="project" key={slot}>
-									{projectCards[index]}
-								</GridItem>
-							) : null,
-						)}
-						<GridItem variant="contact" key="i">
-							<BB8ThemeSwitcher />
-						</GridItem>
-					</Responsive>
+								<div className="relative size-full">
+									<Map
+										center={[-3.916, 40.27]}
+										zoom={13}
+										attributionControl={false}
+										dragPan={false}
+										dragRotate={false}
+										scrollZoom={false}
+									>
+										<MapMarker
+											key={'map-marker'}
+											longitude={-3.916}
+											latitude={40.27}
+											onClick={handleMapPopupOpen}
+										>
+											<MarkerContent>
+												<ArroyomolinosMarkerPin
+													shouldJiggle={
+														canMapMarkerJiggle && !isMapPopupOpen
+													}
+												/>
+											</MarkerContent>
+										</MapMarker>
+									</Map>
+
+									<AnimatePresence initial={false}>
+										{isMapPopupOpen && (
+											<m.div
+												aria-hidden="true"
+												className="absolute inset-0 z-10 bg-background/12"
+												onClick={handleMapPopupClose}
+												initial={{ opacity: 0 }}
+												animate={{
+													opacity: 1,
+													transition: backdropEnterTransition,
+												}}
+												exit={{
+													opacity: 0,
+													transition: backdropExitTransition,
+												}}
+											/>
+										)}
+									</AnimatePresence>
+
+									<AnimatePresence initial={false}>
+										{isMapPopupOpen && (
+											<m.div
+												className="pointer-events-none absolute inset-x-2 inset-y-4 z-20 flex items-start justify-center"
+												initial={popupInitial}
+												animate={{
+													...popupAnimate,
+													transition: popupEnterTransition,
+												}}
+												exit={{
+													...popupExit,
+													transition: popupExitTransition,
+												}}
+											>
+												<ArroyomolinosPopup
+													onClose={handleMapPopupClose}
+													className="pointer-events-auto max-w-52 sm:max-w-56"
+												/>
+											</m.div>
+										)}
+									</AnimatePresence>
+								</div>
+							</GridItem>
+							<GridItem variant="music" key="d">
+								<LastTrackGridItemContent track={lastTrack} />
+							</GridItem>
+							<GridItem variant="contact" key="e">
+								<SocialLinkGridItemContent
+									backgroundColor="#66696D"
+									url="https://github.com/gonzalopozo"
+									ariaLabel="Visit Gonzalo's GitHub profile"
+								>
+									<FaGithub
+										aria-hidden="true"
+										className="size-14 text-white/95"
+									/>
+								</SocialLinkGridItemContent>
+							</GridItem>
+							{(['c', 'f', 'g'] as const).map((slot, index) =>
+								projectCards[index] ? (
+									<GridItem variant="project" key={slot}>
+										{projectCards[index]}
+									</GridItem>
+								) : null,
+							)}
+							<GridItem variant="contact" key="i">
+								<BB8ThemeSwitcher />
+							</GridItem>
+						</Responsive>
+					</m.div>
 				)}
 			</div>
 		</LazyMotion>

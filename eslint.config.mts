@@ -88,7 +88,7 @@ export default defineConfig([
 			'better-tailwindcss/no-unknown-classes': [
 				'error',
 				{
-					ignore: ['^toaster$'],
+					ignore: ['^toaster$', 'portfolio-grid-entering'],
 				},
 			],
 		},

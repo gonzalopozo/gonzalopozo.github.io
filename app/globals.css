@@ -278,6 +278,10 @@
 		border-radius: 2rem;
 		transition-duration: 120ms;
 	}
+	.portfolio-grid-entering.react-grid-layout,
+	.portfolio-grid-entering .react-grid-item {
+		transition: none !important;
+	}
 	.maplibregl-popup-content {
 		@apply rounded-none! bg-transparent! p-0! shadow-none!;
 	}
