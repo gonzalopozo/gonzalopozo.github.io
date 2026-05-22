@@ -432,7 +432,7 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 									</GridItem>
 								) : null,
 							)}
-							{(['h', 'j'] as const).map((slot) => (
+							{(['g', 'j'] as const).map((slot) => (
 								<GridItem
 									aria-hidden="true"
 									className="cursor-default active:cursor-default"
@@ -441,7 +441,7 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 								/>
 							))}
 							{projectCards[2] ? (
-								<GridItem variant="project" key="g">
+								<GridItem variant="project" key="h">
 									{projectCards[2]}
 								</GridItem>
 							) : null}
