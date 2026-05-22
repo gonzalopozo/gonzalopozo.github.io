@@ -45,28 +45,34 @@ const SEED_LAYOUTS_BY_SECTION: Record<string, SectionLayouts> = {
 			{ i: 'd', x: 0, y: 1, w: 1, h: 6 },
 			{ i: 'e', x: 1, y: 1, w: 1, h: 6 },
 			{ i: 'f', x: 2, y: 1, w: 1, h: 12 },
-			{ i: 'g', x: 0, y: 2, w: 2, h: 6 },
-			{ i: 'i', x: 3, y: 2, w: 1, h: 6 },
+			{ i: 'g', x: 0, y: 19, w: 2, h: 6 },
+			{ i: 'i', x: 3, y: 19, w: 1, h: 6 },
+			{ i: 'h', x: 0, y: 25, w: 2, h: 6 },
+			{ i: 'j', x: 2, y: 25, w: 2, h: 6 },
 		],
 		md: [
 			{ i: 'a', x: 0, y: 0, w: 4, h: 8 },
 			{ i: 'c', x: 0, y: 8, w: 2, h: 12 },
 			{ i: 'f', x: 2, y: 8, w: 2, h: 12 },
-			{ i: 'g', x: 0, y: 20, w: 4, h: 6 },
-			{ i: 'b', x: 0, y: 26, w: 2, h: 6 },
-			{ i: 'd', x: 2, y: 26, w: 2, h: 6 },
-			{ i: 'e', x: 0, y: 32, w: 2, h: 6 },
-			{ i: 'i', x: 2, y: 32, w: 2, h: 6 },
+			{ i: 'h', x: 0, y: 20, w: 4, h: 6 },
+			{ i: 'j', x: 0, y: 26, w: 4, h: 6 },
+			{ i: 'g', x: 0, y: 32, w: 4, h: 6 },
+			{ i: 'b', x: 0, y: 38, w: 2, h: 6 },
+			{ i: 'd', x: 2, y: 38, w: 2, h: 6 },
+			{ i: 'e', x: 0, y: 44, w: 2, h: 6 },
+			{ i: 'i', x: 2, y: 44, w: 2, h: 6 },
 		],
 		sm: [
 			{ i: 'a', x: 0, y: 0, w: 1, h: 8 },
 			{ i: 'c', x: 0, y: 8, w: 1, h: 12 },
 			{ i: 'f', x: 0, y: 20, w: 1, h: 12 },
-			{ i: 'g', x: 0, y: 32, w: 1, h: 9 },
-			{ i: 'd', x: 0, y: 41, w: 1, h: 6 },
-			{ i: 'e', x: 0, y: 47, w: 1, h: 6 },
-			{ i: 'i', x: 0, y: 53, w: 1, h: 6 },
-			{ i: 'b', x: 0, y: 59, w: 1, h: 6 },
+			{ i: 'h', x: 0, y: 32, w: 1, h: 9 },
+			{ i: 'j', x: 0, y: 41, w: 1, h: 9 },
+			{ i: 'g', x: 0, y: 50, w: 1, h: 9 },
+			{ i: 'd', x: 0, y: 59, w: 1, h: 6 },
+			{ i: 'e', x: 0, y: 65, w: 1, h: 6 },
+			{ i: 'i', x: 0, y: 71, w: 1, h: 6 },
+			{ i: 'b', x: 0, y: 77, w: 1, h: 6 },
 		],
 	},
 	'About me': {
@@ -419,13 +425,26 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 									/>
 								</SocialLinkGridItemContent>
 							</GridItem>
-							{(['c', 'f', 'g'] as const).map((slot, index) =>
+							{(['c', 'f'] as const).map((slot, index) =>
 								projectCards[index] ? (
 									<GridItem variant="project" key={slot}>
 										{projectCards[index]}
 									</GridItem>
 								) : null,
 							)}
+							{(['h', 'j'] as const).map((slot) => (
+								<GridItem
+									aria-hidden="true"
+									className="cursor-default active:cursor-default"
+									variant="project"
+									key={slot}
+								/>
+							))}
+							{projectCards[2] ? (
+								<GridItem variant="project" key="g">
+									{projectCards[2]}
+								</GridItem>
+							) : null}
 							<GridItem variant="contact" key="i">
 								<BB8ThemeSwitcher />
 							</GridItem>
