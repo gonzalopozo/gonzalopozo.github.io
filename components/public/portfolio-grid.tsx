@@ -253,7 +253,7 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 					className="h-auto w-[clamp(8rem,16vw,12rem)] shrink-0"
 					height={724}
 					priority
-					src="/gonzalo_logo_logo.png"
+					src="/gonzalopozo-logo.png"
 					width={2172}
 				/>
 
