@@ -96,11 +96,12 @@ WCAG
 wcag
 
 # Lastfm / Spotify
+lastfm
 recenttracks
 spotify
 nowplaying
 
-# CSSapp/globals.css:522:3 - Unknown word (gomrassen)
+# CSS
 hermes
 chenini
 gomrassen

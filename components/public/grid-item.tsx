@@ -115,6 +115,7 @@ export function GridItem({ children, className, variant, ref, ...props }: GridIt
 							variant === 'hobby',
 						'@container/project-card @container-[size]': variant === 'project',
 						'@container/experience-card @container-[size]': variant === 'experience',
+						'@container/music-card @container-[size]': variant === 'music',
 						'group/music isolate': variant === 'music',
 						'group/hobby @container/hobby-card @container-[size] isolate':
 							variant === 'hobby',
