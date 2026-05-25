@@ -101,10 +101,12 @@ export function GridItem({ children, className, variant, ref, ...props }: GridIt
 						'gap-0 p-0 py-0':
 							variant === 'map' ||
 							variant === 'about' ||
+							variant === 'experience' ||
 							variant === 'project' ||
 							variant === 'contact' ||
 							variant === 'music',
 						'@container/project-card @container-[size]': variant === 'project',
+						'@container/experience-card @container-[size]': variant === 'experience',
 						'group/music isolate': variant === 'music',
 					},
 				)}
@@ -114,6 +116,7 @@ export function GridItem({ children, className, variant, ref, ...props }: GridIt
 				{variant !== 'project' &&
 					variant !== 'map' &&
 					variant !== 'about' &&
+					variant !== 'experience' &&
 					variant !== 'contact' &&
 					variant !== 'music' && <GridItemShowMoreButton variant={variant} />}
 			</Card>

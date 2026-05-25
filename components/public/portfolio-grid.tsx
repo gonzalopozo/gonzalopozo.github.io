@@ -32,6 +32,7 @@ export type InformationAboutMe = Omit<Settings, 'id' | 'updatedAt'>;
 interface PortfolioGridProps {
 	infoAboutMe: InformationAboutMe | undefined;
 	projectCards: ReactNode[];
+	experienceCard: ReactNode;
 	lastTrack: Track | null;
 }
 
@@ -124,7 +125,12 @@ function shallowEqualLayouts(a: SectionLayouts, b: SectionLayouts): boolean {
 	return true;
 }
 
-export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: PortfolioGridProps) {
+export function PortfolioGrid({
+	infoAboutMe,
+	projectCards,
+	experienceCard,
+	lastTrack,
+}: PortfolioGridProps) {
 	const [section, setSection] = useQueryState(
 		'section',
 		parseAsStringLiteral(PORTFOLIO_SECTIONS),
@@ -451,14 +457,15 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 									</GridItem>
 								) : null,
 							)}
-							{(['g', 'j'] as const).map((slot) => (
-								<GridItem
-									aria-hidden="true"
-									className="cursor-default active:cursor-default"
-									variant="project"
-									key={slot}
-								/>
-							))}
+							<GridItem variant="experience" key="g">
+								{experienceCard}
+							</GridItem>
+							<GridItem
+								aria-hidden="true"
+								className="cursor-default active:cursor-default"
+								variant="project"
+								key="j"
+							/>
 							{projectCards[2] ? (
 								<GridItem variant="project" key="h">
 									{projectCards[2]}
