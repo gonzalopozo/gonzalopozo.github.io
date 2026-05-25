@@ -8,14 +8,21 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { PORTFOLIO_SECTIONS, type PortfolioSection } from '@/components/public/portfolio-sections';
 
-export type GridItemVariant = 'about' | 'project' | 'experience' | 'contact' | 'map' | 'music';
+export type GridItemVariant =
+	| 'about'
+	| 'project'
+	| 'experience'
+	| 'contact'
+	| 'map'
+	| 'music'
+	| 'hobby';
 
 interface GridItemProps {
 	variant: GridItemVariant;
 }
 
 interface GridItemShowMoreButtonProps {
-	variant: Exclude<GridItemVariant, 'map' | 'music'>;
+	variant: Exclude<GridItemVariant, 'map' | 'music' | 'hobby'>;
 	buttonSize?: 'default' | 'sm' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg';
 	buttonVariant?: 'default' | 'ghost' | 'outline' | 'secondary';
 	className?: string;
@@ -27,7 +34,7 @@ interface GridItemShowMoreButtonProps {
 type GridItemComponentProps = ComponentPropsWithRef<'div'> & GridItemProps;
 
 const VARIANT_CONFIG: Record<
-	Exclude<GridItemVariant, 'map' | 'music'>,
+	Exclude<GridItemVariant, 'map' | 'music' | 'hobby'>,
 	{ section: PortfolioSection; label: string }
 > = {
 	about: { section: 'About me', label: '¡Conoce más de mí!' },
@@ -103,9 +110,12 @@ export function GridItem({ children, className, variant, ref, ...props }: GridIt
 							variant === 'about' ||
 							variant === 'project' ||
 							variant === 'contact' ||
-							variant === 'music',
+							variant === 'music' ||
+							variant === 'hobby',
 						'@container/project-card @container-[size]': variant === 'project',
 						'group/music isolate': variant === 'music',
+						'group/hobby @container/hobby-card @container-[size] isolate':
+							variant === 'hobby',
 					},
 				)}
 			>
@@ -115,7 +125,8 @@ export function GridItem({ children, className, variant, ref, ...props }: GridIt
 					variant !== 'map' &&
 					variant !== 'about' &&
 					variant !== 'contact' &&
-					variant !== 'music' && <GridItemShowMoreButton variant={variant} />}
+					variant !== 'music' &&
+					variant !== 'hobby' && <GridItemShowMoreButton variant={variant} />}
 			</Card>
 		</div>
 	);

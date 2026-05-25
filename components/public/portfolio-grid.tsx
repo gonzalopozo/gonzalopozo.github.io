@@ -21,6 +21,7 @@ import { GridItem } from '@/components/public/grid-item';
 import { InfoGridItemContent } from '@/components/public/info-grid-item-content';
 import { LastTrackGridItemContent } from '@/components/public/last-track-grid-item-content';
 import { SocialLinkGridItemContent } from '@/components/public/social-link-grid-item-content';
+import { HobbiesGridItemContent } from '@/components/public/hobbies-grid-item-content';
 import { BB8ThemeSwitcher } from '@/components/public/bb8-theme-switcher';
 import { PORTFOLIO_SECTIONS, type PortfolioSection } from '@/components/public/portfolio-sections';
 import { type Settings, type Track } from '@/lib/types';
@@ -451,14 +452,15 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 									</GridItem>
 								) : null,
 							)}
-							{(['g', 'j'] as const).map((slot) => (
-								<GridItem
-									aria-hidden="true"
-									className="cursor-default active:cursor-default"
-									variant="project"
-									key={slot}
-								/>
-							))}
+							<GridItem
+								aria-hidden="true"
+								className="cursor-default active:cursor-default"
+								variant="project"
+								key="g"
+							/>
+							<GridItem variant="hobby" key="j">
+								<HobbiesGridItemContent />
+							</GridItem>
 							{projectCards[2] ? (
 								<GridItem variant="project" key="h">
 									{projectCards[2]}
