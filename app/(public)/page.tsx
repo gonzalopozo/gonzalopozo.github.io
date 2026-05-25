@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
+import { ExperienceGridItemContent } from '@/components/public/experience-grid-item-content';
 import { PortfolioGrid } from '@/components/public/portfolio-grid';
 import { ProjectGridItemContent } from '@/components/public/project-grid-item-content';
 import { getPublicInfoAboutMe } from '@/lib/queries/about-me';
+import { getPublicExperiences } from '@/lib/queries/experiences';
 import { getPublicProjects } from '@/lib/queries/projects';
 import { getTrack } from '@/lib/queries/last-fm';
 import { cn } from '@/lib/utils';
@@ -67,8 +69,9 @@ function PortfolioGridFallback() {
 }
 
 export default async function PublicPage() {
-	const [projects, aboutMe, track] = await Promise.all([
+	const [projects, experiences, aboutMe, track] = await Promise.all([
 		getPublicProjects(),
+		getPublicExperiences(),
 		getPublicInfoAboutMe(),
 		getTrack(),
 	]);
@@ -82,10 +85,16 @@ export default async function PublicPage() {
 				variant={index === 2 ? 'horizontal' : 'vertical'}
 			/>
 		));
+	const experienceCard = <ExperienceGridItemContent experience={experiences[0]} />;
 
 	return (
 		<Suspense fallback={<PortfolioGridFallback />}>
-			<PortfolioGrid infoAboutMe={aboutMe} projectCards={projectCards} lastTrack={track} />
+			<PortfolioGrid
+				infoAboutMe={aboutMe}
+				projectCards={projectCards}
+				experienceCard={experienceCard}
+				lastTrack={track}
+			/>
 		</Suspense>
 	);
 }

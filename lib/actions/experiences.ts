@@ -5,7 +5,8 @@ import { experiences, experienceSkills } from '@/db/schema/portfolio';
 import { getServerSession } from '@/lib/server-session';
 import { and, eq, inArray, sql } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, updateTag } from 'next/cache';
+import { PUBLIC_EXPERIENCES_CACHE_TAG } from '@/lib/cache-tags';
 
 interface ExperienceSkill {
 	experienceId: number;
@@ -59,6 +60,7 @@ export async function createExperience(formData: FormData) {
 
 	await db.insert(experienceSkills).values(experienceSkillsInsert);
 
+	updateTag(PUBLIC_EXPERIENCES_CACHE_TAG);
 	redirect('/dashboard/experiences');
 }
 
@@ -142,6 +144,7 @@ export async function updateExperience(id: number, formData: FormData) {
 			);
 	}
 
+	updateTag(PUBLIC_EXPERIENCES_CACHE_TAG);
 	redirect('/dashboard/experiences');
 }
 
@@ -151,5 +154,6 @@ export async function deleteExperience(id: number) {
 
 	await db.delete(experiences).where(eq(experiences.id, id));
 
+	updateTag(PUBLIC_EXPERIENCES_CACHE_TAG);
 	revalidatePath('/dashboard/experiences');
 }
