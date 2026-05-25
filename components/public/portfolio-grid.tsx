@@ -1,6 +1,7 @@
 'use client';
 'use no memo';
 
+import Image from 'next/image';
 import { AnimatePresence, LazyMotion, domAnimation, m, useReducedMotion } from 'motion/react';
 import { useQueryState, parseAsStringLiteral } from 'nuqs';
 import { Briefcase, History, LayoutGrid, Send, UserRound, type LucideIcon } from 'lucide-react';
@@ -14,6 +15,7 @@ import {
 import 'react-grid-layout/css/styles.css';
 import { useState, type ReactNode } from 'react';
 import { Map, MapMarker, MarkerContent } from '@/components/ui/map';
+import { Button } from '@/components/ui/button';
 import { ArroyomolinosMarkerPin, ArroyomolinosPopup } from '@/components/public/map-marker-content';
 import { GridItem } from '@/components/public/grid-item';
 import { InfoGridItemContent } from '@/components/public/info-grid-item-content';
@@ -244,8 +246,17 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 		<LazyMotion features={domAnimation}>
 			<nav
 				aria-label="Portfolio sections"
-				className="mb-12 flex justify-center px-[3.5vw] pt-12"
+				className="mb-12 flex flex-col items-center justify-between gap-4 px-[3.5vw] pt-12 sm:flex-row"
 			>
+				<Image
+					alt="Gonzalo Pozo"
+					className="h-auto w-[clamp(8rem,16vw,12rem)] shrink-0"
+					height={724}
+					priority
+					src="/gonzalo_logo_logo.png"
+					width={2172}
+				/>
+
 				<ul className="flex h-10 max-w-[calc(100vw-1rem)] items-center gap-1 rounded-full border border-border/70 bg-card/90 px-1 py-0.5 shadow-2xl shadow-foreground/10 backdrop-blur-xl">
 					{sections.map(({ url, v, Icon }) => {
 						const isActive = activeUrl === url;
@@ -302,6 +313,14 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 						);
 					})}
 				</ul>
+
+				<Button
+					className="h-10 rounded-full px-5"
+					onClick={() => setSection('Contact')}
+					type="button"
+				>
+					Contact
+				</Button>
 			</nav>
 
 			<div
