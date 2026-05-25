@@ -26,7 +26,6 @@ export function LastTrackGridItemContent({ track }: LastTrackGridItemContentProp
 		trackName,
 		artistName,
 		artworkUrl,
-		lastFmUrl,
 		spotifyUrl,
 		spotifyArtworkUrl,
 		playedAtUnix,
@@ -35,7 +34,7 @@ export function LastTrackGridItemContent({ track }: LastTrackGridItemContentProp
 	const safeArtist = artistName?.trim() ? artistName : 'Unknown artist';
 	const hasSpotifySource = Boolean(spotifyUrl || spotifyArtworkUrl);
 	const sourceName = hasSpotifySource ? 'Spotify' : 'Last.fm';
-	const sourceUrl = hasSpotifySource ? spotifyUrl : lastFmUrl;
+	const sourceUrl = spotifyUrl;
 	const ariaLabel = `${isOnline ? 'Now playing' : 'Last scrobbled'}: ${trackName} by ${safeArtist}${
 		sourceUrl ? `. Opens ${sourceName}.` : ''
 	}`;
