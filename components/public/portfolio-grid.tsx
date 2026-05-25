@@ -246,7 +246,7 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 		<LazyMotion features={domAnimation}>
 			<nav
 				aria-label="Portfolio sections"
-				className="mb-12 grid grid-cols-1 items-center justify-items-center gap-4 px-[3.5vw] pt-12 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"
+				className="mb-12 grid grid-cols-1 items-center justify-items-center gap-4 px-7 pt-7 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"
 			>
 				<Image
 					alt="Gonzalo Pozo"
