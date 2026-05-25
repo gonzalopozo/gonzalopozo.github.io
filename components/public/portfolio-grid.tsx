@@ -246,18 +246,18 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 		<LazyMotion features={domAnimation}>
 			<nav
 				aria-label="Portfolio sections"
-				className="mb-12 flex flex-col items-center justify-between gap-4 px-[3.5vw] pt-12 sm:flex-row"
+				className="mb-12 grid grid-cols-1 items-center justify-items-center gap-4 px-[3.5vw] pt-12 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"
 			>
 				<Image
 					alt="Gonzalo Pozo"
-					className="h-auto w-[clamp(8rem,16vw,12rem)] shrink-0"
-					height={724}
+					className="h-auto w-[clamp(10rem,20vw,15rem)] shrink-0 md:justify-self-start"
+					height={682}
 					priority
 					src="/gonzalopozo-logo.png"
-					width={2172}
+					width={2048}
 				/>
 
-				<ul className="flex h-10 max-w-[calc(100vw-1rem)] items-center gap-1 rounded-full border border-border/70 bg-card/90 px-1 py-0.5 shadow-2xl shadow-foreground/10 backdrop-blur-xl">
+				<ul className="flex h-10 max-w-[calc(100vw-1rem)] items-center gap-1 rounded-full border border-border/70 bg-card/90 px-1 py-0.5 shadow-2xl shadow-foreground/10 backdrop-blur-xl md:col-start-2 md:row-start-1 md:justify-self-center">
 					{sections.map(({ url, v, Icon }) => {
 						const isActive = activeUrl === url;
 
@@ -315,7 +315,7 @@ export function PortfolioGrid({ infoAboutMe, projectCards, lastTrack }: Portfoli
 				</ul>
 
 				<Button
-					className="h-10 rounded-full px-5"
+					className="h-10 rounded-full px-5 md:col-start-3 md:row-start-1 md:justify-self-end"
 					onClick={() => setSection('Contact')}
 					type="button"
 				>
