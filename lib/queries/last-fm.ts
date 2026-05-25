@@ -1,6 +1,34 @@
 import 'server-only';
 import { type Track } from '@/lib/types';
 import { cacheLife, cacheTag } from 'next/cache';
+import { findSpotifyTrackForLastFmTrack } from '@/lib/spotify';
+
+interface LastFmTrackJSON {
+	'@attr'?: {
+		nowplaying?: string;
+	};
+	name: string;
+	artist?: {
+		'#text'?: string;
+	};
+	album?: {
+		'#text'?: string;
+	};
+	image?: {
+		'#text'?: string;
+	}[];
+	url?: string;
+	date?: {
+		uts?: string;
+		'#text'?: string;
+	};
+}
+
+interface LastFmRecentTracksResponse {
+	recenttracks?: {
+		track?: LastFmTrackJSON[];
+	};
+}
 
 export async function getTrack(): Promise<Track | null> {
 	'use cache';
@@ -17,7 +45,7 @@ export async function getTrack(): Promise<Track | null> {
 
 	if (!response.ok) return null;
 
-	const { recenttracks } = await response.json();
+	const { recenttracks } = (await response.json()) as LastFmRecentTracksResponse;
 	const tracks = recenttracks?.track;
 
 	if (!tracks?.length) return null;
@@ -30,15 +58,33 @@ export async function getTrack(): Promise<Track | null> {
 		rawArtworkUrl && !rawArtworkUrl.includes('2a96cbd8b46e442fc41c2b86b821562f')
 			? rawArtworkUrl
 			: null;
+	const artistName = trackJSON.artist?.['#text'] ?? null;
+	const albumName = trackJSON.album?.['#text'] ?? null;
+	const playedAtUnix = parsePlayedAtUnix(trackJSON.date?.uts);
+	const spotifyTrack = await findSpotifyTrackForLastFmTrack({
+		trackName: trackJSON.name,
+		artistName,
+		albumName,
+	});
 
 	return {
 		isOnline: isNowPlaying,
 		trackName: trackJSON.name,
-		artistName: trackJSON.artist?.['#text'] ?? null,
-		albumName: trackJSON.album?.['#text'] ?? null,
+		artistName,
+		albumName,
 		artworkUrl,
 		lastFmUrl: trackJSON.url ?? null,
-		playedAtUnix: trackJSON.date?.uts ?? null,
+		spotifyTrackId: spotifyTrack?.spotifyTrackId ?? null,
+		spotifyUrl: spotifyTrack?.spotifyUrl ?? null,
+		spotifyArtworkUrl: spotifyTrack?.spotifyArtworkUrl ?? null,
+		playedAtUnix,
 		playedAtLabel: trackJSON.date?.['#text'] ?? null,
 	};
+}
+
+function parsePlayedAtUnix(value: string | undefined): number | null {
+	if (!value) return null;
+
+	const parsed = Number(value);
+	return Number.isFinite(parsed) ? parsed : null;
 }

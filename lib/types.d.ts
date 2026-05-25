@@ -56,11 +56,13 @@ export interface Settings {
 export interface Track {
 	isOnline: boolean;
 	trackName: string;
-	artistName: string;
+	artistName: string | null;
 	albumName: string | null;
 	artworkUrl: string | null;
 	lastFmUrl: string | null;
-	// spotifySearchUrl: string | null
+	spotifyTrackId: string | null;
+	spotifyUrl: string | null;
+	spotifyArtworkUrl: string | null;
 	playedAtUnix: number | null;
 	playedAtLabel: string | null;
 }
