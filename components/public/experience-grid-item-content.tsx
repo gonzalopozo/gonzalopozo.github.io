@@ -103,7 +103,6 @@ function ExperienceBackground() {
 	return (
 		<div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
 			<div className="absolute inset-0 bg-[linear-gradient(135deg,color-mix(in_oklch,var(--primary)_12%,transparent),transparent_38%),linear-gradient(to_bottom_right,color-mix(in_oklch,var(--secondary)_72%,transparent),transparent)]" />
-			<div className="absolute inset-y-0 right-0 w-1/2 bg-[repeating-linear-gradient(135deg,color-mix(in_oklch,var(--border)_85%,transparent)_0_1px,transparent_1px_12px)] opacity-35" />
 		</div>
 	);
 }
@@ -145,96 +144,81 @@ export function ExperienceGridItemContent({ experience }: ExperienceGridItemCont
 	const dateRange = formatExperienceRange(experience.startDate, experience.endDate);
 
 	return (
-		<div className="group/experience relative grid size-full min-h-0 grid-cols-[auto_minmax(0,1fr)] overflow-hidden px-5 py-4 [@container_experience-card_(max-width:480px)]:grid-cols-1 [@container_experience-card_(max-width:480px)]:grid-rows-[auto_minmax(0,1fr)] [@container_experience-card_(max-width:480px)]:gap-3 [@container_experience-card_(max-width:480px)]:p-5">
+		<div className="group/experience relative grid size-full min-h-0 grid-rows-[auto_minmax(0,1fr)_auto] overflow-hidden px-5 py-4">
 			<ExperienceBackground />
 
-			<div className="relative z-10 flex min-h-0 flex-col items-center gap-3 py-1 [@container_experience-card_(max-width:480px)]:h-12 [@container_experience-card_(max-width:480px)]:flex-row [@container_experience-card_(max-width:480px)]:py-0">
-				<CompanyMark company={experience.company} logoUrl={logoUrl} />
-				<span className="min-h-0 flex-1 rounded-full bg-linear-to-b from-primary/70 via-border to-transparent [@container_experience-card_(max-width:480px)]:h-px [@container_experience-card_(max-width:480px)]:min-h-px [@container_experience-card_(max-width:480px)]:w-full [@container_experience-card_(max-width:480px)]:bg-linear-to-r" />
-				<span
-					className={cn(
-						'size-2.5 shrink-0 rounded-full',
-						isCurrent
-							? 'bg-status-active shadow-[0_0_0_6px_color-mix(in_oklch,var(--status-active)_16%,transparent)]'
-							: 'bg-status-archived',
-					)}
-				/>
-			</div>
-
-			<div className="relative z-10 grid min-h-0 grid-rows-[auto_minmax(0,1fr)_auto] gap-3 overflow-hidden pl-4 [@container_experience-card_(max-width:480px)]:pl-0">
-				<CardHeader className="gap-2 p-0">
-					<div className="flex items-center justify-between gap-3">
-						<Badge variant={isCurrent ? 'default' : 'secondary'} className="gap-1.5">
-							<span
-								className={cn(
-									'size-1.5 rounded-full',
-									isCurrent ? 'bg-primary-foreground' : 'bg-muted-foreground',
-								)}
-								aria-hidden="true"
-							/>
-							{isCurrent ? 'Current role' : 'Experience'}
-						</Badge>
-						<span className="shrink-0 font-mono text-[10px] text-muted-foreground">
-							career
-						</span>
+			<CardHeader className="relative z-10 gap-2 p-0">
+				<div className="flex items-start justify-between gap-3">
+					<div className="flex items-center gap-3">
+						<CompanyMark company={experience.company} logoUrl={logoUrl} />
+						<div className="flex min-w-0 flex-col gap-1">
+							<Badge variant={isCurrent ? 'default' : 'secondary'} className="w-fit gap-1.5">
+								<span
+									className={cn(
+										'size-1.5 rounded-full',
+										isCurrent ? 'bg-primary-foreground' : 'bg-muted-foreground',
+									)}
+									aria-hidden="true"
+								/>
+								{isCurrent ? 'Current role' : 'Experience'}
+							</Badge>
+							<CardTitle className="line-clamp-2 text-lg/tight text-balance">
+								{experience.role}
+							</CardTitle>
+						</div>
 					</div>
+					<span className="shrink-0 pt-1 font-mono text-[10px] text-muted-foreground">
+						career
+					</span>
+				</div>
 
-					<div className="flex min-w-0 flex-col gap-1">
-						<CardTitle className="line-clamp-2 text-lg/tight text-balance [@container_experience-card_(max-width:480px)]:text-xl/tight">
-							{experience.role}
-						</CardTitle>
-
-						{experience.companyUrl ? (
-							<a
-								href={experience.companyUrl}
-								target="_blank"
-								rel="noopener noreferrer"
-								className="inline-flex w-fit max-w-full items-center gap-1.5 rounded-full text-sm font-medium text-primary transition-colors outline-none hover:text-primary/80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
-							>
-								<span className="truncate">{experience.company}</span>
-								<ArrowUpRight className="size-3.5 shrink-0" aria-hidden="true" />
-							</a>
-						) : (
-							<p className="truncate text-sm font-medium text-primary">
-								{experience.company}
-							</p>
-						)}
-					</div>
-				</CardHeader>
-
-				<CardContent className="flex min-h-0 flex-col gap-3 overflow-hidden p-0">
-					<div className="flex min-w-0 flex-wrap gap-2 overflow-hidden">
-						<ExperienceMeta icon={CalendarRange}>{dateRange}</ExperienceMeta>
-						{experience.location ? (
-							<ExperienceMeta icon={MapPin}>{experience.location}</ExperienceMeta>
-						) : null}
-					</div>
-
-					<CardDescription className="line-clamp-2 text-sm/relaxed [@container_experience-card_(max-height:250px)]:line-clamp-1 [@container_experience-card_(max-width:480px)]:line-clamp-3">
-						{experience.description}
-					</CardDescription>
-
-					{skills.length ? (
-						<SkillsPills
-							skills={skills}
-							limit={5}
-							className="gap-1.5 overflow-hidden [@container_experience-card_(max-height:250px)]:hidden"
-						/>
-					) : null}
-				</CardContent>
-
-				<CardFooter className="flex items-center justify-between gap-3 p-0">
-					<p className="min-w-0 truncate text-xs text-muted-foreground">
-						Selected work chapter
+				{experience.companyUrl ? (
+					<a
+						href={experience.companyUrl}
+						target="_blank"
+						rel="noopener noreferrer"
+						className="relative z-10 inline-flex w-fit max-w-full items-center gap-1.5 rounded-full text-sm font-medium text-primary transition-colors outline-none hover:text-primary/80 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+					>
+						<span className="truncate">{experience.company}</span>
+						<ArrowUpRight className="size-3.5 shrink-0" aria-hidden="true" />
+					</a>
+				) : (
+					<p className="relative z-10 truncate text-sm font-medium text-primary">
+						{experience.company}
 					</p>
-					<GridItemShowMoreButton
-						variant="experience"
-						label="View experience"
-						buttonSize="sm"
-						className="h-9 shrink-0 rounded-full px-4"
+				)}
+			</CardHeader>
+
+			<CardContent className="relative z-10 flex min-h-0 flex-col gap-2 overflow-hidden p-0">
+				<div className="flex min-w-0 flex-wrap gap-2 overflow-hidden">
+					<ExperienceMeta icon={CalendarRange}>{dateRange}</ExperienceMeta>
+					{experience.location ? (
+						<ExperienceMeta icon={MapPin}>{experience.location}</ExperienceMeta>
+					) : null}
+				</div>
+
+				<CardDescription className="line-clamp-2 text-sm/relaxed">
+					{experience.description}
+				</CardDescription>
+			</CardContent>
+
+			<CardFooter className="relative z-10 flex items-center justify-between gap-3 p-0">
+				{skills.length ? (
+					<SkillsPills
+						skills={skills}
+						limit={3}
+						className="gap-1.5 overflow-hidden"
 					/>
-				</CardFooter>
-			</div>
+				) : (
+					<span />
+				)}
+				<GridItemShowMoreButton
+					variant="experience"
+					label="View experience"
+					buttonSize="sm"
+					className="h-9 shrink-0 rounded-full px-4"
+				/>
+			</CardFooter>
 		</div>
 	);
 }
