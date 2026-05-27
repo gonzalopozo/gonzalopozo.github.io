@@ -1,7 +1,9 @@
 import 'server-only';
 import { type Track } from '@/lib/types';
 import { cacheLife, cacheTag } from 'next/cache';
-import { findSpotifyTrackForLastFmTrack } from '@/lib/spotify';
+import { findITunesArtworkForTrack } from '@/lib/itunes';
+import { buildSpotifyTrackSearchUrl } from '@/lib/spotify-utils';
+import { findExactSpotifyTrackUrlFromSearch } from '@/lib/spotify-search-scraper';
 
 interface LastFmTrackJSON {
 	'@attr'?: {
@@ -61,22 +63,26 @@ export async function getTrack(): Promise<Track | null> {
 	const artistName = trackJSON.artist?.['#text'] ?? null;
 	const albumName = trackJSON.album?.['#text'] ?? null;
 	const playedAtUnix = parsePlayedAtUnix(trackJSON.date?.uts);
-	const spotifyTrack = await findSpotifyTrackForLastFmTrack({
+	const trackSearchInput = {
 		trackName: trackJSON.name,
 		artistName,
 		albumName,
-	});
+	};
+	const itunesArtwork = await findITunesArtworkForTrack(trackSearchInput);
+	const spotifyUrl =
+		(await findExactSpotifyTrackUrlFromSearch(trackSearchInput)) ??
+		buildSpotifyTrackSearchUrl(trackSearchInput);
 
 	return {
 		isOnline: isNowPlaying,
 		trackName: trackJSON.name,
 		artistName,
 		albumName,
-		artworkUrl,
+		artworkUrl: itunesArtwork?.artworkUrl ?? artworkUrl,
 		lastFmUrl: trackJSON.url ?? null,
-		spotifyTrackId: spotifyTrack?.spotifyTrackId ?? null,
-		spotifyUrl: spotifyTrack?.spotifyUrl ?? null,
-		spotifyArtworkUrl: spotifyTrack?.spotifyArtworkUrl ?? null,
+		spotifyTrackId: null,
+		spotifyUrl,
+		spotifyArtworkUrl: null,
 		playedAtUnix,
 		playedAtLabel: trackJSON.date?.['#text'] ?? null,
 	};

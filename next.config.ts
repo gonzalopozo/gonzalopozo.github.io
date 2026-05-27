@@ -15,6 +15,11 @@ const nextConfig: NextConfig = {
 			new URL(`${process.env.BLOB_PUBLIC_HOSTNAME}/**`),
 			new URL('https://lastfm.freetls.fastly.net/**'),
 			new URL('https://i.scdn.co/**'),
+			{
+				protocol: 'https',
+				hostname: '**.mzstatic.com',
+				pathname: '/**',
+			},
 		],
 	},
 };

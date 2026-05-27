@@ -14,6 +14,7 @@ interface TrackArtworkProps {
 	artworkUrl: string | null;
 	playedAtUnix: number | null;
 	playedAtLabel: string | null;
+	source: 'spotify' | 'last.fm';
 }
 
 export function LastTrackGridItemContent({ track }: LastTrackGridItemContentProps) {
@@ -21,41 +22,23 @@ export function LastTrackGridItemContent({ track }: LastTrackGridItemContentProp
 		return <MusicEmptyState />;
 	}
 
-	const {
-		isOnline,
-		trackName,
-		artistName,
-		artworkUrl,
-		spotifyUrl,
-		spotifyArtworkUrl,
-		playedAtUnix,
-		playedAtLabel,
-	} = track;
+	const { isOnline, trackName, artistName, artworkUrl, spotifyUrl, playedAtUnix, playedAtLabel } =
+		track;
 	const safeArtist = artistName?.trim() ? artistName : 'Unknown artist';
-	const hasSpotifySource = Boolean(spotifyUrl || spotifyArtworkUrl);
-	const sourceName = hasSpotifySource ? 'Spotify' : 'Last.fm';
 	const sourceUrl = spotifyUrl;
 	const ariaLabel = `${isOnline ? 'Now playing' : 'Last scrobbled'}: ${trackName} by ${safeArtist}${
-		sourceUrl ? `. Opens ${sourceName}.` : ''
+		sourceUrl ? `. Opens Spotify.` : ''
 	}`;
 
-	const inner = hasSpotifySource ? (
-		<SpotifyTrackArtwork
-			isOnline={isOnline}
-			trackName={trackName}
-			safeArtist={safeArtist}
-			artworkUrl={spotifyArtworkUrl}
-			playedAtUnix={playedAtUnix}
-			playedAtLabel={playedAtLabel}
-		/>
-	) : (
-		<LastFmTrackArtwork
+	const inner = (
+		<TrackArtwork
 			isOnline={isOnline}
 			trackName={trackName}
 			safeArtist={safeArtist}
 			artworkUrl={artworkUrl}
 			playedAtUnix={playedAtUnix}
 			playedAtLabel={playedAtLabel}
+			source={sourceUrl ? 'spotify' : 'last.fm'}
 		/>
 	);
 
@@ -83,67 +66,14 @@ export function LastTrackGridItemContent({ track }: LastTrackGridItemContentProp
 	);
 }
 
-function SpotifyTrackArtwork({
+function TrackArtwork({
 	isOnline,
 	trackName,
 	safeArtist,
 	artworkUrl,
 	playedAtUnix,
 	playedAtLabel,
-}: TrackArtworkProps) {
-	const hasArtwork = Boolean(artworkUrl);
-
-	return (
-		<>
-			<div className="absolute inset-0 bg-linear-to-br from-card via-secondary/55 to-card" />
-			{isOnline && <NowPlayingAtmosphere onArtwork={false} />}
-
-			<SourceLabel source="spotify" onArtwork={false} />
-			<ActivityBadge
-				isOnline={isOnline}
-				playedAtUnix={playedAtUnix}
-				playedAtLabel={playedAtLabel}
-				onArtwork={false}
-			/>
-
-			<div className="absolute inset-x-3 top-11 bottom-3 grid min-h-0 grid-cols-[5.25rem_minmax(0,1fr)] items-end gap-3 [@container_music-card_(min-width:300px)]:grid-cols-[6.75rem_minmax(0,1fr)]">
-				<div className="flex aspect-square w-full items-center justify-center rounded-2xl border border-border/70 bg-secondary/70 p-1.5 shadow-[inset_0_0_0_1px_color-mix(in_oklch,var(--card)_70%,transparent)]">
-					<div className="relative size-full">
-						{hasArtwork ? (
-							<Image
-								src={artworkUrl!}
-								alt=""
-								fill
-								sizes="(min-width: 996px) 7rem, (min-width: 768px) 6rem, 5.25rem"
-								className="object-contain"
-								aria-hidden="true"
-							/>
-						) : (
-							<div className="grid size-full place-items-center">
-								<Music className="size-9 text-primary/40" aria-hidden="true" />
-							</div>
-						)}
-					</div>
-				</div>
-
-				<TrackText
-					trackName={trackName}
-					safeArtist={safeArtist}
-					onArtwork={false}
-					className="pb-1"
-				/>
-			</div>
-		</>
-	);
-}
-
-function LastFmTrackArtwork({
-	isOnline,
-	trackName,
-	safeArtist,
-	artworkUrl,
-	playedAtUnix,
-	playedAtLabel,
+	source,
 }: TrackArtworkProps) {
 	const hasArtwork = Boolean(artworkUrl);
 
@@ -189,7 +119,7 @@ function LastFmTrackArtwork({
 				</>
 			)}
 
-			<SourceLabel source="last.fm" onArtwork={hasArtwork} />
+			<SourceLabel source={source} onArtwork={hasArtwork} />
 			<ActivityBadge
 				isOnline={isOnline}
 				playedAtUnix={playedAtUnix}

@@ -95,11 +95,15 @@ Turbopack
 WCAG
 wcag
 
-# Lastfm / Spotify
+# Lastfm / Spotify / iTunes
 lastfm
 recenttracks
 spotify
 nowplaying
+itunes
+ITUNES
+mzstatic
+domcontentloaded
 
 # CSS
 hermes
