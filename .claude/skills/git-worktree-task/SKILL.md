@@ -1,13 +1,13 @@
 ---
-name: git-worktree-codex-task
-description: Use this skill when Codex needs to work on a Git project using an isolated Git worktree. Codex must create the worktree and branch automatically based on the user prompt, work only inside that worktree, and never commit unless the user explicitly asks for a commit.
+name: git-worktree-task
+description: Use this skill when an AI agent needs to work on a Git project using an isolated Git worktree. The agent must create the worktree and branch automatically based on the user prompt, work only inside that worktree, and never commit unless the user explicitly asks for a commit.
 ---
 
-# Git Worktree Codex Task Skill
+# Git Worktree Task Skill
 
 ## Objective
 
-You are Codex working on a Git project.
+You are an AI agent working on a Git project.
 
 For every implementation task, you must create and use an isolated Git worktree.
 
@@ -27,7 +27,7 @@ You must not commit unless the user explicitly asks you to commit.
 
 ## Core Rule
 
-One task = one branch = one worktree = one Codex session.
+One task = one branch = one worktree = one agent session.
 
 A terminal is not an isolated workspace.
 
@@ -106,7 +106,7 @@ Rules:
 4. Remove punctuation.
 5. Keep it short but meaningful.
 6. Prefer 2 to 5 words.
-7. Prefix the branch with `codex/`.
+7. Prefix the branch with `agent/`.
 
 Examples:
 
@@ -119,13 +119,13 @@ Fix the navbar mobile layout
 Use:
 
 ```bash
-codex/fix-mobile-navbar
+agent/fix-mobile-navbar
 ```
 
 Worktree folder:
 
 ```bash
-../<project-name>-codex-fix-mobile-navbar
+../<project-name>-agent-fix-mobile-navbar
 ```
 
 User prompt:
@@ -137,13 +137,13 @@ Add Spotify current song widget
 Use:
 
 ```bash
-codex/add-spotify-widget
+agent/add-spotify-widget
 ```
 
 Worktree folder:
 
 ```bash
-../<project-name>-codex-add-spotify-widget
+../<project-name>-agent-add-spotify-widget
 ```
 
 User prompt:
@@ -155,13 +155,13 @@ Refactor project cards and improve responsive spacing
 Use:
 
 ```bash
-codex/refactor-project-cards
+agent/refactor-project-cards
 ```
 
 Worktree folder:
 
 ```bash
-../<project-name>-codex-refactor-project-cards
+../<project-name>-agent-refactor-project-cards
 ```
 
 ## Name Collision Rule
@@ -169,22 +169,22 @@ Worktree folder:
 Before creating the worktree, check existing branches and worktrees:
 
 ```bash
-git branch --list "codex/<task-name>"
+git branch --list "agent/<task-name>"
 git worktree list
 ```
 
 If the branch or folder already exists, append a number:
 
 ```bash
-codex/fix-mobile-navbar-2
-../<project-name>-codex-fix-mobile-navbar-2
+agent/fix-mobile-navbar-2
+../<project-name>-agent-fix-mobile-navbar-2
 ```
 
 If needed:
 
 ```bash
-codex/fix-mobile-navbar-3
-../<project-name>-codex-fix-mobile-navbar-3
+agent/fix-mobile-navbar-3
+../<project-name>-agent-fix-mobile-navbar-3
 ```
 
 Do not overwrite existing worktrees.
@@ -198,19 +198,19 @@ Do not delete existing branches.
 From the repository root, create the worktree like this:
 
 ```bash
-git worktree add -b codex/<task-name> ../<project-name>-codex-<task-name> <base-branch>
+git worktree add -b agent/<task-name> ../<project-name>-agent-<task-name> <base-branch>
 ```
 
 Example:
 
 ```bash
-git worktree add -b codex/fix-mobile-navbar ../my-project-codex-fix-mobile-navbar main
+git worktree add -b agent/fix-mobile-navbar ../my-project-agent-fix-mobile-navbar main
 ```
 
 If the current branch is `restructure`, use:
 
 ```bash
-git worktree add -b codex/fix-mobile-navbar ../my-project-codex-fix-mobile-navbar restructure
+git worktree add -b agent/fix-mobile-navbar ../my-project-agent-fix-mobile-navbar restructure
 ```
 
 If the base branch is the current branch, use that current branch.
@@ -222,7 +222,7 @@ Do not switch branches in the original repository unless the user explicitly ask
 Immediately move into the new worktree:
 
 ```bash
-cd ../<project-name>-codex-<task-name>
+cd ../<project-name>-agent-<task-name>
 ```
 
 Then verify:
@@ -236,14 +236,14 @@ git branch --show-current
 The current branch must be:
 
 ```bash
-codex/<task-name>
+agent/<task-name>
 ```
 
 Only start editing files after this verification.
 
-## What Codex May Do
+## What The Agent May Do
 
-Codex may:
+The agent may:
 
 1. Create the worktree.
 2. Create the task branch.
@@ -257,7 +257,7 @@ Codex may:
 10. Report modified files.
 11. Prepare changes for review.
 
-## What Codex Must Not Do Unless Explicitly Asked
+## What The Agent Must Not Do Unless Explicitly Asked
 
 Do not run:
 
@@ -470,7 +470,7 @@ Worktree created:
 <path>
 
 Branch:
-codex/<task-name>
+agent/<task-name>
 
 Base branch:
 <base-branch>
@@ -508,7 +508,7 @@ Using `main`:
 cd ~/dev/<project-name>
 git switch main
 git pull --ff-only
-git merge --no-ff codex/<task-name>
+git merge --no-ff agent/<task-name>
 ```
 
 Using `restructure`:
@@ -517,7 +517,7 @@ Using `restructure`:
 cd ~/dev/<project-name>
 git switch restructure
 git pull --ff-only
-git merge --no-ff codex/<task-name>
+git merge --no-ff agent/<task-name>
 ```
 
 Do not use squash merge unless the user specifically asks.
@@ -525,7 +525,7 @@ Do not use squash merge unless the user specifically asks.
 The intended merge style is:
 
 ```bash
-git merge --no-ff codex/<task-name>
+git merge --no-ff agent/<task-name>
 ```
 
 This preserves task commits if commits exist.
@@ -537,21 +537,21 @@ If no commits exist yet, the human must commit inside the worktree before mergin
 After merging, the human may clean up manually:
 
 ```bash
-git worktree remove ../<project-name>-codex-<task-name>
-git branch -d codex/<task-name>
+git worktree remove ../<project-name>-agent-<task-name>
+git branch -d agent/<task-name>
 ```
 
-Codex must not perform cleanup unless explicitly asked.
+The agent must not perform cleanup unless explicitly asked.
 
 ## Final Non-Negotiables
 
-1. Codex creates the worktree.
-2. Codex chooses the branch and worktree name from the prompt.
-3. Codex works only inside the created worktree.
-4. Codex does not commit unless explicitly asked.
-5. Codex does not merge unless explicitly asked.
-6. Codex does not push unless explicitly asked.
-7. Codex does not delete branches unless explicitly asked.
-8. Codex does not remove worktrees unless explicitly asked.
-9. Codex does not rewrite history.
+1. The agent creates the worktree.
+2. The agent chooses the branch and worktree name from the prompt.
+3. The agent works only inside the created worktree.
+4. The agent does not commit unless explicitly asked.
+5. The agent does not merge unless explicitly asked.
+6. The agent does not push unless explicitly asked.
+7. The agent does not delete branches unless explicitly asked.
+8. The agent does not remove worktrees unless explicitly asked.
+9. The agent does not rewrite history.
 10. The human reviews and decides when to commit, merge, push, or clean up.
