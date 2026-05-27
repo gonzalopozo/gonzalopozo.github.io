@@ -130,7 +130,7 @@
 	--animate-now-playing-cover: now-playing-cover 6s ease-in-out infinite;
 	--animate-now-playing-glow: now-playing-glow 3.2s ease-in-out infinite;
 	--animate-now-playing-sweep: now-playing-sweep 4.8s ease-in-out infinite;
-	--animate-tech-marquee: tech-marquee 20s linear infinite;
+	--animate-tech-marquee: tech-marquee 8s linear infinite;
 	--animate-eq-bar-1: eq-bar-1 940ms ease-in-out infinite;
 	--animate-eq-bar-2: eq-bar-2 1120ms ease-in-out infinite;
 	--animate-eq-bar-3: eq-bar-3 860ms ease-in-out infinite;

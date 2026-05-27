@@ -7,36 +7,35 @@ import {
 	SiPostgresql,
 	SiDocker,
 	SiGit,
-	SiAmazonaws,
+	SiAmazon,
 	SiPython,
 } from 'react-icons/si';
-import type { IconType } from 'react-icons';
+
 import { GridItemShowMoreButton } from '@/components/public/grid-item';
 
-const TECH_STACK: { icon: IconType; label: string }[] = [
-	{ icon: SiReact, label: 'React' },
-	{ icon: SiTypescript, label: 'TypeScript' },
-	{ icon: SiNextdotjs, label: 'Next.js' },
-	{ icon: SiTailwindcss, label: 'Tailwind' },
-	{ icon: SiNodedotjs, label: 'Node.js' },
-	{ icon: SiPostgresql, label: 'PostgreSQL' },
-	{ icon: SiDocker, label: 'Docker' },
-	{ icon: SiGit, label: 'Git' },
-	{ icon: SiAmazonaws, label: 'AWS' },
-	{ icon: SiPython, label: 'Python' },
+const TECH_STACK: IconType[] = [
+	SiReact,
+	SiTypescript,
+	SiNextdotjs,
+	SiTailwindcss,
+	SiNodedotjs,
+	SiPostgresql,
+	SiDocker,
+	SiGit,
+	SiAmazon,
+	SiPython,
 ];
 
 function TechMarquee() {
 	return (
 		<div className="relative flex overflow-hidden">
-			<div className="flex animate-tech-marquee items-center gap-5">
-				{[...TECH_STACK, ...TECH_STACK].map((tech, i) => (
+			<div className="flex w-max animate-tech-marquee items-center gap-6">
+				{[...TECH_STACK, ...TECH_STACK].map((Icon, i) => (
 					<span
-						key={`${tech.label}-${i}`}
-						className="flex shrink-0 items-center gap-2 text-sm font-medium text-muted-foreground"
+						key={`tech-${i}`}
+						className="flex shrink-0 items-center text-muted-foreground"
 					>
-						<tech.icon className="size-4" aria-hidden="true" />
-						{tech.label}
+						<Icon className="size-7" aria-hidden="true" />
 					</span>
 				))}
 			</div>
