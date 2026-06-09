@@ -17,12 +17,6 @@ Personal portfolio with a public page and an admin dashboard (CMS) — built wit
 | `pnpm start`    | Start production server            |
 | `pnpm test`     | Vitest (watch mode)                |
 
-## Command Restrictions
-
-Agents must never run `pnpm build`, `pnpm lint`, `pnpm lint:fix`, `pnpm format`,
-`pnpm format:check`, Prettier, ESLint, or formatter/linter/build commands. Leave
-those checks to the user and only mention them as suggested verification steps.
-
 ## Git Rules
 
 - Do not work directly on `main` for feature work.
@@ -55,6 +49,35 @@ Rules:
 - Keep the summary short and specific.
 - Avoid vague commits like `update`, `changes`, `fix stuff`, or `wip`.
 - Use `BREAKING CHANGE:` in the body/footer for incompatible changes.
+
+## Pre-Commit Checks
+
+Before creating any commit, run a dedicated Codex subagent with model `gpt-5.4-mini`
+and reasoning effort `low`. The subagent performs the final verification pass and
+must report every command it ran, every finding, and whether the commit is blocked.
+
+The pre-commit subagent must complete these checks:
+
+1. Inspect the intended commit diff with `git status --short` and `git diff --check`.
+   Confirm that only related files are included, no generated files are staged unless
+   required, and there are no whitespace errors.
+2. Run `pnpm format:check` to verify Prettier formatting.
+3. Run `pnpm lint` to verify ESLint, React Compiler, Next.js, Tailwind, and TypeScript
+   lint rules.
+4. Run `pnpm exec tsc --noEmit` to verify TypeScript compilation without writing
+   generated output.
+5. Run `pnpm exec vitest run` to execute the test suite once in non-watch mode.
+6. Run `pnpm spellcheck` to catch spelling regressions in user-facing text,
+   documentation, and code identifiers covered by cspell.
+7. Run `pnpm knip` to detect unused files, exports, and dependencies.
+8. Run `pnpm depcruise` to validate dependency boundaries and architectural rules.
+9. Run `pnpm build` as the final check before the commit. Because this command is
+   slow, only run `pnpm build` during this pre-commit phase, not during routine
+   implementation work.
+
+If any pre-commit check returns errors or warnings, fix them before creating the
+commit. Treat warnings as blockers unless they are explicitly confirmed to be
+false positives and documented in the commit notes.
 
 ## Tech Stack
 
