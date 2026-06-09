@@ -28,6 +28,7 @@ import { type Settings, type Track } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { FaGithub } from 'react-icons/fa';
 
+/** @public */
 export type InformationAboutMe = Omit<Settings, 'id' | 'updatedAt'>;
 
 interface PortfolioGridProps {

@@ -2,6 +2,7 @@ import type { HTMLAttributes } from 'react';
 import { cn } from '@/lib/utils';
 import { type ProjectStatus } from '@/lib/types';
 
+/** @public */
 export type StatusIndicatorProps = HTMLAttributes<HTMLSpanElement> & { status: ProjectStatus };
 
 export const StatusIndicator = ({ className, status }: StatusIndicatorProps) => {

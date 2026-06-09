@@ -33,31 +33,4 @@
 	"drizzle": {
 		"config": ["db/drizzle.config.ts"],
 	},
-	// shadcn/ui barrels + Drizzle schema relation exports are intentionally wider than current imports
-	"ignoreIssues": {
-		"components/ui/**": [
-			"exports",
-			"types",
-			"nsExports",
-			"nsTypes",
-			"enumMembers",
-			"namespaceMembers",
-		],
-		"db/schema/**": [
-			"exports",
-			"types",
-			"nsExports",
-			"nsTypes",
-			"enumMembers",
-			"namespaceMembers",
-		],
-		"lib/auth-client.ts": ["exports", "types"],
-		"commitlint.config.mts": ["exports"],
-		// Re-exported / documented types for consumers of public components (not always imported elsewhere)
-		"components/public/**/*.tsx": ["types", "nsTypes"],
-		"components/public/map-marker-content.tsx": ["exports"],
-		"lib/queries/about-me.ts": ["exports"],
-		"lib/queries/experiences.ts": ["exports"],
-		"lib/queries/projects.ts": ["exports"],
-	},
 }

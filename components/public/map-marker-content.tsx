@@ -38,6 +38,7 @@ export function ArroyomolinosMarkerPin({ shouldJiggle = false }: ArroyomolinosMa
 	);
 }
 
+/** @public */
 export function ArroyomolinosTooltip() {
 	return (
 		<div className="flex items-center gap-1.5">
