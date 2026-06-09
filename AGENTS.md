@@ -23,6 +23,39 @@ Agents must never run `pnpm build`, `pnpm lint`, `pnpm lint:fix`, `pnpm format`,
 `pnpm format:check`, Prettier, ESLint, or formatter/linter/build commands. Leave
 those checks to the user and only mention them as suggested verification steps.
 
+## Git Rules
+
+- Do not work directly on `main` for feature work.
+- Use small feature branches.
+- Keep commits focused.
+- Do not mix unrelated changes.
+- Do not add generated files unless required.
+- Do not add dependencies without explaining why.
+- When asked to commit changes, choose a clear commit message yourself and use the convention below.
+
+## Commit Convention
+
+Use Conventional Commits: `<type>(<scope>): <imperative summary>`.
+
+Allowed types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`.
+
+Recommended scopes: `public`, `admin`, `api`, `auth`, `db`, `actions`, `queries`, `schema`, `ui`, `design`, `config`, `docs`, `tests`.
+
+Examples:
+
+```txt
+feat(public): add project gallery filtering
+fix(auth): validate missing session state
+docs(agents): define commit convention
+```
+
+Rules:
+
+- Use imperative mood: `add`, `fix`, `remove`, `update`.
+- Keep the summary short and specific.
+- Avoid vague commits like `update`, `changes`, `fix stuff`, or `wip`.
+- Use `BREAKING CHANGE:` in the body/footer for incompatible changes.
+
 ## Tech Stack
 
 | Category   | Technology                                         |
