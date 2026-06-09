@@ -332,7 +332,7 @@ export function PortfolioGrid({
 
 			<div
 				ref={containerRef}
-				className="mx-auto px-[3.5vw] pb-25"
+				className="mx-auto px-[3.5vw] pb-48"
 				style={{ maxWidth: GRID_MAX_WIDTH_PX }}
 			>
 				{mounted && (

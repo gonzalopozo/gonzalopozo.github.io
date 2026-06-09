@@ -68,6 +68,7 @@ turso
 unixepoch
 
 # Technical / comments
+Graphviz
 lockfiles
 subcomponents
 unrs
@@ -104,6 +105,7 @@ itunes
 ITUNES
 mzstatic
 domcontentloaded
+unsplash
 
 # CSS
 hermes

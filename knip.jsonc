@@ -1,10 +1,34 @@
 {
 	"$schema": "https://unpkg.com/knip@6/schema-jsonc.json",
 	// Extra entry points not covered by the Next.js plugin (see https://knip.dev/explanations/entry-files)
-	"entry": ["scripts/**/*.{mts,ts}"],
-	// Commitlint loads its config and shared preset dynamically via cosmiconfig.
-	"project": ["!commitlint.config.mts"],
-	"ignoreDependencies": ["@commitlint/config-conventional"],
+	"entry": [
+		"commitlint.config.mts",
+		"components/ui/**/*.{ts,tsx}",
+		"lib/queries/**/*.ts",
+		"scripts/**/*.{mts,ts}",
+	],
+	// Include repo-local TypeScript modules so Knip follows admin/public components behind route imports.
+	"project": ["**/*.{js,jsx,ts,tsx,mts}"],
+	// Retained shadcn/admin/map/testing packages and CSS-only imports that Knip cannot prove from the current graph.
+	"ignoreDependencies": [
+		"@commitlint/config-conventional",
+		"@dnd-kit/helpers",
+		"@number-flow/react",
+		"@radix-ui/react-alert-dialog",
+		"@radix-ui/react-checkbox",
+		"@radix-ui/react-select",
+		"@teritorio/openmaptiles-gl-language",
+		"@testing-library/dom",
+		"@testing-library/react",
+		"crypto",
+		"react-map-gl",
+		"react-resizable",
+		"tailwindcss-animate",
+		"tw-animate-css",
+		"util",
+	],
+	// The graph script uses the system Graphviz `dot` binary.
+	"ignoreBinaries": ["dot"],
 	// Drizzle config lives under db/ (default plugin only looks for ./drizzle.config.*)
 	"drizzle": {
 		"config": ["db/drizzle.config.ts"],
@@ -28,7 +52,12 @@
 			"namespaceMembers",
 		],
 		"lib/auth-client.ts": ["exports", "types"],
+		"commitlint.config.mts": ["exports"],
 		// Re-exported / documented types for consumers of public components (not always imported elsewhere)
 		"components/public/**/*.tsx": ["types", "nsTypes"],
+		"components/public/map-marker-content.tsx": ["exports"],
+		"lib/queries/about-me.ts": ["exports"],
+		"lib/queries/experiences.ts": ["exports"],
+		"lib/queries/projects.ts": ["exports"],
 	},
 }
