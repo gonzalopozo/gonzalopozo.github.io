@@ -6,6 +6,12 @@
 			"sourceType": "github",
 			"computedHash": "36d3b046163c42251732b3127c042f6b8eb7d91fcbf7ef9ae79fde79e9c99369"
 		},
+		"agent-browser": {
+			"source": "vercel-labs/agent-browser",
+			"sourceType": "github",
+			"skillPath": "skills/agent-browser/SKILL.md",
+			"computedHash": "228f87d57035100d9dc6efcfc05aafd4b6e3962adacaa04b8217ab2fadb15dc8"
+		},
 		"better-auth-best-practices": {
 			"source": "better-auth/skills",
 			"sourceType": "github",
