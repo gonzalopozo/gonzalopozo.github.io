@@ -72,6 +72,7 @@ Graphviz
 lockfiles
 subcomponents
 unrs
+unstub
 
 # Documentation (AGENTS-*.md) — acronyms & product terms
 bento
@@ -96,15 +97,15 @@ Turbopack
 WCAG
 wcag
 
-# Lastfm / Spotify / iTunes
+# Lastfm / Spotify / external images
+domcontentloaded
 lastfm
+mzstatic
+nowplaying
+oembed
 recenttracks
 spotify
-nowplaying
-itunes
-ITUNES
-mzstatic
-domcontentloaded
+spotifycdn
 unsplash
 
 # CSS

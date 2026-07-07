@@ -1,7 +1,7 @@
 import 'server-only';
 import { type Track } from '@/lib/types';
 import { cacheLife, cacheTag } from 'next/cache';
-import { findITunesArtworkForTrack } from '@/lib/itunes';
+import { getSpotifyOEmbedThumbnailUrl } from '@/lib/spotify-oembed';
 import { buildSpotifyTrackSearchUrl } from '@/lib/spotify-utils';
 import { findExactSpotifyTrackUrlFromSearch } from '@/lib/spotify-search-scraper';
 
@@ -16,9 +16,6 @@ interface LastFmTrackJSON {
 	album?: {
 		'#text'?: string;
 	};
-	image?: {
-		'#text'?: string;
-	}[];
 	url?: string;
 	date?: {
 		uts?: string;
@@ -54,12 +51,6 @@ export async function getTrack(): Promise<Track | null> {
 
 	const trackJSON = tracks[0];
 	const isNowPlaying = trackJSON['@attr']?.nowplaying === 'true';
-	const rawArtworkUrl: string | undefined = trackJSON.image?.[3]?.['#text'];
-	// Last.fm returns this MD5 hash for tracks with no album art — treat as null.
-	const artworkUrl =
-		rawArtworkUrl && !rawArtworkUrl.includes('2a96cbd8b46e442fc41c2b86b821562f')
-			? rawArtworkUrl
-			: null;
 	const artistName = trackJSON.artist?.['#text'] ?? null;
 	const albumName = trackJSON.album?.['#text'] ?? null;
 	const playedAtUnix = parsePlayedAtUnix(trackJSON.date?.uts);
@@ -68,21 +59,22 @@ export async function getTrack(): Promise<Track | null> {
 		artistName,
 		albumName,
 	};
-	const itunesArtwork = await findITunesArtworkForTrack(trackSearchInput);
-	const spotifyUrl =
-		(await findExactSpotifyTrackUrlFromSearch(trackSearchInput)) ??
-		buildSpotifyTrackSearchUrl(trackSearchInput);
+	const exactSpotifyUrl = await findExactSpotifyTrackUrlFromSearch(trackSearchInput);
+	const spotifyArtworkUrl = exactSpotifyUrl
+		? await getSpotifyOEmbedThumbnailUrl(exactSpotifyUrl)
+		: null;
+	const spotifyUrl = exactSpotifyUrl ?? buildSpotifyTrackSearchUrl(trackSearchInput);
 
 	return {
 		isOnline: isNowPlaying,
 		trackName: trackJSON.name,
 		artistName,
 		albumName,
-		artworkUrl: itunesArtwork?.artworkUrl ?? artworkUrl,
+		artworkUrl: spotifyArtworkUrl,
 		lastFmUrl: trackJSON.url ?? null,
 		spotifyTrackId: null,
 		spotifyUrl,
-		spotifyArtworkUrl: null,
+		spotifyArtworkUrl,
 		playedAtUnix,
 		playedAtLabel: trackJSON.date?.['#text'] ?? null,
 	};
