@@ -14,8 +14,7 @@ const nextConfig: NextConfig = {
 		remotePatterns: [
 			new URL(`${process.env.BLOB_PUBLIC_HOSTNAME}/**`),
 			new URL('https://lastfm.freetls.fastly.net/**'),
-			new URL('https://image-cdn-fa.spotifycdn.com/**'),
-			new URL('https://image-cdn-ak.spotifycdn.com/**'),
+			new URL('https://image-cdn-**.spotifycdn.com/**'),
 			new URL('https://i.scdn.co/**'),
 			{
 				protocol: 'https',
