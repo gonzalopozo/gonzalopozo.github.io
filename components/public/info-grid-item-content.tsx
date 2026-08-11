@@ -1,14 +1,12 @@
 'use client';
 
 import Image from 'next/image';
-import { ArrowRight, FileDown } from 'lucide-react';
+import { ArrowDownToLine, ArrowRight } from 'lucide-react';
 import { parseAsStringLiteral, useQueryState } from 'nuqs';
-import { useEffect, useRef, useState } from 'react';
 import { PORTFOLIO_SECTIONS } from '@/components/public/portfolio-sections';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import type { Settings } from '@/lib/types';
-
-const STATUS_LABEL_CAP_PX = 80;
 
 interface InfoGridItemContentProps {
 	infoAboutMe: Omit<Settings, 'id' | 'updatedAt'>;
@@ -21,132 +19,88 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 	const statusLabel =
 		infoAboutMe.statusMessage?.trim() || (isEmployed ? 'Working' : 'Open to Work');
 
-	const statusTrackRef = useRef<HTMLSpanElement>(null);
-	const [isStatusOverflowing, setIsStatusOverflowing] = useState(false);
-
-	useEffect(() => {
-		const el = statusTrackRef.current;
-		if (!el) return;
-		setIsStatusOverflowing(el.scrollWidth > STATUS_LABEL_CAP_PX);
-	}, [statusLabel]);
-
 	return (
-		<div className="group/card grid size-full grid-cols-[auto_minmax(0,1fr)] grid-rows-1 items-start gap-5 overflow-hidden px-6 py-5">
-			{/* Profile image with status indicator */}
-			<div className="relative row-span-full shrink-0 place-self-center">
-				<Image
-					src="/cv_pic.png"
-					width={260}
-					height={260}
-					alt="Gonzalo Pozo, Full Stack Developer"
-					className="size-32.5 rounded-full object-cover transition-transform duration-300 ease-out group-hover/card:scale-[1.03]"
-					priority
-				/>
+		<div className="group/card relative grid size-full min-h-0 min-w-0 grid-rows-[minmax(7.5rem,0.75fr)_minmax(0,1.25fr)] overflow-hidden md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] md:grid-rows-1">
+			<div className="relative flex min-h-0 min-w-0 items-center justify-center border-b border-border p-3 md:border-r md:border-b-0 md:p-5">
+				<div className="relative h-full w-[min(72%,18rem)] overflow-hidden rounded-2xl bg-muted shadow-inner md:aspect-3/4 md:w-auto md:max-w-70">
+					<Image
+						src="/cv_pic.png"
+						width={400}
+						height={533}
+						alt="Gonzalo Pozo, Full Stack Developer"
+						className="size-full object-cover grayscale motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-out md:group-hover/card:scale-105 md:group-hover/card:grayscale-0"
+						priority
+					/>
 
-				{/* Status badge, reveals label on card hover via CSS */}
-				<div className="absolute right-0 -bottom-1">
-					<div
-						className={cn(
-							`flex items-center gap-0 rounded-full border-[3px] border-card bg-secondary p-0 transition-all duration-300 ease-out`,
-							`group-hover/card:gap-1.5 group-hover/card:px-2.5 group-hover/card:py-0.5`,
-						)}
-					>
-						<span className="relative flex size-3 shrink-0">
+					<div className="absolute inset-x-0 bottom-0 flex min-w-0 translate-y-0 items-center gap-2 border-t border-border bg-card/90 px-3 py-2 backdrop-blur-md md:translate-y-full md:group-focus-within/card:translate-y-0 md:group-hover/card:translate-y-0 md:motion-safe:transition-transform md:motion-safe:duration-300">
+						<span className="relative flex size-2.5 shrink-0">
 							<span
 								className={cn(
-									`absolute inline-flex size-full rounded-full opacity-75 motion-safe:animate-ping`,
+									'absolute inline-flex size-full rounded-full opacity-75 motion-safe:animate-ping',
 									isEmployed ? 'bg-status-active' : 'bg-accent',
 								)}
 							/>
 							<span
 								className={cn(
-									'relative inline-flex size-3 rounded-full',
+									'relative inline-flex size-2.5 rounded-full',
 									isEmployed ? 'bg-status-active' : 'bg-accent',
 								)}
 							/>
 						</span>
-						<span
-							className={cn(
-								`relative max-w-0 overflow-hidden text-xs font-medium text-secondary-foreground opacity-0 transition-all duration-300 ease-out`,
-								'group-hover/card:max-w-20 group-hover/card:opacity-100',
-								isStatusOverflowing &&
-									`mask-[linear-gradient(to_right,black_calc(100%-0.75rem),transparent)]`,
-							)}
-							role="status"
-						>
-							<span
-								ref={statusTrackRef}
-								className={cn(
-									'inline-flex whitespace-nowrap',
-									isStatusOverflowing &&
-										'motion-safe:group-hover/card:animate-status-marquee',
-								)}
-							>
-								<span className={isStatusOverflowing ? 'pr-8' : undefined}>
-									{statusLabel}
-								</span>
-								{isStatusOverflowing && (
-									<span aria-hidden="true" className="pr-8">
-										{statusLabel}
-									</span>
-								)}
-							</span>
+						<span className="min-w-0 truncate text-xs font-semibold tracking-wide text-foreground uppercase">
+							{statusLabel}
 						</span>
 					</div>
 				</div>
 			</div>
 
-			{/* Content area */}
-			<div className="grid min-w-0 grid-rows-[15%_65%_20%] justify-between self-stretch">
-				{/* CV download button — top right */}
-				<div className="justify-self-end">
+			<div className="relative grid min-h-0 min-w-0 grid-rows-[auto_minmax(0,1fr)_auto] gap-3 p-4 md:p-5">
+				<div className="flex min-w-0 items-center justify-between gap-2">
+					<span className="min-w-0 truncate text-xs font-bold tracking-wide text-primary uppercase">
+						Full Stack Developer
+					</span>
+
 					{infoAboutMe.resumeUrl && (
 						<a
 							href={infoAboutMe.resumeUrl}
 							target="_blank"
 							rel="noopener noreferrer"
-							className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1 text-xs font-medium text-muted-foreground transition-colors duration-200 ease-out hover:border-primary/40 hover:bg-primary/10 hover:text-primary"
+							className="-mr-2 inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full px-2 text-xs font-semibold tracking-wide text-muted-foreground transition-colors duration-200 ease-out hover:bg-secondary hover:text-primary focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none"
 							aria-label="Download CV"
 						>
-							<FileDown className="size-3.5" aria-hidden="true" />
 							<span>Download CV</span>
+							<ArrowDownToLine aria-hidden="true" className="size-3.5 stroke-[2.5]" />
 						</a>
 					)}
 				</div>
 
-				{/* Intro text with highlighted name */}
-				<div className="self-center">
-					<p className="text-sm/relaxed text-pretty">
-						Hey, I&apos;m{' '}
-						<span className="text-base font-bold tracking-tight text-primary">
-							Gonzalo
-						</span>
-						, a full-stack developer from Madrid who loves turning ideas into real
-						products people can use. I care about thoughtful interfaces, solid backend
-						foundations, and the kind of curious, collaborative work that keeps
-						improving the product, the code, and the people building it.
+				<div className="flex min-h-0 min-w-0 flex-col justify-center gap-2 overflow-hidden">
+					<h1 className="text-xl/tight font-bold tracking-tight text-balance text-foreground md:text-2xl/tight">
+						Hey, I&apos;m Gonzalo.
+					</h1>
+
+					<p className="line-clamp-3 max-w-md text-sm/relaxed text-pretty text-muted-foreground">
+						I love turning ideas into real products people can use. I care about
+						thoughtful interfaces, solid backend foundations, and the kind of curious,
+						collaborative work that keeps improving the product, the code, and the
+						people building it.
 					</p>
 				</div>
 
-				{/* Arrow button, label reveals on card hover via CSS */}
-				<div className="flex justify-end">
-					<button
+				<div className="flex min-w-0 justify-end">
+					<Button
 						onClick={() => setSection('About me')}
-						className="group/cta flex items-center gap-2 rounded-full pl-0 transition-[padding,background-color] duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:pl-3 hover:bg-secondary/60"
-						aria-label="View more about me"
+						type="button"
+						size="lg"
+						className="group/cta min-h-11 rounded-full shadow-sm shadow-primary/15 motion-safe:hover:-translate-y-0.5 motion-safe:active:translate-y-0"
 					>
-						<span className="grid grid-cols-[0fr] overflow-hidden transition-[grid-template-columns] duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/card:grid-cols-[1fr]">
-							<span className="min-w-0 text-xs font-medium whitespace-nowrap opacity-0 transition-opacity duration-300 ease-out group-hover/card:opacity-100">
-								About me
-							</span>
-						</span>
-						<span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-secondary transition-colors duration-200 ease-out group-hover/card:bg-primary group-hover/card:text-primary-foreground">
-							<ArrowRight
-								className="size-3.5 transition-transform duration-300 ease-out"
-								aria-hidden="true"
-							/>
-						</span>
-					</button>
+						About Me
+						<ArrowRight
+							data-icon="inline-end"
+							aria-hidden="true"
+							className="motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover/cta:translate-x-0.5"
+						/>
+					</Button>
 				</div>
 			</div>
 		</div>

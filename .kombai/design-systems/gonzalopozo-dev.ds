@@ -1,0 +1,173 @@
+---
+name: Gonzalo Pozo
+modes: [light, dark]
+color:
+  palette:
+    bg-light: "oklch(0.975 0.008 270)"
+    fg-light: "oklch(0.155 0.025 270)"
+    card-light: "oklch(1 0 0)"
+    primary-light: "oklch(0.4 0.17 250)"
+    primary-fg-light: "oklch(0.985 0.005 250)"
+    secondary-light: "oklch(0.945 0.012 270)"
+    muted-light: "oklch(0.92 0.008 270)"
+    accent-light: "oklch(0.7 0.18 55)"
+    accent-fg-light: "oklch(0.2 0.05 55)"
+    border-light: "oklch(0.885 0.012 270)"
+    bg-dark: "oklch(0.12 0.025 275)"
+    fg-dark: "oklch(0.95 0.008 265)"
+    card-dark: "oklch(0.175 0.022 270)"
+    primary-dark: "oklch(0.75 0.17 235)"
+    primary-fg-dark: "oklch(0.12 0.035 235)"
+    secondary-dark: "oklch(0.225 0.018 275)"
+    muted-dark: "oklch(0.225 0.018 275)"
+    accent-dark: "oklch(0.8 0.17 50)"
+    accent-fg-dark: "oklch(0.12 0.045 50)"
+    border-dark: "oklch(0.265 0.018 275)"
+  semantic:
+    background.canvas: { light: "{color.palette.bg-light}", dark: "{color.palette.bg-dark}" }
+    surface.default: { light: "{color.palette.card-light}", dark: "{color.palette.card-dark}" }
+    surface.raised: { light: "{color.palette.card-light}", dark: "{color.palette.card-dark}" }
+    text.primary: { light: "{color.palette.fg-light}", dark: "{color.palette.fg-dark}" }
+    text.secondary: { light: "oklch(0.43 0.02 265)", dark: "oklch(0.58 0.016 265)" }
+    text.tertiary: { light: "oklch(0.43 0.02 265)", dark: "oklch(0.58 0.016 265)" }
+    text.link: { light: "{color.palette.primary-light}", dark: "{color.palette.primary-dark}" }
+    border.default: { light: "{color.palette.border-light}", dark: "{color.palette.border-dark}" }
+    border.focus: { light: "oklch(0.48 0.17 250)", dark: "oklch(0.75 0.17 235)" }
+    primary.bg: { light: "{color.palette.primary-light}", dark: "{color.palette.primary-dark}" }
+    primary.fg: { light: "{color.palette.primary-fg-light}", dark: "{color.palette.primary-fg-dark}" }
+typography:
+  family: { primary: "Geist Sans", mono: "Geist Mono" }
+  textStyle:
+    display: { fontFamily: "Geist Sans", fontSize: "24px", fontWeight: 700, lineHeight: 1.2, letterSpacing: "-0.025em" }
+    card-title: { fontFamily: "Geist Sans", fontSize: "16px", fontWeight: 600, lineHeight: 1.2, letterSpacing: "0" }
+    body: { fontFamily: "Geist Sans", fontSize: "14px", fontWeight: 400, lineHeight: 1.5, letterSpacing: "0" }
+    mono: { fontFamily: "Geist Mono", fontSize: "12px", fontWeight: 400, lineHeight: 1.5, letterSpacing: "0" }
+spacing: { xs: "4px", sm: "8px", md: "16px", lg: "24px", xl: "32px" }
+radius: { base: "8px", card: "32px", pill: "9999px" }
+shadow:
+  sm: { light: "0 1px 2px rgba(0,0,0,.05)", dark: "none" }
+  md: { light: "0 4px 6px rgba(0,0,0,.05)", dark: "0 4px 6px rgba(0,0,0,.3)" }
+elevation:
+  - { level: 0, name: "flat", treatment: "no shadow, no border" }
+  - { level: 1, name: "card", treatment: "surface contrast based float" }
+  - { level: 2, name: "overlay", shadow: "{shadow.md}" }
+border:
+  width: { hairline: "1px" }
+  style: { solid: "solid" }
+opacity: { disabled: 0.6, muted: 0.58, full: 1 }
+motion:
+  duration: { fast: "120ms", normal: "200ms", slow: "600ms" }
+  easing: { standard: "cubic-bezier(0.4, 0, 0.2, 1)", spring: "cubic-bezier(0.16, 1, 0.3, 1)" }
+breakpoint:
+  sm: { px: 0, change: "Single column stack" }
+  md: { px: 768, change: "4-column tablet layout; Nav anchored top" }
+  lg: { px: 996, change: "8-column bento layout" }
+components:
+  bento-card: { type: card, label: "Content Card", backgroundColor: "{color.semantic.surface.default}", textColor: "{color.semantic.text.primary}", typography: "{typography.body}", rounded: "{radius.card}", padding: "24px" }
+  pill-nav: { type: nav, label: "Projects", backgroundColor: "{color.palette.secondary-light}", textColor: "{color.semantic.text.primary}", typography: "{typography.body}", rounded: "{radius.pill}", padding: "8px 16px" }
+  primary-button: { type: button, label: "Contact", backgroundColor: "{color.semantic.primary.bg}", textColor: "{color.semantic.primary.fg}", typography: "{typography.body}", rounded: "{radius.pill}", padding: "10px 20px" }
+assetPalette:
+  overallRelationship: brand-led
+  temperature: cool
+  saturation: vivid
+  contrast: high
+  psychologicalRole: "premium technical confidence"
+  usage: "Surface contrast and card scale drive the hierarchy."
+assetPatterns:
+  bento-grid:
+    type: motif
+    media: pattern
+    role: decorative
+    visualWeight: subtle
+    purpose: atmosphere
+    colorIntent: brand
+    palette:
+      source: brand-applied
+      dominant: ["{color.semantic.background.canvas}"]
+      accent: ["{color.semantic.border.default}"]
+      temperature: cool
+      saturation: muted
+      contrast: low
+      relationship: monochrome
+      harmonyWithSystem: integrated
+      psychologicalEffect: "structured spatial layout"
+    shape: repeated-grid
+    treatment: [overlap]
+    placement: background
+    backgroundRelationship: grounding
+    motion: none
+    replication: { library: css, note: "react-grid-layout implementation" }
+motionPatterns:
+  section-reveal:
+    type: scroll-reveal
+    trigger: on-view
+    target: section
+    property: [opacity, translateY]
+    from: "opacity 0, y 24px"
+    to: "opacity 1, y 0"
+    duration: "{motion.duration.normal}"
+    easing: "{motion.easing.standard}"
+    importance: signature
+    replication: { library: motion, note: "whileInView + IntersectionObserver" }
+---
+
+# Gonzalo Pozo — gonzalopozo-dev.ds
+
+> A technical but warm personal portfolio system built on spatial density and card scale. Hierarchy is driven by card size contrast rather than typographic weight.
+
+## Instructions
+- Every content piece MUST live inside a card (`rounded-4xl`).
+- Visual hierarchy comes from card size contrast, not color loudness.
+- Use OKLCH for all color definitions to ensure perceptual uniformity across light/dark themes.
+- Light and dark modes must be treated as parallel hero experiences.
+
+## Brand & Accent
+- Primary Sapphire/Electric Blue (`{colors.primary}`): Signature accent for CTAs and branding.
+- Accent Gold (`{colors.accent}`): Warm complementary highlight for high-priority CTAs.
+
+## Surface
+- Canvas Background (`{colors.background}`): Cool lavender off-white (light) or deep indigo-black (dark).
+- Card Surface (`{colors.card}`): Pure white (light) or elevated indigo (dark). Separation is achieved via surface contrast, not shadows.
+
+## Text
+- Primary Foreground (`{colors.foreground}`): Main body and heading text.
+- Muted Foreground (`{colors.muted-foreground}`): Secondary metadata and subtle UI text.
+
+## Fonts
+- **Geist Sans**: Primary typeface for all UI, headings, and body content.
+- **Geist Mono**: Dedicated to technical metadata, tech stack tags, and code snippets.
+
+## Layout
+- **Bento Grid**: A responsive grid system using `react-grid-layout`.
+- Max-width of `1200px` with a base `rowHeight` of `30px`.
+- Desktop uses 8 columns, Tablet uses 4, and Mobile collapses to 1.
+
+## Imagery & Asset Usage
+- Images and maps are always full-bleed within cards, clipped by the `32px` radius.
+- **Generation Prompt**: "Clean technical dashboard UI, indigo-tinted glass panels, sapphire blue accents, soft studio lighting, high contrast, 3/4 view — 4:3".
+
+## Icons & Motifs
+- **Lucide Icons**: Primary icon set for UI actions and metadata.
+- **React Icons**: Secondary set for social and technical brands.
+- Icons are generally `size-4` (16px) for metadata and `size-5` (20px) for standalone actions.
+
+## Animation & Motion
+- **Entrance**: Subtle fade-up reveals as cards enter the viewport.
+- **Micro-interactions**: Subtle `scale-[0.99]` on card press; border glow on hover.
+- **Theme Switch**: Signature BB-8 animation for theme toggling.
+
+## Do
+- Use semantic status tokens (`text-status-active`, etc.) instead of hardcoded colors.
+- Maintain a minimum `44px` touch target for all interactive elements.
+
+## Don't
+- Do not use drop shadows for card elevation; rely on background-to-card contrast.
+- Do not truncate essential content to fit a grid size; adjust the card height instead.
+
+## Signature
+- **rounded-4xl**: The 32px signature radius applied to all grid items.
+- **Pill Navbar**: Floating capsule navigation with a sliding active indicator.
+
+## Notes
+- System is designed specifically for Next.js 16 + Tailwind CSS 4.2.
+- OKLCH values are centered on H=250 (Primary) and H=50 (Accent).
