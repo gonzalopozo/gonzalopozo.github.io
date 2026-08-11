@@ -31,31 +31,11 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 						className="size-full object-cover grayscale motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-out md:group-hover/card:scale-105 md:group-hover/card:grayscale-0"
 						priority
 					/>
-
-					<div className="absolute inset-x-0 bottom-0 flex min-w-0 translate-y-0 items-center gap-2 border-t border-border bg-card/90 px-3 py-2 backdrop-blur-md md:translate-y-full md:group-focus-within/card:translate-y-0 md:group-hover/card:translate-y-0 md:motion-safe:transition-transform md:motion-safe:duration-300">
-						<span className="relative flex size-2.5 shrink-0">
-							<span
-								className={cn(
-									'absolute inline-flex size-full rounded-full opacity-75 motion-safe:animate-ping',
-									isEmployed ? 'bg-status-active' : 'bg-accent',
-								)}
-							/>
-							<span
-								className={cn(
-									'relative inline-flex size-2.5 rounded-full',
-									isEmployed ? 'bg-status-active' : 'bg-accent',
-								)}
-							/>
-						</span>
-						<span className="min-w-0 truncate text-xs font-semibold tracking-wide text-foreground uppercase">
-							{statusLabel}
-						</span>
-					</div>
 				</div>
 			</div>
 
 			<div className="relative grid min-h-0 min-w-0 grid-rows-[auto_minmax(0,1fr)_auto] gap-3 p-4 md:p-5">
-				<div className="flex min-w-0 items-center justify-between gap-2">
+				<div className="flex min-w-0 flex-wrap items-center justify-between gap-x-2 gap-y-3">
 					<span className="min-w-0 truncate text-xs font-bold tracking-wide text-primary uppercase">
 						Full Stack Developer
 					</span>
@@ -72,6 +52,28 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 							<ArrowDownToLine aria-hidden="true" className="size-3.5 stroke-[2.5]" />
 						</a>
 					)}
+
+					<div
+						role="status"
+						tabIndex={0}
+						className={cn(
+							'flex max-h-16 min-w-0 basis-full items-start gap-2.5 overflow-y-auto overscroll-contain rounded-xl border px-3 py-2 text-xs/relaxed font-semibold tracking-wide focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none',
+							isEmployed
+								? 'border-status-active/35 bg-status-active/10 text-foreground'
+								: 'border-accent/40 bg-accent/10 text-foreground',
+						)}
+					>
+						<span
+							aria-hidden="true"
+							className={cn(
+								'mt-1 size-2 shrink-0 rounded-full motion-safe:animate-pulse motion-reduce:animate-none',
+								isEmployed ? 'bg-status-active' : 'bg-accent',
+							)}
+						/>
+						<span className="min-w-0 text-pretty wrap-break-word uppercase">
+							{statusLabel}
+						</span>
+					</div>
 				</div>
 
 				<div className="flex min-h-0 min-w-0 flex-col justify-center gap-2 overflow-hidden">
