@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { ArrowDownToLine, ArrowRight } from 'lucide-react';
+import { ArrowRight, File } from 'lucide-react';
 import { parseAsStringLiteral, useQueryState } from 'nuqs';
 import { PORTFOLIO_SECTIONS } from '@/components/public/portfolio-sections';
 import { Button } from '@/components/ui/button';
@@ -36,7 +36,7 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 
 			<div className="relative grid min-h-0 min-w-0 grid-rows-[auto_minmax(0,1fr)_auto] gap-3 p-4 md:p-5">
 				<div className="flex min-w-0 flex-wrap items-center justify-between gap-x-2 gap-y-3">
-					<span className="min-w-0 truncate text-xs font-bold tracking-wide text-primary uppercase">
+					<span className="min-w-0 truncate text-xs font-semibold text-primary">
 						Full Stack Developer
 					</span>
 
@@ -45,11 +45,18 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 							href={infoAboutMe.resumeUrl}
 							target="_blank"
 							rel="noopener noreferrer"
-							className="-mr-2 inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full px-2 text-xs font-semibold tracking-wide text-muted-foreground transition-colors duration-200 ease-out hover:bg-secondary hover:text-primary focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none"
+							className="group/download -mr-2 inline-flex h-11 w-34.5 shrink-0 touch-manipulation items-center justify-center gap-2 rounded-full border border-border/80 bg-secondary/40 px-2.5 text-xs font-semibold tracking-wide whitespace-nowrap text-muted-foreground [-webkit-tap-highlight-color:transparent] hover:border-accent/50 hover:bg-accent/10 hover:text-foreground focus-visible:border-accent/50 focus-visible:bg-accent/10 focus-visible:text-foreground focus-visible:ring-2 focus-visible:ring-accent/60 focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none active:border-accent/70 active:bg-accent/15 active:shadow-inner motion-safe:transition-[background-color,border-color,color,box-shadow] motion-safe:duration-200 motion-safe:ease-out forced-colors:focus-visible:outline-2 forced-colors:focus-visible:outline-offset-2"
 							aria-label="Download CV"
 						>
 							<span>Download CV</span>
-							<ArrowDownToLine aria-hidden="true" className="size-3.5 stroke-[2.5]" />
+							<span
+								aria-hidden="true"
+								className="grid size-5 shrink-0 place-items-center"
+							>
+								<span className="grid size-4 origin-center place-items-center motion-safe:transition-transform motion-safe:duration-200 motion-safe:ease-out motion-safe:group-hover/download:scale-[1.08] motion-safe:group-focus-visible/download:scale-[1.08] motion-safe:group-active/download:scale-105">
+									<File className="size-4 stroke-2" />
+								</span>
+							</span>
 						</a>
 					)}
 
