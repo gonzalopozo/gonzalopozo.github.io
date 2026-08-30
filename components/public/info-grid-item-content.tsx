@@ -100,15 +100,12 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 					<Button
 						onClick={() => setSection('About me')}
 						type="button"
+						variant="inverse"
 						size="lg"
-						className="group/cta min-h-11 rounded-full shadow-sm shadow-primary/15 motion-safe:hover:-translate-y-0.5 motion-safe:active:translate-y-0"
+						className="group/cta h-11 w-38 touch-manipulation rounded-full px-4 [-webkit-tap-highlight-color:transparent] forced-colors:focus-visible:outline-2 forced-colors:focus-visible:outline-offset-2"
 					>
 						About Me
-						<ArrowRight
-							data-icon="inline-end"
-							aria-hidden="true"
-							className="motion-safe:transition-transform motion-safe:duration-200 motion-safe:group-hover/cta:translate-x-0.5"
-						/>
+						<ArrowRight data-icon="inline-end" aria-hidden="true" className="size-5" />
 					</Button>
 				</div>
 			</div>
