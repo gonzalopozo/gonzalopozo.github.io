@@ -104,6 +104,7 @@ components/
 ├── auth/             # Auth components
 ├── public/           # Public portfolio components
 └── ui/               # shadcn/ui components
+agent-instructions/  # Task-specific implementation briefs for agents
 db/schema/            # Drizzle schema (source of truth for DB structure)
 lib/
 ├── actions/          # Server Actions
@@ -123,11 +124,23 @@ lib/
 - **Functions/Variables**: camelCase (`createProject`)
 - **Database columns**: snake_case (Drizzle casing config)
 
+## Agent Instruction Briefs
+
+- Store task-specific implementation briefs in `agent-instructions/`.
+- Name each brief descriptively in kebab-case (for example,
+  `improve-about-me-button-hover.md`).
+- Each brief must define the objective, relevant context, required behavior,
+  constraints, acceptance criteria, and verification commands.
+- When a task references a brief, read it before making implementation changes.
+- Ignore `.specstory` entirely: do not read it for context and do not write new
+  files there. Treat it as legacy content outside the agent workflow.
+
 ## Knowledge Resolution Order
 
-1. This file + `AGENTS-*.md` sub-files
-2. Agent Skills (`.claude/skills/`)
-3. Web search (last resort)
+1. The referenced brief in `agent-instructions/`, when applicable
+2. This file + `AGENTS-*.md` sub-files
+3. Agent Skills (`.claude/skills/`)
+4. Web search (last resort)
 
 ## Common Tasks
 
