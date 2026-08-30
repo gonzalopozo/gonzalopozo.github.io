@@ -58,7 +58,8 @@
 		"**/*.webp",
 		"**/*.ico",
 		"**/*.woff",
-		"**/*.woff2"
+		"**/*.woff2",
+		"designs/**/*.pen"
 	],
 	"useGitignore": true,
 	"overrides": [
