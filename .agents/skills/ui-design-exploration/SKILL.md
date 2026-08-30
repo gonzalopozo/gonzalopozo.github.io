@@ -48,6 +48,16 @@ Before starting design work:
 
 Do not substitute HTML files, React components, screenshots, SVG mockups, or temporary application routes for the Pencil canvas unless the user explicitly requests that approach.
 
+## File location
+
+Create all `.pen` files inside the `designs/` folder at the repository root:
+
+* `designs/<feature-or-page>.pen`
+
+Create the `designs/` folder if it does not exist.
+
+Never place `.pen` files in application source directories such as `app/`, `components/`, or `lib/`.
+
 ## Phase 1: Understand the existing UI
 
 Inspect the implementation requested by the user.
@@ -70,6 +80,8 @@ Do not modify these files.
 ## Phase 2: Establish the baseline
 
 Use the `pencil` MCP to create or open an appropriate `.pen` design.
+
+Create or open it at `designs/<feature-or-page>.pen` (see File location).
 
 Unless the user explicitly says otherwise, recreate the relevant current interface as:
 
