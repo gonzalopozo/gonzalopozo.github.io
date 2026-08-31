@@ -446,10 +446,7 @@ export function PortfolioGrid({
 									url="https://github.com/gonzalopozo"
 									ariaLabel="Visit Gonzalo's GitHub profile"
 								>
-									<FaGithub
-										aria-hidden="true"
-										className="size-14 text-white/95"
-									/>
+									<FaGithub aria-hidden="true" className="size-14" />
 								</SocialLinkGridItemContent>
 							</GridItem>
 							{(['c', 'f'] as const).map((slot, index) =>
