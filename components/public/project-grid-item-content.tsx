@@ -133,7 +133,7 @@ function ProjectGridItemVerticalContent({
 	actionCount,
 }: ProjectGridItemContentVariantProps) {
 	return (
-		<div className="group/project grid h-full min-h-0 grid-rows-[auto_minmax(0,1fr)_auto]">
+		<div className="group/project grid h-full min-h-0 grid-rows-[auto_minmax(0,1fr)_auto] gap-6 [@container_project-card_(max-width:360px)]:gap-3.5">
 			<CardHeader className="gap-0 pb-0">
 				<ProjectMedia
 					project={project}
@@ -142,9 +142,9 @@ function ProjectGridItemVerticalContent({
 				/>
 			</CardHeader>
 
-			<CardContent className="flex min-h-0 flex-col overflow-hidden pt-6 pb-0 sm:px-7 [@container_project-card_(max-width:360px)]:px-3.5 [@container_project-card_(max-width:360px)]:pt-3.5 [@container_project-card_(max-width:360px)]:pb-0">
-				<div className="flex min-h-0 flex-col gap-5 overflow-hidden">
-					<div className="flex flex-col gap-1.5">
+			<CardContent className="flex min-h-0 flex-col overflow-hidden sm:px-7 [@container_project-card_(max-width:360px)]:px-3.5">
+				<div className="flex min-h-0 flex-1 flex-col justify-between gap-3 overflow-hidden [@container_project-card_(min-width:361px)_and_(max-width:767px)]:gap-2">
+					<div className="flex shrink-0 flex-col gap-1.5">
 						<div className="flex items-start gap-2">
 							<Badge
 								variant={PROJECT_STATUS_BADGE_VARIANTS[project.status]}
@@ -159,7 +159,7 @@ function ProjectGridItemVerticalContent({
 							{project.title}
 						</CardTitle>
 
-						<CardDescription className="line-clamp-3 text-sm/relaxed [@container_project-card_(max-height:340px)]:line-clamp-1 [@container_project-card_(max-height:440px)_and_(min-height:341px)]:line-clamp-2">
+						<CardDescription className="line-clamp-5 h-[5lh] shrink-0 text-sm/relaxed [@container_project-card_(max-height:340px)]:line-clamp-2 [@container_project-card_(max-height:340px)]:h-[2lh] [@container_project-card_(max-height:440px)_and_(min-height:341px)]:line-clamp-3 [@container_project-card_(max-height:440px)_and_(min-height:341px)]:h-[3lh] [@container_project-card_(min-width:361px)_and_(max-width:767px)]:line-clamp-2 [@container_project-card_(min-width:361px)_and_(max-width:767px)]:h-[2lh]">
 							{project.description}
 						</CardDescription>
 					</div>
@@ -168,11 +168,11 @@ function ProjectGridItemVerticalContent({
 						<SkillsPills
 							skills={skills}
 							limit={6}
-							className="gap-3 [@container_project-card_(max-width:360px)]:gap-1.5"
+							className="shrink-0 gap-3 [@container_project-card_(max-width:360px)]:gap-1.5"
 						/>
 					) : null}
 
-					<p className="text-xs text-muted-foreground">
+					<p className="shrink-0 text-xs text-muted-foreground">
 						Actualizado en:{' '}
 						<span className="font-medium text-foreground">
 							{formatProjectDate(project.updatedAt, 'full')}
@@ -182,7 +182,7 @@ function ProjectGridItemVerticalContent({
 			</CardContent>
 
 			<CardFooter className="pb-5 sm:px-7 [@container_project-card_(max-width:360px)]:px-3.5 [@container_project-card_(max-width:360px)]:pb-4">
-				<div className="flex w-full flex-col gap-2 pt-2">
+				<div className="flex w-full flex-col gap-2">
 					{actionCount ? (
 						<div
 							className={cn('grid gap-2', {
