@@ -52,9 +52,10 @@ Rules:
 
 ## Pre-Commit Checks
 
-Before creating any commit, run a dedicated Codex subagent with model `gpt-5.4-mini`
-and reasoning effort `low`. The subagent performs the final verification pass and
-must report every command it ran, every finding, and whether the commit is blocked.
+Before creating any commit, run a dedicated Codex subagent with model `gpt-5.6-luna`,
+reasoning effort `low`, and Fast Mode enabled. The subagent performs the final
+verification pass and must report every command it ran, every finding, and whether the
+commit is blocked.
 
 The pre-commit subagent must complete these checks:
 
