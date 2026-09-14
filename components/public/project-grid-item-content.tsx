@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { ArrowUpRight, Github, type LucideIcon } from 'lucide-react';
-import { GridItemShowMoreButton } from '@/components/public/grid-item';
+import { GridItemShowMoreButton } from '@/components/public/grid-item-show-more-button';
 import { SkillsPills } from '@/components/public/skills-pills';
 import { StatusIndicator } from '@/components/public/status-indicator';
 import { Badge } from '@/components/ui/badge';

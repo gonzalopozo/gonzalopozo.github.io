@@ -12,7 +12,7 @@ import {
 	SiPython,
 } from 'react-icons/si';
 
-import { GridItemShowMoreButton } from '@/components/public/grid-item';
+import { GridItemShowMoreButton } from '@/components/public/grid-item-show-more-button';
 
 const TECH_STACK: IconType[] = [
 	SiReact,
