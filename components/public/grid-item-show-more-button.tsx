@@ -9,10 +9,11 @@ import type { GridItemVariant } from '@/components/public/grid-item';
 interface GridItemShowMoreButtonProps {
 	variant: Exclude<GridItemVariant, 'map' | 'music' | 'hobby'>;
 	buttonSize?: 'default' | 'sm' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg';
-	buttonVariant?: 'default' | 'ghost' | 'outline' | 'secondary';
+	buttonVariant?: 'default' | 'ghost' | 'outline' | 'secondary' | 'inverse';
 	className?: string;
 	icon?: 'arrow-right';
 	iconOnly?: boolean;
+	iconPosition?: 'start' | 'end';
 	label?: string;
 }
 
@@ -33,6 +34,7 @@ export function GridItemShowMoreButton({
 	className,
 	icon,
 	iconOnly,
+	iconPosition = 'start',
 	label,
 }: GridItemShowMoreButtonProps) {
 	const [section, setSection] = useQueryState(
@@ -42,6 +44,17 @@ export function GridItemShowMoreButton({
 	const { section: targetSection, label: defaultLabel } = VARIANT_CONFIG[variant];
 	const resolvedLabel = label ?? defaultLabel;
 	const Icon = icon === 'arrow-right' ? ArrowRight : null;
+	const iconElement = Icon ? (
+		<Icon
+			data-icon={iconPosition === 'end' ? 'inline-end' : 'inline-start'}
+			aria-hidden="true"
+		/>
+	) : null;
+	const labelElement = iconOnly ? (
+		<span className="sr-only">{resolvedLabel}</span>
+	) : (
+		resolvedLabel
+	);
 
 	if (section) {
 		return null;
@@ -55,8 +68,9 @@ export function GridItemShowMoreButton({
 			className={className}
 			aria-label={iconOnly ? resolvedLabel : undefined}
 		>
-			{Icon ? <Icon data-icon="inline-start" aria-hidden="true" /> : null}
-			{iconOnly ? <span className="sr-only">{resolvedLabel}</span> : resolvedLabel}
+			{iconPosition === 'end' ? null : iconElement}
+			{labelElement}
+			{iconPosition === 'end' ? iconElement : null}
 		</Button>
 	);
 }

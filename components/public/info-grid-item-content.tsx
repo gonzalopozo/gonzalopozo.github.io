@@ -1,10 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { ArrowRight, File } from 'lucide-react';
-import { parseAsStringLiteral, useQueryState } from 'nuqs';
-import { PORTFOLIO_SECTIONS } from '@/components/public/portfolio-sections';
-import { Button } from '@/components/ui/button';
+import { File } from 'lucide-react';
+import { GridItemShowMoreButton } from '@/components/public/grid-item-show-more-button';
 import { cn } from '@/lib/utils';
 import type { Settings } from '@/lib/types';
 
@@ -13,8 +11,6 @@ interface InfoGridItemContentProps {
 }
 
 export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
-	const [, setSection] = useQueryState('section', parseAsStringLiteral(PORTFOLIO_SECTIONS));
-
 	const isEmployed = infoAboutMe.isEmployed ?? false;
 	const statusLabel =
 		infoAboutMe.statusMessage?.trim() || (isEmployed ? 'Working' : 'Open to Work');
@@ -97,16 +93,15 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 				</div>
 
 				<div className="flex min-w-0 justify-end">
-					<Button
-						onClick={() => setSection('About me')}
-						type="button"
-						variant="inverse"
-						size="lg"
+					<GridItemShowMoreButton
+						variant="about"
+						buttonSize="lg"
+						buttonVariant="inverse"
+						icon="arrow-right"
+						iconPosition="end"
+						label="About Me"
 						className="group/cta h-11 w-38 touch-manipulation rounded-full px-4 [-webkit-tap-highlight-color:transparent] forced-colors:focus-visible:outline-2 forced-colors:focus-visible:outline-offset-2"
-					>
-						About Me
-						<ArrowRight data-icon="inline-end" aria-hidden="true" className="size-5" />
-					</Button>
+					/>
 				</div>
 			</div>
 		</div>
