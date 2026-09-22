@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import type { IconType } from 'react-icons';
 import { cacheLife, cacheTag } from 'next/cache';
 
@@ -14,30 +15,38 @@ const PACK_LOADERS = {
 	lia: () => import('react-icons/lia'),
 };
 
-interface SkillIconProps {
-	iconFullName: string;
+interface DynamicIconProps {
+	iconFullName: string | null;
 	className?: string;
+	fallback?: ReactNode;
 }
 
-export async function SkillIcon({ iconFullName, className }: SkillIconProps) {
+export async function DynamicIcon({ iconFullName, className, fallback = null }: DynamicIconProps) {
 	'use cache';
 	cacheLife('max');
-	cacheTag('skill-icons');
+	cacheTag('dynamic-icons');
 
-	const [iconName, packageName] = iconFullName.split('|').map((value) => value.trim());
+	const parts = iconFullName?.split('|').map((value) => value.trim()) ?? [];
+	const [iconName, packageName] = parts;
 
-	if (!iconName || !packageName) {
-		return null;
+	if (
+		parts.length !== 2 ||
+		!iconName ||
+		!packageName ||
+		!Object.hasOwn(PACK_LOADERS, packageName)
+	) {
+		return fallback;
 	}
 
 	const loadPack = PACK_LOADERS[packageName as keyof typeof PACK_LOADERS];
-	if (!loadPack) {
-		return null;
+	if (typeof loadPack !== 'function') {
+		return fallback;
 	}
 
 	const packageImported = await loadPack();
+	if (!Object.hasOwn(packageImported, iconName)) return fallback;
 	const Icon = (packageImported as Record<string, unknown>)[iconName];
-	if (typeof Icon !== 'function') return null;
+	if (typeof Icon !== 'function') return fallback;
 	const ResolvedIcon = Icon as IconType;
 
 	return <ResolvedIcon className={className} aria-hidden={true} />;

@@ -1,5 +1,5 @@
 import { Badge } from '@/components/ui/badge';
-import { SkillIcon } from '@/components/public/skill-icon';
+import { DynamicIcon } from '@/components/public/dynamic-icon';
 import type { Skill } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
@@ -60,7 +60,7 @@ export function SkillsPills({ skills, limit, className }: SkillsPillsProps) {
 				>
 					{row.map(({ id, name, icon }) => (
 						<Badge variant="secondary" key={`${id}-${name}`} className="gap-1.5">
-							{icon ? <SkillIcon iconFullName={icon} /> : null}
+							{icon ? <DynamicIcon iconFullName={icon} /> : null}
 							{name}
 						</Badge>
 					))}

@@ -14,7 +14,7 @@ import { skills } from '@/db/schema/portfolio';
 import Link from 'next/link';
 import { Plus, Pencil, ExternalLink, Trash } from 'lucide-react';
 import { deleteSkill } from '@/lib/actions/skills';
-import { SkillIcon } from '@/components/public/skill-icon';
+import { DynamicIcon } from '@/components/public/dynamic-icon';
 
 export default async function SkillsDashboardPage() {
 	const skillsData = await db.select().from(skills);
@@ -108,7 +108,7 @@ export default async function SkillsDashboardPage() {
 										<TableCell className="font-mono text-sm">
 											{skill.icon ? (
 												<div className="flex items-center">
-													<SkillIcon
+													<DynamicIcon
 														iconFullName={skill.icon}
 														className="size-4 shrink-0"
 													/>

@@ -9,6 +9,16 @@ import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import { ArrowLeft, Save } from 'lucide-react';
 
+import dynamic from 'next/dynamic';
+import { IconPickerSkeleton } from '@/components/admin/icon-picker';
+
+const IconPicker = dynamic(
+	() => import('@/components/admin/icon-picker').then((mod) => mod.IconPicker),
+	{
+		loading: () => <IconPickerSkeleton />,
+	},
+);
+
 export default async function UpdateSocialLinkDashboardPage(props: {
 	params: Promise<{ id: string }>;
 }) {
@@ -79,15 +89,9 @@ export default async function UpdateSocialLinkDashboardPage(props: {
 						{/* Icon Field */}
 						<div className="space-y-2">
 							<Label htmlFor="icon">Icono</Label>
-							<Input
-								type="text"
-								name="icon"
-								id="icon"
-								placeholder="Ej: github, linkedin, twitter..."
-								defaultValue={socialLinkResult.icon || ''}
-							/>
+							<IconPicker fullName={socialLinkResult.icon ?? undefined} />
 							<p className="text-xs text-muted-foreground">
-								Nombre del icono para mostrar (opcional)
+								Selecciona un icono para mostrar (opcional)
 							</p>
 						</div>
 
