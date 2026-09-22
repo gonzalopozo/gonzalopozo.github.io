@@ -365,7 +365,8 @@ export function PortfolioGrid({
 								<InfoGridItemContent infoAboutMe={infoAboutMe!} />
 							</GridItem>
 							<GridItem
-								variant="map"
+								variant="about"
+								cardClassName="group/map"
 								key="b"
 								onMouseEnter={handleMapGridMouseEnter}
 								onMouseLeave={handleMapGridMouseLeave}
@@ -437,10 +438,14 @@ export function PortfolioGrid({
 									</AnimatePresence>
 								</div>
 							</GridItem>
-							<GridItem variant="music" key="d">
+							<GridItem
+								variant="about"
+								cardClassName="group/music @container/music-card @container-[size] isolate"
+								key="d"
+							>
 								<LastTrackGridItemContent track={lastTrack} />
 							</GridItem>
-							<GridItem variant="contact" key="e">
+							<GridItem variant="about" key="e">
 								<SocialLinkGridItemContent
 									backgroundColor="#66696D"
 									url="https://github.com/gonzalopozo"
@@ -459,7 +464,11 @@ export function PortfolioGrid({
 							<GridItem variant="experience" key="g">
 								{experienceCard}
 							</GridItem>
-							<GridItem variant="hobby" key="j">
+							<GridItem
+								variant="about"
+								cardClassName="group/hobby @container/hobby-card @container-[size] isolate"
+								key="j"
+							>
 								<HobbiesGridItemContent />
 							</GridItem>
 							{projectCards[2] ? (
@@ -467,7 +476,7 @@ export function PortfolioGrid({
 									{projectCards[2]}
 								</GridItem>
 							) : null}
-							<GridItem variant="contact" key="i">
+							<GridItem variant="about" key="i">
 								<BB8ThemeSwitcher />
 							</GridItem>
 						</Responsive>

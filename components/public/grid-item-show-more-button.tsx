@@ -7,7 +7,7 @@ import { PORTFOLIO_SECTIONS, type PortfolioSection } from '@/components/public/p
 import type { GridItemVariant } from '@/components/public/grid-item';
 
 interface GridItemShowMoreButtonProps {
-	variant: Exclude<GridItemVariant, 'map' | 'music' | 'hobby'>;
+	variant: GridItemVariant;
 	buttonSize?: 'default' | 'sm' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg';
 	buttonVariant?: 'default' | 'ghost' | 'outline' | 'secondary' | 'inverse';
 	className?: string;
@@ -17,12 +17,8 @@ interface GridItemShowMoreButtonProps {
 	label?: string;
 }
 
-const VARIANT_CONFIG: Record<
-	Exclude<GridItemVariant, 'map' | 'music' | 'hobby'>,
-	{ section: PortfolioSection; label: string }
-> = {
+const VARIANT_CONFIG: Record<GridItemVariant, { section: PortfolioSection; label: string }> = {
 	about: { section: 'About me', label: '¡Conoce más de mí!' },
-	contact: { section: 'Contact', label: '¡Contáctame!' },
 	experience: { section: 'Experience', label: '¡Descubre mi experiencia!' },
 	project: { section: 'Projects', label: '¡Descubre mis proyectos!' },
 };
