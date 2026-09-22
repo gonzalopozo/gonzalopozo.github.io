@@ -1,9 +1,12 @@
 'use client';
 
 import { ArrowRight } from 'lucide-react';
-import { parseAsStringLiteral, useQueryState } from 'nuqs';
+import { useQueryState } from 'nuqs';
 import { Button } from '@/components/ui/button';
-import { PORTFOLIO_SECTIONS, type PortfolioSection } from '@/components/public/portfolio-sections';
+import {
+	portfolioSectionParser,
+	type PortfolioSection,
+} from '@/components/public/portfolio-sections';
 import type { GridItemVariant } from '@/components/public/grid-item';
 
 interface GridItemShowMoreButtonProps {
@@ -33,10 +36,7 @@ export function GridItemShowMoreButton({
 	iconPosition = 'start',
 	label,
 }: GridItemShowMoreButtonProps) {
-	const [section, setSection] = useQueryState(
-		'section',
-		parseAsStringLiteral(PORTFOLIO_SECTIONS),
-	);
+	const [section, setSection] = useQueryState('section', portfolioSectionParser);
 	const { section: targetSection, label: defaultLabel } = VARIANT_CONFIG[variant];
 	const resolvedLabel = label ?? defaultLabel;
 	const Icon = icon === 'arrow-right' ? ArrowRight : null;

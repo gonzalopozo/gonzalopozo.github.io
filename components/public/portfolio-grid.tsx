@@ -1,10 +1,8 @@
 'use client';
 'use no memo';
 
-import Image from 'next/image';
 import { AnimatePresence, LazyMotion, domAnimation, m, useReducedMotion } from 'motion/react';
-import { useQueryState, parseAsStringLiteral } from 'nuqs';
-import { Briefcase, History, LayoutGrid, Send, UserRound, type LucideIcon } from 'lucide-react';
+import { useQueryState } from 'nuqs';
 import {
 	Responsive,
 	useContainerWidth,
@@ -15,7 +13,6 @@ import {
 import 'react-grid-layout/css/styles.css';
 import { useState, type ReactNode } from 'react';
 import { Map, MapMarker, MarkerContent } from '@/components/ui/map';
-import { Button } from '@/components/ui/button';
 import { ArroyomolinosMarkerPin, ArroyomolinosPopup } from '@/components/public/map-marker-content';
 import { GridItem } from '@/components/public/grid-item';
 import { InfoGridItemContent } from '@/components/public/info-grid-item-content';
@@ -23,7 +20,8 @@ import { LastTrackGridItemContent } from '@/components/public/last-track-grid-it
 import { SocialLinkGridItemContent } from '@/components/public/social-link-grid-item-content';
 import { HobbiesGridItemContent } from '@/components/public/hobbies-grid-item-content';
 import { BB8ThemeSwitcher } from '@/components/public/bb8-theme-switcher';
-import { PORTFOLIO_SECTIONS, type PortfolioSection } from '@/components/public/portfolio-sections';
+import { portfolioSectionParser } from '@/components/public/portfolio-sections';
+import { PortfolioNavigation } from '@/components/public/portfolio-navigation';
 import { type Settings, type Track } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { FaGithub } from 'react-icons/fa';
@@ -133,10 +131,7 @@ export function PortfolioGrid({
 	experienceCard,
 	lastTrack,
 }: PortfolioGridProps) {
-	const [section, setSection] = useQueryState(
-		'section',
-		parseAsStringLiteral(PORTFOLIO_SECTIONS),
-	);
+	const [section, setSection] = useQueryState('section', portfolioSectionParser);
 	const shouldReduceMotion = useReducedMotion();
 
 	const [isMapPopupOpen, setIsMapPopupOpen] = useState(false);
@@ -165,36 +160,7 @@ export function PortfolioGrid({
 		setIsMapPopupOpen(false);
 	};
 
-	const sections: {
-		url: string;
-		v: PortfolioSection | null;
-		Icon: LucideIcon;
-		GridItems?: ReactNode;
-	}[] = [
-		{ url: 'All', v: null, Icon: LayoutGrid, GridItems: [] },
-		{
-			url: 'About me',
-			v: 'About me',
-			Icon: UserRound,
-			GridItems: [
-				<div className="w-50 bg-primary" key="d">
-					d
-				</div>,
-				<div className="w-50 bg-accent" key="e">
-					e
-				</div>,
-				<div className="w-50 bg-secondary" key="f">
-					f
-				</div>,
-			],
-		},
-		{ url: 'Projects', v: 'Projects', Icon: Briefcase },
-		{ url: 'Experience', v: 'Experience', Icon: History },
-		{ url: 'Contact', v: 'Contact', Icon: Send },
-	];
-
-	const resolvedSection = sections.find((e) => e.v === section) ?? sections[0];
-	const activeUrl = resolvedSection.url;
+	const activeUrl = section ?? 'All';
 	const gridLayouts = layoutsBySection[activeUrl];
 
 	const { width, containerRef, mounted } = useContainerWidth({
@@ -231,18 +197,6 @@ export function PortfolioGrid({
 		duration: shouldReduceMotion ? 0.12 : 0.18,
 		ease: 'easeIn' as const,
 	};
-	const navIndicatorTransition = shouldReduceMotion
-		? { duration: 0.01, ease: 'linear' as const }
-		: { type: 'spring' as const, stiffness: 420, damping: 34, mass: 0.9 };
-	const navIndicatorInitial = shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96 };
-	const navIndicatorAnimate = shouldReduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1 };
-	const navLabelInitial = shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: -4 };
-	const navLabelAnimate = shouldReduceMotion ? { opacity: 1 } : { opacity: 1, x: 0 };
-	const navLabelExit = shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: -4 };
-	const navLabelTransition = {
-		duration: shouldReduceMotion ? 0.01 : 0.16,
-		ease: 'easeOut' as const,
-	};
 	const gridEntranceInitial = shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 32 };
 	const gridEntranceAnimate = shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 };
 	const gridEntranceTransition = {
@@ -252,84 +206,7 @@ export function PortfolioGrid({
 
 	return (
 		<LazyMotion features={domAnimation}>
-			<nav
-				aria-label="Portfolio sections"
-				className="mb-12 grid grid-cols-1 items-center justify-items-center gap-4 px-7 pt-7 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"
-			>
-				<Image
-					alt="Gonzalo Pozo"
-					className="h-auto w-[clamp(10rem,20vw,15rem)] shrink-0 md:justify-self-start"
-					height={682}
-					priority
-					src="/gonzalopozo-logo.png"
-					width={2048}
-				/>
-
-				<ul className="flex h-10 max-w-[calc(100vw-1rem)] items-center gap-1 rounded-full border border-border/70 bg-card/90 px-1 py-0.5 shadow-2xl shadow-foreground/10 backdrop-blur-xl md:col-start-2 md:row-start-1 md:justify-self-center">
-					{sections.map(({ url, v, Icon }) => {
-						const isActive = activeUrl === url;
-
-						return (
-							<li className="shrink-0" key={url}>
-								<button
-									aria-current={isActive ? 'page' : undefined}
-									aria-label={isActive ? undefined : `Show ${url} section`}
-									className={cn(
-										`group/nav relative isolate flex h-8 touch-manipulation items-center overflow-hidden rounded-full transition-[background-color,box-shadow,color,transform,width] duration-200 ease-out outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.99]`,
-										isActive
-											? `w-[clamp(7rem,36vw,8rem)] justify-start pr-2.5 pl-0.5 text-primary-foreground sm:w-auto sm:min-w-32 sm:pr-3`
-											: `size-8 justify-center text-muted-foreground hover:text-foreground`,
-									)}
-									onClick={() => setSection(v)}
-									type="button"
-								>
-									{isActive && (
-										<m.span
-											className="absolute inset-0 rounded-full bg-primary shadow-lg shadow-primary/25"
-											initial={navIndicatorInitial}
-											animate={navIndicatorAnimate}
-											transition={navIndicatorTransition}
-										/>
-									)}
-
-									<span
-										className={cn(
-											`relative z-10 grid size-7 shrink-0 place-items-center rounded-full transition-colors duration-200 ease-out`,
-											isActive
-												? 'bg-primary-foreground/15 text-primary-foreground'
-												: `bg-secondary text-muted-foreground group-hover/nav:bg-secondary/80 group-hover/nav:text-foreground`,
-										)}
-									>
-										<Icon aria-hidden="true" className="size-4" />
-									</span>
-
-									<AnimatePresence initial={false}>
-										{isActive && (
-											<m.span
-												animate={navLabelAnimate}
-												className="relative z-10 min-w-0 truncate pl-2 text-sm font-semibold"
-												exit={navLabelExit}
-												initial={navLabelInitial}
-												transition={navLabelTransition}
-											>
-												{url}
-											</m.span>
-										)}
-									</AnimatePresence>
-								</button>
-							</li>
-						);
-					})}
-				</ul>
-
-				<Button
-					className="h-10 rounded-full px-5 md:col-start-3 md:row-start-1 md:justify-self-end"
-					onClick={() => setSection('Contact')}
-					type="button"
-				>
-					Contact
-				</Button>
-			</nav>
+			<PortfolioNavigation section={section} onSectionChange={setSection} />
 
 			<div
 				ref={containerRef}
