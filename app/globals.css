@@ -292,6 +292,28 @@
 	.portfolio-grid-entering .react-grid-item {
 		transition: none !important;
 	}
+	[data-portfolio-grid] .react-grid-item:not(.react-draggable-dragging) {
+		transition-duration: 300ms;
+		transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+	}
+	[data-portfolio-surface] {
+		transition: filter 200ms ease-out;
+	}
+	.dark [data-portfolio-grid] {
+		/* Preserve readable secondary text when background cards are dimmed. */
+		--muted-foreground: color-mix(in oklch, var(--foreground) 60%, var(--card));
+	}
+	[data-portfolio-card][data-muted='true']:not(:hover):not(:focus-within)
+		[data-portfolio-surface] {
+		filter: saturate(0.35) brightness(0.96);
+	}
+	@media (prefers-reduced-motion: reduce) {
+		[data-portfolio-grid] .react-grid-layout,
+		[data-portfolio-grid] .react-grid-item,
+		[data-portfolio-surface] {
+			transition: none !important;
+		}
+	}
 	.maplibregl-popup-content {
 		@apply rounded-none! bg-transparent! p-0! shadow-none!;
 	}

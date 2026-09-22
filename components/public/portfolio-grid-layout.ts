@@ -126,10 +126,14 @@ export function getSectionCards(
 	const byId = new Map(cards.map((card) => [card.id, card]));
 	const home = positions.map(({ i }) => byId.get(i)!);
 	if (section === null) return home;
-	return [...home, ...cards.filter((card) => !card.homeSlot && matchesSection(card, section))];
+	return [
+		...home.filter((card) => matchesSection(card, section)),
+		...cards.filter((card) => !card.homeSlot && matchesSection(card, section)),
+		...home.filter((card) => !matchesSection(card, section)),
+	];
 }
 
-/** Pack cards into rows while preserving their home sizes. */
+/** Pack category rows without allowing background cards to fill gaps among matching cards. */
 export function createSectionLayouts(
 	cards: PortfolioGridCard[],
 	section: PortfolioSection | null,
@@ -141,13 +145,16 @@ export function createSectionLayouts(
 		let x = 0;
 		let y = 0;
 		let rowHeight = 0;
+		let foreground = true;
 		for (const card of getSectionCards(cards, section, breakpoint)) {
 			const { w, h } = sizes.get(card.sizeSlot)!;
-			if (x + w > GRID_COLUMNS_BY_BREAKPOINT[breakpoint]) {
+			const matching = matchesSection(card, section);
+			if (x + w > GRID_COLUMNS_BY_BREAKPOINT[breakpoint] || (foreground && !matching)) {
 				y += rowHeight;
 				x = 0;
 				rowHeight = 0;
 			}
+			foreground = matching;
 			layout.push({ i: card.id, x, y, w, h });
 			x += w;
 			rowHeight = Math.max(rowHeight, h);

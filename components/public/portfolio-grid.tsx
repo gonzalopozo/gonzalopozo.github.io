@@ -31,6 +31,7 @@ import {
 	type PortfolioGridCard,
 	type SectionLayouts,
 } from '@/components/public/portfolio-grid-layout';
+import { usePortfolioTransition } from '@/components/public/use-portfolio-transition';
 import { type Settings, type Track } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
@@ -135,7 +136,11 @@ export function PortfolioGrid({
 		],
 	);
 
-	const displayedSection = section;
+	const { displayedSection, exitingIds, generation, completeExit } = usePortfolioTransition(
+		cards,
+		section,
+		Boolean(shouldReduceMotion),
+	);
 	const displayedKey = displayedSection ?? 'All';
 	const gridLayouts = useMemo(
 		() => ({ ...createSectionLayouts(cards, displayedSection), ...savedLayouts[displayedKey] }),
@@ -148,9 +153,12 @@ export function PortfolioGrid({
 		const second = positions.get(b.id)!;
 		return first.y - second.y || first.x - second.x;
 	});
+	const exitingIdSet = new Set(exitingIds);
+	const isChangingSection = exitingIdSet.size > 0;
 	const matchingCount = cards.filter((card) => matchesSection(card, section)).length;
 
 	function handleDragStop(layout: Layout) {
+		if (isChangingSection) return;
 		setSavedLayouts((previous) => ({
 			...previous,
 			[displayedKey]: {
@@ -204,7 +212,7 @@ export function PortfolioGrid({
 							compactor={displayedSection ? noCompactor : verticalCompactor}
 							resizeConfig={{ enabled: false, handles: [] }}
 							dragConfig={{
-								enabled: currentBreakpoint === 'lg',
+								enabled: currentBreakpoint === 'lg' && !isChangingSection,
 								bounded: true,
 								threshold: 3,
 								cancel: DRAG_CANCEL_SELECTORS,
@@ -212,21 +220,51 @@ export function PortfolioGrid({
 							onDragStop={handleDragStop}
 						>
 							{orderedCards.map((card) => {
+								const isExiting = exitingIdSet.has(card.id);
 								return (
 									<div
 										key={card.id}
 										data-portfolio-card={card.id}
 										data-category={card.variant}
+										data-muted={!matchesSection(card, section)}
+										data-exiting={isExiting}
 										className="focus-within:z-20 hover:z-20"
+										inert={isExiting || undefined}
 									>
-										<GridItem
-											variant={card.variant}
-											cardClassName={card.cardClassName}
-											data-portfolio-surface
+										<m.div
 											className="size-full"
+											initial={
+												isGridEntering || shouldReduceMotion
+													? false
+													: { opacity: 0, y: 12 }
+											}
+											animate={isExiting ? 'exit' : 'visible'}
+											variants={{
+												exit: { opacity: 0, y: 0 },
+												visible: { opacity: 1, y: 0 },
+											}}
+											transition={{
+												duration: shouldReduceMotion
+													? 0
+													: isExiting
+														? 0.16
+														: 0.24,
+												ease: 'easeOut',
+											}}
+											onAnimationComplete={(definition) => {
+												if (definition === 'exit')
+													completeExit(card.id, generation);
+											}}
 										>
-											{card.content}
-										</GridItem>
+											<GridItem
+												variant={card.variant}
+												cardClassName={card.cardClassName}
+												data-portfolio-surface
+												className="size-full"
+											>
+												{card.content}
+											</GridItem>
+										</m.div>
 									</div>
 								);
 							})}
