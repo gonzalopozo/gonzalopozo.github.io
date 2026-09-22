@@ -20,7 +20,7 @@ async function findExperiences(): Promise<ExperienceData[]> {
 				},
 			},
 		},
-		orderBy: (experiences, { asc }) => [asc(experiences.order)],
+		orderBy: (experiences, { asc }) => [asc(experiences.order), asc(experiences.id)],
 	});
 }
 
@@ -53,6 +53,6 @@ export async function getExperienceById(id: number): Promise<ExperienceData | un
 				},
 			},
 		},
-		orderBy: (experiences, { asc }) => [asc(experiences.order)],
+		orderBy: (experiences, { asc }) => [asc(experiences.order), asc(experiences.id)],
 	});
 }

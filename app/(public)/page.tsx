@@ -1,9 +1,15 @@
 import type { Metadata } from 'next';
 import { Suspense } from 'react';
+import { ExperienceOverviewGridItemContent } from '@/components/public/experience-overview-grid-item-content';
 import { ExperienceGridItemContent } from '@/components/public/experience-grid-item-content';
 import { PortfolioGrid } from '@/components/public/portfolio-grid';
 import { ProjectGridItemContent } from '@/components/public/project-grid-item-content';
 import { getPublicInfoAboutMe } from '@/lib/queries/about-me';
+import { SocialLinkGridItemContent } from '@/components/public/social-link-grid-item-content';
+import { LinkIcon } from 'lucide-react';
+import { DynamicIcon } from '@/components/public/dynamic-icon';
+import { getPublicExperiences } from '@/lib/queries/experiences';
+import { getPublicSocialLinks } from '@/lib/queries/social-links';
 import { getPublicProjects } from '@/lib/queries/projects';
 import { getTrack } from '@/lib/queries/last-fm';
 import { cn } from '@/lib/utils';
@@ -67,32 +73,61 @@ function PortfolioGridFallback() {
 	);
 }
 
-export default async function PublicPage() {
-	const [projects, aboutMe, track] = await Promise.all([
+async function PortfolioContent() {
+	const [projects, experiences, socialLinks, aboutMe, track] = await Promise.all([
 		getPublicProjects(),
+		getPublicExperiences(),
+		getPublicSocialLinks(),
 		getPublicInfoAboutMe(),
 		getTrack(),
 	]);
 
-	const projectCards = projects
-		.slice(0, 3)
-		.map((project, index) => (
+	const projectCards = projects.map((project, index) => ({
+		id: `project:${project.id}`,
+		content: (
 			<ProjectGridItemContent
-				key={project.id}
 				project={project}
 				variant={index === 2 ? 'horizontal' : 'vertical'}
 			/>
-		));
-	const experienceCard = <ExperienceGridItemContent />;
+		),
+	}));
+	const experienceCards = experiences.map((experience) => ({
+		id: `experience:${experience.id}`,
+		content: <ExperienceGridItemContent experience={experience} />,
+	}));
+	const socialLinkCards = socialLinks.map((socialLink) => ({
+		id: `social:${socialLink.id}`,
+		content: (
+			<SocialLinkGridItemContent
+				backgroundColor="#66696D"
+				url={socialLink.url}
+				ariaLabel={`Visit ${socialLink.name}`}
+			>
+				<DynamicIcon
+					iconFullName={socialLink.icon}
+					className="size-14"
+					fallback={<LinkIcon aria-hidden="true" className="size-14" />}
+				/>
+			</SocialLinkGridItemContent>
+		),
+	}));
 
 	return (
+		<PortfolioGrid
+			infoAboutMe={aboutMe}
+			projectCards={projectCards}
+			experienceCards={experienceCards}
+			experienceOverviewCard={<ExperienceOverviewGridItemContent />}
+			socialLinkCards={socialLinkCards}
+			lastTrack={track}
+		/>
+	);
+}
+
+export default function PublicPage() {
+	return (
 		<Suspense fallback={<PortfolioGridFallback />}>
-			<PortfolioGrid
-				infoAboutMe={aboutMe}
-				projectCards={projectCards}
-				experienceCard={experienceCard}
-				lastTrack={track}
-			/>
+			<PortfolioContent />
 		</Suspense>
 	);
 }

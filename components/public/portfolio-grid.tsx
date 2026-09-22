@@ -17,22 +17,24 @@ import { ArroyomolinosMarkerPin, ArroyomolinosPopup } from '@/components/public/
 import { GridItem } from '@/components/public/grid-item';
 import { InfoGridItemContent } from '@/components/public/info-grid-item-content';
 import { LastTrackGridItemContent } from '@/components/public/last-track-grid-item-content';
-import { SocialLinkGridItemContent } from '@/components/public/social-link-grid-item-content';
 import { HobbiesGridItemContent } from '@/components/public/hobbies-grid-item-content';
 import { BB8ThemeSwitcher } from '@/components/public/bb8-theme-switcher';
 import { portfolioSectionParser } from '@/components/public/portfolio-sections';
 import { PortfolioNavigation } from '@/components/public/portfolio-navigation';
 import { type Settings, type Track } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { FaGithub } from 'react-icons/fa';
 
-/** @public */
-export type InformationAboutMe = Omit<Settings, 'id' | 'updatedAt'>;
+interface PortfolioCardDescriptor {
+	id: string;
+	content: ReactNode;
+}
 
 interface PortfolioGridProps {
-	infoAboutMe: InformationAboutMe | undefined;
-	projectCards: ReactNode[];
-	experienceCard: ReactNode;
+	infoAboutMe: Omit<Settings, 'id' | 'updatedAt'> | undefined;
+	projectCards: PortfolioCardDescriptor[];
+	experienceCards: PortfolioCardDescriptor[];
+	socialLinkCards: PortfolioCardDescriptor[];
+	experienceOverviewCard: ReactNode;
 	lastTrack: Track | null;
 }
 
@@ -128,7 +130,8 @@ function shallowEqualLayouts(a: SectionLayouts, b: SectionLayouts): boolean {
 export function PortfolioGrid({
 	infoAboutMe,
 	projectCards,
-	experienceCard,
+	socialLinkCards,
+	experienceOverviewCard,
 	lastTrack,
 }: PortfolioGridProps) {
 	const [section, setSection] = useQueryState('section', portfolioSectionParser);
@@ -322,24 +325,20 @@ export function PortfolioGrid({
 							>
 								<LastTrackGridItemContent track={lastTrack} />
 							</GridItem>
-							<GridItem variant="about" key="e">
-								<SocialLinkGridItemContent
-									backgroundColor="#66696D"
-									url="https://github.com/gonzalopozo"
-									ariaLabel="Visit Gonzalo's GitHub profile"
-								>
-									<FaGithub aria-hidden="true" className="size-14" />
-								</SocialLinkGridItemContent>
-							</GridItem>
+							{socialLinkCards[0] ? (
+								<GridItem variant="about" key="e">
+									{socialLinkCards[0].content}
+								</GridItem>
+							) : null}
 							{(['c', 'f'] as const).map((slot, index) =>
 								projectCards[index] ? (
 									<GridItem variant="project" key={slot}>
-										{projectCards[index]}
+										{projectCards[index].content}
 									</GridItem>
 								) : null,
 							)}
 							<GridItem variant="experience" key="g">
-								{experienceCard}
+								{experienceOverviewCard}
 							</GridItem>
 							<GridItem
 								variant="about"
@@ -350,7 +349,7 @@ export function PortfolioGrid({
 							</GridItem>
 							{projectCards[2] ? (
 								<GridItem variant="project" key="h">
-									{projectCards[2]}
+									{projectCards[2].content}
 								</GridItem>
 							) : null}
 							<GridItem variant="about" key="i">

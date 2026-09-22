@@ -20,7 +20,7 @@ async function findProjects(): Promise<ProjectInfo[]> {
 				},
 			},
 		},
-		orderBy: (projects, { asc }) => [asc(projects.order)],
+		orderBy: (projects, { asc }) => [asc(projects.order), asc(projects.id)],
 	});
 }
 
@@ -53,6 +53,6 @@ export async function getProjectById(id: number): Promise<ProjectInfo | undefine
 				},
 			},
 		},
-		orderBy: (projects, { asc }) => [asc(projects.order)],
+		orderBy: (projects, { asc }) => [asc(projects.order), asc(projects.id)],
 	});
 }

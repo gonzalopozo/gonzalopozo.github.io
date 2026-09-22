@@ -4,7 +4,8 @@ import { db } from '@/db';
 import { socialLinks } from '@/db/schema/portfolio';
 import { getServerSession } from '@/lib/server-session';
 import { eq, sql } from 'drizzle-orm';
-import { revalidatePath } from 'next/cache';
+import { PUBLIC_SOCIAL_LINKS_CACHE_TAG } from '@/lib/cache-tags';
+import { revalidatePath, updateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 export async function createSocialLink(formData: FormData) {
@@ -27,6 +28,7 @@ export async function createSocialLink(formData: FormData) {
 		order,
 	});
 
+	updateTag(PUBLIC_SOCIAL_LINKS_CACHE_TAG);
 	redirect('/dashboard/social-links');
 }
 
@@ -48,6 +50,7 @@ export async function updateSocialLink(id: number, formData: FormData) {
 		})
 		.where(eq(socialLinks.id, id));
 
+	updateTag(PUBLIC_SOCIAL_LINKS_CACHE_TAG);
 	redirect('/dashboard/social-links');
 }
 
@@ -57,5 +60,6 @@ export async function deleteSocialLink(id: number) {
 
 	await db.delete(socialLinks).where(eq(socialLinks.id, id));
 
+	updateTag(PUBLIC_SOCIAL_LINKS_CACHE_TAG);
 	revalidatePath('/dashboard/social-links');
 }

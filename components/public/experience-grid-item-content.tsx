@@ -1,68 +1,59 @@
-import { type IconType } from 'react-icons';
-import {
-	SiReact,
-	SiTypescript,
-	SiNextdotjs,
-	SiTailwindcss,
-	SiNodedotjs,
-	SiPostgresql,
-	SiDocker,
-	SiGit,
-	SiAmazon,
-	SiPython,
-} from 'react-icons/si';
-
 import { GridItemShowMoreButton } from '@/components/public/grid-item-show-more-button';
+import { SkillsPills } from '@/components/public/skills-pills';
+import type { ExperienceData } from '@/lib/types';
 
-const TECH_STACK: IconType[] = [
-	SiReact,
-	SiTypescript,
-	SiNextdotjs,
-	SiTailwindcss,
-	SiNodedotjs,
-	SiPostgresql,
-	SiDocker,
-	SiGit,
-	SiAmazon,
-	SiPython,
-];
+const dateFormatter = new Intl.DateTimeFormat('en-GB', {
+	month: 'short',
+	year: 'numeric',
+	timeZone: 'UTC',
+});
 
-function TechMarquee() {
+export function ExperienceGridItemContent({ experience }: { experience: ExperienceData }) {
+	const dates = experience.startDate
+		? `${dateFormatter.format(experience.startDate)} – ${experience.endDate ? dateFormatter.format(experience.endDate) : 'Present'}`
+		: experience.endDate
+			? dateFormatter.format(experience.endDate)
+			: null;
+
 	return (
-		<div className="relative flex overflow-hidden">
-			<div className="flex w-max animate-tech-marquee items-center gap-6">
-				{[...TECH_STACK, ...TECH_STACK].map((Icon, i) => (
-					<span
-						key={`tech-${i}`}
-						className="flex shrink-0 items-center text-muted-foreground"
-					>
-						<Icon className="size-7" aria-hidden="true" />
-					</span>
-				))}
-			</div>
-		</div>
-	);
-}
-
-export function ExperienceGridItemContent() {
-	return (
-		<div className="group/experience grid size-full min-h-0 grid-rows-[1fr_auto_auto] items-center gap-3 overflow-hidden px-6 py-5">
-			<div className="flex flex-col gap-1.5">
-				<p className="text-2xl/tight font-bold tracking-tight text-balance">
-					Full Stack Developer
+		<div className="group/experience flex size-full min-h-0 flex-col gap-3 overflow-hidden px-6 py-5">
+			<div
+				className="flex min-h-0 flex-1 flex-col gap-1.5 overflow-y-auto overscroll-contain rounded-sm focus-visible:outline-2 focus-visible:outline-ring"
+				tabIndex={0}
+				role="region"
+				aria-label={`${experience.role} at ${experience.company}`}
+			>
+				<h2 className="text-2xl/tight font-bold tracking-tight text-balance">
+					{experience.role}
+				</h2>
+				<p className="text-sm font-semibold">
+					{experience.companyUrl ? (
+						<a
+							href={experience.companyUrl}
+							target="_blank"
+							rel="noopener noreferrer"
+							className="rounded-sm underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-ring"
+						>
+							{experience.company}
+						</a>
+					) : (
+						experience.company
+					)}
 				</p>
-				<p className="text-sm/relaxed text-muted-foreground">
-					Building modern web applications with cutting-edge technologies and thoughtful
-					interfaces.
+				{dates || experience.location ? (
+					<p className="text-xs text-muted-foreground">
+						{[dates, experience.location].filter(Boolean).join(' · ')}
+					</p>
+				) : null}
+				<p className="text-sm/relaxed whitespace-pre-line text-muted-foreground">
+					{experience.description}
 				</p>
 			</div>
-
-			<TechMarquee />
-
+			<SkillsPills skills={experience.experienceSkills.map(({ skill }) => skill)} limit={5} />
 			<GridItemShowMoreButton
 				variant="experience"
 				label="View experience"
-				className="h-9 w-fit rounded-full px-4"
+				className="h-9 w-fit shrink-0 rounded-full px-4"
 			/>
 		</div>
 	);
