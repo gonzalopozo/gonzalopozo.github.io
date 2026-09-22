@@ -324,16 +324,17 @@ The card is the fundamental unit of the design. All content lives inside a `Card
 | Overflow   | `overflow-hidden`            | Clips children to rounded corners                                         |
 | Min sizing | `min-h-0 min-w-0`            | Required for react-grid-layout                                            |
 
-### 4.2 Content-Type Variants
+### 4.2 Category Variants
 
-| Variant      | Padding     | Structure                                                | Notes                                  |
-| ------------ | ----------- | -------------------------------------------------------- | -------------------------------------- |
-| `about`      | `py-6 px-6` | Free-form children (image, text, CTA)                    | Flexible layout via flex/grid          |
-| `project`    | `py-6`      | `CardHeader` → `CardContent` → `CardFooter` (3-row grid) | Status badges use semantic tokens      |
-| `experience` | `py-6 px-6` | Role, company, dates, skill tags                         | Compact for standard/wide sizes        |
-| `contact`    | `py-6 px-6` | CTA-focused, minimal content                             | Accent color for CTA button            |
-| `map`        | `p-0`       | Full-bleed map, zero padding                             | `overflow-hidden` clips to card radius |
-| `media`      | `p-0`       | Full-bleed image/screenshot                              | Same as map — future use               |
+`GridItem.variant` describes navigation membership. Its only values are `about`, `project`, and `experience`. All inner Cards use zero padding; content components own their internal spacing.
+
+| Variant      | Content                                                    | Container                                      |
+| ------------ | ---------------------------------------------------------- | ---------------------------------------------- |
+| `about`      | Profile, map, music, hobbies, social links, theme switcher | Content-specific classes via `cardClassName`   |
+| `project`    | Project content                                            | `@container/project-card @container-[size]`    |
+| `experience` | Role, company, dates, description, skills                  | `@container/experience-card @container-[size]` |
+
+Use `className` for the outer grid item and `cardClassName` for the inner Card. Map, music, and hobby group/container classes belong to their callers, not new navigation variants.
 
 ### 4.3 Internal Spacing
 
@@ -365,9 +366,9 @@ The navigation is a floating pill-shaped bar anchored at the top-center of the v
 
 ```
 ┌──────────────────────────────────────────────────┐
-│  [●All]    Projects    Experience    Contact  [◐] │
+│  [●All]    About me    Projects    Experience     │
 └──────────────────────────────────────────────────┘
-       ↑ active indicator (sliding pill)        ↑ theme toggle
+       ↑ active indicator (sliding pill)
 ```
 
 | Property             | Value                                                                  |
@@ -494,14 +495,14 @@ Decorative icons use `aria-hidden="true"`. Functional icons in icon-only buttons
 Full-bleed treatment — the map fills the entire card:
 
 ```tsx
-<GridItem variant="map" ...>
+<GridItem variant="about" cardClassName="group/map" ...>
   <Map center={...} zoom={13} attributionControl={false}>
     <MapControls />
   </Map>
 </GridItem>
 ```
 
-The `variant="map"` applies `p-0` and `overflow-hidden` clips the map to `rounded-4xl`.
+The Card applies `p-0` and `overflow-hidden` clips the map to `rounded-4xl`. `cardClassName="group/map"` preserves map-specific group styles while its category remains `about`.
 
 ---
 
@@ -579,9 +580,10 @@ Per WCAG 2.5.8 and `AGENTS-ACCESSIBILITY.md`:
 
 ### 9.4 Nav Adaptation
 
-- **Desktop / Tablet**: full labels (`All`, `Projects`, `Experience`, `Contact`) + theme toggle
-- **Mobile**: icons only, active item shows label. Container shrinks. Fixed to bottom of viewport.
-- **Transition**: `md` breakpoint triggers the switch. Use CSS `hidden md:inline` for label visibility.
+- The header pill contains `All`, `About me`, `Projects`, and `Experience`; the active item expands to show its label.
+- The separate Contact button opens `mailto:pozosanchezgonzalo@gmail.com`. The theme switcher remains in the grid.
+- Navigation uses `?section=` and browser history. All restores the home highlights; category views prepend matching cards and reveal remaining records, with other home cards visually muted but usable.
+- Desktop dragging is available in every view, with arrangements remembered independently per section and breakpoint during the current session. Respect reduced motion for entry, exit, and position transitions.
 
 ---
 
