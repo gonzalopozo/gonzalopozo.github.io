@@ -23,6 +23,8 @@ function getThemeBackgrounds(backgroundColor: string) {
 	return {
 		lighter: card.style.getPropertyValue('--social-link-bg-dark-theme'),
 		darker: card.style.getPropertyValue('--social-link-bg-light-theme'),
+		lightForeground: card.style.getPropertyValue('--social-link-fg-light-theme'),
+		darkForeground: card.style.getPropertyValue('--social-link-fg-dark-theme'),
 	};
 }
 
@@ -31,6 +33,8 @@ describe('SocialLinkGridItemContent color variants', () => {
 		expect(getThemeBackgrounds('#66696D')).toEqual({
 			lighter: '#b1b3b6',
 			darker: '#1f1f21',
+			lightForeground: '#ffffff',
+			darkForeground: '#000000',
 		});
 	});
 
@@ -38,12 +42,30 @@ describe('SocialLinkGridItemContent color variants', () => {
 		expect(getThemeBackgrounds('#ff0000')).toEqual({
 			lighter: '#ff9494',
 			darker: '#6b0000',
+			lightForeground: '#ffffff',
+			darkForeground: '#000000',
 		});
 	});
 
 	it.each([
-		['#000000', { lighter: '#4a4a4a', darker: '#000000' }],
-		['#ffffff', { lighter: '#ffffff', darker: '#b5b5b5' }],
+		[
+			'#000000',
+			{
+				lighter: '#4a4a4a',
+				darker: '#000000',
+				lightForeground: '#ffffff',
+				darkForeground: '#ffffff',
+			},
+		],
+		[
+			'#ffffff',
+			{
+				lighter: '#ffffff',
+				darker: '#b5b5b5',
+				lightForeground: '#000000',
+				darkForeground: '#000000',
+			},
+		],
 	] as const)('keeps edge color shifts within bounds for %s', (hex, expected) => {
 		expect(getThemeBackgrounds(hex)).toEqual(expected);
 	});

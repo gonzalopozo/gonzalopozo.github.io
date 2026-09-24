@@ -99,7 +99,7 @@ async function PortfolioContent() {
 		id: `social:${socialLink.id}`,
 		content: (
 			<SocialLinkGridItemContent
-				backgroundColor="#66696D"
+				backgroundColor={socialLink.color}
 				url={socialLink.url}
 				ariaLabel={`Visit ${socialLink.name}`}
 			>

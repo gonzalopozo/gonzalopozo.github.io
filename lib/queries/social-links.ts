@@ -9,7 +9,7 @@ export async function getPublicSocialLinks() {
 	cacheTag(PUBLIC_SOCIAL_LINKS_CACHE_TAG);
 
 	return await db.query.socialLinks.findMany({
-		columns: { id: true, name: true, url: true, icon: true },
+		columns: { id: true, name: true, url: true, icon: true, color: true },
 		orderBy: (socialLinks, { asc }) => [asc(socialLinks.order), asc(socialLinks.id)],
 	});
 }

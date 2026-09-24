@@ -23,7 +23,18 @@ const SAFE_MAX_LIGHTNESS = 99.5;
 type SocialLinkGridItemStyle = CSSProperties & {
 	'--social-link-bg-light-theme': string;
 	'--social-link-bg-dark-theme': string;
+	'--social-link-fg-light-theme': string;
+	'--social-link-fg-dark-theme': string;
 };
+
+function getContrastForeground(hex: string): '#000000' | '#ffffff' {
+	const channels = [1, 3, 5].map((index) => {
+		const value = parseInt(hex.slice(index, index + 2), 16) / 255;
+		return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+	});
+	const luminance = channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
+	return luminance > 0.179 ? '#000000' : '#ffffff';
+}
 
 function getColorVariants(hex: string): ColorVariants {
 	const { h, s, l } = hexToHsl(hex);
@@ -144,11 +155,13 @@ export function SocialLinkGridItemContent({
 	const style: SocialLinkGridItemStyle = {
 		'--social-link-bg-light-theme': darker,
 		'--social-link-bg-dark-theme': lighter,
+		'--social-link-fg-light-theme': getContrastForeground(darker),
+		'--social-link-fg-dark-theme': getContrastForeground(lighter),
 	};
 
 	return (
 		<div
-			className="group/card relative grid size-full place-items-center bg-(--social-link-bg-light-theme) text-primary-foreground dark:bg-(--social-link-bg-dark-theme) dark:text-background"
+			className="group/card relative grid size-full place-items-center bg-(--social-link-bg-light-theme) text-(--social-link-fg-light-theme) dark:bg-(--social-link-bg-dark-theme) dark:text-(--social-link-fg-dark-theme)"
 			style={style}
 		>
 			{children}
@@ -157,7 +170,7 @@ export function SocialLinkGridItemContent({
 				target="_blank"
 				rel="noopener noreferrer"
 				aria-label={ariaLabel}
-				className="absolute bottom-4 left-4 inline-flex size-9 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/85 shadow-[inset_0_0_0_0_currentColor] backdrop-blur-sm transition-[border-color,box-shadow] duration-200 ease-out group-hover/card:border-white/40 hover:shadow-[inset_0_0_0_2px_currentColor] focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-(--social-link-bg-light-theme) focus-visible:outline-none dark:border-background/15 dark:bg-background/5 dark:text-background/85 dark:group-hover/card:border-background/40 dark:focus-visible:ring-background/60 dark:focus-visible:ring-offset-(--social-link-bg-dark-theme)"
+				className="absolute bottom-4 left-4 inline-flex size-9 items-center justify-center rounded-full border border-current/25 bg-white/5 shadow-[inset_0_0_0_0_currentColor] backdrop-blur-sm transition-[border-color,box-shadow] duration-200 ease-out group-hover/card:border-current/50 hover:shadow-[inset_0_0_0_2px_currentColor] focus-visible:ring-2 focus-visible:ring-current/60 focus-visible:ring-offset-2 focus-visible:ring-offset-(--social-link-bg-light-theme) focus-visible:outline-none dark:focus-visible:ring-offset-(--social-link-bg-dark-theme)"
 			>
 				<ArrowUpRight
 					aria-hidden="true"
