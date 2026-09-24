@@ -58,6 +58,8 @@ export const skills = sqliteTable('skills', {
 		.default('other'),
 	icon: text(),
 	url: text(),
+	useBrandColor: integer('use_brand_color', { mode: 'boolean' }).notNull().default(false),
+	customIconColor: text('custom_icon_color'),
 	...timestamps,
 });
 
@@ -113,6 +115,7 @@ export const socialLinks = sqliteTable('social_links', {
 	name: text().notNull(),
 	url: text().notNull(),
 	icon: text(),
+	color: text('background_color').notNull().default('#66696D'),
 	order: integer().notNull().default(0),
 	...timestamps,
 });
