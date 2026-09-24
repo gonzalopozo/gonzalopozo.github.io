@@ -11,23 +11,22 @@ import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 interface SocialLinkColorPickerProps {
-	defaultValue: string;
-	fallbackValue: string;
+	value: string;
+	onChange: (value: string) => void;
 }
 
-export function SocialLinkColorPicker({ defaultValue, fallbackValue }: SocialLinkColorPickerProps) {
-	const [color, setColor] = useState(() =>
-		parseColor(/^#[0-9a-f]{6}$/i.test(defaultValue) ? defaultValue : fallbackValue),
-	);
-	const [hexInput, setHexInput] = useState(() => color.toString('hex').toLowerCase());
-	const hex = color.toString('hex').toLowerCase();
+export function SocialLinkColorPicker({ value, onChange }: SocialLinkColorPickerProps) {
+	const color = parseColor(value);
+	const [hexDraft, setHexDraft] = useState<string | null>(null);
+	const hex = value;
 
 	return (
 		<ColorPicker
 			value={color}
 			onChange={(nextColor) => {
-				setColor(nextColor);
-				setHexInput(nextColor.toString('hex').toLowerCase());
+				const nextHex = nextColor.toString('hex').toLowerCase();
+				setHexDraft(null);
+				onChange(nextHex);
 			}}
 		>
 			<input type="hidden" name="color" value={hex} />
@@ -91,7 +90,7 @@ export function SocialLinkColorPicker({ defaultValue, fallbackValue }: SocialLin
 							<Input
 								id="social-link-hex"
 								type="text"
-								value={hexInput}
+								value={hexDraft ?? hex}
 								maxLength={7}
 								spellCheck={false}
 								className="font-mono"
@@ -101,8 +100,10 @@ export function SocialLinkColorPicker({ defaultValue, fallbackValue }: SocialLin
 										: `#${event.target.value}`;
 									if (!/^#[0-9a-f]{0,6}$/i.test(nextHex)) return;
 
-									setHexInput(nextHex.toLowerCase());
-									if (nextHex.length === 7) setColor(parseColor(nextHex));
+									setHexDraft(
+										nextHex.length === 7 ? null : nextHex.toLowerCase(),
+									);
+									if (nextHex.length === 7) onChange(nextHex.toLowerCase());
 								}}
 								onPaste={(event) => {
 									const pastedHex = event.clipboardData.getData('text').trim();
@@ -110,10 +111,10 @@ export function SocialLinkColorPicker({ defaultValue, fallbackValue }: SocialLin
 
 									event.preventDefault();
 									const nextHex = `#${pastedHex.replace(/^#/, '')}`.toLowerCase();
-									setHexInput(nextHex);
-									setColor(parseColor(nextHex));
+									setHexDraft(null);
+									onChange(nextHex);
 								}}
-								onBlur={() => setHexInput(hex)}
+								onBlur={() => setHexDraft(null)}
 							/>
 						</div>
 					</div>

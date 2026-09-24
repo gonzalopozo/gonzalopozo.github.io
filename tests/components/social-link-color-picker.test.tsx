@@ -1,16 +1,26 @@
+import { useState } from 'react';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 import { SocialLinkColorPicker } from '@/components/admin/social-link-color-picker';
 
 afterEach(cleanup);
 
+function renderPicker() {
+	function PickerForm() {
+		const [color, setColor] = useState('#ff0000');
+		return (
+			<form>
+				<SocialLinkColorPicker value={color} onChange={setColor} />
+			</form>
+		);
+	}
+
+	return render(<PickerForm />);
+}
+
 describe('SocialLinkColorPicker', () => {
 	it('submits the initial color and updates it from the hue slider', () => {
-		const { container } = render(
-			<form>
-				<SocialLinkColorPicker defaultValue="#ff0000" fallbackValue="#66696d" />
-			</form>,
-		);
+		const { container } = renderPicker();
 
 		const colorInput = container.querySelector<HTMLInputElement>('input[name="color"]');
 		expect(colorInput?.value).toBe('#ff0000');
@@ -35,11 +45,7 @@ describe('SocialLinkColorPicker', () => {
 	});
 
 	it('updates the preview and submitted color when a complete hex code is typed', () => {
-		const { container } = render(
-			<form>
-				<SocialLinkColorPicker defaultValue="#ff0000" fallbackValue="#66696d" />
-			</form>,
-		);
+		const { container } = renderPicker();
 
 		fireEvent.click(screen.getByRole('button', { name: /seleccionar color del enlace/i }));
 		const hexInput = screen.getByRole('textbox', { name: 'Hex' }) as HTMLInputElement;
@@ -59,11 +65,7 @@ describe('SocialLinkColorPicker', () => {
 	});
 
 	it('keeps the hash and restores the last valid color after incomplete entry', () => {
-		const { container } = render(
-			<form>
-				<SocialLinkColorPicker defaultValue="#ff0000" fallbackValue="#66696d" />
-			</form>,
-		);
+		const { container } = renderPicker();
 
 		fireEvent.click(screen.getByRole('button', { name: /seleccionar color del enlace/i }));
 		const hexInput = screen.getByRole('textbox', { name: 'Hex' }) as HTMLInputElement;
@@ -79,11 +81,7 @@ describe('SocialLinkColorPicker', () => {
 	});
 
 	it.each(['abcdef', '#abcdef'])('pastes %s with exactly one hash', (pastedColor) => {
-		const { container } = render(
-			<form>
-				<SocialLinkColorPicker defaultValue="#ff0000" fallbackValue="#66696d" />
-			</form>,
-		);
+		const { container } = renderPicker();
 
 		fireEvent.click(screen.getByRole('button', { name: /seleccionar color del enlace/i }));
 		const hexInput = screen.getByRole('textbox', { name: 'Hex' }) as HTMLInputElement;
@@ -92,18 +90,6 @@ describe('SocialLinkColorPicker', () => {
 		expect(hexInput.value).toBe('#abcdef');
 		expect(container.querySelector<HTMLInputElement>('input[name="color"]')?.value).toBe(
 			'#abcdef',
-		);
-	});
-
-	it('uses the default color for malformed stored values', () => {
-		const { container } = render(
-			<form>
-				<SocialLinkColorPicker defaultValue="color" fallbackValue="#66696d" />
-			</form>,
-		);
-
-		expect(container.querySelector<HTMLInputElement>('input[name="color"]')?.value).toBe(
-			'#66696d',
 		);
 	});
 });

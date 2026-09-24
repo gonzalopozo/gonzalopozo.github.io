@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { Plus, Save } from 'lucide-react';
@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { SocialLinkColorPicker } from '@/components/admin/social-link-color-picker';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { SocialLinkActionState } from '@/lib/actions/social-links';
+import { getColorVariants } from '@/lib/social-link-colors';
 
 const IconPicker = dynamic(
 	() => import('@/components/admin/icon-picker').then((mod) => mod.IconPicker),
@@ -29,6 +30,11 @@ interface SocialLinkFormProps {
 
 export function SocialLinkForm({ action, initialValues, defaultColor }: SocialLinkFormProps) {
 	const [state, formAction, pending] = useActionState(action, { error: null });
+	const [color, setColor] = useState(() => {
+		const initialColor = initialValues?.color ?? defaultColor;
+		return /^#[0-9a-f]{6}$/i.test(initialColor) ? initialColor.toLowerCase() : defaultColor;
+	});
+	const { lighter, darker } = getColorVariants(color);
 	const editing = Boolean(initialValues);
 
 	return (
@@ -67,11 +73,32 @@ export function SocialLinkForm({ action, initialValues, defaultColor }: SocialLi
 
 			<div className="flex flex-col gap-2">
 				<Label htmlFor="color">Color</Label>
-				<SocialLinkColorPicker
-					defaultValue={initialValues?.color ?? defaultColor}
-					fallbackValue={defaultColor}
-				/>
+				<SocialLinkColorPicker value={color} onChange={setColor} />
 				<p className="text-xs text-muted-foreground">Color de la tarjeta en el portfolio</p>
+				<div className="grid grid-cols-2 gap-3">
+					<div className="flex min-w-0 flex-col gap-2">
+						<span className="text-xs font-medium text-muted-foreground">
+							Color más claro
+						</span>
+						<div
+							role="img"
+							aria-label={`Vista previa del color más claro ${lighter}`}
+							className="h-9 w-full rounded-md border border-border"
+							style={{ backgroundColor: lighter }}
+						/>
+					</div>
+					<div className="flex min-w-0 flex-col gap-2">
+						<span className="text-xs font-medium text-muted-foreground">
+							Color más oscuro
+						</span>
+						<div
+							role="img"
+							aria-label={`Vista previa del color más oscuro ${darker}`}
+							className="h-9 w-full rounded-md border border-border"
+							style={{ backgroundColor: darker }}
+						/>
+					</div>
+				</div>
 			</div>
 
 			{state.error && (
