@@ -6,21 +6,29 @@ import { ColorPicker, parseColor } from 'react-aria-components/ColorPicker';
 import { ColorSlider, SliderTrack } from 'react-aria-components/ColorSlider';
 import { ColorSwatch } from 'react-aria-components/ColorSwatch';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 interface SocialLinkColorPickerProps {
-	defaultValue: string;
-	fallbackValue: string;
+	value: string;
+	onChange: (value: string) => void;
 }
 
-export function SocialLinkColorPicker({ defaultValue, fallbackValue }: SocialLinkColorPickerProps) {
-	const [color, setColor] = useState(() =>
-		parseColor(/^#[0-9a-f]{6}$/i.test(defaultValue) ? defaultValue : fallbackValue),
-	);
-	const hex = color.toString('hex').toLowerCase();
+export function SocialLinkColorPicker({ value, onChange }: SocialLinkColorPickerProps) {
+	const color = parseColor(value);
+	const [hexDraft, setHexDraft] = useState<string | null>(null);
+	const hex = value;
 
 	return (
-		<ColorPicker value={color} onChange={setColor}>
+		<ColorPicker
+			value={color}
+			onChange={(nextColor) => {
+				const nextHex = nextColor.toString('hex').toLowerCase();
+				setHexDraft(null);
+				onChange(nextHex);
+			}}
+		>
 			<input type="hidden" name="color" value={hex} />
 			<Popover>
 				<PopoverTrigger asChild>
@@ -60,6 +68,56 @@ export function SocialLinkColorPicker({ defaultValue, fallbackValue }: SocialLin
 							<ColorThumb className="size-5 rounded-full border-2 border-white shadow-sm ring-1 ring-foreground/30 data-focus-visible:ring-2 data-focus-visible:ring-ring" />
 						</SliderTrack>
 					</ColorSlider>
+					<div className="flex items-end gap-3">
+						<div className="flex min-w-0 flex-1 flex-col gap-2">
+							<span className="text-xs font-medium text-muted-foreground">
+								Vista previa
+							</span>
+							<div
+								role="img"
+								aria-label={`Vista previa del color ${hex}`}
+								className="h-9 w-full rounded-md border border-border"
+								style={{ backgroundColor: hex }}
+							/>
+						</div>
+						<div className="flex w-28 shrink-0 flex-col gap-2">
+							<Label
+								htmlFor="social-link-hex"
+								className="text-xs text-muted-foreground"
+							>
+								Hex
+							</Label>
+							<Input
+								id="social-link-hex"
+								type="text"
+								value={hexDraft ?? hex}
+								maxLength={7}
+								spellCheck={false}
+								className="font-mono"
+								onChange={(event) => {
+									const nextHex = event.target.value.startsWith('#')
+										? event.target.value
+										: `#${event.target.value}`;
+									if (!/^#[0-9a-f]{0,6}$/i.test(nextHex)) return;
+
+									setHexDraft(
+										nextHex.length === 7 ? null : nextHex.toLowerCase(),
+									);
+									if (nextHex.length === 7) onChange(nextHex.toLowerCase());
+								}}
+								onPaste={(event) => {
+									const pastedHex = event.clipboardData.getData('text').trim();
+									if (!/^#?[0-9a-f]{6}$/i.test(pastedHex)) return;
+
+									event.preventDefault();
+									const nextHex = `#${pastedHex.replace(/^#/, '')}`.toLowerCase();
+									setHexDraft(null);
+									onChange(nextHex);
+								}}
+								onBlur={() => setHexDraft(null)}
+							/>
+						</div>
+					</div>
 				</PopoverContent>
 			</Popover>
 		</ColorPicker>
