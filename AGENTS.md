@@ -52,7 +52,7 @@ Rules:
 
 ## Pre-Commit Checks
 
-Before creating any commit, run a dedicated Codex subagent with model `gpt-5.6-luna`,
+Before creating any commit, run a dedicated Codex subagent with model `gpt-6-luna`,
 reasoning effort `low`, and Fast Mode enabled. The subagent performs the final
 verification pass and must report every command it ran, every finding, and whether the
 commit is blocked.
