@@ -13,8 +13,8 @@ const validLink = {
 describe('socialLinkSchema', () => {
 	it('maps persisted colors and existing skill options to their Turso columns', () => {
 		expect(getTableColumns(socialLinks).color.name).toBe('background_color');
-		expect(getTableColumns(skills).useBrandColor.name).toBe('use_brand_color');
-		expect(getTableColumns(skills).customIconColor.name).toBe('custom_icon_color');
+		expect(getTableColumns(skills).useColor.name).toBe('use_color');
+		expect(getTableColumns(skills).customColor.name).toBe('custom_color');
 	});
 
 	it('normalizes a valid color to six-digit lowercase hex', () => {
