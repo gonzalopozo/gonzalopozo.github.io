@@ -10,12 +10,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
-interface SocialLinkColorPickerProps {
+interface ColorPickerFieldProps {
+	name: string;
+	label: string;
 	value: string;
 	onChange: (value: string) => void;
 }
 
-export function SocialLinkColorPicker({ value, onChange }: SocialLinkColorPickerProps) {
+export function ColorPickerField({ name, label, value, onChange }: ColorPickerFieldProps) {
 	const color = parseColor(value);
 	const [hexDraft, setHexDraft] = useState<string | null>(null);
 	const hex = value;
@@ -29,14 +31,14 @@ export function SocialLinkColorPicker({ value, onChange }: SocialLinkColorPicker
 				onChange(nextHex);
 			}}
 		>
-			<input type="hidden" name="color" value={hex} />
+			<input type="hidden" name={name} value={hex} />
 			<Popover>
 				<PopoverTrigger asChild>
 					<Button
-						id="color"
+						id={name}
 						type="button"
 						variant="outline"
-						aria-label={`Seleccionar color del enlace, actual ${hex}`}
+						aria-label={`${label}, actual ${hex}`}
 						className="h-11 w-full justify-start gap-3 font-normal"
 					>
 						<ColorSwatch
@@ -82,13 +84,13 @@ export function SocialLinkColorPicker({ value, onChange }: SocialLinkColorPicker
 						</div>
 						<div className="flex w-28 shrink-0 flex-col gap-2">
 							<Label
-								htmlFor="social-link-hex"
+								htmlFor={`${name}-hex`}
 								className="text-xs text-muted-foreground"
 							>
 								Hex
 							</Label>
 							<Input
-								id="social-link-hex"
+								id={`${name}-hex`}
 								type="text"
 								value={hexDraft ?? hex}
 								maxLength={7}

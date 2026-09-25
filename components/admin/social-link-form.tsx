@@ -7,7 +7,7 @@ import { Plus, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { SocialLinkColorPicker } from '@/components/admin/social-link-color-picker';
+import { ColorPickerField } from '@/components/admin/color-picker';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { SocialLinkActionState } from '@/lib/actions/social-links';
 import { getColorVariants } from '@/lib/social-link-colors';
@@ -73,7 +73,12 @@ export function SocialLinkForm({ action, initialValues, defaultColor }: SocialLi
 
 			<div className="flex flex-col gap-2">
 				<Label htmlFor="color">Color</Label>
-				<SocialLinkColorPicker value={color} onChange={setColor} />
+				<ColorPickerField
+					name="color"
+					label="Seleccionar color del enlace"
+					value={color}
+					onChange={setColor}
+				/>
 				<p className="text-xs text-muted-foreground">Color de la tarjeta en el portfolio</p>
 				<div className="grid grid-cols-2 gap-3">
 					<div className="flex min-w-0 flex-col gap-2">

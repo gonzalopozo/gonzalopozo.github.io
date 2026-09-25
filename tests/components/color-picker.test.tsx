@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
-import { SocialLinkColorPicker } from '@/components/admin/social-link-color-picker';
+import { ColorPickerField } from '@/components/admin/color-picker';
 
 afterEach(cleanup);
 
@@ -10,7 +10,12 @@ function renderPicker() {
 		const [color, setColor] = useState('#ff0000');
 		return (
 			<form>
-				<SocialLinkColorPicker value={color} onChange={setColor} />
+				<ColorPickerField
+					name="color"
+					label="Seleccionar color del enlace"
+					value={color}
+					onChange={setColor}
+				/>
 			</form>
 		);
 	}
@@ -18,7 +23,7 @@ function renderPicker() {
 	return render(<PickerForm />);
 }
 
-describe('SocialLinkColorPicker', () => {
+describe('ColorPickerField', () => {
 	it('submits the initial color and updates it from the hue slider', () => {
 		const { container } = renderPicker();
 
