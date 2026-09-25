@@ -45,7 +45,7 @@ interface PortfolioGridProps {
 }
 
 const DRAG_CANCEL_SELECTORS =
-	'button, a, input, textarea, select, [role="button"], [role="region"], .bb8-theme-switcher, .maplibregl-map';
+	'button, a, input, textarea, select, [role="button"], [role="region"], .bb8-theme-switcher, .maplibregl-map, [data-tech-marquee-viewport]';
 const GRID_MAX_WIDTH_PX = 1308.6;
 const GRID_ROW_HEIGHT_PX = 34.5;
 const GRID_ITEM_MARGIN: [number, number] = [16, 16];

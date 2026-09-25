@@ -15,7 +15,7 @@ import { getPublicUsedSkills } from '@/lib/queries/skills';
 beforeAll(async () => {
 	await db.run(
 		sql.raw(
-			'CREATE TABLE skills (id INTEGER PRIMARY KEY, name TEXT NOT NULL, icon TEXT, use_color INTEGER NOT NULL DEFAULT 0, custom_color TEXT)',
+			'CREATE TABLE skills (id INTEGER PRIMARY KEY, name TEXT NOT NULL, icon TEXT, url TEXT, use_color INTEGER NOT NULL DEFAULT 0, custom_color TEXT)',
 		),
 	);
 	await db.run(
@@ -40,7 +40,7 @@ describe('getPublicUsedSkills', () => {
 	it('combines both association tables and sorts by use count, then name', async () => {
 		await db.run(
 			sql.raw(
-				"INSERT INTO skills (id, name, icon, use_color, custom_color) VALUES (1, 'React', 'SiReact|si', 1, '#61dafb'), (2, 'TypeScript', 'SiTypescript|si', 0, NULL), (3, 'Docker', 'SiDocker|si', 0, NULL), (4, 'Unused', 'SiGit|si', 0, NULL), (5, 'Blank', NULL, 0, NULL)",
+				"INSERT INTO skills (id, name, icon, url, use_color, custom_color) VALUES (1, 'React', 'SiReact|si', 'https://react.dev', 1, '#61dafb'), (2, 'TypeScript', 'SiTypescript|si', NULL, 0, NULL), (3, 'Docker', 'SiDocker|si', NULL, 0, NULL), (4, 'Unused', 'SiGit|si', NULL, 0, NULL), (5, 'Blank', NULL, NULL, 0, NULL)",
 			),
 		);
 		await db.run(
@@ -61,7 +61,11 @@ describe('getPublicUsedSkills', () => {
 			['React', 2],
 			['Docker', 1],
 		]);
-		expect(result[1]).toMatchObject({ useColor: true, customColor: '#61dafb' });
+		expect(result[1]).toMatchObject({
+			url: 'https://react.dev',
+			useColor: true,
+			customColor: '#61dafb',
+		});
 	});
 
 	it('uses a stable alphabetical order for equal use counts', async () => {

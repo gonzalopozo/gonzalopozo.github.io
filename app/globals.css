@@ -322,6 +322,39 @@
 	}
 }
 
+@layer utilities {
+	[data-tech-marquee-track]:has([data-tech-marquee-item]:hover) {
+		animation-play-state: paused;
+	}
+
+	[data-tech-marquee-viewport]:focus-within [data-tech-marquee-track] {
+		animation-play-state: paused;
+	}
+
+	[data-tech-marquee-viewport]:has([data-tech-marquee-item]:focus-visible) {
+		overflow-x: auto;
+	}
+
+	[data-tech-marquee-viewport]:has([data-tech-marquee-item]:focus-visible)
+		[data-tech-marquee-track] {
+		animation: none;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		[data-tech-marquee-item] svg {
+			transition:
+				width 240ms cubic-bezier(0.16, 1, 0.3, 1),
+				height 240ms cubic-bezier(0.16, 1, 0.3, 1),
+				color 500ms cubic-bezier(0.16, 1, 0.3, 1) var(--icon-delay);
+		}
+
+		[data-tech-marquee-item]:hover svg {
+			width: 2.375rem;
+			height: 2.375rem;
+		}
+	}
+}
+
 @layer components {
 	::view-transition-group(root) {
 		animation-duration: 600ms;

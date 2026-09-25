@@ -1,4 +1,4 @@
-import { cleanup, render } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ExperienceOverviewGridItemContent } from '@/components/public/experience-overview-grid-item-content';
 
@@ -28,6 +28,7 @@ describe('experience overview marquee', () => {
 						id: 1,
 						name: 'React',
 						icon: 'SiReact|si',
+						url: 'https://react.dev',
 						useColor: true,
 						customColor: '#61dafb',
 						usageCount: 1,
@@ -38,6 +39,16 @@ describe('experience overview marquee', () => {
 		const icons = container.querySelectorAll('[data-icon-name]');
 		expect(icons).toHaveLength(20);
 		expect(icons[0].className).toContain('group-hover/grid-item:text-(--icon-color)');
+		const link = screen.getByRole('link', {
+			name: 'Explore React',
+		});
+		expect(link.getAttribute('href')).toBe('https://react.dev/');
+		expect(link.getAttribute('target')).toBe('_blank');
+		expect(link.getAttribute('rel')).toBe('noopener noreferrer');
+		expect(link.hasAttribute('title')).toBe(false);
+		expect(container.querySelectorAll('a[tabindex="-1"]')).toHaveLength(19);
+		fireEvent.focus(link);
+		expect(screen.getByRole('tooltip').textContent).toContain('Explore React');
 	});
 
 	it('keeps disabled colors muted across the repeated sequence', () => {
@@ -46,6 +57,7 @@ describe('experience overview marquee', () => {
 				id: 1,
 				name: 'React',
 				icon: 'SiReact|si',
+				url: 'javascript:alert(1)',
 				useColor: true,
 				customColor: '#61dafb',
 				usageCount: 2,
@@ -54,6 +66,7 @@ describe('experience overview marquee', () => {
 				id: 2,
 				name: 'TypeScript',
 				icon: 'SiTypescript|si',
+				url: null,
 				useColor: false,
 				customColor: '#3178c6',
 				usageCount: 1,
@@ -63,6 +76,9 @@ describe('experience overview marquee', () => {
 		const icons = container.querySelectorAll('[data-icon-name]');
 		expect(icons).toHaveLength(20);
 		expect(icons[0].className).toContain('group-hover/grid-item:text-(--icon-color)');
-		expect(icons[1].className).toBe('size-7');
+		expect(icons[1].className).toBe('size-7.5');
+		expect(container.querySelector('[data-tech-marquee-track]')).toBeTruthy();
+		expect(container.querySelectorAll('[data-tech-marquee-item]')).toHaveLength(20);
+		expect(container.querySelectorAll('a')).toHaveLength(0);
 	});
 });

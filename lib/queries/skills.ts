@@ -21,6 +21,7 @@ export async function getPublicUsedSkills() {
 			id: skills.id,
 			name: skills.name,
 			icon: skills.icon,
+			url: skills.url,
 			useColor: skills.useColor,
 			customColor: skills.customColor,
 			usageCount: count(usedSkillIds.skillId),
