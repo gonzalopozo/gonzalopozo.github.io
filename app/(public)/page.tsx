@@ -12,6 +12,7 @@ import { DynamicIcon } from '@/components/public/dynamic-icon';
 import { getPublicExperiences } from '@/lib/queries/experiences';
 import { getPublicSocialLinks } from '@/lib/queries/social-links';
 import { getPublicProjects } from '@/lib/queries/projects';
+import { getPublicUsedSkills } from '@/lib/queries/skills';
 import { getTrack } from '@/lib/queries/last-fm';
 
 export const metadata: Metadata = {
@@ -24,12 +25,13 @@ export const metadata: Metadata = {
 };
 
 async function PortfolioContent() {
-	const [projects, experiences, socialLinks, aboutMe, track] = await Promise.all([
+	const [projects, experiences, socialLinks, aboutMe, track, usedSkills] = await Promise.all([
 		getPublicProjects(),
 		getPublicExperiences(),
 		getPublicSocialLinks(),
 		getPublicInfoAboutMe(),
 		getTrack(),
+		getPublicUsedSkills(),
 	]);
 
 	const projectCards = projects.map((project, index) => ({
@@ -67,7 +69,7 @@ async function PortfolioContent() {
 			infoAboutMe={aboutMe}
 			projectCards={projectCards}
 			experienceCards={experienceCards}
-			experienceOverviewCard={<ExperienceOverviewGridItemContent />}
+			experienceOverviewCard={<ExperienceOverviewGridItemContent skills={usedSkills} />}
 			socialLinkCards={socialLinkCards}
 			lastTrack={track}
 		/>

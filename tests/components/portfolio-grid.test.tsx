@@ -68,7 +68,7 @@ function setup(searchParams = '', empty = false) {
 		>
 			<PortfolioGrid
 				infoAboutMe={undefined}
-				experienceOverviewCard={<ExperienceOverviewGridItemContent />}
+				experienceOverviewCard={<ExperienceOverviewGridItemContent skills={[]} />}
 				lastTrack={null}
 				projectCards={
 					empty

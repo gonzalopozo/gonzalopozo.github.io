@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import type { IconType } from 'react-icons';
 import { cacheLife, cacheTag } from 'next/cache';
 
@@ -19,9 +19,17 @@ interface DynamicIconProps {
 	iconFullName: string | null;
 	className?: string;
 	fallback?: ReactNode;
+	useColor?: boolean;
+	customColor?: string | null;
 }
 
-export async function DynamicIcon({ iconFullName, className, fallback = null }: DynamicIconProps) {
+export async function DynamicIcon({
+	iconFullName,
+	className,
+	fallback = null,
+	useColor = false,
+	customColor,
+}: DynamicIconProps) {
 	'use cache';
 	cacheLife('max');
 	cacheTag('dynamic-icons');
@@ -49,5 +57,10 @@ export async function DynamicIcon({ iconFullName, className, fallback = null }: 
 	if (typeof Icon !== 'function') return fallback;
 	const ResolvedIcon = Icon as IconType;
 
-	return <ResolvedIcon className={className} aria-hidden={true} />;
+	const colorStyle: CSSProperties | undefined =
+		useColor && customColor && /^#[0-9a-f]{6}$/i.test(customColor)
+			? ({ '--icon-color': customColor } as CSSProperties)
+			: undefined;
+
+	return <ResolvedIcon className={className} style={colorStyle} aria-hidden={true} />;
 }
