@@ -26,177 +26,68 @@ Spatial density and card scale ARE the visual language. Visual hierarchy comes f
 1. **Cards first** — every piece of content lives inside a card. The grid IS the layout.
 2. **Generous radii** — large corner radii on cards, pill-shaped nav. Soften the technical content.
 3. **Surface contrast, not shadow** — cards float via background-to-card color difference, not drop shadows.
-4. **Luminous accent on dark** — dark mode is the hero. Primary cyan glows, amber accent energizes.
-5. **Restraint** — one primary, one accent, cool neutrals. No color noise.
+4. **One signature, two themes** — vermilion anchors equally considered light and dark experiences.
+5. **Restraint** — a precise vermilion signature, subtly warm neutrals, and distinct semantic status colors.
 6. **Every decision works in both themes** — light and dark are designed in parallel, not as afterthoughts.
 
 ---
 
 ## 2. Theme Tokens
 
-All color values are in OKLCH for perceptual uniformity (as recommended by the `tailwind-design-system` skill). The tokens map directly to shadcn/ui's variable system and the existing `@theme inline` block in `globals.css`.
+The selected identity is **A — Balanced vermilion and warm ink**. Light and dark share the same signature family, with equal attention to readability. Use `app/globals.css` as the source of truth; values are expressed in OKLCH, converted from the approved sRGB references below.
 
-> **Implementation note**: when applying these tokens, replace the hex values in `:root` and `.dark` selectors in `globals.css`. The `@theme inline` block that maps `--color-*: var(--*)` stays unchanged.
+### 2.1 Light and Dark Palettes
 
-### 2.1 Color Palette — Light Mode
+| Role                       | Light reference | Dark reference |
+| -------------------------- | --------------- | -------------- |
+| Background                 | `#F4F2EF`       | `#151413`      |
+| Card / popover             | `#FFFEFC`       | `#211F1D`      |
+| Foreground                 | `#22201F`       | `#F5F2EE`      |
+| Secondary / muted / accent | `#E9E5E1`       | `#2E2B28`      |
+| Muted foreground           | `#66615D`       | `#BBB3AA`      |
+| Primary                    | `#B73820`       | `#FF805F`      |
+| Primary foreground         | `#FFFFFF`       | `#21140F`      |
+| Primary hover              | `#A7331D`       | `#FF8B6D`      |
+| Primary pressed            | `#9A2F1B`       | `#FF9479`      |
+| Decorative border          | `#D6CFC8`       | `#49433E`      |
+| Input boundary             | `#8B8178`       | `#887E74`      |
+| Destructive                | `#A32148`       | `#FF91B3`      |
+| Destructive foreground     | `#FFFFFF`       | `#21140F`      |
+| Destructive hover          | `#8E1C3F`       | `#FFA2BF`      |
 
-Design intent: Lavender-tinted off-white background, pure white cards, deep sapphire primary, vivid warm gold accent. Distinctly indigo-leaning — not teal.
+### 2.2 Color Roles
 
-```css
-:root {
-	--background: oklch(0.975 0.008 270);
-	--foreground: oklch(0.155 0.025 270);
+- `primary` is the vermilion signature: actions, links, selected public navigation, and focus.
+- `accent` is a quiet neutral interaction background, used by menus and admin selections. It is not a second brand color.
+- `ring` matches `primary`. Keep focus opaque with a contrasting offset; never reduce ring opacity to create a decorative glow.
+- Use `input` for boundaries needed to identify controls. `border` is a quieter decorative separator and is not required to meet 3:1.
+- Use explicit `primary-hover`, `primary-pressed`, and `destructive-hover` surfaces rather than reducing filled-button opacity.
 
-	--card: oklch(1 0 0);
-	--card-foreground: oklch(0.155 0.025 270);
+### 2.3 Contrast Requirements
 
-	--popover: oklch(1 0 0);
-	--popover-foreground: oklch(0.155 0.025 270);
+Normal text must reach 4.5:1; large text (24px normal or approximately 18.67px bold) must reach 3:1. Required control boundaries, meaningful icons, and focus indicators must reach 3:1 against adjacent colors. Primary reading text targets 7:1 or higher.
 
-	--primary: oklch(0.4 0.17 250);
-	--primary-foreground: oklch(0.985 0.005 250);
+The selected palette provides 16.10:1 / 14.72:1 for primary text on cards and 4.88:1 / 6.80:1 for secondary text on secondary surfaces (light / dark). Verify composited colors separately for transparency, gradients, and images. Color must be accompanied by labels or icons for status and errors.
 
-	--secondary: oklch(0.945 0.012 270);
-	--secondary-foreground: oklch(0.195 0.025 270);
+### 2.4 Status and Media Tokens
 
-	--muted: oklch(0.92 0.008 270);
-	--muted-foreground: oklch(0.43 0.02 265);
+| Role               | Light     | Dark      |
+| ------------------ | --------- | --------- |
+| Status active      | `#28704E` | `#83C6A0` |
+| Status in progress | `#356D82` | `#8DC3D8` |
+| Status archived    | `#835E14` | `#D5B477` |
 
-	--accent: oklch(0.7 0.18 55);
-	--accent-foreground: oklch(0.2 0.05 55);
+For text on artwork, use `media-background` (`#151413`) at 80% opacity with opaque `media-foreground` (`#FFFFFF`). This provides a reliable reading surface even over white artwork. `media-primary` (`#FF805F`) provides a warm highlight on that dark surface in either theme. Avoid using the quiet `accent` background as foreground text.
 
-	--destructive: oklch(0.55 0.22 25);
-	--destructive-foreground: oklch(0.985 0.005 25);
-
-	--border: oklch(0.885 0.012 270);
-	--input: oklch(0.885 0.012 270);
-	--ring: oklch(0.48 0.17 250);
-}
-```
-
-### 2.2 Color Palette — Dark Mode
-
-Design intent: Deep indigo-black surface with real blue tint, elevated cards with indigo sheen, electric blue primary, vivid gold accent. Moody and immersive.
-
-```css
-.dark {
-	--background: oklch(0.12 0.025 275);
-	--foreground: oklch(0.95 0.008 265);
-
-	--card: oklch(0.175 0.022 270);
-	--card-foreground: oklch(0.95 0.008 265);
-
-	--popover: oklch(0.175 0.022 270);
-	--popover-foreground: oklch(0.95 0.008 265);
-
-	--primary: oklch(0.75 0.17 235);
-	--primary-foreground: oklch(0.12 0.035 235);
-
-	--secondary: oklch(0.225 0.018 275);
-	--secondary-foreground: oklch(0.91 0.008 265);
-
-	--muted: oklch(0.225 0.018 275);
-	--muted-foreground: oklch(0.58 0.016 265);
-
-	--accent: oklch(0.8 0.17 50);
-	--accent-foreground: oklch(0.12 0.045 50);
-
-	--destructive: oklch(0.64 0.2 25);
-	--destructive-foreground: oklch(0.12 0.025 25);
-
-	--border: oklch(0.265 0.018 275);
-	--input: oklch(0.265 0.018 275);
-	--ring: oklch(0.75 0.17 235);
-}
-```
-
-### 2.3 Color Design Rationale
-
-| Token              | Light                                        | Dark                                         | Design intent                                                   |
-| ------------------ | -------------------------------------------- | -------------------------------------------- | --------------------------------------------------------------- |
-| `background`       | Lavender off-white (L=0.975, C=0.008, H=270) | Deep indigo-black (L=0.12, C=0.025, H=275)   | Tinted surfaces with personality, not neutral                   |
-| `card`             | Pure white (L=1.0)                           | Elevated indigo (L=0.175, C=0.022, H=270)    | Cards float above background via surface contrast               |
-| `primary`          | Deep sapphire (L=0.40, C=0.17, H=250)        | Electric blue (L=0.75, C=0.17, H=235)        | Signature color — rich indigo-blue, clearly different from teal |
-| `accent`           | Vivid warm gold (L=0.70, C=0.18, H=55)       | Bright gold (L=0.80, C=0.17, H=50)           | Complementary warmth, high saturation for CTAs                  |
-| `muted-foreground` | Mid gray (L=0.43)                            | Subdued gray (L=0.58)                        | Secondary text — verify ≥ 4.5:1 contrast during implementation  |
-| `border`           | Cool lavender line (L=0.885, C=0.012, H=270) | Indigo-tinted line (L=0.265, C=0.018, H=275) | Visible but non-competing                                       |
-
-The hue axis centers on **H=250** (sapphire-indigo) for primary and **H=50–55** (warm gold) for accent — a complementary pair that creates strong visual tension. All neutral surfaces share **H=265–275** (cool indigo-gray) for cohesion. Chroma is pushed higher than typical (C=0.17) for both primary and accent to give the palette real personality.
-
-### 2.4 Status Tokens
-
-Replace hardcoded status colors (e.g., `text-green-600`, `text-amber-400`, `text-cyan-600` in `grid-item.tsx`) with semantic tokens:
-
-```css
-:root {
-	--status-active: oklch(0.52 0.175 155);
-	--status-in-progress: oklch(0.48 0.17 250);
-	--status-archived: oklch(0.62 0.15 70);
-}
-.dark {
-	--status-active: oklch(0.7 0.175 155);
-	--status-in-progress: oklch(0.7 0.15 235);
-	--status-archived: oklch(0.74 0.15 70);
-}
-```
-
-Register in `@theme inline`:
-
-```css
---color-status-active: var(--status-active);
---color-status-in-progress: var(--status-in-progress);
---color-status-archived: var(--status-archived);
-```
-
-Usage: `text-status-active`, `text-status-in-progress`, `text-status-archived`.
+The BB-8 illustration uses its own `--bb8-accent` variable. Keep illustration colors independent from global UI tokens. CMS-configured social colors retain their automatic black/white foreground selection.
 
 ### 2.5 Chart Palette
 
-Five-color palette derived from the primary/accent axis, perceptually balanced for data visualization:
-
-```css
-:root {
-	--chart-1: oklch(0.4 0.17 250);
-	--chart-2: oklch(0.6 0.2 35);
-	--chart-3: oklch(0.5 0.18 300);
-	--chart-4: oklch(0.5 0.14 185);
-	--chart-5: oklch(0.55 0.17 145);
-}
-.dark {
-	--chart-1: oklch(0.75 0.17 235);
-	--chart-2: oklch(0.74 0.17 35);
-	--chart-3: oklch(0.7 0.16 300);
-	--chart-4: oklch(0.68 0.13 185);
-	--chart-5: oklch(0.72 0.16 145);
-}
-```
+Chart colors use vermilion, green, plum, blue, and ochre, with brighter equivalents in dark mode. Use labels or other cues alongside color; a palette alone does not make a chart accessible.
 
 ### 2.6 Sidebar Tokens (Admin Dashboard)
 
-Mirror the card surface for seamless integration. The sidebar is admin-only; these values keep it visually consistent with the main theme.
-
-```css
-:root {
-	--sidebar: oklch(1 0 0);
-	--sidebar-foreground: oklch(0.155 0.025 270);
-	--sidebar-primary: oklch(0.4 0.17 250);
-	--sidebar-primary-foreground: oklch(0.985 0.005 250);
-	--sidebar-accent: oklch(0.945 0.012 270);
-	--sidebar-accent-foreground: oklch(0.195 0.025 270);
-	--sidebar-border: oklch(0.885 0.012 270);
-	--sidebar-ring: oklch(0.48 0.17 250);
-}
-.dark {
-	--sidebar: oklch(0.175 0.022 270);
-	--sidebar-foreground: oklch(0.95 0.008 265);
-	--sidebar-primary: oklch(0.75 0.17 235);
-	--sidebar-primary-foreground: oklch(0.12 0.035 235);
-	--sidebar-accent: oklch(0.225 0.018 275);
-	--sidebar-accent-foreground: oklch(0.91 0.008 265);
-	--sidebar-border: oklch(0.265 0.018 275);
-	--sidebar-ring: oklch(0.75 0.17 235);
-}
-```
+Sidebar surfaces and text mirror card tokens. Active and hover backgrounds use the quiet secondary surface. Primary actions retain vermilion. Forms use opaque surfaces with `input` boundaries so contrast does not depend on an ancestor's background.
 
 ### 2.7 Typography Tokens
 
@@ -398,7 +289,7 @@ A colored pill that slides behind the active nav item, animated with Motion's `l
 
 | Property         | Value                                                                      |
 | ---------------- | -------------------------------------------------------------------------- |
-| Background       | `bg-primary` (cyan-blue in both themes)                                    |
+| Background       | `bg-primary` (vermilion in both themes)                                    |
 | Text on active   | `text-primary-foreground`                                                  |
 | Text on inactive | `text-muted-foreground`                                                    |
 | Animation        | `layoutId` spring transition (see `AGENTS-ANIMATIONS.md` for Motion rules) |
@@ -510,13 +401,13 @@ The Card applies `p-0` and `overflow-hidden` clips the map to `rounded-4xl`. `ca
 
 ### 8.1 Link & Button Treatment
 
-| Element              | Pattern                                                      | Notes                                    |
-| -------------------- | ------------------------------------------------------------ | ---------------------------------------- |
-| External link (icon) | `text-muted-foreground hover:text-primary transition-colors` | Replaces hardcoded `hover:text-blue-600` |
-| CTA button           | `bg-primary text-primary-foreground hover:bg-primary/90`     | Default shadcn Button                    |
-| Accent CTA           | `bg-accent text-accent-foreground hover:bg-accent/90`        | High-emphasis actions                    |
-| Ghost button         | `hover:bg-secondary hover:text-secondary-foreground`         | Low-emphasis, in-card actions            |
-| Icon button          | `rounded-2xl` with `size="icon"`                             | GitHub, external link icons              |
+| Element              | Pattern                                                                               | Notes                                    |
+| -------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------- |
+| External link (icon) | `text-muted-foreground hover:text-primary transition-colors`                          | Replaces hardcoded `hover:text-blue-600` |
+| CTA button           | `bg-primary text-primary-foreground hover:bg-primary-hover active:bg-primary-pressed` | Default shadcn Button                    |
+| Quiet selection      | `bg-accent text-accent-foreground`                                                    | Menus and admin navigation               |
+| Ghost button         | `hover:bg-secondary hover:text-secondary-foreground`                                  | Low-emphasis, in-card actions            |
+| Icon button          | `rounded-2xl` with `size="icon"`                                                      | GitHub, external link icons              |
 
 ### 8.2 Card-Level vs Element-Level Click Areas
 
