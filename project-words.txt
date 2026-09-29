@@ -58,6 +58,7 @@ Tabler
 teritorio
 
 # Social / fonts (strings or next/font)
+fraunces
 linkedin
 
 # SQL / Turso

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Fraunces, Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { Toaster } from 'sonner';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
@@ -13,6 +13,12 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
 	variable: '--font-geist-mono',
 	subsets: ['latin'],
+});
+
+const fraunces = Fraunces({
+	variable: '--font-fraunces',
+	subsets: ['latin'],
+	weight: '900',
 });
 
 export const metadata: Metadata = {
@@ -31,6 +37,8 @@ export default function RootLayout({
 				className={`
      ${geistSans.variable}
      ${geistMono.variable}
+     ${fraunces.variable}
+     font-sans
      antialiased
    `}
 			>

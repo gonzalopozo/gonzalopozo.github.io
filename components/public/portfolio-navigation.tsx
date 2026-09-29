@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import { AnimatePresence, m, useReducedMotion } from 'motion/react';
 import { Briefcase, History, LayoutGrid, UserRound, type LucideIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -40,14 +39,15 @@ export function PortfolioNavigation({ section, onSectionChange }: PortfolioNavig
 			aria-label="Portfolio sections"
 			className="mb-12 grid grid-cols-1 items-center justify-items-center gap-4 px-7 pt-7 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"
 		>
-			<Image
-				alt="Gonzalo Pozo"
-				className="h-auto w-[clamp(10rem,20vw,15rem)] shrink-0 md:justify-self-start"
-				height={682}
-				priority
-				src="/gonzalopozo-logo.png"
-				width={2048}
-			/>
+			<div className="flex aspect-2048/682 w-[clamp(10rem,20vw,15rem)] shrink-0 items-center justify-center md:justify-self-start">
+				<span
+					aria-hidden="true"
+					className="bg-linear-to-r from-logo-gradient-start via-logo-gradient-middle to-logo-gradient-end bg-clip-text px-1 font-(family-name:--font-fraunces) text-[clamp(1.35rem,2.6vw,2rem)] leading-tight font-black tracking-[-0.04em] whitespace-nowrap text-transparent forced-colors:bg-none forced-colors:text-[CanvasText]"
+				>
+					gonzalopozo
+				</span>
+				<span className="sr-only">Gonzalo Pozo</span>
+			</div>
 
 			<ul className="flex h-10 max-w-[calc(100vw-1rem)] items-center gap-1 rounded-full border border-border/70 bg-card/90 px-1 py-0.5 shadow-2xl shadow-foreground/10 backdrop-blur-xl md:col-start-2 md:row-start-1 md:justify-self-center">
 				{sections.map(({ url, v, Icon }) => {

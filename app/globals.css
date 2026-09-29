@@ -45,6 +45,9 @@
 	--media-background: oklch(0.192004 0.002566 67.673496);
 	--media-foreground: oklch(1 0 0);
 	--media-primary: oklch(0.738588 0.162214 35.617669);
+	--logo-gradient-start: #9a2f1b;
+	--logo-gradient-middle: #b73820;
+	--logo-gradient-end: #835e14;
 	--radius: 0.5rem;
 }
 
@@ -90,12 +93,20 @@
 	--media-background: oklch(0.192004 0.002566 67.673496);
 	--media-foreground: oklch(1 0 0);
 	--media-primary: oklch(0.738588 0.162214 35.617669);
+	--logo-gradient-start: #ff805f;
+	--logo-gradient-middle: #ff9479;
+	--logo-gradient-end: #d5b477;
 }
 
 @theme inline {
+	--font-sans: var(--font-geist-sans);
+	--font-mono: var(--font-geist-mono);
 	--color-media-primary: var(--media-primary);
 	--color-media-foreground: var(--media-foreground);
 	--color-media-background: var(--media-background);
+	--color-logo-gradient-start: var(--logo-gradient-start);
+	--color-logo-gradient-middle: var(--logo-gradient-middle);
+	--color-logo-gradient-end: var(--logo-gradient-end);
 	--color-destructive-hover: var(--destructive-hover);
 	--color-primary-pressed: var(--primary-pressed);
 	--color-primary-hover: var(--primary-hover);
