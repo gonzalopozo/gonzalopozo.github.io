@@ -210,7 +210,7 @@ export function ProjectsTable({
 											href={project.url}
 											target="_blank"
 											rel="noopener noreferrer"
-											className="inline-flex items-center text-primary hover:text-primary/80"
+											className="inline-flex items-center text-primary hover:text-primary-hover"
 											title="Ver proyecto"
 										>
 											<ExternalLink className="size-4" />
