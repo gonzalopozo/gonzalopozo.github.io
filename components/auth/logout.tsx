@@ -32,10 +32,10 @@ export function LogOutButton() {
 		<>
 			<button
 				onClick={signOutUser}
-				className="cursor-pointer rounded-md border-2 border-red-500 bg-white px-4 py-2 font-bold text-red-500 transition-colors duration-300 hover:bg-red-50 hover:text-red-600 disabled:cursor-not-allowed disabled:opacity-50"
+				className="cursor-pointer rounded-md border-2 border-destructive bg-card px-4 py-2 font-bold text-destructive transition-colors duration-300 hover:bg-accent focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
 				disabled={loading}
 			>
-				{loading && <Spinner className="size-6 text-green-400" />} Sign out!
+				{loading && <Spinner className="size-6 text-current" />} Sign out!
 			</button>
 		</>
 	);

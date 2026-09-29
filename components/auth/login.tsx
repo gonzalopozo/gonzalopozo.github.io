@@ -53,7 +53,7 @@ export function LoginForm() {
 			{error && <div>{error}</div>}
 
 			<button type="submit">
-				{loading && <Spinner className="size-6 text-blue-500" />} Login!{' '}
+				{loading && <Spinner className="size-6 text-current" />} Login!{' '}
 			</button>
 		</form>
 	);
