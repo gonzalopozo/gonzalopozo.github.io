@@ -86,40 +86,25 @@ interface ProjectActionButtonProps {
 	href: string | null;
 	icon: LucideIcon;
 	label: string;
-	size?: 'sm' | 'icon';
-	variant: 'default' | 'ghost' | 'outline' | 'secondary';
-	className?: string;
-	iconOnly?: boolean;
 }
 
-function ProjectActionButton({
-	href,
-	icon: Icon,
-	label,
-	size = 'sm',
-	variant,
-	className,
-	iconOnly,
-}: ProjectActionButtonProps) {
+const projectLinkButtonClassName =
+	'h-full min-h-11 w-full rounded-2xl border border-border/60 bg-secondary/35 px-0 text-muted-foreground shadow-none hover:border-primary/40 hover:bg-primary/10 hover:text-primary focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.98]';
+
+const projectShowMoreButtonClassName = 'min-h-11 w-full justify-center rounded-full';
+
+function ProjectActionButton({ href, icon: Icon, label }: ProjectActionButtonProps) {
 	if (!href) return null;
 
 	return (
-		<Button asChild variant={variant} size={size} className={cn('rounded-2xl', className)}>
-			<a
-				href={href}
-				target="_blank"
-				rel="noopener noreferrer"
-				aria-label={iconOnly ? label : undefined}
-			>
+		<Button asChild variant="ghost" size="icon" className={projectLinkButtonClassName}>
+			<a href={href} target="_blank" rel="noopener noreferrer" aria-label={label}>
 				<Icon data-icon="inline-start" aria-hidden="true" />
-				{iconOnly ? <span className="sr-only">{label}</span> : label}
+				<span className="sr-only">{label}</span>
 			</a>
 		</Button>
 	);
 }
-
-const horizontalActionTileClassName =
-	'h-full min-h-11 w-full rounded-2xl border border-border/60 bg-secondary/35 px-0 text-muted-foreground shadow-none hover:border-primary/40 hover:bg-primary/10 hover:text-primary focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.98]';
 
 interface ProjectGridItemContentVariantProps {
 	project: ProjectInfo;
@@ -194,17 +179,11 @@ function ProjectGridItemVerticalContent({
 								href={project.repoUrl}
 								icon={Github}
 								label="Ver repositorio"
-								variant="outline"
-								iconOnly
-								className="h-10 w-full justify-center"
 							/>
 							<ProjectActionButton
 								href={project.url}
 								icon={ArrowUpRight}
 								label="Abrir proyecto"
-								variant="outline"
-								iconOnly
-								className="h-10 w-full justify-center"
 							/>
 						</div>
 					) : null}
@@ -212,7 +191,7 @@ function ProjectGridItemVerticalContent({
 					<GridItemShowMoreButton
 						variant="project"
 						label="View more"
-						className="h-10 w-full justify-center rounded-full"
+						className={projectShowMoreButtonClassName}
 					/>
 				</div>
 			</CardFooter>
@@ -268,29 +247,20 @@ function ProjectGridItemHorizontalContent({ project, skills }: ProjectGridItemCo
 						href={project.repoUrl}
 						icon={Github}
 						label="Ver repositorio"
-						size="icon"
-						variant="ghost"
-						iconOnly
-						className={horizontalActionTileClassName}
 					/>
 					<ProjectActionButton
 						href={project.url}
 						icon={ArrowUpRight}
 						label="Abrir proyecto"
-						size="icon"
-						variant="ghost"
-						iconOnly
-						className={horizontalActionTileClassName}
 					/>
 
 					<GridItemShowMoreButton
 						variant="project"
 						buttonSize="icon"
-						buttonVariant="ghost"
 						icon="arrow-right"
 						iconOnly
 						label="View more"
-						className={horizontalActionTileClassName}
+						className={cn(projectShowMoreButtonClassName, 'h-full rounded-2xl')}
 					/>
 				</CardFooter>
 			</CardContent>
