@@ -50,7 +50,7 @@ export function SocialLinkGridItemContent({
 				target="_blank"
 				rel="noopener noreferrer"
 				aria-label={ariaLabel}
-				className="absolute bottom-4 left-4 inline-flex size-9 items-center justify-center rounded-full border border-current/25 bg-white/5 shadow-[inset_0_0_0_0_currentColor] backdrop-blur-sm transition-[border-color,box-shadow] duration-200 ease-out group-hover/card:border-current/50 hover:shadow-[inset_0_0_0_2px_currentColor] focus-visible:ring-2 focus-visible:ring-current/60 focus-visible:ring-offset-2 focus-visible:ring-offset-(--social-link-bg-light-theme) focus-visible:outline-none dark:focus-visible:ring-offset-(--social-link-bg-dark-theme)"
+				className="absolute bottom-4 left-4 inline-flex size-9 items-center justify-center rounded-full border border-current/25 bg-transparent shadow-[inset_0_0_0_0_currentColor] backdrop-blur-sm transition-[border-color,box-shadow] duration-200 ease-out group-hover/card:border-current/50 hover:shadow-[inset_0_0_0_2px_currentColor] focus-visible:ring-2 focus-visible:ring-current focus-visible:ring-offset-2 focus-visible:ring-offset-(--social-link-bg-light-theme) focus-visible:outline-none dark:focus-visible:ring-offset-(--social-link-bg-dark-theme)"
 			>
 				<ArrowUpRight
 					aria-hidden="true"

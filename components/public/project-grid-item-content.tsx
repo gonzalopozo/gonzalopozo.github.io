@@ -67,7 +67,7 @@ function ProjectMedia({ project, className, sizes }: ProjectMediaProps) {
 				/>
 			) : (
 				<div
-					className="relative flex size-full flex-col justify-end bg-linear-to-br from-primary/25 via-secondary to-accent/30 p-6"
+					className="relative flex size-full flex-col justify-end bg-secondary p-6"
 					aria-hidden="true"
 				>
 					<div className="absolute inset-0 overflow-hidden">
@@ -119,7 +119,7 @@ function ProjectActionButton({
 }
 
 const horizontalActionTileClassName =
-	'h-full min-h-11 w-full rounded-2xl border border-border/60 bg-secondary/35 px-0 text-muted-foreground shadow-none hover:border-primary/40 hover:bg-primary/10 hover:text-primary focus-visible:ring-2 focus-visible:ring-ring/50 active:scale-[0.98]';
+	'h-full min-h-11 w-full rounded-2xl border border-border/60 bg-secondary/35 px-0 text-muted-foreground shadow-none hover:border-primary/40 hover:bg-primary/10 hover:text-primary focus-visible:ring-2 focus-visible:ring-ring active:scale-[0.98]';
 
 interface ProjectGridItemContentVariantProps {
 	project: ProjectInfo;

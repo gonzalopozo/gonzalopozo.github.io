@@ -41,7 +41,7 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 							href={infoAboutMe.resumeUrl}
 							target="_blank"
 							rel="noopener noreferrer"
-							className="group/download -mr-2 inline-flex h-11 w-34.5 shrink-0 touch-manipulation items-center justify-center gap-2 rounded-full border border-border/80 bg-secondary/40 px-2.5 text-xs font-semibold tracking-wide whitespace-nowrap text-muted-foreground [-webkit-tap-highlight-color:transparent] hover:border-accent/50 hover:bg-accent/10 hover:text-foreground focus-visible:border-accent/50 focus-visible:bg-accent/10 focus-visible:text-foreground focus-visible:ring-2 focus-visible:ring-accent/60 focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none active:border-accent/70 active:bg-accent/15 active:shadow-inner motion-safe:transition-[background-color,border-color,color,box-shadow] motion-safe:duration-200 motion-safe:ease-out forced-colors:focus-visible:outline-2 forced-colors:focus-visible:outline-offset-2"
+							className="group/download -mr-2 inline-flex h-11 w-34.5 shrink-0 touch-manipulation items-center justify-center gap-2 rounded-full border border-border/80 bg-secondary/40 px-2.5 text-xs font-semibold tracking-wide whitespace-nowrap text-muted-foreground [-webkit-tap-highlight-color:transparent] hover:border-primary/50 hover:bg-primary/10 hover:text-foreground focus-visible:border-primary/50 focus-visible:bg-primary/10 focus-visible:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none active:border-primary/70 active:bg-primary/15 active:shadow-inner motion-safe:transition-[background-color,border-color,color,box-shadow] motion-safe:duration-200 motion-safe:ease-out forced-colors:focus-visible:outline-2 forced-colors:focus-visible:outline-offset-2"
 							aria-label="Download CV"
 						>
 							<span>Download CV</span>
@@ -60,17 +60,17 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 						role="status"
 						tabIndex={0}
 						className={cn(
-							'flex max-h-16 min-w-0 basis-full items-start gap-2.5 overflow-y-auto overscroll-contain rounded-xl border px-3 py-2 text-xs/relaxed font-semibold tracking-wide focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none',
+							'flex max-h-16 min-w-0 basis-full items-start gap-2.5 overflow-y-auto overscroll-contain rounded-xl border px-3 py-2 text-xs/relaxed font-semibold tracking-wide focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
 							isEmployed
 								? 'border-status-active/35 bg-status-active/10 text-foreground'
-								: 'border-accent/40 bg-accent/10 text-foreground',
+								: 'border-border bg-secondary text-foreground',
 						)}
 					>
 						<span
 							aria-hidden="true"
 							className={cn(
 								'mt-1 size-2 shrink-0 rounded-full motion-safe:animate-pulse motion-reduce:animate-none',
-								isEmployed ? 'bg-status-active' : 'bg-accent',
+								isEmployed ? 'bg-status-active' : 'bg-primary',
 							)}
 						/>
 						<span className="min-w-0 text-pretty wrap-break-word uppercase">

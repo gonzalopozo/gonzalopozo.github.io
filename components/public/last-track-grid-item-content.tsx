@@ -101,7 +101,7 @@ function TrackArtwork({
 					className={cn(
 						'absolute inset-0 bg-linear-to-br from-primary/25 via-card to-card',
 						isOnline &&
-							`from-primary/35 via-accent/10 motion-safe:animate-now-playing-cover`,
+							`from-primary/35 via-secondary motion-safe:animate-now-playing-cover`,
 					)}
 				>
 					<div className="absolute inset-0 grid place-items-center">
@@ -142,7 +142,9 @@ function SourceLabel({ source, onArtwork }: { source: 'spotify' | 'last.fm'; onA
 		<span
 			className={cn(
 				`absolute top-3 left-3 z-10 font-mono text-[10px] tracking-wide transition-colors`,
-				onArtwork ? `text-white/70 group-hover/music:text-white` : 'text-muted-foreground',
+				onArtwork
+					? `bg-media-background/80 text-media-foreground`
+					: 'text-muted-foreground',
 			)}
 			aria-hidden="true"
 		>
@@ -168,10 +170,10 @@ function ActivityBadge({
 				`absolute top-3 right-3 z-10 inline-flex items-center gap-1.5 rounded-full border px-2 py-1 text-[10px] font-medium tracking-wide uppercase backdrop-blur-md transition-colors`,
 				isOnline
 					? onArtwork
-						? 'border-accent/30 bg-black/50 text-white/95 shadow-lg shadow-accent/20'
+						? 'border-media-primary/30 bg-media-background/80 text-media-foreground shadow-lg shadow-media-primary/20'
 						: `border-primary/30 bg-primary/10 text-foreground shadow-lg shadow-primary/15`
 					: onArtwork
-						? 'border-white/10 bg-black/40 text-white/95'
+						? 'border-white/10 bg-media-background/80 text-media-foreground'
 						: 'border-foreground/10 bg-foreground/10 text-foreground',
 			)}
 		>
@@ -203,13 +205,17 @@ function TrackText({
 	className?: string;
 }) {
 	return (
-		<div className={cn('flex min-w-0 flex-col gap-0.5', className)}>
+		<div
+			className={cn(
+				'flex min-w-0 flex-col gap-0.5',
+				onArtwork && 'bg-media-background/80',
+				className,
+			)}
+		>
 			<p
 				className={cn(
 					'line-clamp-2 text-sm/tight font-semibold',
-					onArtwork
-						? 'text-white [text-shadow:0_1px_2px_rgba(0,0,0,0.4)]'
-						: 'text-foreground',
+					onArtwork ? 'text-media-foreground' : 'text-foreground',
 				)}
 			>
 				{trackName}
@@ -217,7 +223,7 @@ function TrackText({
 			<p
 				className={cn(
 					'line-clamp-1 text-xs/tight',
-					onArtwork ? 'text-white/85' : 'text-muted-foreground',
+					onArtwork ? 'text-media-foreground' : 'text-muted-foreground',
 				)}
 			>
 				{safeArtist}
@@ -232,7 +238,7 @@ function NowPlayingAtmosphere({ onArtwork }: { onArtwork: boolean }) {
 			<span
 				className={cn(
 					`absolute -top-12 -right-10 size-32 rounded-full blur-2xl motion-safe:animate-now-playing-glow motion-reduce:opacity-40`,
-					onArtwork ? 'bg-accent/45' : 'bg-primary/25',
+					onArtwork ? 'bg-media-primary/45' : 'bg-primary/25',
 				)}
 			/>
 			<span
@@ -253,7 +259,7 @@ function NowPlayingEqualiser({ onArtwork }: { onArtwork: boolean }) {
 		<span
 			className={cn(
 				'relative flex h-3.5 items-end gap-0.5',
-				onArtwork ? 'text-accent' : 'text-primary',
+				onArtwork ? 'text-media-primary' : 'text-primary',
 			)}
 			aria-hidden="true"
 		>
