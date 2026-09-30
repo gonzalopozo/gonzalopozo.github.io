@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { Plus, Pencil, ExternalLink, Trash } from 'lucide-react';
 import { deleteSkill } from '@/lib/actions/skills';
 import { DynamicIcon } from '@/components/public/dynamic-icon';
+import { SkillColorCell } from '@/components/admin/skill-color-cell';
 
 export default async function SkillsDashboardPage() {
 	const skillsData = await db.select().from(skills);
@@ -87,6 +88,7 @@ export default async function SkillsDashboardPage() {
 									<TableHead>Nombre</TableHead>
 									<TableHead>Tipo</TableHead>
 									<TableHead>Icono</TableHead>
+									<TableHead className="w-28">Color</TableHead>
 									<TableHead>URL</TableHead>
 									<TableHead>Creado</TableHead>
 									<TableHead>Actualizado</TableHead>
@@ -116,6 +118,9 @@ export default async function SkillsDashboardPage() {
 											) : (
 												'Sin icono'
 											)}
+										</TableCell>
+										<TableCell>
+											<SkillColorCell color={skill.customColor} />
 										</TableCell>
 										<TableCell>
 											{skill.url ? (

@@ -11,14 +11,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import type { SkillActionState } from '@/lib/actions/skills';
+import { DEFAULT_SKILL_COLOR } from '@/lib/schemas/skills';
 import type { SkillType } from '@/lib/types';
 
 const IconPicker = dynamic(
 	() => import('@/components/admin/icon-picker').then((mod) => mod.IconPicker),
 	{ loading: () => <IconPickerSkeleton /> },
 );
-
-const DEFAULT_SKILL_COLOR = '#66696d';
 
 interface SkillFormProps {
 	action: (state: SkillActionState, formData: FormData) => Promise<SkillActionState>;

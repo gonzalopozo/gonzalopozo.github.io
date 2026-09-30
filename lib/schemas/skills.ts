@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+export const DEFAULT_SKILL_COLOR = '#66696d';
+
 const hexColor = z
 	.string()
 	.regex(/^#[0-9a-f]{6}$/i)
