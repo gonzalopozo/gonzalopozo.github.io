@@ -49,6 +49,7 @@ dnd
 depcruise
 Devicons
 geist
+Hoverable
 maplibre
 maplibregl
 Nuqs
