@@ -3,12 +3,14 @@
 import { createPortal } from 'react-dom';
 import Image from 'next/image';
 import { useLayoutEffect, useRef, useState } from 'react';
+import type { IconType } from 'react-icons';
+import { IoBarbell, IoBasketball, IoBook, IoCarSport, IoRocket, IoWatch } from 'react-icons/io5';
 import { cn } from '@/lib/utils';
 
 interface Hobby {
 	id: string;
 	name: string;
-	icon: string;
+	icon: IconType;
 	description: string;
 	image: string;
 }
@@ -19,44 +21,44 @@ const hobbies: Hobby[] = [
 	{
 		id: 'NBA',
 		name: 'NBA',
-		icon: '🏀',
+		icon: IoBasketball,
 		description: 'NBA NBA NBA NBA',
 		image: 'https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=300&h=200&fit=crop',
 	},
 	{
 		id: 'Cars',
 		name: 'Cars',
-		icon: '🚗',
+		icon: IoCarSport,
 		description: 'CARS CARS CARS CARS',
 		image: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=300&h=200&fit=crop',
 	},
 	{
 		id: 'Watches',
 		name: 'Watches',
-		icon: '⌚',
+		icon: IoWatch,
 		description: 'WATCHES WATCHES WATCHES WATCHES',
 		image: 'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=300&h=200&fit=crop',
 	},
 	{
 		id: 'Startups',
 		name: 'Startups',
-		icon: '🚀',
+		icon: IoRocket,
 		description: 'Startups Startups Startups Startups',
 		image: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=300&h=200&fit=crop',
 	},
 	{
 		id: 'Training',
 		name: 'Training',
-		icon: '🏋🏻',
+		icon: IoBarbell,
 		description: 'Training Training Training Training',
 		image: 'https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=300&h=200&fit=crop',
 	},
 	{
-		id: 'cooking',
-		name: 'Cooking',
-		icon: '🍳',
-		description: 'Crafting flavors and culinary experiments',
-		image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=300&h=200&fit=crop',
+		id: 'reading',
+		name: 'Reading',
+		icon: IoBook,
+		description: 'Getting lost in good books and stories',
+		image: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=300&h=200&fit=crop',
 	},
 ];
 
@@ -122,7 +124,7 @@ export function HobbiesGridItemContent() {
 										: 'grayscale-30',
 								)}
 							>
-								{hobby.icon}
+								<hobby.icon />
 							</span>
 
 							<div
@@ -236,7 +238,7 @@ function HobbyPopup({
 			</div>
 			<div className="flex items-start gap-2">
 				<span className="mt-0.5 text-base leading-none" aria-hidden="true">
-					{hobby.icon}
+					<hobby.icon />
 				</span>
 				<div className="min-w-0">
 					<p className="truncate text-xs font-semibold text-foreground">{hobby.name}</p>
