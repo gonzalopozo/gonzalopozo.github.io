@@ -22,7 +22,6 @@
 		"react-map-gl",
 		"react-resizable",
 		"tailwindcss-animate",
-		"tw-animate-css",
 		"util",
 	],
 	// The graph script uses the system Graphviz `dot` binary.
