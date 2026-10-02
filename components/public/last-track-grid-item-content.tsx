@@ -92,7 +92,7 @@ function TrackArtwork({
 						alt=""
 						fill
 						sizes="(min-width: 996px) 25vw, (min-width: 768px) 50vw, 100vw"
-						className="object-cover transition-transform duration-700 ease-out motion-safe:group-hover/music:scale-[1.04]"
+						className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-safe:group-hover/music:scale-[1.02] motion-reduce:transition-none"
 						aria-hidden="true"
 					/>
 				</div>
@@ -142,9 +142,7 @@ function SourceLabel({ source, onArtwork }: { source: 'spotify' | 'last.fm'; onA
 		<span
 			className={cn(
 				`absolute top-3 left-3 z-10 font-mono text-[10px] tracking-wide transition-colors`,
-				onArtwork
-					? `bg-media-background/80 text-media-foreground`
-					: 'text-muted-foreground',
+				onArtwork ? `text-media-foreground` : 'text-muted-foreground',
 			)}
 			aria-hidden="true"
 		>
@@ -205,13 +203,7 @@ function TrackText({
 	className?: string;
 }) {
 	return (
-		<div
-			className={cn(
-				'flex min-w-0 flex-col gap-0.5',
-				onArtwork && 'bg-media-background/80',
-				className,
-			)}
-		>
+		<div className={cn('flex min-w-0 flex-col gap-0.5', className)}>
 			<p
 				className={cn(
 					'line-clamp-2 text-sm/tight font-semibold',
