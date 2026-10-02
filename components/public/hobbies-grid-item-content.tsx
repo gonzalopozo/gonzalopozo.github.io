@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import { ArrowUpRight } from 'lucide-react';
 import { useQueryState } from 'nuqs';
 import type { IconType } from 'react-icons';
@@ -19,16 +20,53 @@ interface Hobby {
 	id: string;
 	name: string;
 	icon: IconType;
-	gradient: string;
+	lightThemeImage: string;
+	darkThemeImage: string;
 }
 
 const hobbies: Hobby[] = [
-	{ id: 'nba', name: 'NBA', icon: BiSolidBasketball, gradient: 'from-chart-1' },
-	{ id: 'cars', name: 'Cars', icon: BiSolidCar, gradient: 'from-chart-5' },
-	{ id: 'watches', name: 'Watches', icon: BiSolidWatch, gradient: 'from-chart-2' },
-	{ id: 'startups', name: 'Startups', icon: BiSolidRocket, gradient: 'from-chart-3' },
-	{ id: 'training', name: 'Training', icon: BiDumbbell, gradient: 'from-chart-4' },
-	{ id: 'reading', name: 'Reading', icon: BiSolidBookOpen, gradient: 'from-chart-3' },
+	{
+		id: 'nba',
+		name: 'NBA',
+		icon: BiSolidBasketball,
+		lightThemeImage: '/hobbies/basketball_dark.png',
+		darkThemeImage: '/hobbies/basketball_light.png',
+	},
+	{
+		id: 'cars',
+		name: 'Cars',
+		icon: BiSolidCar,
+		lightThemeImage: '/hobbies/cars_dark.png',
+		darkThemeImage: '/hobbies/cars_light.png',
+	},
+	{
+		id: 'watches',
+		name: 'Watches',
+		icon: BiSolidWatch,
+		lightThemeImage: '/hobbies/watches_dark.png',
+		darkThemeImage: '/hobbies/watches_light.png',
+	},
+	{
+		id: 'startups',
+		name: 'Startups',
+		icon: BiSolidRocket,
+		lightThemeImage: '/hobbies/startups_dark.png',
+		darkThemeImage: '/hobbies/startups_light.png',
+	},
+	{
+		id: 'training',
+		name: 'Training',
+		icon: BiDumbbell,
+		lightThemeImage: '/hobbies/gym_dark.png',
+		darkThemeImage: '/hobbies/gym_light.png',
+	},
+	{
+		id: 'reading',
+		name: 'Reading',
+		icon: BiSolidBookOpen,
+		lightThemeImage: '/hobbies/books_dark.png',
+		darkThemeImage: '/hobbies/books_light.png',
+	},
 ];
 
 export function HobbiesGridItemContent() {
@@ -46,7 +84,7 @@ export function HobbiesGridItemContent() {
 						<div
 							key={hobby.id}
 							className={cn(
-								'group/hobby-tile relative min-h-0 min-w-0 cursor-pointer overflow-hidden rounded-[10px] border border-border bg-secondary p-3 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-input hover:bg-card hover:shadow-sm hover:shadow-foreground/10 motion-reduce:transition-none',
+								'group/hobby-tile relative min-h-0 min-w-0 cursor-pointer overflow-hidden rounded-[10px] border border-border bg-secondary p-3 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-transparent hover:bg-card hover:shadow-sm hover:shadow-foreground/10 motion-reduce:transition-none',
 								isActive && 'bg-card shadow-sm shadow-foreground/10',
 							)}
 							onMouseEnter={() => setActiveId(hobby.id)}
@@ -77,22 +115,36 @@ export function HobbiesGridItemContent() {
 							<div
 								aria-hidden="true"
 								className={cn(
-									'pointer-events-none absolute inset-0 z-0 origin-top-right scale-0 rounded-[10px] rounded-bl-[10px] bg-linear-to-br to-media-background opacity-0 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/hobby-tile:scale-100 group-hover/hobby-tile:opacity-100 motion-reduce:transition-none',
-									hobby.gradient,
+									'pointer-events-none absolute inset-0 z-0 origin-top-right scale-0 overflow-hidden rounded-[10px] rounded-bl-[10px] opacity-0 transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover/hobby-tile:scale-100 group-hover/hobby-tile:opacity-100 motion-reduce:transition-none',
 									isActive && 'scale-100 opacity-100',
 								)}
-							/>
+							>
+								<Image
+									src={hobby.lightThemeImage}
+									alt=""
+									fill
+									sizes="200px"
+									className="object-cover object-center dark:hidden"
+								/>
+								<Image
+									src={hobby.darkThemeImage}
+									alt=""
+									fill
+									sizes="200px"
+									className="hidden object-cover object-center dark:block"
+								/>
+							</div>
 							<div
 								aria-hidden="true"
 								className={cn(
-									'pointer-events-none absolute inset-0 z-0 bg-media-background/35 opacity-0 transition-opacity duration-500 group-hover/hobby-tile:opacity-100 motion-reduce:transition-none',
+									'pointer-events-none absolute inset-0 z-0 bg-media-background/10 opacity-0 transition-opacity duration-500 group-hover/hobby-tile:opacity-100 motion-reduce:transition-none',
 									isActive && 'opacity-100',
 								)}
 							/>
 							<span
 								aria-hidden="true"
 								className={cn(
-									'pointer-events-none absolute bottom-3 left-3 z-10 max-w-[calc(100%-3.5rem)] truncate text-[10px] font-normal tracking-[0.02em] text-media-foreground/75 transition-all duration-700 ease-out group-hover/hobby-tile:translate-y-0 group-hover/hobby-tile:opacity-100 motion-reduce:transition-none',
+									'pointer-events-none absolute bottom-3 left-3 z-10 max-w-[calc(100%-3.5rem)] truncate rounded-sm bg-media-background/80 px-1.5 py-0.5 text-[10px] font-normal tracking-[0.02em] text-media-foreground transition-all duration-700 ease-out group-hover/hobby-tile:translate-y-0 group-hover/hobby-tile:opacity-100 motion-reduce:transition-none',
 									isActive
 										? 'translate-y-0 opacity-100'
 										: 'translate-y-3 opacity-0',
