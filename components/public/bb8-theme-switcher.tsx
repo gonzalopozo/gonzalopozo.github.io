@@ -1,47 +1,12 @@
 'use client';
 
 import { useEffect, useId, useRef, useState, useSyncExternalStore } from 'react';
-import * as MotionReact from 'motion/react';
+import { animateView, useReducedMotion, type GroupAnimation } from 'motion/react';
 import { useTheme } from 'next-themes';
 
 const BB8_VISUAL_LEAD_MS = 250;
 const THEME_REVEAL_DURATION_MS = 600;
-const MAP_THEME_SETTLE_TIMEOUT_MS = 1200;
-const MAP_THEME_LOADED_EVENT = 'portfolio-map-theme-loaded';
 type ResolvedTheme = 'light' | 'dark';
-
-type ViewTransitionKeyframes = {
-	clipPath?: string[];
-	opacity?: number[];
-};
-
-type ViewTransitionOptions = {
-	duration?: number;
-	ease?: string | number[];
-	interrupt?: 'wait' | 'immediate';
-};
-
-type ViewTransitionAnimation = {
-	finished: Promise<unknown>;
-};
-
-type ViewTransitionBuilder = PromiseLike<ViewTransitionAnimation> & {
-	new: (
-		keyframes: ViewTransitionKeyframes,
-		options?: ViewTransitionOptions,
-	) => ViewTransitionBuilder;
-	old: (
-		keyframes: ViewTransitionKeyframes,
-		options?: ViewTransitionOptions,
-	) => ViewTransitionBuilder;
-};
-
-type AnimateView = (
-	update: () => void | Promise<void>,
-	options?: ViewTransitionOptions,
-) => ViewTransitionBuilder;
-
-const animateView = (MotionReact as unknown as { animateView?: AnimateView }).animateView;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function subscribeToClientMount(_onStoreChange: () => void) {
@@ -69,36 +34,6 @@ function getRevealGeometry(originElement: HTMLElement | null) {
 	};
 }
 
-function hasMapInstance() {
-	return Boolean(document.querySelector('.maplibregl-map, .maplibregl-canvas'));
-}
-
-function waitForMapTheme(theme: ResolvedTheme) {
-	if (!hasMapInstance()) {
-		return Promise.resolve();
-	}
-
-	return new Promise<void>((resolve) => {
-		const timeoutId = window.setTimeout(done, MAP_THEME_SETTLE_TIMEOUT_MS);
-
-		function done() {
-			window.clearTimeout(timeoutId);
-			document.removeEventListener(MAP_THEME_LOADED_EVENT, handleMapThemeLoaded);
-			resolve();
-		}
-
-		function handleMapThemeLoaded(event: Event) {
-			const detail = (event as CustomEvent<{ theme?: ResolvedTheme }>).detail;
-
-			if (detail?.theme === theme) {
-				done();
-			}
-		}
-
-		document.addEventListener(MAP_THEME_LOADED_EVENT, handleMapThemeLoaded);
-	});
-}
-
 export function BB8ThemeSwitcher() {
 	const controlId = useId();
 	const { theme, resolvedTheme, setTheme } = useTheme();
@@ -108,7 +43,7 @@ export function BB8ThemeSwitcher() {
 		getServerSnapshot,
 	);
 	const [optimisticVisualTheme, setOptimisticVisualTheme] = useState<ResolvedTheme | null>(null);
-	const shouldReduceMotion = MotionReact.useReducedMotion();
+	const shouldReduceMotion = useReducedMotion();
 	const switcherRef = useRef<HTMLLabelElement>(null);
 	const isComponentMountedRef = useRef(true);
 	const isTransitioningRef = useRef(false);
@@ -116,8 +51,11 @@ export function BB8ThemeSwitcher() {
 	const themeRevealFrameRef = useRef<number | null>(null);
 
 	useEffect(() => {
+		isComponentMountedRef.current = true;
+
 		return () => {
 			isComponentMountedRef.current = false;
+			document.documentElement.removeAttribute('data-bb8-theme-reveal');
 
 			if (themeRevealTimeoutRef.current) {
 				clearTimeout(themeRevealTimeoutRef.current);
@@ -139,16 +77,18 @@ export function BB8ThemeSwitcher() {
 		nextResolvedTheme: ResolvedTheme,
 		revealGeometry: ReturnType<typeof getRevealGeometry>,
 	) {
-		if (shouldReduceMotion || !animateView || !('startViewTransition' in document)) {
+		if (shouldReduceMotion || !('startViewTransition' in document)) {
 			setTheme(nextResolvedTheme);
 			return;
 		}
 
-		void waitForMapTheme(nextResolvedTheme);
 		const durationSeconds = THEME_REVEAL_DURATION_MS / 1000;
 
-		const transition = await animateView(
+		const reveal = animateView(
 			() => {
+				if (!isComponentMountedRef.current) return;
+
+				document.documentElement.setAttribute('data-bb8-theme-reveal', '');
 				setTheme(nextResolvedTheme);
 			},
 			{
@@ -176,7 +116,12 @@ export function BB8ThemeSwitcher() {
 				},
 			);
 
-		await transition.finished;
+		// Motion's builder resolves to GroupAnimation, but its installed .then type declares void.
+		await Promise.resolve(reveal as unknown as PromiseLike<GroupAnimation>)
+			.then((transition) => transition.finished)
+			.finally(() => {
+				document.documentElement.removeAttribute('data-bb8-theme-reveal');
+			});
 	}
 
 	async function handleThemeChange() {
@@ -185,7 +130,7 @@ export function BB8ThemeSwitcher() {
 		const nextResolvedTheme = visualTheme === 'dark' ? 'light' : 'dark';
 		const revealGeometry = getRevealGeometry(switcherRef.current);
 
-		if (shouldReduceMotion || !animateView || !('startViewTransition' in document)) {
+		if (shouldReduceMotion || !('startViewTransition' in document)) {
 			setTheme(nextResolvedTheme);
 			return;
 		}
