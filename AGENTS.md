@@ -52,7 +52,13 @@ Rules:
 
 ## Pre-Commit Checks
 
-Before creating any commit, run a dedicated Codex subagent with model `gpt-6-luna`,
+**Run checks only when the user explicitly asks the agent to commit. If the user
+has not requested a commit, do not run any checks.** This includes formatting,
+linting, type checking, tests, spellchecking, unused-code analysis, dependency
+boundary validation, builds, and verification commands from other guides or skills.
+Do not run checks during routine implementation or automatically after edits.
+
+Once the user requests a commit, before creating it, run a dedicated Codex subagent with model `gpt-6-luna`,
 reasoning effort `low`, and Fast Mode enabled. The subagent performs the final
 verification pass and must report every command it ran, every finding, and whether the
 commit is blocked.
