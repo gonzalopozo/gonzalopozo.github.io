@@ -1,6 +1,8 @@
-import type { CSSProperties, ReactNode } from 'react';
+import { createElement, type CSSProperties, type ReactNode } from 'react';
 import type { IconType } from 'react-icons';
 import { cacheLife, cacheTag } from 'next/cache';
+import { loadSkillIcon } from '@/lib/skill-icons/storage';
+import type { SkillIconSvgNode } from '@/lib/skill-icons/svg';
 
 const PACK_LOADERS = {
 	fa: () => import('react-icons/fa'),
@@ -17,14 +19,26 @@ const PACK_LOADERS = {
 
 interface DynamicIconProps {
 	iconFullName: string | null;
+	customIconUrl?: string | null;
 	className?: string;
 	fallback?: ReactNode;
 	useColor?: boolean;
 	customColor?: string | null;
 }
 
+function renderSvgNode(node: SkillIconSvgNode, key: number): ReactNode {
+	const attributes = Object.fromEntries(
+		Object.entries(node.attributes).map(([name, value]) => [
+			name.replace(/-([a-z])/g, (_, letter: string) => letter.toUpperCase()),
+			value,
+		]),
+	);
+	return createElement(node.tag, { ...attributes, key }, node.children.map(renderSvgNode));
+}
+
 export async function DynamicIcon({
 	iconFullName,
+	customIconUrl,
 	className,
 	fallback = null,
 	useColor = false,
@@ -33,6 +47,35 @@ export async function DynamicIcon({
 	'use cache';
 	cacheLife('max');
 	cacheTag('dynamic-icons');
+	const colorStyle: CSSProperties | undefined =
+		useColor && customColor && /^#[0-9a-f]{6}$/i.test(customColor)
+			? ({ '--icon-color': customColor } as CSSProperties)
+			: undefined;
+	if (customIconUrl) {
+		const svg = await loadSkillIcon(customIconUrl);
+		if (svg) {
+			const attributes = Object.fromEntries(
+				Object.entries(svg.attributes).map(([name, value]) => [
+					name.replace(/-([a-z])/g, (_, letter: string) => letter.toUpperCase()),
+					value,
+				]),
+			);
+			return (
+				<svg
+					{...attributes}
+					width="1em"
+					height="1em"
+					className={className}
+					style={colorStyle}
+					aria-hidden={true}
+					focusable="false"
+				>
+					{svg.children.map(renderSvgNode)}
+				</svg>
+			);
+		}
+		cacheLife('seconds');
+	}
 
 	const parts = iconFullName?.split('|').map((value) => value.trim()) ?? [];
 	const [iconName, packageName] = parts;
@@ -56,11 +99,6 @@ export async function DynamicIcon({
 	const Icon = (packageImported as Record<string, unknown>)[iconName];
 	if (typeof Icon !== 'function') return fallback;
 	const ResolvedIcon = Icon as IconType;
-
-	const colorStyle: CSSProperties | undefined =
-		useColor && customColor && /^#[0-9a-f]{6}$/i.test(customColor)
-			? ({ '--icon-color': customColor } as CSSProperties)
-			: undefined;
 
 	return <ResolvedIcon className={className} style={colorStyle} aria-hidden={true} />;
 }

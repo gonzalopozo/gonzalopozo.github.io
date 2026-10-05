@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useState } from 'react';
+import { useActionState, useState, type ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { Plus, Save } from 'lucide-react';
@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import type { SkillActionState } from '@/lib/actions/skills';
 import { DEFAULT_SKILL_COLOR } from '@/lib/schemas/skills';
+import { getSkillIconFileError, SKILL_ICON_ACCEPT } from '@/lib/schemas/skill-icon';
 import type { SkillType } from '@/lib/types';
 
 const IconPicker = dynamic(
@@ -21,19 +22,73 @@ const IconPicker = dynamic(
 
 interface SkillFormProps {
 	action: (state: SkillActionState, formData: FormData) => Promise<SkillActionState>;
+	customIconPreview?: ReactNode;
 	initialValues?: {
 		name: string;
 		type: SkillType;
 		icon: string | null;
+		customIconUrl?: string | null;
 		url: string | null;
 		useColor: boolean;
 		customColor: string | null;
 	};
 }
 
-export function SkillForm({ action, initialValues }: SkillFormProps) {
+interface CustomIconUploadProps {
+	disabled: boolean;
+	savedIconUrl?: string | null;
+	preview?: ReactNode;
+	onError: (error: string | null) => void;
+}
+
+function CustomIconUpload({ disabled, savedIconUrl, preview, onError }: CustomIconUploadProps) {
+	const [fileError, setFileError] = useState<string | null>(null);
+	return (
+		<div className="flex flex-col gap-2">
+			<Label htmlFor="customIcon">Archivo del icono</Label>
+			{savedIconUrl ? (
+				<div className="flex items-center gap-3 rounded-md border border-input bg-muted/30 p-3">
+					{preview}
+					<p className="text-sm text-muted-foreground">
+						Icono guardado. Selecciona otro archivo para reemplazarlo.
+					</p>
+				</div>
+			) : null}
+			<Input
+				type="file"
+				id="customIcon"
+				name="customIcon"
+				accept={SKILL_ICON_ACCEPT}
+				required={!savedIconUrl}
+				disabled={disabled}
+				aria-invalid={Boolean(fileError)}
+				aria-describedby={fileError ? 'customIconHelp customIconError' : 'customIconHelp'}
+				onChange={(event) => {
+					const file = event.currentTarget.files?.[0];
+					const error = file ? getSkillIconFileError(file) : null;
+					event.currentTarget.setCustomValidity(error ?? '');
+					setFileError(error);
+					onError(error);
+				}}
+			/>
+			<p id="customIconHelp" className="text-xs text-muted-foreground">
+				Solo SVG, hasta 256 KiB. Se convertirá a un solo color para adaptarse al tema y al
+				color personalizado. Usa trazados sin imágenes, referencias ni efectos.
+			</p>
+			{fileError ? (
+				<p id="customIconError" role="alert" className="text-sm text-destructive">
+					{fileError}
+				</p>
+			) : null}
+		</div>
+	);
+}
+
+export function SkillForm({ action, initialValues, customIconPreview }: SkillFormProps) {
 	const [state, formAction, pending] = useActionState(action, { error: null });
 	const [useColor, setUseColor] = useState(initialValues?.useColor ?? false);
+	const [useCustomIcon, setUseCustomIcon] = useState(Boolean(initialValues?.customIconUrl));
+	const [fileError, setFileError] = useState<string | null>(null);
 	const [color, setColor] = useState(() => {
 		const initialColor = initialValues?.customColor;
 		return initialColor && /^#[0-9a-f]{6}$/i.test(initialColor)
@@ -77,9 +132,37 @@ export function SkillForm({ action, initialValues }: SkillFormProps) {
 				</select>
 			</div>
 
-			<div className="flex flex-col gap-2">
-				<Label htmlFor="icon">Icono</Label>
-				<IconPicker fullName={initialValues?.icon ?? undefined} />
+			<div className="flex items-center justify-between gap-4">
+				<div className="flex flex-col gap-1">
+					<Label htmlFor="useCustomIcon">Usar icono personalizado</Label>
+					<p id="customIconDescription" className="text-xs text-muted-foreground">
+						Sube un SVG si el icono no está disponible en la biblioteca.
+					</p>
+				</div>
+				<Switch
+					id="useCustomIcon"
+					name="useCustomIcon"
+					checked={useCustomIcon}
+					onCheckedChange={setUseCustomIcon}
+					aria-describedby="customIconDescription"
+					disabled={pending}
+				/>
+			</div>
+
+			<div hidden={useCustomIcon}>
+				<div className="flex flex-col gap-2">
+					<Label htmlFor="icon">Icono</Label>
+					<IconPicker fullName={initialValues?.icon ?? undefined} />
+				</div>
+			</div>
+
+			<div hidden={!useCustomIcon}>
+				<CustomIconUpload
+					disabled={!useCustomIcon || pending}
+					savedIconUrl={initialValues?.customIconUrl}
+					preview={customIconPreview}
+					onError={setFileError}
+				/>
 			</div>
 
 			<div className="flex flex-col gap-2">
@@ -131,7 +214,7 @@ export function SkillForm({ action, initialValues }: SkillFormProps) {
 			) : null}
 
 			<div className="flex items-center gap-3 pt-4">
-				<Button type="submit" disabled={pending}>
+				<Button type="submit" disabled={pending || (useCustomIcon && Boolean(fileError))}>
 					{editing ? (
 						<Save data-icon="inline-start" />
 					) : (

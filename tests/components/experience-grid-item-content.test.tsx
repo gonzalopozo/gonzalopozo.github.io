@@ -1,8 +1,10 @@
 import { cleanup, render, screen } from '@testing-library/react';
 import { NuqsTestingAdapter } from 'nuqs/adapters/testing';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ExperienceGridItemContent } from '@/components/public/experience-grid-item-content';
 import type { ExperienceData } from '@/lib/types';
+
+vi.mock('@/components/public/dynamic-icon', () => ({ DynamicIcon: () => null }));
 
 const experience: ExperienceData = {
 	id: 1,
@@ -17,7 +19,7 @@ const experience: ExperienceData = {
 	order: 0,
 	createdAt: new Date('2023-01-01'),
 	updatedAt: new Date('2023-01-01'),
-	experienceSkills: [{ skill: { id: 1, name: 'React', icon: null } }],
+	experienceSkills: [{ skill: { id: 1, name: 'React', icon: null, customIconUrl: null } }],
 };
 
 afterEach(cleanup);

@@ -57,6 +57,7 @@ export const skills = sqliteTable('skills', {
 		.notNull()
 		.default('other'),
 	icon: text(),
+	customIconUrl: text('custom_icon_url'),
 	url: text(),
 	useColor: integer('use_color', { mode: 'boolean' }).notNull().default(false),
 	customColor: text('custom_color'),

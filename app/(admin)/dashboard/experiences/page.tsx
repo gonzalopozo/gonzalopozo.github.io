@@ -26,6 +26,7 @@ export default async function ExperiencesDashboardPage() {
 							id: true,
 							name: true,
 							icon: true,
+							customIconUrl: true,
 						},
 					},
 				},

@@ -21,6 +21,7 @@ export const skillSchema = z
 			'other',
 		]),
 		icon: z.string().trim().max(160),
+		useCustomIcon: z.boolean().default(false),
 		url: z.union([z.url(), z.literal('')]),
 		useColor: z.boolean(),
 		customColor: z.union([hexColor, z.null()]),

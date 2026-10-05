@@ -1,7 +1,13 @@
 import { cleanup, render } from '@testing-library/react';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { SkillsPills } from '@/components/public/skills-pills';
 import type { Skill } from '@/lib/types';
+
+vi.mock('@/components/public/dynamic-icon', () => ({
+	DynamicIcon: ({ customIconUrl }: { customIconUrl?: string | null }) => (
+		<svg data-custom-icon-url={customIconUrl} />
+	),
+}));
 
 afterEach(cleanup);
 
@@ -10,6 +16,7 @@ function createSkills(names: string[]): Skill[] {
 		id: index + 1,
 		name,
 		icon: null,
+		customIconUrl: null,
 	}));
 }
 
@@ -23,6 +30,24 @@ function getRenderedRows(container: HTMLElement) {
 }
 
 describe('SkillsPills', () => {
+	it('renders custom-only icons through the shared renderer', () => {
+		const { container } = render(
+			<SkillsPills
+				skills={[
+					{
+						id: 1,
+						name: 'Custom',
+						icon: null,
+						customIconUrl:
+							'https://icons.public.blob.vercel-storage.com/skill-icons/icon.svg',
+					},
+				]}
+			/>,
+		);
+		expect(container.querySelector('svg')?.getAttribute('data-custom-icon-url')).toContain(
+			'/skill-icons/',
+		);
+	});
 	it('keeps skill names totaling 18 characters in the same row', () => {
 		const { container } = render(
 			<SkillsPills skills={createSkills(['TypeScript', 'React', 'CSS'])} />,

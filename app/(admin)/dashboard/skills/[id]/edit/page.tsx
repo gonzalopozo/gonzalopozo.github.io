@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { db } from '@/db';
 import { skills } from '@/db/schema/portfolio';
 import { updateSkill } from '@/lib/actions/skills';
+import { DynamicIcon } from '@/components/public/dynamic-icon';
 
 export default async function UpdateSkillDashboardPage(props: { params: Promise<{ id: string }> }) {
 	const { id } = await props.params;
@@ -42,7 +43,19 @@ export default async function UpdateSkillDashboardPage(props: { params: Promise<
 					<CardDescription>Actualiza los campos que necesites modificar</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<SkillForm action={updateSkill.bind(null, Number(id))} initialValues={skill} />
+					<SkillForm
+						action={updateSkill.bind(null, Number(id))}
+						initialValues={skill}
+						customIconPreview={
+							skill.customIconUrl ? (
+								<DynamicIcon
+									iconFullName={skill.icon}
+									customIconUrl={skill.customIconUrl}
+									className="size-8 shrink-0"
+								/>
+							) : null
+						}
+					/>
 				</CardContent>
 			</Card>
 		</div>
