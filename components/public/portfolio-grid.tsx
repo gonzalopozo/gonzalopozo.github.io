@@ -90,7 +90,12 @@ export function PortfolioGrid({
 				homeSlot: 'd',
 				sizeSlot: 'd',
 				cardClassName: 'group/music @container/music-card @container-[size] isolate',
-				content: <LastTrackGridItemContent track={lastTrack} />,
+				content: (
+					<LastTrackGridItemContent
+						track={lastTrack}
+						isDesktop={currentBreakpoint === 'lg'}
+					/>
+				),
 			},
 			{
 				id: 'hobbies',
@@ -127,6 +132,7 @@ export function PortfolioGrid({
 			experienceOverviewCard,
 			socialLinkCards,
 			lastTrack,
+			currentBreakpoint,
 		],
 	);
 

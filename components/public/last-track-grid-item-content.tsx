@@ -5,9 +5,11 @@ import { cn } from '@/lib/utils';
 
 interface LastTrackGridItemContentProps {
 	track: Track | null;
+	isDesktop?: boolean;
 }
 
 interface TrackArtworkProps {
+	isDesktop: boolean;
 	isOnline: boolean;
 	trackName: string;
 	safeArtist: string;
@@ -15,9 +17,21 @@ interface TrackArtworkProps {
 	playedAtUnix: number | null;
 	playedAtLabel: string | null;
 	source: 'spotify' | 'last.fm';
+	spotifyUrl: string | null;
+	spotifyLinkLabel: string;
 }
 
-export function LastTrackGridItemContent({ track }: LastTrackGridItemContentProps) {
+interface SpotifyTextLinkProps {
+	url: string | null;
+	onArtwork: boolean;
+	ariaLabel: string;
+	children: string;
+}
+
+export function LastTrackGridItemContent({
+	track,
+	isDesktop = false,
+}: LastTrackGridItemContentProps) {
 	if (!track) {
 		return <MusicEmptyState />;
 	}
@@ -27,11 +41,13 @@ export function LastTrackGridItemContent({ track }: LastTrackGridItemContentProp
 	const safeArtist = artistName?.trim() ? artistName : 'Unknown artist';
 	const sourceUrl = spotifyUrl;
 	const ariaLabel = `${isOnline ? 'Now playing' : 'Last scrobbled'}: ${trackName} by ${safeArtist}${
-		sourceUrl ? `. Opens Spotify.` : ''
+		sourceUrl && !isDesktop ? `. Opens Spotify.` : ''
 	}`;
+	const spotifyLinkLabel = `Open ${trackName} by ${safeArtist} on Spotify (opens in a new tab)`;
 
 	const inner = (
 		<TrackArtwork
+			isDesktop={isDesktop}
 			isOnline={isOnline}
 			trackName={trackName}
 			safeArtist={safeArtist}
@@ -39,13 +55,15 @@ export function LastTrackGridItemContent({ track }: LastTrackGridItemContentProp
 			playedAtUnix={playedAtUnix}
 			playedAtLabel={playedAtLabel}
 			source={sourceUrl ? 'spotify' : 'last.fm'}
+			spotifyUrl={isDesktop ? sourceUrl : null}
+			spotifyLinkLabel={spotifyLinkLabel}
 		/>
 	);
 
 	const baseClassName =
 		'relative block size-full overflow-hidden focus-visible:ring-ring focus-visible:ring-2 focus-visible:ring-inset focus-visible:outline-none';
 
-	if (sourceUrl) {
+	if (sourceUrl && !isDesktop) {
 		return (
 			<a
 				href={sourceUrl}
@@ -60,13 +78,14 @@ export function LastTrackGridItemContent({ track }: LastTrackGridItemContentProp
 	}
 
 	return (
-		<div className={baseClassName} aria-label={ariaLabel}>
+		<div className={cn(baseClassName, isDesktop && 'select-none')} aria-label={ariaLabel}>
 			{inner}
 		</div>
 	);
 }
 
 function TrackArtwork({
+	isDesktop,
 	isOnline,
 	trackName,
 	safeArtist,
@@ -74,6 +93,8 @@ function TrackArtwork({
 	playedAtUnix,
 	playedAtLabel,
 	source,
+	spotifyUrl,
+	spotifyLinkLabel,
 }: TrackArtworkProps) {
 	const hasArtwork = Boolean(artworkUrl);
 
@@ -91,6 +112,7 @@ function TrackArtwork({
 						src={artworkUrl!}
 						alt=""
 						fill
+						draggable={isDesktop ? false : undefined}
 						sizes="(min-width: 996px) 25vw, (min-width: 768px) 50vw, 100vw"
 						className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-safe:group-hover/music:scale-[1.02] motion-reduce:transition-none"
 						aria-hidden="true"
@@ -114,12 +136,31 @@ function TrackArtwork({
 
 			{hasArtwork && (
 				<>
-					<div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-linear-to-b from-black/55 to-transparent" />
-					<div className="pointer-events-none absolute inset-x-0 bottom-0 h-3/5 bg-linear-to-t from-black/85 via-black/45 to-transparent transition-[background-image] duration-300 motion-safe:group-hover/music:from-black/90" />
+					<div
+						className={cn(
+							'pointer-events-none absolute inset-x-0 top-0 bg-linear-to-b to-transparent',
+							spotifyUrl
+								? 'h-24 from-media-background/95 via-media-background/85'
+								: 'h-20 from-black/55',
+						)}
+					/>
+					<div
+						className={cn(
+							'pointer-events-none absolute inset-x-0 bottom-0 h-3/5 bg-linear-to-t to-transparent',
+							spotifyUrl
+								? 'from-media-background/95 via-media-background/80'
+								: 'from-black/85 via-black/45 transition-[background-image] duration-300 motion-safe:group-hover/music:from-black/90',
+						)}
+					/>
 				</>
 			)}
 
-			<SourceLabel source={source} onArtwork={hasArtwork} />
+			<SourceLabel
+				source={source}
+				onArtwork={hasArtwork}
+				spotifyUrl={spotifyUrl}
+				spotifyLinkLabel={spotifyLinkLabel}
+			/>
 			<ActivityBadge
 				isOnline={isOnline}
 				playedAtUnix={playedAtUnix}
@@ -131,22 +172,64 @@ function TrackArtwork({
 				trackName={trackName}
 				safeArtist={safeArtist}
 				onArtwork={hasArtwork}
+				spotifyUrl={spotifyUrl}
+				spotifyLinkLabel={spotifyLinkLabel}
 				className="absolute inset-x-3 bottom-3 z-10"
 			/>
 		</>
 	);
 }
 
-function SourceLabel({ source, onArtwork }: { source: 'spotify' | 'last.fm'; onArtwork: boolean }) {
+function SpotifyTextLink({ url, onArtwork, ariaLabel, children }: SpotifyTextLinkProps) {
+	if (!url) return <>{children}</>;
+
+	return (
+		<a
+			href={url}
+			target="_blank"
+			rel="noopener noreferrer"
+			draggable={false}
+			aria-label={ariaLabel}
+			className={cn(
+				'cursor-pointer rounded-xs underline decoration-current/40 decoration-1 underline-offset-[3px]',
+				'group-hover/grid-item:decoration-current/85',
+				'transition-[color,text-decoration-color,text-decoration-thickness] duration-320 ease-in-out motion-reduce:transition-none',
+				'hover:decoration-2 focus-visible:decoration-2 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-current',
+				onArtwork
+					? 'text-media-foreground hover:decoration-media-primary group-hover/grid-item:hover:decoration-media-primary focus-visible:decoration-media-primary group-hover/grid-item:focus-visible:decoration-media-primary'
+					: 'hover:text-foreground hover:decoration-primary group-hover/grid-item:hover:decoration-primary focus-visible:text-foreground focus-visible:decoration-primary group-hover/grid-item:focus-visible:decoration-primary',
+			)}
+		>
+			{children}
+		</a>
+	);
+}
+
+function SourceLabel({
+	source,
+	onArtwork,
+	spotifyUrl,
+	spotifyLinkLabel,
+}: {
+	source: 'spotify' | 'last.fm';
+	onArtwork: boolean;
+	spotifyUrl: string | null;
+	spotifyLinkLabel: string;
+}) {
 	return (
 		<span
 			className={cn(
 				`absolute top-3 left-3 z-10 font-mono text-[10px] tracking-wide transition-colors`,
 				onArtwork ? `text-media-foreground` : 'text-muted-foreground',
+				spotifyUrl && 'leading-5',
+				spotifyUrl &&
+					'transition-transform duration-400 ease-in-out motion-safe:group-hover/grid-item:-translate-y-px motion-reduce:transition-none',
 			)}
-			aria-hidden="true"
+			aria-hidden={spotifyUrl ? undefined : true}
 		>
-			{source}
+			<SpotifyTextLink url={spotifyUrl} onArtwork={onArtwork} ariaLabel={spotifyLinkLabel}>
+				{source}
+			</SpotifyTextLink>
 		</span>
 	);
 }
@@ -195,30 +278,55 @@ function TrackText({
 	trackName,
 	safeArtist,
 	onArtwork,
+	spotifyUrl,
+	spotifyLinkLabel,
 	className,
 }: {
 	trackName: string;
 	safeArtist: string;
 	onArtwork: boolean;
+	spotifyUrl: string | null;
+	spotifyLinkLabel: string;
 	className?: string;
 }) {
 	return (
-		<div className={cn('flex min-w-0 flex-col gap-0.5', className)}>
+		<div
+			className={cn(
+				'flex min-w-0 flex-col gap-0.5',
+				spotifyUrl &&
+					'transition-transform duration-400 ease-in-out motion-safe:group-hover/grid-item:-translate-y-px motion-reduce:transition-none',
+				className,
+			)}
+		>
 			<p
 				className={cn(
 					'line-clamp-2 text-sm/tight font-semibold',
 					onArtwork ? 'text-media-foreground' : 'text-foreground',
+					spotifyUrl && 'leading-normal',
 				)}
 			>
-				{trackName}
+				<SpotifyTextLink
+					url={spotifyUrl}
+					onArtwork={onArtwork}
+					ariaLabel={spotifyLinkLabel}
+				>
+					{trackName}
+				</SpotifyTextLink>
 			</p>
 			<p
 				className={cn(
 					'line-clamp-1 text-xs/tight',
 					onArtwork ? 'text-media-foreground' : 'text-muted-foreground',
+					spotifyUrl && 'leading-normal',
 				)}
 			>
-				{safeArtist}
+				<SpotifyTextLink
+					url={spotifyUrl}
+					onArtwork={onArtwork}
+					ariaLabel={spotifyLinkLabel}
+				>
+					{safeArtist}
+				</SpotifyTextLink>
 			</p>
 		</div>
 	);
