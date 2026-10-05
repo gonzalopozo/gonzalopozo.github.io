@@ -29,6 +29,7 @@ export default async function UpdateProjectDashboardPage(props: {
 							id: true,
 							name: true,
 							icon: true,
+							customIconUrl: true,
 						},
 					},
 				},

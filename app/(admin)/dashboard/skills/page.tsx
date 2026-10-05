@@ -108,9 +108,10 @@ export default async function SkillsDashboardPage() {
 											</Badge>
 										</TableCell>
 										<TableCell className="font-mono text-sm">
-											{skill.icon ? (
+											{skill.icon || skill.customIconUrl ? (
 												<div className="flex items-center">
 													<DynamicIcon
+														customIconUrl={skill.customIconUrl}
 														iconFullName={skill.icon}
 														className="size-4 shrink-0"
 													/>
