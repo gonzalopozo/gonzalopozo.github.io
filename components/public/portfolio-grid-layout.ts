@@ -133,7 +133,7 @@ export function getSectionCards(
 	];
 }
 
-/** Pack category rows without allowing background cards to fill gaps among matching cards. */
+/** Pack matching cards first, then compact every section with the same rules as All. */
 export function createSectionLayouts(
 	cards: PortfolioGridCard[],
 	section: PortfolioSection | null,
@@ -159,7 +159,7 @@ export function createSectionLayouts(
 			x += w;
 			rowHeight = Math.max(rowHeight, h);
 		}
-		return layout;
+		return verticalCompactor.compact(layout, GRID_COLUMNS_BY_BREAKPOINT[breakpoint]);
 	}
 	return { lg: createLayout('lg'), md: createLayout('md'), sm: createLayout('sm') };
 }

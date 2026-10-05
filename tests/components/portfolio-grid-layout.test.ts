@@ -81,13 +81,11 @@ describe('portfolio section layouts', () => {
 		},
 	);
 
-	it.each(breakpoints)('places background cards below all projects at %s', (breakpoint) => {
-		const layout = createSectionLayouts(cards, 'Projects')[breakpoint];
+	it('allows background cards to fill gaps beside taller projects', () => {
+		const layout = createSectionLayouts(cards, 'Projects').lg;
 		const foreground = layout.filter(({ i }) => i.startsWith('project:'));
-		const background = layout.filter(({ i }) => !i.startsWith('project:'));
-		expect(Math.min(...background.map(({ y }) => y))).toBeGreaterThanOrEqual(
-			Math.max(...foreground.map(({ y, h }) => y + h)),
-		);
+		const map = layout.find(({ i }) => i === 'map')!;
+		expect(map.y).toBeLessThan(Math.max(...foreground.map(({ y, h }) => y + h)));
 	});
 
 	it('handles missing records without phantom slots or mutating inputs', () => {

@@ -1,5 +1,5 @@
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import type { Layout } from 'react-grid-layout';
+import { collides, type Layout } from 'react-grid-layout';
 import type * as ReactGridLayoutModule from 'react-grid-layout';
 import type * as MotionModule from 'motion/react';
 import { NuqsTestingAdapter } from 'nuqs/adapters/testing';
@@ -121,7 +121,7 @@ describe('portfolio navigation', () => {
 		expect(screen.queryByText('Experience 0')).toBeNull();
 		select('Projects');
 		await waitFor(() => expect(cardIds(container)).toHaveLength(12));
-		expect(cardIds(container).slice(0, 5)).toEqual([
+		expect(cardIds(container).filter((id) => id?.startsWith('project:'))).toEqual([
 			'project:0',
 			'project:1',
 			'project:2',
@@ -190,6 +190,61 @@ describe('portfolio navigation', () => {
 		select('Projects');
 		await waitFor(() => expect(grid.layout!).toEqual(projects));
 	});
+
+	it.each([
+		{ section: 'All', searchParams: '', cardId: 'info' },
+		{ section: 'About me', searchParams: '?section=About+me', cardId: 'info' },
+		{ section: 'Projects', searchParams: '?section=Projects', cardId: 'project:0' },
+		{
+			section: 'Experience',
+			searchParams: '?section=Experience',
+			cardId: 'experience-overview',
+		},
+	])(
+		'resolves drag collisions and restores the $section arrangement',
+		async ({ section, searchParams, cardId }) => {
+			grid.renderActual = true;
+			const { container } = setup(searchParams);
+			const before = grid.layout!.map((item) => ({ ...item }));
+			const original = before.find(({ i }) => i === cardId)!;
+			const card = container.querySelector<HTMLElement>(`[data-portfolio-card="${cardId}"]`)!;
+			const parent = card.parentElement!;
+
+			// jsdom has no layout measurements; supply the offset parent used by bounded dragging.
+			Object.defineProperty(card, 'offsetParent', { configurable: true, value: parent });
+			Object.defineProperty(parent, 'clientHeight', {
+				configurable: true,
+				get: () => Number.parseFloat(parent.style.height),
+			});
+			const clientY = 10 + original.h * (34.5 + 16);
+			fireEvent.mouseDown(card, { button: 0, clientX: 10, clientY: 10 });
+			fireEvent.mouseMove(document, { clientX: 10, clientY: 20 });
+			fireEvent.mouseMove(document, { clientX: 10, clientY });
+			fireEvent.mouseUp(document, { button: 0, clientX: 10, clientY });
+
+			const saved = grid.layout!.map((item) => ({ ...item }));
+			expect(saved.find(({ i }) => i === cardId)!.y).toBeGreaterThan(original.y);
+			expect(
+				saved
+					.map(({ i, w, h }) => ({ i, w, h }))
+					.toSorted((a, b) => a.i.localeCompare(b.i)),
+			).toEqual(
+				before
+					.map(({ i, w, h }) => ({ i, w, h }))
+					.toSorted((a, b) => a.i.localeCompare(b.i)),
+			);
+			for (const [index, item] of saved.entries()) {
+				for (const other of saved.slice(index + 1)) {
+					expect(collides(item, other)).toBe(false);
+				}
+			}
+
+			select(section === 'All' ? 'Projects' : 'All');
+			await waitFor(() => expect(grid.layout!).not.toEqual(saved));
+			select(section);
+			await waitFor(() => expect(grid.layout!).toEqual(saved));
+		},
+	);
 
 	it.each(['?section=Contact', '?section=unknown'])(
 		'treats %s as All and keeps the email action',

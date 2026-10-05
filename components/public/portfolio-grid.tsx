@@ -3,13 +3,7 @@
 
 import { LazyMotion, domAnimation, m, useReducedMotion } from 'motion/react';
 import { useQueryState } from 'nuqs';
-import {
-	GridLayout,
-	noCompactor,
-	verticalCompactor,
-	useContainerWidth,
-	type Layout,
-} from 'react-grid-layout';
+import { GridLayout, verticalCompactor, useContainerWidth, type Layout } from 'react-grid-layout';
 import 'react-grid-layout/css/styles.css';
 import { useMemo, useState, type ReactNode } from 'react';
 import { PortfolioNavigation } from '@/components/public/portfolio-navigation';
@@ -209,7 +203,7 @@ export function PortfolioGrid({
 								margin: GRID_ITEM_MARGIN,
 								containerPadding: [0, 0],
 							}}
-							compactor={displayedSection ? noCompactor : verticalCompactor}
+							compactor={verticalCompactor}
 							resizeConfig={{ enabled: false, handles: [] }}
 							dragConfig={{
 								enabled: currentBreakpoint === 'lg' && !isChangingSection,
