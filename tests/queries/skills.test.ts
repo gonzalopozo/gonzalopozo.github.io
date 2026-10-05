@@ -15,7 +15,7 @@ import { getPublicUsedSkills } from '@/lib/queries/skills';
 beforeAll(async () => {
 	await db.run(
 		sql.raw(
-			'CREATE TABLE skills (id INTEGER PRIMARY KEY, name TEXT NOT NULL, icon TEXT, url TEXT, use_color INTEGER NOT NULL DEFAULT 0, custom_color TEXT)',
+			'CREATE TABLE skills (id INTEGER PRIMARY KEY, name TEXT NOT NULL, icon TEXT, custom_icon_url TEXT, url TEXT, use_color INTEGER NOT NULL DEFAULT 0, custom_color TEXT)',
 		),
 	);
 	await db.run(
@@ -37,6 +37,23 @@ beforeEach(async () => {
 });
 
 describe('getPublicUsedSkills', () => {
+	it('includes used custom-only icons and excludes empty and unused icons', async () => {
+		await db.run(
+			sql.raw(
+				"INSERT INTO skills (id, name, icon, custom_icon_url) VALUES (1, 'Custom', NULL, 'https://icons.public.blob.vercel-storage.com/skill-icons/icon.svg'), (2, 'Empty', '', ''), (3, 'Unused', NULL, 'https://icons.public.blob.vercel-storage.com/skill-icons/unused.svg')",
+			),
+		);
+		await db.run(
+			sql.raw('INSERT INTO project_skills (project_id, skill_id) VALUES (1, 1), (1, 2)'),
+		);
+		expect(await getPublicUsedSkills()).toEqual([
+			expect.objectContaining({
+				name: 'Custom',
+				icon: null,
+				customIconUrl: expect.stringContaining('/skill-icons/'),
+			}),
+		]);
+	});
 	it('combines both association tables and sorts by use count, then name', async () => {
 		await db.run(
 			sql.raw(

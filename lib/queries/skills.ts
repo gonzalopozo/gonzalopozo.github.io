@@ -1,6 +1,6 @@
 import 'server-only';
 import { cacheLife, cacheTag } from 'next/cache';
-import { and, asc, count, desc, eq, isNotNull, ne } from 'drizzle-orm';
+import { and, asc, count, desc, eq, isNotNull, ne, or } from 'drizzle-orm';
 import { unionAll } from 'drizzle-orm/sqlite-core';
 import { db } from '@/db';
 import { experienceSkills, projectSkills, skills } from '@/db/schema/portfolio';
@@ -21,6 +21,7 @@ export async function getPublicUsedSkills() {
 			id: skills.id,
 			name: skills.name,
 			icon: skills.icon,
+			customIconUrl: skills.customIconUrl,
 			url: skills.url,
 			useColor: skills.useColor,
 			customColor: skills.customColor,
@@ -28,7 +29,12 @@ export async function getPublicUsedSkills() {
 		})
 		.from(skills)
 		.innerJoin(usedSkillIds, eq(skills.id, usedSkillIds.skillId))
-		.where(and(isNotNull(skills.icon), ne(skills.icon, '')))
+		.where(
+			or(
+				and(isNotNull(skills.icon), ne(skills.icon, '')),
+				and(isNotNull(skills.customIconUrl), ne(skills.customIconUrl, '')),
+			),
+		)
 		.groupBy(skills.id)
 		.orderBy(desc(count(usedSkillIds.skillId)), asc(skills.name), asc(skills.id));
 }
