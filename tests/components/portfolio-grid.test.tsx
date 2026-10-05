@@ -8,6 +8,8 @@ import { ExperienceOverviewGridItemContent } from '@/components/public/experienc
 import { PortfolioGrid } from '@/components/public/portfolio-grid';
 import { GridItemShowMoreButton } from '@/components/public/grid-item-show-more-button';
 
+vi.mock('@/components/public/dynamic-icon', () => ({ DynamicIcon: () => null }));
+
 const grid = vi.hoisted(() => ({
 	layout: undefined as Layout | undefined,
 	width: 1200,

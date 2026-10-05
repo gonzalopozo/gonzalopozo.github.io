@@ -58,9 +58,11 @@ export function SkillsPills({ skills, limit, className }: SkillsPillsProps) {
 					className="flex flex-wrap gap-[inherit]"
 					key={row[0]?.id ?? 'hidden-skills-count'}
 				>
-					{row.map(({ id, name, icon }) => (
+					{row.map(({ id, name, icon, customIconUrl }) => (
 						<Badge variant="secondary" key={`${id}-${name}`} className="gap-1.5">
-							{icon ? <DynamicIcon iconFullName={icon} /> : null}
+							{icon || customIconUrl ? (
+								<DynamicIcon iconFullName={icon} customIconUrl={customIconUrl} />
+							) : null}
 							{name}
 						</Badge>
 					))}

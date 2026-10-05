@@ -46,6 +46,7 @@ function TechMarquee({ skills }: { skills: UsedSkill[] }) {
 						const icon = (
 							<DynamicIcon
 								iconFullName={skill.icon}
+								customIconUrl={skill.customIconUrl}
 								useColor={skill.useColor}
 								customColor={skill.customColor}
 								className={
