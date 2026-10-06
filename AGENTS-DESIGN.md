@@ -143,40 +143,41 @@ The base `Card` component in `components/ui/card.tsx` has `shadow-sm` by default
 
 ## 3. Grid System
 
-The bento grid uses `react-grid-layout` (Responsive). This section defines the shared vocabulary for grid configuration.
+Tablet and desktop use `react-grid-layout`. Mobile uses a natural-height CSS grid with two columns. Card descriptors and section query state are shared between both renderers.
 
 ### 3.1 Breakpoints & Columns
 
-| Breakpoint | Name    | Min width | Columns | Use                 |
-| ---------- | ------- | --------- | ------- | ------------------- |
-| `lg`       | Desktop | 996px     | 8       | Full bento layout   |
-| `md`       | Tablet  | 768px     | 4       | Simplified 2-column |
-| `sm`       | Mobile  | 0px       | 1       | Single column stack |
+| Breakpoint | Name    | Min width | Columns | Use                                                    |
+| ---------- | ------- | --------- | ------- | ------------------------------------------------------ |
+| `lg`       | Desktop | 996px     | 4       | Full bento layout                                      |
+| `md`       | Tablet  | 768px     | 4       | Simplified 2-column                                    |
+| `sm`       | Mobile  | 0px       | 2       | Reading cards span both columns; square utilities pair |
+
+The mobile boundary is **viewport width below 768px**, shared by CSS and `usePortfolioMedia`. At 768px and above, the measured grid width selects `lg` at 996px or `md` below that. Do not select mobile behavior from the narrower padded grid container.
 
 ### 3.2 Row Height & Gap
 
-| Property            | Value         | Notes                                                  |
-| ------------------- | ------------- | ------------------------------------------------------ |
-| `rowHeight`         | `30px`        | Base unit — card height = `h × 30px`                   |
-| Gap (margin)        | `16px` (1rem) | Inter-card spacing via react-grid-layout `margin` prop |
-| Container max-width | `1200px`      | `max-w-[1200px] mx-auto`                               |
-| Container padding   | `px-[3.5vw]`  | Responsive horizontal breathing room                   |
+| Property            | Value                                      | Notes                                                     |
+| ------------------- | ------------------------------------------ | --------------------------------------------------------- |
+| `rowHeight`         | `34.5px`                                   | Bento card height includes the 16px gaps between its rows |
+| Gap (margin)        | `16px` (1rem)                              | Inter-card spacing via react-grid-layout `margin` prop    |
+| Container max-width | `1308.6px`                                 | Centered grid container                                   |
+| Container padding   | `px-4` mobile; `px-[3.5vw]` tablet/desktop | Horizontal breathing room                                 |
 
 ### 3.3 Named Card Sizes
 
-Shared vocabulary for layout composition. Sizes refer to `{w, h}` values in react-grid-layout at the `lg` breakpoint (8 columns).
+Shared vocabulary for layout composition. Sizes refer to `{w, h}` values in react-grid-layout at the `lg` breakpoint (4 columns). `portfolio-grid-layout.ts` is the source of truth for slot dimensions.
 
-| Name         | w × h  | Pixel size (approx)    | Use                                              |
-| ------------ | ------ | ---------------------- | ------------------------------------------------ |
-| **hero**     | 4 × 16 | ~half width × 480px    | Primary content — about, featured project        |
-| **wide**     | 4 × 8  | ~half width × 240px    | Standard wide — project card, about              |
-| **standard** | 2 × 8  | ~quarter width × 240px | Default — map, contact, compact project          |
-| **tall**     | 2 × 16 | ~quarter width × 480px | Vertical emphasis — detailed project, experience |
-| **compact**  | 2 × 4  | ~quarter width × 120px | Minimal — stat, link, social                     |
+| Name         | w × h  | Pixel size (approx)    | Use                                             |
+| ------------ | ------ | ---------------------- | ----------------------------------------------- |
+| **hero**     | 2 × 6  | ~half width × 287px    | Introduction                                    |
+| **wide**     | 2 × 6  | ~half width × 287px    | Horizontal project, hobbies, experience summary |
+| **standard** | 1 × 6  | ~quarter width × 287px | Map, music, social, theme                       |
+| **tall**     | 1 × 12 | ~quarter width × 590px | Vertical project                                |
 
-At `md` (4 columns): hero → 4×12, wide → 4×8, standard → 2×8, tall → 2×12, compact → 2×4.
+At `md` (4 columns): introduction → 4×8, wide → 4×6, standard → 2×6, tall → 2×12.
 
-At `sm` (1 column): all cards become 1×auto (full width, content-driven height).
+At `sm` (CSS grid): reading cards span two columns and grow naturally; square cards span one column with a 1:1 ratio. Mobile has no row-height layout metadata or draggable renderer.
 
 ### 3.4 Content Adaptation Rules
 
@@ -186,13 +187,22 @@ At `sm` (1 column): all cards become 1×auto (full width, content-driven height)
 
 ### 3.5 Responsive Priority
 
-At `sm` (1 column), not all cards need to show. Priority order:
+Mobile home has this fixed reading order:
 
-1. **about** — always visible, first position
-2. **project** (featured) — max 2–3 cards
-3. **experience** — collapsed or summary
-4. **contact** — always visible
-5. **map** — hidden or moved to bottom
+1. Introduction, with a small color portrait, complete text, status, CV, and About me action.
+2. First published experience, when available.
+3. Map and first social link, paired.
+4. First project.
+5. Experience summary and technology marquee.
+6. Second project.
+7. Theme switcher and music, paired.
+8. Hobbies, with six permanently visible image tiles, overlaid names, and small arrow actions in three rows of two. No mobile title, subtitle, or standalone About me action.
+
+Omit missing records without placeholders. Only two projects appear on mobile home; Projects reveals every published project. A square without its partner stays in one column. Desktop home retains its three featured projects and existing slots.
+
+Below 768px, section views render only matching cards; unrelated home cards are removed. Projects includes all projects, and Experience starts with the summary followed by every published experience. Tablet and desktop retain unrelated home cards as muted background content. Section navigation, card CTAs, and browser Back/Forward instantly return mobile visitors to the top of the page. Section headings remain available to screen readers but are visually hidden.
+
+Mobile About me order: introduction → map and first social link → second and third social links → hobbies → fourth and fifth social links → theme switcher and music → remaining social links in pairs. Use CMS social-link order. Keep the theme/music pair together when a preceding social pair has one available record.
 
 ---
 
@@ -226,6 +236,8 @@ The card is the fundamental unit of the design. All content lives inside a `Card
 | `experience` | Role, company, dates, description, skills                  | `@container/experience-card @container-[size]` |
 
 Use `className` for the outer grid item and `cardClassName` for the inner Card. Map, music, and hobby group/container classes belong to their callers, not new navigation variants.
+
+`GridItem.sizing="natural"` uses automatic height and inline-size containment for mobile reading cards. Fixed bento cards and the music square retain size containment. Do not apply size containment to a card whose height must come from its contents. Grab cursors require `draggable`; dragging also requires the desktop grid breakpoint and a fine, hover-capable pointer.
 
 ### 4.3 Internal Spacing
 
@@ -305,7 +317,9 @@ Do not place the theme toggle in the navbar. Use `BB8ThemeSwitcher` in portfolio
 | `lg` / `md` | Top-center, fixed or sticky | Full labels + icons                            |
 | `sm`        | Bottom-center, fixed        | Icons only — active item expands to show label |
 
-Mobile bottom placement: `fixed bottom-4 left-1/2 -translate-x-1/2 z-50`. Add `pb-20` to the main container on mobile to prevent overlap.
+Mobile keeps the 28px logo and Contact action in one compact top row. The section pill is fixed bottom-center, 16px above `env(safe-area-inset-bottom)`, with 44px minimum targets and a visible active label. Reserve `6rem + env(safe-area-inset-bottom)` after the grid to prevent overlap. Tablet and desktop retain the centered top navigation.
+
+Keep focus on the navigation button during section changes. If a card CTA disappears after navigation, focus the section heading without scrolling it into view. Hover must not be required to discover content or actions: mobile hobby images, names, and arrows are always visible. Technology icons use configured colors by default on mobile, without pills or visible names; their 44px slots and animation duration match desktop. Marquee movement stops for keyboard focus, while focus retained after a pointer or touch activation must not stop it. Hover pausing requires a viewport of at least 768px and a fine pointer. Mobile social cards are full-card links without separate arrow buttons. The map has no added location label, and its story opens in a dialog outside its small square, with 20px heading and 14px body text. Use `MapMarker.asButton` for the story trigger so keyboard activation and dialog focus restoration work through a native button.
 
 ---
 
