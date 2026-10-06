@@ -35,83 +35,85 @@ export function PortfolioNavigation({ section, onSectionChange }: PortfolioNavig
 	};
 
 	return (
-		<nav
-			aria-label="Portfolio sections"
-			className="mb-12 grid grid-cols-1 items-center justify-items-center gap-4 px-7 pt-7 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]"
-		>
-			<div className="flex aspect-2048/682 w-[clamp(10rem,20vw,15rem)] shrink-0 items-center justify-center md:justify-self-start">
+		<header className="mb-6 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 pt-[max(1rem,env(safe-area-inset-top))] md:mb-12 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:justify-items-center md:gap-4 md:px-7 md:pt-7">
+			<div className="flex min-w-0 items-center md:aspect-2048/682 md:w-[clamp(10rem,20vw,15rem)] md:shrink-0 md:justify-center md:justify-self-start">
 				<span
 					aria-hidden="true"
-					className="bg-linear-to-r from-logo-gradient-start via-logo-gradient-middle to-logo-gradient-end bg-clip-text px-1 font-(family-name:--font-fraunces) text-[clamp(1.35rem,2.6vw,2rem)] leading-tight font-black tracking-[-0.04em] whitespace-nowrap text-transparent forced-colors:bg-none forced-colors:text-[CanvasText]"
+					className="bg-linear-to-r from-logo-gradient-start via-logo-gradient-middle to-logo-gradient-end bg-clip-text px-1 font-(family-name:--font-fraunces) text-[1.75rem] leading-tight font-black tracking-[-0.04em] whitespace-nowrap text-transparent md:text-[clamp(1.35rem,2.6vw,2rem)] forced-colors:bg-none forced-colors:text-[CanvasText]"
 				>
 					gonzalopozo
 				</span>
 				<span className="sr-only">Gonzalo Pozo</span>
 			</div>
 
-			<ul className="flex h-10 max-w-[calc(100vw-1rem)] items-center gap-1 rounded-full border border-border/70 bg-card/90 px-1 py-0.5 shadow-2xl shadow-foreground/10 backdrop-blur-xl md:col-start-2 md:row-start-1 md:justify-self-center">
-				{sections.map(({ url, v, Icon }) => {
-					const isActive = activeUrl === url;
+			<nav
+				aria-label="Portfolio sections"
+				className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] left-1/2 z-50 max-w-[calc(100vw-2rem)] -translate-x-1/2 md:static md:col-start-2 md:row-start-1 md:max-w-none md:translate-x-0 md:justify-self-center"
+			>
+				<ul className="flex h-14 items-center gap-1 rounded-full border border-border/70 bg-card/95 px-1.5 py-1 shadow-lg shadow-foreground/10 backdrop-blur-xl md:h-10 md:bg-card/90 md:px-1 md:py-0.5 md:shadow-2xl">
+					{sections.map(({ url, v, Icon }) => {
+						const isActive = activeUrl === url;
 
-					return (
-						<li className="shrink-0" key={url}>
-							<button
-								aria-current={isActive ? 'page' : undefined}
-								aria-label={isActive ? undefined : `Show ${url} section`}
-								className={cn(
-									`group/nav relative isolate flex h-8 touch-manipulation items-center overflow-hidden rounded-full transition-[background-color,box-shadow,color,transform,width] duration-200 ease-out outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.99]`,
-									isActive
-										? `w-[clamp(7rem,36vw,8rem)] justify-start pr-2.5 pl-0.5 text-primary-foreground sm:w-auto sm:min-w-32 sm:pr-3`
-										: `size-8 justify-center text-muted-foreground hover:text-foreground`,
-								)}
-								onClick={() => onSectionChange(v)}
-								type="button"
-							>
-								{isActive && (
-									<m.span
-										className="absolute inset-0 rounded-full bg-primary shadow-lg shadow-primary/25"
-										initial={navIndicatorInitial}
-										animate={navIndicatorAnimate}
-										transition={navIndicatorTransition}
-									/>
-								)}
-
-								<span
+						return (
+							<li className="shrink-0" key={url}>
+								<button
+									aria-current={isActive ? 'page' : undefined}
+									aria-label={isActive ? undefined : `Show ${url} section`}
 									className={cn(
-										`relative z-10 grid size-7 shrink-0 place-items-center rounded-full transition-colors duration-200 ease-out`,
+										`group/nav relative isolate flex h-11 touch-manipulation items-center overflow-hidden rounded-full transition-[background-color,box-shadow,color,transform,width] duration-200 ease-out outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-[0.99] md:h-8`,
 										isActive
-											? 'bg-primary-foreground/15 text-primary-foreground'
-											: `bg-secondary text-muted-foreground group-hover/nav:bg-secondary/80 group-hover/nav:text-foreground`,
+											? `w-[clamp(7.5rem,32vw,8rem)] justify-start pr-2.5 pl-1 text-primary-foreground md:w-auto md:min-w-32 md:pr-3 md:pl-0.5`
+											: `w-11 justify-center text-muted-foreground hover:text-foreground md:w-8`,
 									)}
+									onClick={() => onSectionChange(v)}
+									type="button"
 								>
-									<Icon aria-hidden="true" className="size-4" />
-								</span>
-
-								<AnimatePresence initial={false}>
 									{isActive && (
 										<m.span
-											animate={navLabelAnimate}
-											className="relative z-10 min-w-0 truncate pl-2 text-sm font-semibold"
-											exit={navLabelExit}
-											initial={navLabelInitial}
-											transition={navLabelTransition}
-										>
-											{url}
-										</m.span>
+											className="absolute inset-0 rounded-full bg-primary shadow-lg shadow-primary/25"
+											initial={navIndicatorInitial}
+											animate={navIndicatorAnimate}
+											transition={navIndicatorTransition}
+										/>
 									)}
-								</AnimatePresence>
-							</button>
-						</li>
-					);
-				})}
-			</ul>
+
+									<span
+										className={cn(
+											`relative z-10 grid size-9 shrink-0 place-items-center rounded-full transition-colors duration-200 ease-out md:size-7`,
+											isActive
+												? 'bg-primary-foreground/15 text-primary-foreground'
+												: `bg-secondary text-muted-foreground group-hover/nav:bg-secondary/80 group-hover/nav:text-foreground`,
+										)}
+									>
+										<Icon aria-hidden="true" className="size-4" />
+									</span>
+
+									<AnimatePresence initial={false}>
+										{isActive && (
+											<m.span
+												animate={navLabelAnimate}
+												className="relative z-10 min-w-0 pl-1.5 text-xs font-semibold md:pl-2 md:text-sm"
+												exit={navLabelExit}
+												initial={navLabelInitial}
+												transition={navLabelTransition}
+											>
+												{url}
+											</m.span>
+										)}
+									</AnimatePresence>
+								</button>
+							</li>
+						);
+					})}
+				</ul>
+			</nav>
 
 			<Button
-				className="h-10 rounded-full px-5 md:col-start-3 md:row-start-1 md:justify-self-end"
+				className="h-11 rounded-full px-5 md:col-start-3 md:row-start-1 md:h-10 md:justify-self-end"
 				asChild
 			>
 				<a href="mailto:pozosanchezgonzalo@gmail.com">Contact</a>
 			</Button>
-		</nav>
+		</header>
 	);
 }

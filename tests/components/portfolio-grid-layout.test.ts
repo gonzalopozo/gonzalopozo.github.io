@@ -3,7 +3,8 @@ import {
 	createCollectionCards,
 	createSectionLayouts,
 	getSectionCards,
-	type GridBreakpoint,
+	isSquarePortfolioCard,
+	type BentoBreakpoint,
 	type PortfolioGridCard,
 } from '@/components/public/portfolio-grid-layout';
 
@@ -29,7 +30,7 @@ const cards: PortfolioGridCard[] = [
 		socialLinks: Array.from({ length: 3 }, (_, i) => ({ id: `social:${i}`, content: null })),
 	}),
 ];
-const breakpoints: GridBreakpoint[] = ['lg', 'md', 'sm'];
+const breakpoints: BentoBreakpoint[] = ['lg', 'md'];
 
 describe('portfolio section layouts', () => {
 	it('keeps the home limits and shows each matching record exactly once', () => {
@@ -63,7 +64,7 @@ describe('portfolio section layouts', () => {
 				const layout = createSectionLayouts(cards, section)[breakpoint];
 				for (const item of layout) {
 					expect(item.x).toBeGreaterThanOrEqual(0);
-					expect(item.x + item.w).toBeLessThanOrEqual(breakpoint === 'sm' ? 1 : 4);
+					expect(item.x + item.w).toBeLessThanOrEqual(4);
 					for (const other of layout.filter(({ i }) => i !== item.i)) {
 						expect(
 							item.x < other.x + other.w &&
@@ -91,9 +92,132 @@ describe('portfolio section layouts', () => {
 	it('handles missing records without phantom slots or mutating inputs', () => {
 		const sparse = cards.filter(({ id }) => ['info', 'map', 'project:0'].includes(id));
 		const before = structuredClone(sparse);
-		expect(getSectionCards(sparse, 'Experience', 'sm')).toHaveLength(3);
+		expect(getSectionCards(sparse, 'Experience', 'sm')).toHaveLength(0);
 		expect(createSectionLayouts(sparse, null).lg).toHaveLength(3);
 		expect(sparse).toEqual(before);
-		expect(createSectionLayouts([], 'Projects')).toEqual({ lg: [], md: [], sm: [] });
+		expect(createSectionLayouts([], 'Projects')).toEqual({ lg: [], md: [] });
+	});
+
+	it('uses the curated mobile order with two projects and the first published experience', () => {
+		expect(getSectionCards(cards, null, 'sm').map(({ id }) => id)).toEqual([
+			'info',
+			'experience:0',
+			'map',
+			'social:0',
+			'project:0',
+			'experience-overview',
+			'project:1',
+			'theme',
+			'music',
+			'hobbies',
+		]);
+		expect(getSectionCards(cards, null, 'lg').some(({ id }) => id === 'experience:0')).toBe(
+			false,
+		);
+	});
+
+	it.each(['About me', 'Projects', 'Experience'] as const)(
+		'keeps only matching cards and every published record in the mobile %s section',
+		(section) => {
+			const selected = getSectionCards(cards, section, 'sm');
+			const variant =
+				section === 'About me'
+					? 'about'
+					: section === 'Projects'
+						? 'project'
+						: 'experience';
+			expect(selected.every((card) => card.variant === variant)).toBe(true);
+			expect(new Set(selected.map(({ id }) => id))).toEqual(
+				new Set(cards.filter((card) => card.variant === variant).map(({ id }) => id)),
+			);
+			expect(new Set(selected.map(({ id }) => id)).size).toBe(selected.length);
+		},
+	);
+
+	it('places all mobile About me cards around the requested social pairs', () => {
+		const expanded = [
+			...cards.filter((card) => card.sizeSlot !== 'e'),
+			...createCollectionCards({
+				projects: [],
+				experiences: [],
+				socialLinks: Array.from({ length: 8 }, (_, i) => ({
+					id: `social:${i}`,
+					content: null,
+				})),
+			}),
+		];
+		expect(getSectionCards(expanded, 'About me', 'sm').map(({ id }) => id)).toEqual([
+			'info',
+			'map',
+			'social:0',
+			'social:1',
+			'social:2',
+			'hobbies',
+			'social:3',
+			'social:4',
+			'theme',
+			'music',
+			'social:5',
+			'social:6',
+			'social:7',
+		]);
+	});
+
+	it.each([
+		{ count: 0, expected: ['info', 'map', 'hobbies', 'theme', 'music'] },
+		{
+			count: 2,
+			expected: ['info', 'map', 'social:0', 'social:1', 'hobbies', 'theme', 'music'],
+		},
+		{
+			count: 4,
+			expected: [
+				'info',
+				'map',
+				'social:0',
+				'social:1',
+				'social:2',
+				'hobbies',
+				'social:3',
+				'theme',
+				'music',
+			],
+		},
+	])('omits unavailable mobile social cards with $count links', ({ count, expected }) => {
+		const sparse = [
+			...cards.filter((card) => card.sizeSlot !== 'e'),
+			...createCollectionCards({
+				projects: [],
+				experiences: [],
+				socialLinks: Array.from({ length: count }, (_, i) => ({
+					id: `social:${i}`,
+					content: null,
+				})),
+			}),
+		];
+		expect(getSectionCards(sparse, 'About me', 'sm').map(({ id }) => id)).toEqual(expected);
+	});
+
+	it('pairs only square utility cards and omits missing records without placeholders', () => {
+		const sparse = cards.filter(
+			({ id }) => !id.startsWith('experience:') && !id.startsWith('social:'),
+		);
+		const home = getSectionCards(sparse, null, 'sm');
+		expect(home.map(({ id }) => id)).toEqual([
+			'info',
+			'map',
+			'project:0',
+			'experience-overview',
+			'project:1',
+			'theme',
+			'music',
+			'hobbies',
+		]);
+		expect(home.filter(isSquarePortfolioCard).map(({ id }) => id)).toEqual([
+			'map',
+			'theme',
+			'music',
+		]);
+		expect(getSectionCards([], null, 'sm')).toEqual([]);
 	});
 });

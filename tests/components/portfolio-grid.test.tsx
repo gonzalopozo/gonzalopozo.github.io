@@ -3,7 +3,7 @@ import { collides, type Layout } from 'react-grid-layout';
 import type * as ReactGridLayoutModule from 'react-grid-layout';
 import type * as MotionModule from 'motion/react';
 import { NuqsTestingAdapter } from 'nuqs/adapters/testing';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { ExperienceOverviewGridItemContent } from '@/components/public/experience-overview-grid-item-content';
 import { PortfolioGrid } from '@/components/public/portfolio-grid';
 import { GridItemShowMoreButton } from '@/components/public/grid-item-show-more-button';
@@ -13,8 +13,13 @@ vi.mock('@/components/public/dynamic-icon', () => ({ DynamicIcon: () => null }))
 const grid = vi.hoisted(() => ({
 	layout: undefined as Layout | undefined,
 	width: 1200,
+	isMobile: false,
+	hasDragPointer: true,
 	renderActual: false,
 	onDragStop: undefined as ((layout: Layout) => void) | undefined,
+}));
+vi.mock('@/components/public/use-portfolio-media', () => ({
+	usePortfolioMedia: () => ({ isMobile: grid.isMobile, hasDragPointer: grid.hasDragPointer }),
 }));
 vi.mock('react-grid-layout', async (importOriginal) => {
 	const actual = await importOriginal<typeof ReactGridLayoutModule>();
@@ -52,9 +57,15 @@ vi.mock('@/components/public/info-grid-item-content', () => ({
 	InfoGridItemContent: () => <GridItemShowMoreButton variant="about" label="About Me" />,
 }));
 
+beforeEach(() => {
+	vi.spyOn(window, 'scrollTo').mockImplementation(() => {});
+});
+
 afterEach(() => {
 	cleanup();
 	grid.width = 1200;
+	grid.isMobile = false;
+	grid.hasDragPointer = true;
 	grid.renderActual = false;
 	vi.restoreAllMocks();
 });
@@ -284,15 +295,17 @@ describe('portfolio navigation', () => {
 		select('Projects');
 		await waitFor(() => expect(screen.getByText('Project 4')).toBeTruthy());
 		grid.width = 390;
+		grid.isMobile = true;
 		select('About me');
 		await waitFor(() => expect(screen.getByText('Social 2')).toBeTruthy());
 		grid.width = 820;
+		grid.isMobile = false;
 		select('Experience');
 		await waitFor(() => expect(screen.getByText('Experience 2')).toBeTruthy());
 		grid.width = 1200;
 		select('All');
 		await waitFor(() => expect(cardIds(container)).toHaveLength(10));
-		expect(container.querySelector('[data-portfolio-card="info"]')).toBe(info);
+		expect(container.querySelector('[data-portfolio-card="info"]')).not.toBe(info);
 		expect(error).not.toHaveBeenCalled();
 	});
 
@@ -301,5 +314,90 @@ describe('portfolio navigation', () => {
 		expect(screen.getByText('No projects to show yet.')).toBeTruthy();
 		expect(cardIds(container)).toHaveLength(6);
 		expect(container.querySelectorAll('[data-muted="true"]')).toHaveLength(6);
+	});
+
+	it('shows only the selected mobile category, including projects omitted from home', async () => {
+		grid.isMobile = true;
+		grid.width = 390;
+		const { container } = setup();
+		expect(cardIds(container)).toEqual([
+			'info',
+			'experience:0',
+			'map',
+			'social:0',
+			'project:0',
+			'experience-overview',
+			'project:1',
+			'theme',
+			'music',
+			'hobbies',
+		]);
+		select('Projects');
+		await waitFor(() =>
+			expect(cardIds(container)).toEqual(Array.from({ length: 5 }, (_, i) => `project:${i}`)),
+		);
+		expect(container.querySelectorAll('[data-muted="true"]')).toHaveLength(0);
+		select('Experience');
+		await waitFor(() =>
+			expect(cardIds(container)).toEqual([
+				'experience-overview',
+				'experience:0',
+				'experience:1',
+				'experience:2',
+			]),
+		);
+		select('About me');
+		await waitFor(() =>
+			expect(cardIds(container)).toEqual([
+				'info',
+				'map',
+				'social:0',
+				'social:1',
+				'social:2',
+				'hobbies',
+				'theme',
+				'music',
+			]),
+		);
+		expect(
+			container.querySelectorAll('[data-category="project"], [data-category="experience"]'),
+		).toHaveLength(0);
+		select('All');
+		await waitFor(() => expect(cardIds(container)).toHaveLength(10));
+		expect(screen.queryByText('Project 2')).toBeNull();
+	});
+
+	it('scrolls to page top and transfers CTA focus without scrolling the heading into view', async () => {
+		grid.isMobile = true;
+		grid.width = 390;
+		const scroll = vi.mocked(window.scrollTo);
+		setup();
+		const cta = screen.getByRole('button', { name: 'About Me' });
+		cta.focus();
+		fireEvent.click(cta);
+		await waitFor(() =>
+			expect(document.activeElement).toBe(screen.getByRole('heading', { name: 'About me' })),
+		);
+		expect(scroll).toHaveBeenCalledWith({ top: 0, left: 0, behavior: 'instant' });
+		const navigation = screen.getByRole('button', { name: 'Show Projects section' });
+		navigation.focus();
+		fireEvent.click(navigation);
+		await waitFor(() => expect(screen.getByRole('heading', { name: 'Projects' })).toBeTruthy());
+		expect(document.activeElement).toBe(navigation);
+	});
+
+	it('keeps an empty mobile section empty instead of appending home cards', () => {
+		grid.isMobile = true;
+		const { container } = setup('?section=Projects', true);
+		expect(screen.getByText('No projects to show yet.')).toBeTruthy();
+		expect(cardIds(container)).toEqual([]);
+	});
+
+	it('does not accept desktop drag updates from a coarse pointer', () => {
+		grid.hasDragPointer = false;
+		setup();
+		const before = grid.layout;
+		act(() => grid.onDragStop!(before!.map((item) => ({ ...item, y: 100 }))));
+		expect(grid.layout).toBe(before);
 	});
 });

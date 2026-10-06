@@ -58,6 +58,7 @@ export function GridItemShowMoreButton({
 
 	return (
 		<Button
+			data-portfolio-section-link
 			onClick={() => setSection(targetSection)}
 			size={buttonSize}
 			variant={buttonVariant}

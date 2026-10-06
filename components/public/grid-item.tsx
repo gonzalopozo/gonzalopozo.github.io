@@ -10,12 +10,14 @@ export type GridItemVariant = 'about' | 'project' | 'experience';
 interface GridItemProps {
 	variant: GridItemVariant;
 	cardClassName?: string;
+	draggable?: boolean;
+	sizing?: 'fixed' | 'natural';
 }
 
 type GridItemComponentProps = ComponentPropsWithRef<'div'> & GridItemProps;
 
 const GRID_ITEM_ROOT_CLASS_NAME = [
-	'group/grid-item relative isolate overflow-visible cursor-grab active:cursor-grabbing',
+	'group/grid-item relative isolate overflow-visible',
 	'hover:z-20 focus-within:z-20',
 	"before:content-[''] before:pointer-events-none before:absolute before:-inset-2 before:z-0 before:rounded-[2.25rem]",
 	'before:bg-[radial-gradient(circle_at_50%_50%,color-mix(in_oklch,var(--foreground)_12%,transparent),transparent_62%)]',
@@ -36,18 +38,30 @@ export function GridItem({
 	className,
 	cardClassName,
 	variant,
+	draggable = false,
+	sizing = 'fixed',
 	ref,
 	...props
 }: GridItemComponentProps) {
 	return (
-		<div ref={ref} className={cn(GRID_ITEM_ROOT_CLASS_NAME, className)} {...props}>
+		<div
+			ref={ref}
+			className={cn(
+				GRID_ITEM_ROOT_CLASS_NAME,
+				draggable && 'cursor-grab active:cursor-grabbing',
+				className,
+			)}
+			{...props}
+		>
 			<Card
 				className={cn(
-					'size-full min-h-0 min-w-0 gap-0 overflow-hidden rounded-4xl border-0 bg-card p-0 text-card-foreground',
+					'min-h-0 min-w-0 gap-0 overflow-hidden rounded-4xl border-0 bg-card p-0 text-card-foreground',
+					sizing === 'natural' ? 'h-auto w-full' : 'size-full',
 					GRID_ITEM_CARD_INTERACTION_CLASS_NAME,
 					{
-						'@container/project-card @container-[size]': variant === 'project',
-						'@container/experience-card @container-[size]': variant === 'experience',
+						'@container/project-card': variant === 'project',
+						'@container/experience-card': variant === 'experience',
+						'@container-[size]': sizing === 'fixed' && variant !== 'about',
 					},
 					cardClassName,
 				)}

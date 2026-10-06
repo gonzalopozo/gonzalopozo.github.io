@@ -1,6 +1,9 @@
 import { act, cleanup, renderHook } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
-import { createCollectionCards } from '@/components/public/portfolio-grid-layout';
+import {
+	createCollectionCards,
+	type GridBreakpoint,
+} from '@/components/public/portfolio-grid-layout';
 import { usePortfolioTransition } from '@/components/public/use-portfolio-transition';
 import type { PortfolioSection } from '@/components/public/portfolio-sections';
 
@@ -90,5 +93,38 @@ describe('portfolio transitions', () => {
 		expect(result.current.exitingIds).toEqual([]);
 		rerender({ section: 'Experience', reduce: true });
 		expect(result.current.displayedSection).toBe('Experience');
+	});
+
+	it('cancels pending desktop exits when crossing into mobile and ignores their callbacks', () => {
+		const { result, rerender } = renderHook(
+			({
+				section,
+				breakpoint,
+			}: {
+				section: PortfolioSection | null;
+				breakpoint: GridBreakpoint;
+			}) => usePortfolioTransition(cards, section, false, breakpoint),
+			{
+				initialProps: {
+					section: 'Projects' as PortfolioSection | null,
+					breakpoint: 'lg' as GridBreakpoint,
+				},
+			},
+		);
+		rerender({ section: null, breakpoint: 'lg' });
+		const staleGeneration = result.current.generation;
+		expect(result.current.exitingIds.length).toBeGreaterThan(0);
+		rerender({ section: 'Experience', breakpoint: 'sm' });
+		expect(result.current.displayedSection).toBe('Experience');
+		expect(result.current.exitingIds).toEqual([]);
+		act(() => result.current.completeExit('project:3', staleGeneration));
+		expect(result.current.displayedSection).toBe('Experience');
+		rerender({ section: 'Projects', breakpoint: 'sm' });
+		rerender({ section: 'About me', breakpoint: 'sm' });
+		expect(result.current.displayedSection).toBe('About me');
+		expect(result.current.exitingIds).toEqual([]);
+		rerender({ section: 'About me', breakpoint: 'md' });
+		expect(result.current.displayedSection).toBe('About me');
+		expect(result.current.exitingIds).toEqual([]);
 	});
 });
