@@ -34,6 +34,7 @@ AUTOINCREMENT
 gideon
 
 # MapLibre / maps
+Arroyomolinos
 Carto
 redireccionar
 styledata
