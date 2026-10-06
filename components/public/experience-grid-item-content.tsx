@@ -16,17 +16,17 @@ export function ExperienceGridItemContent({ experience }: { experience: Experien
 			: null;
 
 	return (
-		<div className="group/experience flex size-full min-h-0 flex-col gap-3 overflow-hidden px-6 py-5">
+		<div className="group/experience flex min-h-0 flex-col gap-4 p-5 md:size-full md:gap-3 md:overflow-hidden md:px-6">
 			<div
-				className="flex min-h-0 flex-1 flex-col gap-1.5 overflow-y-auto overscroll-contain rounded-sm focus-visible:outline-2 focus-visible:outline-ring"
+				className="flex min-h-0 flex-1 flex-col gap-1.5 rounded-sm focus-visible:outline-2 focus-visible:outline-ring md:overflow-y-auto md:overscroll-contain"
 				tabIndex={0}
 				role="region"
 				aria-label={`${experience.role} at ${experience.company}`}
 			>
-				<h2 className="text-2xl/tight font-bold tracking-tight text-balance">
+				<h3 className="text-xl/tight font-bold tracking-tight text-balance wrap-break-word md:text-2xl/tight">
 					{experience.role}
-				</h2>
-				<p className="text-sm font-semibold">
+				</h3>
+				<p className="text-sm font-semibold wrap-break-word">
 					{experience.companyUrl ? (
 						<a
 							href={experience.companyUrl}
@@ -45,7 +45,7 @@ export function ExperienceGridItemContent({ experience }: { experience: Experien
 						{[dates, experience.location].filter(Boolean).join(' · ')}
 					</p>
 				) : null}
-				<p className="text-sm/relaxed whitespace-pre-line text-muted-foreground">
+				<p className="text-sm/relaxed wrap-break-word whitespace-pre-line text-muted-foreground">
 					{experience.description}
 				</p>
 			</div>
@@ -53,7 +53,7 @@ export function ExperienceGridItemContent({ experience }: { experience: Experien
 			<GridItemShowMoreButton
 				variant="experience"
 				label="View experience"
-				className="h-9 w-fit shrink-0 rounded-full px-4"
+				className="min-h-11 w-fit shrink-0 rounded-full px-4 md:h-9 md:min-h-0"
 			/>
 		</div>
 	);

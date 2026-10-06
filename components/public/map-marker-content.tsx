@@ -13,9 +13,9 @@ export function ArroyomolinosMarkerPin({ shouldJiggle = false }: ArroyomolinosMa
 	return (
 		<div className="group relative flex items-center justify-center">
 			{/* Outer pulse ring */}
-			<span className="absolute size-14 animate-ping rounded-full bg-primary/30 animation-duration-[2.5s]" />
+			<span className="absolute size-14 rounded-full bg-primary/30 animation-duration-[2.5s] motion-safe:animate-ping" />
 			{/* Middle breathing ring */}
-			<span className="absolute size-11 animate-pulse rounded-full bg-primary/20 animation-duration-[3s]" />
+			<span className="absolute size-11 rounded-full bg-primary/20 animation-duration-[3s] motion-safe:animate-pulse" />
 			{/* Marker body */}
 			<span className="relative flex size-11 items-center justify-center rounded-full border-2 border-card bg-primary shadow-[0_0_12px_var(--primary)] transition-[transform,box-shadow] duration-300 group-hover:scale-110 group-hover:shadow-[0_0_20px_var(--primary)]">
 				<span
@@ -43,7 +43,7 @@ export function ArroyomolinosTooltip() {
 	return (
 		<div className="flex items-center gap-1.5">
 			<span className="relative flex size-1.5">
-				<span className="absolute inline-flex size-full animate-ping rounded-full bg-status-active opacity-75 animation-duration-[2s]" />
+				<span className="absolute inline-flex size-full rounded-full bg-status-active opacity-75 animation-duration-[2s] motion-safe:animate-ping" />
 				<span className="relative inline-flex size-1.5 rounded-full bg-status-active" />
 			</span>
 			<span className="text-[10px] leading-none font-medium">
@@ -68,21 +68,14 @@ export function ArroyomolinosPopup({ className, onClose }: ArroyomolinosPopupPro
 			data-arroyomolinos-panel
 		>
 			{onClose && (
-				<div
-					role="button"
-					tabIndex={0}
+				<button
+					type="button"
 					onClick={onClose}
-					onKeyDown={(e) => {
-						if (e.key === 'Enter' || e.key === ' ') {
-							e.preventDefault();
-							onClose();
-						}
-					}}
-					className="absolute top-2.5 right-2.5 z-10 flex size-7 cursor-pointer appearance-none items-center justify-center rounded-full border border-border bg-card text-card-foreground transition-[background-color,border-color,color,box-shadow] duration-200 ease-out outline-none select-none hover:border-border/80 hover:bg-card/95 hover:text-card-foreground hover:shadow-[0_10px_24px_-16px_rgba(15,23,42,0.6)] focus-visible:border-border/80 focus-visible:bg-card focus-visible:text-card-foreground focus-visible:shadow-[0_10px_24px_-16px_rgba(15,23,42,0.6)] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none"
+					className="absolute top-2.5 right-2.5 z-10 flex size-11 cursor-pointer appearance-none items-center justify-center rounded-full border border-border bg-card text-card-foreground transition-[background-color,border-color,color,box-shadow] duration-200 ease-out outline-none select-none hover:border-border/80 hover:bg-card/95 hover:text-card-foreground hover:shadow-[0_10px_24px_-16px_rgba(15,23,42,0.6)] focus-visible:border-border/80 focus-visible:bg-card focus-visible:text-card-foreground focus-visible:shadow-[0_10px_24px_-16px_rgba(15,23,42,0.6)] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none md:size-7"
 					aria-label="Cerrar historia de Arroyomolinos"
 				>
 					<X className="size-3.5" aria-hidden="true" />
-				</div>
+				</button>
 			)}
 
 			<figure className="relative aspect-16/6.75 w-full overflow-hidden bg-secondary">
@@ -97,15 +90,15 @@ export function ArroyomolinosPopup({ className, onClose }: ArroyomolinosPopupPro
 			</figure>
 
 			<div className="flex flex-col gap-1.5 px-3.5 pt-2.5 pb-3">
-				<h3 className="text-sm/tight font-semibold tracking-tight">
+				<h3 className="text-xl/tight font-semibold tracking-tight md:text-sm/tight">
 					Arroyomolinos, Madrid
 				</h3>
-				<p className="text-[11px] leading-relaxed text-pretty text-muted-foreground">
+				<p className="text-sm/relaxed text-pretty text-muted-foreground md:text-[11px]">
 					<span className="font-medium text-foreground">
-						Nací en Alcorcón, pero me mudé a Arroyomolinos con 4 años
+						I was born in Alcorcón, but moved to Arroyomolinos when I was four
 					</span>{' '}
-					y allí crecí. Entre su calma, sus zonas verdes y la cercanía con Madrid, es el
-					lugar que más siento como hogar.
+					and grew up there. With its peaceful atmosphere, green spaces, and proximity to
+					Madrid, it’s the place that feels most like home to me.
 				</p>
 			</div>
 		</article>

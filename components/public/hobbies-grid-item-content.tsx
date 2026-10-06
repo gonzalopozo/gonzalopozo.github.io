@@ -14,6 +14,7 @@ import {
 	BiSolidWatch,
 } from 'react-icons/bi';
 import { portfolioSectionParser } from '@/components/public/portfolio-sections';
+import { usePortfolioMedia } from '@/components/public/use-portfolio-media';
 import { cn } from '@/lib/utils';
 
 interface Hobby {
@@ -70,8 +71,57 @@ const hobbies: Hobby[] = [
 ];
 
 export function HobbiesGridItemContent() {
+	const { isMobile, hasDragPointer } = usePortfolioMedia();
 	const [activeId, setActiveId] = useState<string | null>(null);
 	const [, setSection] = useQueryState('section', portfolioSectionParser);
+
+	if (isMobile) {
+		return (
+			<section aria-label="Hobbies" className="min-w-0 p-5">
+				<ul className="grid grid-cols-2 gap-2">
+					{hobbies.map((hobby) => (
+						<li
+							key={hobby.id}
+							className="relative aspect-square min-w-0 overflow-hidden rounded-[10px] bg-card shadow-sm shadow-foreground/10"
+						>
+							<Image
+								src={hobby.lightThemeImage}
+								alt=""
+								fill
+								sizes="(max-width: 767px) 45vw, 200px"
+								className="object-cover dark:hidden"
+							/>
+							<Image
+								src={hobby.darkThemeImage}
+								alt=""
+								fill
+								sizes="(max-width: 767px) 45vw, 200px"
+								className="hidden object-cover dark:block"
+							/>
+							<div
+								aria-hidden="true"
+								className="pointer-events-none absolute inset-0 bg-media-background/10"
+							/>
+							<span className="pointer-events-none absolute bottom-3 left-3 max-w-[calc(100%-3.5rem)] truncate rounded-sm bg-media-background/80 px-1.5 py-0.5 text-[10px] font-normal tracking-[0.02em] text-media-foreground">
+								{hobby.name}
+							</span>
+							<button
+								type="button"
+								aria-label={`Show About me section from ${hobby.name}`}
+								data-portfolio-section-link
+								onClick={() => void setSection('About me')}
+								className="absolute right-1 bottom-1 grid size-11 cursor-pointer touch-manipulation place-items-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-ring"
+							>
+								<span className="grid size-8 place-items-center rounded-full border border-primary/25 bg-card/90 text-primary shadow-sm shadow-foreground/10">
+									<ArrowUpRight aria-hidden="true" className="size-4" />
+								</span>
+							</button>
+						</li>
+					))}
+				</ul>
+			</section>
+		);
+	}
 
 	return (
 		<section aria-label="Hobbies" className="flex size-full min-h-0 flex-col px-5 py-4">
@@ -87,7 +137,9 @@ export function HobbiesGridItemContent() {
 								'group/hobby-tile relative min-h-0 min-w-0 cursor-pointer overflow-hidden rounded-[10px] border border-border bg-secondary p-3 text-left transition-all duration-300 hover:-translate-y-0.5 hover:border-transparent hover:bg-card hover:shadow-sm hover:shadow-foreground/10 motion-reduce:transition-none',
 								isActive && 'bg-card shadow-sm shadow-foreground/10',
 							)}
-							onMouseEnter={() => setActiveId(hobby.id)}
+							onMouseEnter={() => {
+								if (hasDragPointer) setActiveId(hobby.id);
+							}}
 							onBlur={(event) => {
 								if (!event.currentTarget.contains(event.relatedTarget))
 									setActiveId(null);

@@ -59,7 +59,11 @@ export function SkillsPills({ skills, limit, className }: SkillsPillsProps) {
 					key={row[0]?.id ?? 'hidden-skills-count'}
 				>
 					{row.map(({ id, name, icon, customIconUrl }) => (
-						<Badge variant="secondary" key={`${id}-${name}`} className="gap-1.5">
+						<Badge
+							variant="secondary"
+							key={`${id}-${name}`}
+							className="gap-1.5 max-md:max-w-full max-md:wrap-break-word max-md:whitespace-normal"
+						>
 							{icon || customIconUrl ? (
 								<DynamicIcon iconFullName={icon} customIconUrl={customIconUrl} />
 							) : null}

@@ -20,7 +20,7 @@ describe('experience overview marquee', () => {
 		expect(container.firstElementChild?.className).toContain('grid-rows-[1fr_auto]');
 	});
 
-	it('fills the loop with one used skill and colors it only on card hover', () => {
+	it('fills the loop and exposes one accessible link per skill', () => {
 		const { container } = render(
 			<ExperienceOverviewGridItemContent
 				skills={[
@@ -39,7 +39,6 @@ describe('experience overview marquee', () => {
 		);
 		const icons = container.querySelectorAll('[data-icon-name]');
 		expect(icons).toHaveLength(20);
-		expect(icons[0].className).toContain('group-hover/grid-item:text-(--icon-color)');
 		const link = screen.getByRole('link', {
 			name: 'Explore React',
 		});
@@ -78,7 +77,6 @@ describe('experience overview marquee', () => {
 		const { container } = render(<ExperienceOverviewGridItemContent skills={skills} />);
 		const icons = container.querySelectorAll('[data-icon-name]');
 		expect(icons).toHaveLength(20);
-		expect(icons[0].className).toContain('group-hover/grid-item:text-(--icon-color)');
 		expect(icons[1].className).toBe('size-7.5');
 		expect(container.querySelector('[data-tech-marquee-track]')).toBeTruthy();
 		expect(container.querySelectorAll('[data-tech-marquee-item]')).toHaveLength(20);

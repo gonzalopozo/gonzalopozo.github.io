@@ -160,7 +160,7 @@ export function BB8ThemeSwitcher() {
 	}
 
 	return (
-		<div className="flex size-full min-h-36 items-center justify-center px-4 pt-4 pb-6 sm:pb-8 lg:pb-10">
+		<div className="flex size-full min-w-0 items-center justify-center p-2 md:min-h-36 md:px-4 md:pt-4 md:pb-8 lg:pb-10">
 			<label
 				ref={switcherRef}
 				className="bb8-theme-switcher"

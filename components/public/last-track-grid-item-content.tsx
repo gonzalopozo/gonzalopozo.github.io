@@ -113,7 +113,7 @@ function TrackArtwork({
 						alt=""
 						fill
 						draggable={isDesktop ? false : undefined}
-						sizes="(min-width: 996px) 25vw, (min-width: 768px) 50vw, 100vw"
+						sizes="(min-width: 996px) 25vw, (min-width: 768px) 50vw, 50vw"
 						className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-safe:group-hover/music:scale-[1.02] motion-reduce:transition-none"
 						aria-hidden="true"
 					/>
@@ -219,7 +219,7 @@ function SourceLabel({
 	return (
 		<span
 			className={cn(
-				`absolute top-3 left-3 z-10 font-mono text-[10px] tracking-wide transition-colors`,
+				`absolute top-3 left-3 z-10 hidden font-mono text-[10px] tracking-wide transition-colors md:inline`,
 				onArtwork ? `text-media-foreground` : 'text-muted-foreground',
 				spotifyUrl && 'leading-5',
 				spotifyUrl &&
@@ -261,7 +261,7 @@ function ActivityBadge({
 			{isOnline ? (
 				<>
 					<NowPlayingEqualiser onArtwork={onArtwork} />
-					<span>Now Playing</span>
+					<span className="hidden md:inline">Now Playing</span>
 					<span className="sr-only">Currently playing</span>
 				</>
 			) : (
@@ -303,6 +303,8 @@ function TrackText({
 					'line-clamp-2 text-sm/tight font-semibold',
 					onArtwork ? 'text-media-foreground' : 'text-foreground',
 					spotifyUrl && 'leading-normal',
+					onArtwork &&
+						'max-md:w-fit max-md:max-w-full max-md:rounded-md max-md:bg-media-background/80 max-md:px-1 max-md:py-0.5',
 				)}
 			>
 				<SpotifyTextLink
@@ -318,6 +320,8 @@ function TrackText({
 					'line-clamp-1 text-xs/tight',
 					onArtwork ? 'text-media-foreground' : 'text-muted-foreground',
 					spotifyUrl && 'leading-normal',
+					onArtwork &&
+						'max-md:w-fit max-md:max-w-full max-md:rounded-md max-md:bg-media-background/80 max-md:px-1 max-md:py-0.5',
 				)}
 			>
 				<SpotifyTextLink

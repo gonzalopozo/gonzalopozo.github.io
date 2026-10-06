@@ -51,7 +51,7 @@ function TechMarquee({ skills }: { skills: UsedSkill[] }) {
 								customColor={skill.customColor}
 								className={
 									hasColor
-										? 'size-7.5 group-hover/grid-item:text-(--icon-color)'
+										? 'size-7.5 text-(--icon-color) md:text-muted-foreground md:group-hover/grid-item:text-(--icon-color)'
 										: 'size-7.5'
 								}
 							/>
@@ -80,16 +80,23 @@ function TechMarquee({ skills }: { skills: UsedSkill[] }) {
 										{icon}
 									</a>
 								</TooltipTrigger>
-								<TooltipContent side="top">{linkLabel}</TooltipContent>
+								<TooltipContent
+									side="top"
+									className="max-md:hidden [@media(hover:none)]:hidden"
+								>
+									{linkLabel}
+								</TooltipContent>
 							</Tooltip>
 						) : (
 							<span
 								key={`${skill.id}-${index}`}
 								data-tech-marquee-item
+								aria-hidden={isRepeatedCopy || undefined}
 								className={cn(itemClassName, 'cursor-default')}
 								style={style}
 							>
 								{icon}
+								<span className="sr-only">{skill.name}</span>
 							</span>
 						);
 					})}
@@ -103,14 +110,14 @@ export function ExperienceOverviewGridItemContent({ skills }: { skills: UsedSkil
 	return (
 		<div
 			className={cn(
-				'group/experience grid size-full min-h-0 items-center gap-3 overflow-hidden px-6 py-5',
+				'group/experience grid min-h-0 items-center gap-4 overflow-hidden p-5 md:size-full md:gap-3 md:px-6',
 				skills.length ? 'grid-rows-[1fr_auto_auto]' : 'grid-rows-[1fr_auto]',
 			)}
 		>
 			<div className="flex flex-col gap-1.5">
-				<p className="text-2xl/tight font-bold tracking-tight text-balance">
+				<h3 className="text-xl/tight font-bold tracking-tight text-balance md:text-2xl/tight">
 					Full Stack Developer
-				</p>
+				</h3>
 				<p className="text-sm/relaxed text-muted-foreground">
 					Building modern web applications with cutting-edge technologies and thoughtful
 					interfaces.
@@ -122,7 +129,7 @@ export function ExperienceOverviewGridItemContent({ skills }: { skills: UsedSkil
 			<GridItemShowMoreButton
 				variant="experience"
 				label="View experience"
-				className="h-9 w-fit rounded-full px-4"
+				className="min-h-11 w-fit rounded-full px-4 md:h-9 md:min-h-0"
 			/>
 		</div>
 	);

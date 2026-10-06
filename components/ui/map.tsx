@@ -352,6 +352,8 @@ function useMarkerContext() {
 }
 
 type MapMarkerProps = {
+	/** Render the marker as a native button for keyboard activation and focus. */
+	asButton?: boolean;
 	/** Longitude coordinate for marker position */
 	longitude: number;
 	/** Latitude coordinate for marker position */
@@ -373,6 +375,7 @@ type MapMarkerProps = {
 } & Omit<MarkerOptions, 'element'>;
 
 function MapMarker({
+	asButton = false,
 	longitude,
 	latitude,
 	children,
@@ -405,9 +408,15 @@ function MapMarker({
 	};
 
 	const marker = useMemo(() => {
+		const element = document.createElement(asButton ? 'button' : 'div');
+		if (element instanceof HTMLButtonElement) {
+			element.type = 'button';
+			element.className =
+				'rounded-full focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring';
+		}
 		const markerInstance = new MapLibreGL.Marker({
 			...markerOptions,
-			element: document.createElement('div'),
+			element,
 			draggable,
 		}).setLngLat([longitude, latitude]);
 

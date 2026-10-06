@@ -1,16 +1,20 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { AnimatePresence, m, useReducedMotion } from 'motion/react';
 import { Map, MapMarker, MarkerContent } from '@/components/ui/map';
 import { ArroyomolinosMarkerPin, ArroyomolinosPopup } from '@/components/public/map-marker-content';
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
+import { usePortfolioMedia } from '@/components/public/use-portfolio-media';
 
 export function MapGridItemContent() {
+	const { isMobile, hasDragPointer } = usePortfolioMedia();
+	const markerElementRef = useRef<HTMLElement | null>(null);
 	const shouldReduceMotion = useReducedMotion();
 	const [isMapPopupOpen, setIsMapPopupOpen] = useState(false);
 	const [canMapMarkerJiggle, setCanMapMarkerJiggle] = useState(false);
 	const handleMapGridMouseEnter = () => {
-		if (!isMapPopupOpen) {
+		if (hasDragPointer && !isMapPopupOpen) {
 			setCanMapMarkerJiggle(true);
 		}
 	};
@@ -19,7 +23,9 @@ export function MapGridItemContent() {
 		setCanMapMarkerJiggle(false);
 	};
 
-	const handleMapPopupOpen = () => {
+	const handleMapPopupOpen = (event: MouseEvent) => {
+		markerElementRef.current =
+			event.currentTarget instanceof HTMLElement ? event.currentTarget : null;
 		setIsMapPopupOpen(true);
 		setCanMapMarkerJiggle(false);
 	};
@@ -63,6 +69,7 @@ export function MapGridItemContent() {
 			>
 				<MapMarker
 					key={'map-marker'}
+					asButton
 					longitude={-3.916}
 					latitude={40.27}
 					onClick={handleMapPopupOpen}
@@ -74,9 +81,27 @@ export function MapGridItemContent() {
 					</MarkerContent>
 				</MapMarker>
 			</Map>
+			{isMobile ? (
+				<Dialog open={isMapPopupOpen} onOpenChange={setIsMapPopupOpen}>
+					<DialogContent
+						showCloseButton={false}
+						className="max-h-[80dvh] w-[calc(100%-2rem)] max-w-sm overflow-y-auto rounded-4xl border-0 p-0"
+						onCloseAutoFocus={(event) => {
+							event.preventDefault();
+							markerElementRef.current?.focus({ preventScroll: true });
+						}}
+					>
+						<DialogTitle className="sr-only">Arroyomolinos, Madrid</DialogTitle>
+						<DialogDescription className="sr-only">
+							The place I grew up and call home.
+						</DialogDescription>
+						<ArroyomolinosPopup onClose={handleMapPopupClose} />
+					</DialogContent>
+				</Dialog>
+			) : null}
 
 			<AnimatePresence initial={false}>
-				{isMapPopupOpen && (
+				{!isMobile && isMapPopupOpen && (
 					<m.div
 						aria-hidden="true"
 						className="absolute inset-0 z-10 bg-background/12"
@@ -95,7 +120,7 @@ export function MapGridItemContent() {
 			</AnimatePresence>
 
 			<AnimatePresence initial={false}>
-				{isMapPopupOpen && (
+				{!isMobile && isMapPopupOpen && (
 					<m.div
 						className="pointer-events-none absolute inset-x-2 inset-y-4 z-20 flex items-start justify-center"
 						initial={popupInitial}
