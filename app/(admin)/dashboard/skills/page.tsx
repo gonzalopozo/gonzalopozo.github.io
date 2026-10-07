@@ -9,8 +9,7 @@ import {
 	TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { db } from '@/db';
-import { skills } from '@/db/schema/portfolio';
+import { getAllSkills } from '@/lib/queries/skills';
 import Link from 'next/link';
 import { Plus, Pencil, ExternalLink, Trash } from 'lucide-react';
 import { deleteSkill } from '@/lib/actions/skills';
@@ -18,7 +17,7 @@ import { DynamicIcon } from '@/components/public/dynamic-icon';
 import { SkillColorCell } from '@/components/admin/skill-color-cell';
 
 export default async function SkillsDashboardPage() {
-	const skillsData = await db.select().from(skills);
+	const skillsData = await getAllSkills();
 
 	const formatDate = (date: Date) =>
 		new Date(date).toLocaleDateString('es-ES', {
