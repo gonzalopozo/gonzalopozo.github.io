@@ -5,13 +5,13 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { db } from '@/db';
+import { getSiteSettings } from '@/lib/queries/settings';
 import { updateSiteSettings } from '@/lib/actions/settings';
 import { type Settings } from '@/lib/types';
 import { Save, Settings as SettingsIcon, Briefcase, FileText } from 'lucide-react';
 
 export default async function SettingsDashboardPage() {
-	const settings: Settings | undefined = await db.query.siteSettings.findFirst();
+	const settings: Settings | undefined = await getSiteSettings();
 
 	if (!settings) {
 		return (
