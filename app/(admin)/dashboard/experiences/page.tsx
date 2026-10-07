@@ -9,30 +9,14 @@ import {
 	TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { db } from '@/db';
+import { getExperiences } from '@/lib/queries/experiences';
 import { deleteExperience } from '@/lib/actions/experiences';
 import { type ExperienceData } from '@/lib/types';
 import { Plus, Pencil, Trash, Briefcase, ExternalLink, MapPin, Calendar } from 'lucide-react';
 import Link from 'next/link';
 
 export default async function ExperiencesDashboardPage() {
-	const experiencesData: ExperienceData[] = await db.query.experiences.findMany({
-		with: {
-			experienceSkills: {
-				columns: {},
-				with: {
-					skill: {
-						columns: {
-							id: true,
-							name: true,
-							icon: true,
-							customIconUrl: true,
-						},
-					},
-				},
-			},
-		},
-	});
+	const experiencesData: ExperienceData[] = await getExperiences();
 
 	const formatDate = (date: Date | null) => {
 		if (!date) return null;

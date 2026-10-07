@@ -4,11 +4,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { db } from '@/db';
-import { experiences, skills } from '@/db/schema/portfolio';
+import { getExperienceById } from '@/lib/queries/experiences';
+import { getSkillOptions } from '@/lib/queries/skills';
 import { updateExperience } from '@/lib/actions/experiences';
 import { type ExperienceData } from '@/lib/types';
-import { eq } from 'drizzle-orm';
 import Link from 'next/link';
 import { ArrowLeft, Save } from 'lucide-react';
 
@@ -18,30 +17,13 @@ export default async function UpdateExperienceDashboardPage(props: {
 	const params = await props.params;
 	const id = Number(params.id);
 
-	const experience: ExperienceData | undefined = await db.query.experiences.findFirst({
-		where: eq(experiences.id, id),
-		with: {
-			experienceSkills: {
-				columns: {},
-				with: {
-					skill: {
-						columns: {
-							id: true,
-							name: true,
-							icon: true,
-							customIconUrl: true,
-						},
-					},
-				},
-			},
-		},
-	});
+	const experience: ExperienceData | undefined = await getExperienceById(id);
 
 	if (!experience) return <p className="text-muted-foreground">Experiencia no encontrada</p>;
 
 	const experienceSkills = experience.experienceSkills.map(({ skill }) => skill.id);
 
-	const skillsList = await db.select({ id: skills.id, name: skills.name }).from(skills);
+	const skillsList = await getSkillOptions();
 
 	const updateExperienceWithId = updateExperience.bind(null, id);
 
