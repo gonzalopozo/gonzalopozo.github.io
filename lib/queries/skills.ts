@@ -11,6 +11,19 @@ const usedSkillIds = unionAll(
 	db.select({ skillId: experienceSkills.skillId }).from(experienceSkills),
 ).as('used_skill_ids');
 
+export async function getAllSkills() {
+	return await db.select().from(skills);
+}
+
+export async function getSkillById(id: number): Promise<typeof skills.$inferSelect | undefined> {
+	const [skill] = await db.select().from(skills).where(eq(skills.id, id));
+	return skill;
+}
+
+export async function getSkillOptions() {
+	return await db.select({ id: skills.id, name: skills.name }).from(skills);
+}
+
 export async function getPublicUsedSkills() {
 	'use cache';
 	cacheLife('hours');

@@ -1,21 +1,16 @@
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
-import { eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import { SkillForm } from '@/components/admin/skill-form';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { db } from '@/db';
-import { skills } from '@/db/schema/portfolio';
+import { getSkillById } from '@/lib/queries/skills';
 import { updateSkill } from '@/lib/actions/skills';
 import { DynamicIcon } from '@/components/public/dynamic-icon';
 
 export default async function UpdateSkillDashboardPage(props: { params: Promise<{ id: string }> }) {
 	const { id } = await props.params;
-	const [skill] = await db
-		.select()
-		.from(skills)
-		.where(eq(skills.id, Number(id)));
+	const skill = await getSkillById(Number(id));
 	if (!skill) notFound();
 
 	return (
