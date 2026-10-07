@@ -1,7 +1,20 @@
 import 'server-only';
 import { cacheLife, cacheTag } from 'next/cache';
+import { eq } from 'drizzle-orm';
 import { db } from '@/db';
+import { socialLinks } from '@/db/schema/portfolio';
 import { PUBLIC_SOCIAL_LINKS_CACHE_TAG } from '@/lib/cache-tags';
+
+export async function getAllSocialLinks() {
+	return await db.select().from(socialLinks);
+}
+
+export async function getSocialLinkById(
+	id: number,
+): Promise<typeof socialLinks.$inferSelect | undefined> {
+	const [socialLink] = await db.select().from(socialLinks).where(eq(socialLinks.id, id));
+	return socialLink;
+}
 
 export async function getPublicSocialLinks() {
 	'use cache';

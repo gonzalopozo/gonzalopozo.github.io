@@ -1,9 +1,7 @@
-import { db } from '@/db';
-import { socialLinks } from '@/db/schema/portfolio';
+import { getSocialLinkById } from '@/lib/queries/social-links';
 import { updateSocialLink } from '@/lib/actions/social-links';
 import { DEFAULT_SOCIAL_LINK_COLOR } from '@/lib/schemas/social-links';
 import { SocialLinkForm } from '@/components/admin/social-link-form';
-import { eq } from 'drizzle-orm';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
@@ -13,11 +11,7 @@ export default async function UpdateSocialLinkDashboardPage(props: {
 	params: Promise<{ id: string }>;
 }) {
 	const { id } = await props.params;
-	const socialLink = await db
-		.select()
-		.from(socialLinks)
-		.where(eq(socialLinks.id, Number(id)));
-	const socialLinkResult = socialLink[0];
+	const socialLinkResult = await getSocialLinkById(Number(id));
 	if (!socialLinkResult) return <p>Enlace social no encontrado</p>;
 
 	return (

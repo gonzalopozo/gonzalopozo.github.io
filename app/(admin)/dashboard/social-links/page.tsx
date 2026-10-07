@@ -9,14 +9,13 @@ import {
 	TableRow,
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { db } from '@/db';
-import { socialLinks } from '@/db/schema/portfolio';
+import { getAllSocialLinks } from '@/lib/queries/social-links';
 import { deleteSocialLink } from '@/lib/actions/social-links';
 import { Plus, Pencil, ExternalLink, Trash, Link2 } from 'lucide-react';
 import Link from 'next/link';
 
 export default async function SocialLinksDashboardPage() {
-	const socialLinksData = await db.select().from(socialLinks);
+	const socialLinksData = await getAllSocialLinks();
 
 	const formatDate = (date: Date) =>
 		new Date(date).toLocaleDateString('es-ES', {
