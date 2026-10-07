@@ -14,6 +14,7 @@ export const auth = betterAuth({
 		enabled: true,
 		disableSignUp: true, // Only allow sign-in, no registration
 	},
+	trustedOrigins: ['https://www.gonzalopozo.dev', 'https://gonzalopozo.dev'],
 	session: {
 		cookieCache: {
 			enabled: true,
