@@ -1,61 +1,23 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from '@/components/ui/table';
+import { Table, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { type ProjectInfo } from '@/lib/types';
 import { Pencil, ExternalLink, Trash, Github } from 'lucide-react';
 import Link from 'next/link';
-// import { SortableRow } from "@/components/admin/sortable-row";
-import { type ReactNode, useRef, useState } from 'react';
-import { useDroppable, DragDropProvider } from '@dnd-kit/react';
-import { isSortable, useSortable } from '@dnd-kit/react/sortable';
-import { RxDragHandleDots2, RxUpdate } from 'react-icons/rx';
+import { DragDropProvider } from '@dnd-kit/react';
+import { RxUpdate } from 'react-icons/rx';
 import { updateProjectOrder } from '@/lib/actions/projects';
+import { formatDate } from '@/lib/utils';
+import { SortableTableBody, SortableTableRow } from '@/components/admin/sortable-table';
+import { useSortableTableOrder } from '@/components/admin/use-sortable-table-order';
 import { toast } from 'sonner';
-
-function SortableRow({ children, id, index }: { children: ReactNode; id: number; index: number }) {
-	const [element, setElement] = useState<Element | null>(null);
-	const handleRef = useRef<HTMLButtonElement | null>(null);
-	useSortable({ id, index, element, handle: handleRef });
-
-	return (
-		<TableRow ref={setElement}>
-			<TableCell>
-				<Button ref={handleRef} variant={'secondary'}>
-					<RxDragHandleDots2 />
-				</Button>
-			</TableCell>
-
-			{children}
-		</TableRow>
-	);
-}
 
 interface ProjectsTableProps {
 	projects: ProjectInfo[];
 	onDelete: (id: number) => void;
 	refreshOgImage: (id: number) => Promise<void | null>;
-}
-
-interface ProjectOrderDraft {
-	serverProjectsKey: string;
-	projectOrder: number[];
-}
-
-function formatDate(date: Date) {
-	return new Date(date).toLocaleDateString('es-ES', {
-		year: 'numeric',
-		month: 'short',
-		day: 'numeric',
-	});
 }
 
 function getStatusVariant(status: string): 'default' | 'secondary' | 'outline' {
@@ -76,80 +38,31 @@ function getStatusLabel(status: string): string {
 	return labels[status] || status;
 }
 
-function getOrderedProjects(serverProjects: ProjectInfo[], projectOrder: number[] | null) {
-	if (!projectOrder) return serverProjects;
-
-	const projectsById = new Map(serverProjects.map((project) => [project.id, project]));
-	const orderedProjects: ProjectInfo[] = [];
-
-	for (const projectId of projectOrder) {
-		const project = projectsById.get(projectId);
-		if (!project) continue;
-
-		orderedProjects.push(project);
-		projectsById.delete(projectId);
-	}
-
-	return [...orderedProjects, ...projectsById.values()].map((project, index) => ({
-		...project,
-		order: index + 1,
-	}));
-}
-
 export function ProjectsTable({
 	projects: serverProjects,
 	onDelete,
 	refreshOgImage,
 }: ProjectsTableProps) {
-	const [projectOrderDraft, setProjectOrderDraft] = useState<ProjectOrderDraft | null>(null);
-	const serverProjectsKey = serverProjects
-		.map((project) => `${project.id}:${project.order}`)
-		.join(',');
-	const projectOrder =
-		projectOrderDraft?.serverProjectsKey === serverProjectsKey
-			? projectOrderDraft.projectOrder
-			: null;
-	const projects = getOrderedProjects(serverProjects, projectOrder);
-	const { ref } = useDroppable({ id: 'droppable' });
+	const {
+		items: projects,
+		handleDragEnd,
+		isSaving,
+	} = useSortableTableOrder({
+		items: serverProjects,
+		updateOrder: updateProjectOrder,
+		onSuccess: (name, newOrder) => {
+			toast.success(`Proyecto "${name}" actualizado a la posición ${newOrder}`);
+		},
+	});
 
 	return (
-		<DragDropProvider
-			onDragEnd={async ({ operation }) => {
-				const { source } = operation;
-				if (isSortable(source)) {
-					const projectId = source.id as number;
-					const newOrder = source.index + 1;
-					const oldIndex = projects.findIndex((p) => p.id === projectId);
-
-					if (oldIndex === -1) return;
-
-					const reordered = [...projects];
-					const [moved] = reordered.splice(oldIndex, 1);
-					if (!moved) return;
-
-					reordered.splice(source.index, 0, moved);
-					setProjectOrderDraft({
-						serverProjectsKey,
-						projectOrder: reordered.map((project) => project.id),
-					});
-
-					try {
-						const projectName = await updateProjectOrder(projectId, newOrder);
-						if (projectName)
-							toast.success(
-								`Proyecto "${projectName}" actualizado a la posición ${newOrder}`,
-							);
-					} catch {
-						toast.error('Error al actualizar el orden');
-						setProjectOrderDraft(null);
-					}
-				}
-			}}
-		>
-			<Table>
+		<DragDropProvider onDragEnd={handleDragEnd}>
+			<Table aria-busy={isSaving}>
 				<TableHeader>
 					<TableRow>
-						<TableHead className="w-8"></TableHead>
+						<TableHead className="w-16">
+							<span className="sr-only">Reordenar</span>
+						</TableHead>
 						<TableHead className="w-16">Orden</TableHead>
 						<TableHead>Título</TableHead>
 						<TableHead className="max-w-50">Descripción</TableHead>
@@ -160,9 +73,15 @@ export function ProjectsTable({
 						<TableHead className="text-right">Acciones</TableHead>
 					</TableRow>
 				</TableHeader>
-				<TableBody ref={ref}>
+				<SortableTableBody id="projects">
 					{projects.map((project, index) => (
-						<SortableRow key={project.id} id={project.id} index={index}>
+						<SortableTableRow
+							key={project.id}
+							id={project.id}
+							index={index}
+							label={`Reordenar proyecto "${project.title}"`}
+							disabled={isSaving}
+						>
 							<TableCell>
 								<Badge variant="outline" className="font-mono">
 									{project.order}
@@ -282,9 +201,9 @@ export function ProjectsTable({
 									</Button>
 								</div>
 							</TableCell>
-						</SortableRow>
+						</SortableTableRow>
 					))}
-				</TableBody>
+				</SortableTableBody>
 			</Table>
 		</DragDropProvider>
 	);
