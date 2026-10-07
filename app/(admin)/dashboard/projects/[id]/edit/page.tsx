@@ -4,11 +4,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { db } from '@/db';
-import { projects, skills } from '@/db/schema/portfolio';
+import { getProjectById } from '@/lib/queries/projects';
+import { getSkillOptions } from '@/lib/queries/skills';
 import { updateProject } from '@/lib/actions/projects';
 import { type ProjectInfo } from '@/lib/types';
-import { eq } from 'drizzle-orm';
 import Link from 'next/link';
 import { ArrowLeft, Save } from 'lucide-react';
 
@@ -18,30 +17,13 @@ export default async function UpdateProjectDashboardPage(props: {
 	const params = await props.params;
 	const id = Number(params.id);
 
-	const project: ProjectInfo | undefined = await db.query.projects.findFirst({
-		where: eq(projects.id, id),
-		with: {
-			projectSkills: {
-				columns: {},
-				with: {
-					skill: {
-						columns: {
-							id: true,
-							name: true,
-							icon: true,
-							customIconUrl: true,
-						},
-					},
-				},
-			},
-		},
-	});
+	const project: ProjectInfo | undefined = await getProjectById(id);
 
 	if (!project) return <p className="text-muted-foreground">Proyecto no encontrado</p>;
 
 	const projectSkill = project.projectSkills.map(({ skill }) => skill.id);
 
-	const skillsList = await db.select({ id: skills.id, name: skills.name }).from(skills);
+	const skillsList = await getSkillOptions();
 
 	const updateProjectWithId = updateProject.bind(null, id);
 

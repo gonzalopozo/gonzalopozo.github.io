@@ -4,14 +4,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { db } from '@/db';
-import { skills } from '@/db/schema/portfolio';
+import { getSkillOptions } from '@/lib/queries/skills';
 import { createProject } from '@/lib/actions/projects';
 import Link from 'next/link';
 import { ArrowLeft, Plus } from 'lucide-react';
 
 export default async function NewProjectDashboardPage() {
-	const skillsList = await db.select({ id: skills.id, name: skills.name }).from(skills);
+	const skillsList = await getSkillOptions();
 
 	return (
 		<div className="space-y-6">
