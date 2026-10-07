@@ -1,29 +1,18 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { db } from '@/db';
-import { socialLinks } from '@/db/schema/portfolio';
+import { SocialLinksTable } from '@/components/admin/social-links-table';
+import { getSocialLinks } from '@/lib/queries/social-links';
+import { getServerSession } from '@/lib/server-session';
+import { redirect } from 'next/navigation';
 import { deleteSocialLink } from '@/lib/actions/social-links';
-import { Plus, Pencil, ExternalLink, Trash, Link2 } from 'lucide-react';
+import { Plus, Link2 } from 'lucide-react';
 import Link from 'next/link';
 
 export default async function SocialLinksDashboardPage() {
-	const socialLinksData = await db.select().from(socialLinks);
+	const session = await getServerSession();
+	if (!session) redirect('/login');
 
-	const formatDate = (date: Date) =>
-		new Date(date).toLocaleDateString('es-ES', {
-			year: 'numeric',
-			month: 'short',
-			day: 'numeric',
-		});
+	const socialLinksData = await getSocialLinks();
 
 	return (
 		<div className="space-y-6">
@@ -74,84 +63,10 @@ export default async function SocialLinksDashboardPage() {
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
-						<Table>
-							<TableHeader>
-								<TableRow>
-									<TableHead className="w-16">Orden</TableHead>
-									<TableHead>Nombre</TableHead>
-									<TableHead>URL</TableHead>
-									<TableHead>Icono</TableHead>
-									<TableHead>Creado</TableHead>
-									<TableHead>Actualizado</TableHead>
-									<TableHead className="text-right">Acciones</TableHead>
-								</TableRow>
-							</TableHeader>
-							<TableBody>
-								{socialLinksData.map((socialLink) => (
-									<TableRow key={socialLink.id}>
-										<TableCell>
-											<Badge variant="outline" className="font-mono">
-												{socialLink.order}
-											</Badge>
-										</TableCell>
-										<TableCell className="font-medium">
-											{socialLink.name}
-										</TableCell>
-										<TableCell>
-											{socialLink.url ? (
-												<a
-													href={socialLink.url}
-													target="_blank"
-													rel="noopener noreferrer"
-													className="inline-flex max-w-50 items-center gap-1 truncate text-sm text-primary hover:underline"
-												>
-													{socialLink.url}
-													<ExternalLink className="size-3 shrink-0" />
-												</a>
-											) : (
-												<span className="text-muted-foreground">
-													Sin URL
-												</span>
-											)}
-										</TableCell>
-										<TableCell className="font-mono text-sm">
-											{socialLink.icon || 'Sin icono'}
-										</TableCell>
-										<TableCell className="text-sm text-muted-foreground">
-											{formatDate(socialLink.createdAt)}
-										</TableCell>
-										<TableCell className="text-sm text-muted-foreground">
-											{formatDate(socialLink.updatedAt)}
-										</TableCell>
-										<TableCell className="text-right">
-											<div className="flex items-center justify-end gap-1">
-												<Button variant="ghost" size="sm" asChild>
-													<Link
-														href={`/dashboard/social-links/${socialLink.id}/edit`}
-														className="gap-1.5"
-													>
-														<Pencil className="size-3.5" />
-														Editar
-													</Link>
-												</Button>
-												<Button
-													onClick={deleteSocialLink.bind(
-														null,
-														socialLink.id,
-													)}
-													variant="destructive"
-													size="sm"
-													className="gap-1.5"
-												>
-													<Trash className="size-3.5" />
-													Eliminar
-												</Button>
-											</div>
-										</TableCell>
-									</TableRow>
-								))}
-							</TableBody>
-						</Table>
+						<SocialLinksTable
+							socialLinks={socialLinksData}
+							onDelete={deleteSocialLink}
+						/>
 					</CardContent>
 				</Card>
 			)}

@@ -30,6 +30,17 @@ export interface ProjectInfo {
 	projectSkills: { skill: Skill }[];
 }
 
+export interface SocialLinkInfo {
+	id: number;
+	name: string;
+	url: string;
+	icon: string | null;
+	color: string;
+	order: number;
+	createdAt: Date;
+	updatedAt: Date;
+}
+
 export interface ExperienceData {
 	id: number;
 	description: string;
