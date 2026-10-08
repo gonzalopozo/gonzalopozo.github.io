@@ -60,12 +60,11 @@ export function MapGridItemContent() {
 			onMouseLeave={handleMapGridMouseLeave}
 		>
 			<Map
+				className="[&_.maplibregl-canvas]:pointer-events-none"
 				center={[-3.916, 40.27]}
 				zoom={13}
 				attributionControl={false}
-				dragPan={false}
-				dragRotate={false}
-				scrollZoom={false}
+				interactive={false}
 			>
 				<MapMarker
 					key={'map-marker'}
