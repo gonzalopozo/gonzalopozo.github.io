@@ -21,7 +21,7 @@ export default function AdminRootLayout({ children }: { children: ReactNode }) {
 	const policy = getAdminCspPolicy(process.env.CSP_ADMIN_POLICY, process.env.VERCEL_ENV);
 	if (policy === 'static') return <AppDocument>{children}</AppDocument>;
 	// Next.js 16.2.6 explicitly permits Suspense above the root document, with an empty shell.
-	// Preview enforcement must prove the generated framework scripts receive the same nonce.
+	// Wait for the request nonce before rendering the document and its framework scripts.
 	return (
 		<Suspense fallback={null}>
 			<NonceDocument>{children}</NonceDocument>

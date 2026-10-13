@@ -28,11 +28,21 @@ describe('CSP security boundaries', () => {
 		expect(publicPolicy).toContain('https://tiles-d.basemaps.cartocdn.com');
 		expect(publicPolicy).toContain("worker-src 'self' blob:");
 	});
-	it('limits nonce scripts to the preview administrative candidate', () => {
-		const nonce = 'a'.repeat(43) + '=';
-		expect(getAdminCspPolicy('nonce', 'preview')).toBe('nonce');
-		expect(() => getAdminCspPolicy('nonce', 'production')).toThrow();
+	it.each(['preview', 'production'] as const)(
+		'accepts administrative nonce configuration on %s deployments',
+		(environment) => {
+			expect(getAdminCspPolicy('nonce', environment)).toBe('nonce');
+		},
+	);
+	it('defaults to static and rejects unknown policies or unsupported nonce environments', () => {
+		expect(getAdminCspPolicy(undefined, 'production')).toBe('static');
+		expect(getAdminCspPolicy('static', undefined)).toBe('static');
+		expect(() => getAdminCspPolicy('disabled', 'production')).toThrow();
 		expect(() => getAdminCspPolicy('nonce', undefined)).toThrow();
+		expect(() => getAdminCspPolicy('nonce', 'development')).toThrow();
+	});
+	it('limits nonce scripts to administrative documents', () => {
+		const nonce = 'a'.repeat(43) + '=';
 		const policy = buildCsp({ ...options, section: 'admin', nonce });
 		const scriptPolicy = policy
 			.split(';')

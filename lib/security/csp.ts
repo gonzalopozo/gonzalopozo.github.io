@@ -1,10 +1,12 @@
 type CspMode = 'report-only' | 'enforce';
 
-/** Nonces remain a preview experiment until production rendering/enforcement is proven. */
+/** Keep static as the fallback and allow nonces on Preview and Production deployments. */
 export function getAdminCspPolicy(value: string | undefined, environment: string | undefined) {
 	if (!value || value === 'static') return 'static';
-	if (value === 'nonce' && environment === 'preview') return 'nonce';
-	throw new Error('CSP_ADMIN_POLICY supports static, or nonce in Vercel Preview only.');
+	if (value === 'nonce' && (environment === 'preview' || environment === 'production')) {
+		return 'nonce';
+	}
+	throw new Error('CSP_ADMIN_POLICY supports static, or nonce in Vercel Preview and Production.');
 }
 
 const CARTO_ORIGINS = [
