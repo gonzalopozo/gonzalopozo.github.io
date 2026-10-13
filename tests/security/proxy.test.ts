@@ -20,6 +20,9 @@ describe('administrative request policy', () => {
 		expect(response.headers.get('location')).toBe('https://example.com/login');
 		expect(response.headers.get('cache-control')).toBe('private, no-store');
 		expect(response.headers.has('content-security-policy-report-only')).toBe(true);
+		expect(response.headers.get('content-security-policy-report-only')).not.toContain(
+			'upgrade-insecure-requests',
+		);
 	});
 	it('replaces spoofed request nonces and CSP with a fresh preview nonce', async () => {
 		vi.stubEnv('VERCEL_ENV', 'preview');

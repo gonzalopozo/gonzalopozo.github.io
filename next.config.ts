@@ -9,6 +9,7 @@ const nextConfig: NextConfig = {
 		const mode = getCspMode(process.env.CSP_PUBLIC_MODE);
 		const policy = buildCsp({
 			section: 'public',
+			mode,
 			isDevelopment: process.env.NODE_ENV === 'development',
 			blobHostname: process.env.BLOB_PUBLIC_HOSTNAME,
 		});

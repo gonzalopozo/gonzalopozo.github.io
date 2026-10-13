@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { buildCsp, getAdminCspPolicy, getCspHeaderName, getCspMode } from '@/lib/security/csp';
 
 const blobHostname = 'https://images.public.blob.vercel-storage.com';
-const options = { isDevelopment: false, blobHostname };
+const options = { isDevelopment: false, blobHostname, mode: 'report-only' as const };
 
 describe('CSP security boundaries', () => {
 	it('defaults to observation and rejects unknown rollout modes', () => {
@@ -59,9 +59,22 @@ describe('CSP security boundaries', () => {
 		}
 	});
 	it('confines debugging and insecure local connections to development', () => {
-		const development = buildCsp({ section: 'admin', isDevelopment: true });
+		const development = buildCsp({ section: 'admin', mode: 'enforce', isDevelopment: true });
 		expect(development).toContain('unsafe-eval');
 		expect(development).toContain('ws://localhost:*');
 		expect(development).not.toContain('upgrade-insecure-requests');
 	});
+	it.each(['public', 'admin'] as const)(
+		'upgrades insecure requests only under enforcement outside development: %s',
+		(section) => {
+			for (const mode of ['report-only', 'enforce'] as const) {
+				for (const isDevelopment of [true, false]) {
+					const policy = buildCsp({ section, mode, isDevelopment });
+					expect(policy.includes('upgrade-insecure-requests')).toBe(
+						mode === 'enforce' && !isDevelopment,
+					);
+				}
+			}
+		},
+	);
 });

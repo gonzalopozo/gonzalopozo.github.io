@@ -9,13 +9,14 @@ export async function proxy(request: NextRequest) {
 	const { pathname } = request.nextUrl;
 	const policyType = getAdminCspPolicy(process.env.CSP_ADMIN_POLICY, process.env.VERCEL_ENV);
 	const nonce = policyType === 'nonce' ? randomBytes(32).toString('base64') : undefined;
+	const mode = getCspMode(process.env.CSP_ADMIN_MODE);
 	const policy = buildCsp({
 		section: 'admin',
+		mode,
 		isDevelopment: process.env.NODE_ENV === 'development',
 		blobHostname: process.env.BLOB_PUBLIC_HOSTNAME,
 		nonce,
 	});
-	const mode = getCspMode(process.env.CSP_ADMIN_MODE);
 	const requestHeaders = new Headers(request.headers);
 	// Do not let client-supplied CSP/nonce values affect framework script rendering.
 	requestHeaders.delete('x-nonce');

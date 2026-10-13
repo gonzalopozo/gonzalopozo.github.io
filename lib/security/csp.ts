@@ -51,11 +51,13 @@ function getBlobOrigin(value: string | undefined): string | undefined {
  */
 export function buildCsp({
 	section,
+	mode,
 	isDevelopment,
 	blobHostname,
 	nonce,
 }: {
 	section: 'public' | 'admin';
+	mode: CspMode;
 	isDevelopment: boolean;
 	blobHostname?: string;
 	nonce?: string;
@@ -86,6 +88,7 @@ export function buildCsp({
 		"form-action 'self'",
 		"frame-ancestors 'none'",
 	];
-	if (!isDevelopment) directives.push('upgrade-insecure-requests');
+	// Browsers ignore this directive in report-only policies and warn on every response.
+	if (!isDevelopment && mode === 'enforce') directives.push('upgrade-insecure-requests');
 	return `${directives.join('; ')};`;
 }
