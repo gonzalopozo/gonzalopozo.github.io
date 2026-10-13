@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '@/lib/zod';
 
 export const MAX_SKILL_ICON_BYTES = 256 * 1024;
 export const SKILL_ICON_ACCEPT = '.svg,image/svg+xml';

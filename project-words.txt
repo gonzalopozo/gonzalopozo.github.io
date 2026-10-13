@@ -47,6 +47,7 @@ ESOCKETNODATA
 # CSP / Next.js rendering terminology
 basemaps
 cartocdn
+jitless
 nonced
 prerendered
 prerendering

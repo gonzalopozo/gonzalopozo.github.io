@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '@/lib/zod';
 import { optionalHttpsUrlSchema, optionalWebUrlSchema, skillIdsSchema } from './common';
 
 export const projectSchema = z.object({

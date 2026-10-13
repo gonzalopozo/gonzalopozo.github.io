@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '@/lib/zod';
 import { safeWebUrl } from '@/lib/security/urls';
 
 export const entityIdSchema = z.number().int().positive().max(Number.MAX_SAFE_INTEGER);

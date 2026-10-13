@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '@/lib/zod';
 import { optionalWebUrlSchema } from './common';
 
 export const settingsSchema = z.object({

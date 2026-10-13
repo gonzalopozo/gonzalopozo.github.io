@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from '@/lib/zod';
 import { optionalWebUrlSchema } from './common';
 
 export const DEFAULT_SOCIAL_LINK_COLOR = '#66696d';
