@@ -17,7 +17,7 @@ Design patterns and architecture guidelines for the portfolio project.
 
 **Related coverage in other AGENTS files (do not duplicate):**
 
-- `AGENTS-SECURITY.md` — Server Action auth/validation rules, CSP nonce in `proxy.ts`
+- `AGENTS-SECURITY.md` — Server Action auth/validation rules, public static CSP and administrative Preview nonce candidate
 - `AGENTS-TESTING.md` — TDD for Zod schemas, Server Action test patterns
 - `AGENTS-PERFORMANCE.md` — Server vs Client decision tree, loading/streaming
 - `AGENTS-ACCESSIBILITY.md` — Semantic layout landmarks, heading hierarchy
@@ -58,8 +58,7 @@ import { getServerSession } from "@/lib/server-session";
 import { redirect } from "next/navigation";
 
 export default async function ProjectsPage() {
-  const session = await getServerSession();
-  if (!session) redirect("/login");
+  await requireAdmin();
 
   const projects = await getProjectsWithSkills();
   return <ProjectsTable projects={projects} />;
@@ -85,16 +84,15 @@ Every Server Action follows a **4-step strategy**: authenticate → validate →
 ```typescript
 'use server';
 
-import { getServerSession } from '@/lib/server-session';
+import { requireAdmin } from '@/lib/admin';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { db } from '@/db';
 import { entitySchema } from '@/lib/schemas/entity';
 
 export async function createEntity(formData: FormData) {
-	// 1. AUTHENTICATE
-	const session = await getServerSession();
-	if (!session) redirect('/login');
+	// 1. AUTHENTICATE AND AUTHORIZE
+	await requireAdmin();
 
 	// 2. VALIDATE
 	const parsed = entitySchema.safeParse({
@@ -244,7 +242,7 @@ export default function DashboardError({
 | Forbidden            | `forbidden.tsx`         | No                                             | Experimental — not yet       |
 | Unauthorized         | `unauthorized.tsx`      | No                                             | Experimental — not yet       |
 | Route Handler        | `route.ts`              | Yes — auth routes                              | Active                       |
-| Proxy                | `proxy.ts`              | Yes — auth + CSP                               | Active                       |
+| Proxy                | `proxy.ts`              | Yes — optimistic redirects + admin CSP         | Active                       |
 | Template             | `template.tsx`          | No                                             | Not needed                   |
 | Default              | `default.tsx`           | No                                             | Not needed                   |
 | Route Groups         | `(folder)`              | Yes — `(admin)`, `(public)`                    | Active                       |

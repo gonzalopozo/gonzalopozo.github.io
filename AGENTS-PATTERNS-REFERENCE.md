@@ -345,13 +345,13 @@ export async function GET(request: NextRequest) {
 
 **File**: `proxy.ts` — Runs on every matching request before the route is rendered. Used for redirects, rewrites, header modifications, and CSP nonce generation.
 
-**Used in project**: Yes — root `proxy.ts` handles auth redirects and CSP.
+**Used in project**: Yes — root `proxy.ts` handles optimistic auth redirects and administrative CSP; `next.config.ts` owns the static public CSP. Nonces are a Preview-only candidate, not validated production behavior.
 
 **Documented in**: `AGENTS-SECURITY.md` > Content Security Policy, Auth Protection Pattern.
 
 **Key behaviors**:
 
-- Runs at the edge, before rendering
+- Uses the Next.js 16 Node.js proxy runtime, before rendering
 - Can rewrite, redirect, or produce responses
 - Cannot access the request body
 - Keep logic fast — avoid heavy DB calls

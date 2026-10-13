@@ -1,5 +1,32 @@
 # AGENTS-SETUP.md
 
+## CSP and administrator configuration
+
+Configure server-only `ADMIN_USER_IDS` with comma-separated stable better-auth user
+IDs before using the CMS. Missing or malformed configuration grants no administrator
+access. Obtain IDs through trusted manual account provisioning, never through email
+matching or automatic enrollment. Set this independently in Development, Preview,
+and Production; never use a `NEXT_PUBLIC_` variable.
+
+`CSP_PUBLIC_MODE` and `CSP_ADMIN_MODE` default to `report-only`. Set either to
+`enforce` only after its protected Preview validation gates pass. `CSP_ADMIN_POLICY`
+defaults to `static`; the `nonce` candidate is permitted only in Vercel Preview and
+is not verified or enabled in Production.
+
+`BETTER_AUTH_TRUSTED_ORIGINS` can contain comma-separated explicit Preview HTTPS
+origins or HTTP local development origins such as `http://localhost:3000`. Configure
+the corresponding better-auth base URL normally. Wildcard Vercel origins are not
+accepted. Keep Preview deployments access-protected and use separate test data.
+
+This setting contains website origins, not user IDs, tokens, or secrets. For local
+development, use `BETTER_AUTH_TRUSTED_ORIGINS=http://localhost:3000` (adjust the port
+to match the server). Include the scheme and omit paths, queries, and fragments.
+Malformed entries stop authentication initialization with an error naming the
+variable and entry number. Restart the development server after editing its env file.
+
+See [security configuration and rollout](./AGENTS-SECURITY-REFERENCE.md) for policy
+ownership, resource allowances, pending validation, and rollback procedures.
+
 First-time setup, environment configuration, and development prerequisites.
 
 > **Before making schema changes or running Drizzle migrations, execute the following skill** — read the SKILL.md and follow its instructions:

@@ -21,103 +21,136 @@ Security guidelines for the portfolio project — all security layers for a Next
 
 ## Content Security Policy (CSP)
 
-CSP protects against XSS, clickjacking, and code injection by declaring trusted content sources. Implemented via nonces in `proxy.ts`.
+CSP is configured with independent public and administrative policies. Both default to
+**report-only**. Browser enforcement and deployed rendering/caching compatibility
+still require protected Preview validation; automated commit checks do not establish them.
+Use the protected Preview procedure in [the reference](./AGENTS-SECURITY-REFERENCE.md#csp-rollout-and-verification).
 
-**How it works**: `proxy.ts` generates a unique nonce per request → adds it to the `Content-Security-Policy` header → Next.js applies the nonce to scripts/styles → only matching scripts execute.
+### Policy ownership and rendering
 
-### CSP Skeleton (in proxy.ts)
+- `next.config.ts` sets the stable public policy, excluding `/login`, `/dashboard`,
+  APIs, and Next.js internals. It never generates nonces or changes public caching.
+- `proxy.ts` sets administrative policy on `/login` and `/dashboard/:path*`,
+  including redirects and prefetch requests. It strips incoming nonce/policy headers
+  and forwards its own CSP request header to Next.js. It does not validate sessions.
+- `lib/security/csp.ts` constructs policies and validates configuration.
+- `CSP_PUBLIC_MODE` and `CSP_ADMIN_MODE` accept `report-only` (default) or `enforce`.
+  Unknown values fail configuration rather than silently disabling the policy.
+- `CSP_ADMIN_POLICY=static` is the default and safe fallback. `nonce` is an
+  **unverified candidate restricted to `VERCEL_ENV=preview`**; Production rejects it.
+- Public and administrative routes use separate root layouts and shared document
+  providers. Crossing roots loads a new document; CSP on an RSC navigation response
+  does not replace the current document policy. Use document navigation for policy
+  boundaries. Login/logout explicitly use `window.location.assign`.
 
-```typescript
-const nonce = Buffer.from(crypto.randomUUID()).toString('base64');
-const isDev = process.env.NODE_ENV === 'development';
+The public policy permits inline scripts for prerendered Next.js framework payloads
+and the theme initialization script. **It is not a strict script-XSS policy.**
+`script-src-attr 'none'` blocks inline event handlers in supporting browsers but does
+not block injected inline script elements. Production never permits `unsafe-eval`.
 
-const cspHeader = `
-  default-src 'self';
-  script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ''};
-  style-src 'self'${isDev ? " 'unsafe-inline'" : ` 'nonce-${nonce}'`};
-  img-src 'self' blob: data: https:;
-  font-src 'self';
-  object-src 'none';
-  base-uri 'self';
-  form-action 'self';
-  frame-ancestors 'none';
-  upgrade-insecure-requests;
-`;
-// Set on both request and response headers. Full implementation in reference file.
-```
+Styles permit inline declarations and style elements because React, Motion, Radix,
+the grid, and Sonner require them. Sonner injects a nonce-free stylesheet. These
+allowances have a security cost and must be reassessed when dependencies change.
 
-### Rules
+Public browser connections allow only same origin and the six observed Carto
+origins. Public workers allow same origin and `blob:` for MapLibre 5.19.0. Images
+allow same origin, `data:`, public `blob:` URLs, and the configured Blob store origin.
+Remote image optimizer patterns are separate from browser CSP: optimized remote
+images arrive through same-origin `/_next/image`. Server-side Last.fm, Spotify,
+Turso, and OG-image fetches do not require browser `connect-src` allowances.
 
-- **Dev mode requires `'unsafe-eval'`** for React error stack traces and `'unsafe-inline'` for Tailwind HMR — NOT in production
-- **CSP makes pages dynamically rendered** — nonces change per request, so CSP pages cannot be statically generated
-- **If adding third-party scripts**, add their domains to `script-src` and `connect-src`
-- **Read the nonce** in Server Components via `(await headers()).get("x-nonce")` for `<Script>` tags
+### Nonce candidate
 
-> Full `proxy.ts` CSP implementation and CSP directives reference: [AGENTS-SECURITY-REFERENCE.md](./AGENTS-SECURITY-REFERENCE.md#csp-full-implementation)
+The existing shared root could not receive an administrative nonce without adding
+request dependencies to the public layout or leaving the theme script unapproved.
+Separate roots avoid that conflict. The candidate administrative root waits for
+headers inside Suspense **above the document**, producing an empty static shell.
+Installed Next.js 16.2.6 source explicitly accommodates this arrangement. Whether
+all generated scripts are correctly nonced remains a production-build/browser gate.
+
+Preview nonces use 32 cryptographically random bytes per matched request. The CSP
+request header and `x-nonce` reach Next.js; the theme provider receives that nonce.
+Script policy uses `nonce` plus `strict-dynamic`, without production inline-script
+allowances. Styles retain their documented compatibility allowance.
+
+Do not promote this candidate based only on report-only observation. Test actual
+enforcement, streaming, errors, navigation, actions, and hydration in an isolated,
+protected Preview. If any gate fails, keep the static administrative policy. Do not
+add a production nonce bypass or disable Cache Components to silence failures.
+
+### Shared-origin threat model
+
+Public and admin routes share the same browser origin. Public-page XSS can attempt
+administrative requests under a logged-in administrator's session. Route groups,
+separate document roots, HttpOnly/SameSite cookies, CSRF checks, and administrator
+allowlists do not isolate that origin or neutralize executing same-origin JavaScript.
+
+Prevent injection through React text escaping, protocol-checked links, validated
+CMS mutations, and normalized SVGs rendered as React nodes. Existing stored links
+also receive output-side checks. No rich-text/HTML rendering is introduced.
+A separate admin origin remains a future option, outside this implementation.
 
 ---
 
 ## Security Headers
 
-Six headers configured in `next.config.ts` via the `headers()` function:
+`next.config.ts` applies `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`,
+`Referrer-Policy: strict-origin-when-cross-origin`, and a Permissions Policy disabling
+camera, microphone, geolocation, and browsing topics. Production HSTS is
+`max-age=31536000`, without `includeSubDomains` or `preload` commitments.
 
-| Header                                             | Purpose                                                    |
-| -------------------------------------------------- | ---------------------------------------------------------- |
-| `X-DNS-Prefetch-Control: on`                       | DNS prefetching for external links                         |
-| `Strict-Transport-Security`                        | Forces HTTPS for 2 years, all subdomains, preload-eligible |
-| `X-Frame-Options: SAMEORIGIN`                      | Prevents iframe embedding (clickjacking)                   |
-| `X-Content-Type-Options: nosniff`                  | Prevents MIME-type sniffing                                |
-| `Referrer-Policy: strict-origin-when-cross-origin` | Limits referrer info on cross-origin                       |
-| `Permissions-Policy`                               | Disables camera, microphone, geolocation, browsing-topics  |
-
-### Rules
-
-- **Do NOT add `X-XSS-Protection`** — deprecated, can introduce vulnerabilities. CSP replaces it
-- **Do NOT set `Cache-Control` for `_next/static`** — Next.js handles immutable caching automatically
-- **HSTS preload** — only submit to preload list after confirming HTTPS on all subdomains (irreversible)
-
-> Full `next.config.ts` headers implementation: [AGENTS-SECURITY-REFERENCE.md](./AGENTS-SECURITY-REFERENCE.md#security-headers-implementation)
+- Never add deprecated `X-XSS-Protection`.
+- Do not override public HTML, RSC, or static-asset cache headers.
+- Administrative proxy responses use `private, no-store`; verify final deployed
+  headers and framework/platform overrides before release.
+- Deployment-level headers, HTTPS, Preview protection, and WAF settings remain
+  operational prerequisites; repository configuration alone cannot verify them.
 
 ---
 
-## Auth Protection Pattern
+## Authentication and Administrator Authorization
 
-Two-layer approach as recommended by [better-auth Next.js docs](https://www.better-auth.com/docs/integrations/next#auth-protection):
+`getServerSession()` uses better-auth and React request-level `cache()`. Its existing
+five-minute signed cookie cache may avoid a database read and delays revocation.
+It is not a persistent Next.js data cache.
 
-**Layer 1 — Optimistic redirects via `proxy.ts`** (UX only, NOT secure):
+A valid session alone does not grant CMS access. `lib/admin.ts` centralizes checks:
 
-- Checks cookie existence only — no DB call, no session validation
-- Logged-in users on `/login` → redirect to `/dashboard`
-- Logged-out users on `/dashboard` → redirect to `/login`
-- Anyone can forge a cookie — this layer is purely for avoiding page flash
+- `getAdminSession()` returns a validated allowlisted session or `null`.
+- `requireAdmin()` protects mutations and storage writes: unauthenticated callers
+  redirect to login; authenticated non-admins receive generic access denial.
+- `requireAdminPage()` protects pages and administrative query entrypoints; rejected
+  reads redirect to the overview for access denial or expired-session recovery.
+- The dashboard layout also guards rendering. The overview handles invalid cookies
+  using the existing same-origin session-clearing form, avoiding redirect loops.
+- Public cached query entrypoints remain independent of session authorization.
 
-**Layer 2 — Real auth in every page/action** (the actual security):
+Set server-only `ADMIN_USER_IDS` to comma-separated stable better-auth user IDs.
+Whitespace is trimmed and duplicates removed. Missing/empty configuration, empty
+entries, or malformed IDs grant **no** privileges. IDs allow letters, digits,
+underscores, and hyphens, up to 128 characters. Provision accounts manually and
+configure each environment explicitly; never use `NEXT_PUBLIC_*`, email matching,
+client data, logging, automatic enrollment, or an inferred administrator account.
+No role tables or migrations are introduced.
 
-```typescript
-// Every protected page and Server Action must do this:
-const session = await getServerSession();
-if (!session) redirect('/login');
-```
+Keep proxy cookie checks as optimistic UX only. Every protected read and mutation
+must enforce server-side authorization independently. Authentication/session
+management endpoints remain accessible for login, logout, and recovery, with their
+existing Origin and CSRF checks intact.
 
-`getServerSession()` in `lib/server-session.ts` validates the session against the database, wrapped in `cache()` to deduplicate within a request.
-
-### Rules
-
-- **NEVER rely on `proxy.ts` for security** — it only checks cookie existence
-- **ALWAYS call `getServerSession()` in every protected page and every Server Action**
-- **`cache()` wrapping** ensures multiple calls in the same request only hit the DB once
-- **Session cookie cache (5 min)** in `lib/auth.ts` reduces DB load — tradeoff: revoked session valid up to 5 min
-- **Add `"server-only"` import** to `server-session.ts`
+`BETTER_AUTH_TRUSTED_ORIGINS` can extend the fixed production origins with exact
+HTTPS Preview origins or HTTP localhost/127.0.0.1 development origins. Wildcards,
+credentials, paths, queries, and fragments are rejected. Never trust all Vercel apps.
 
 ---
 
 ## Server Actions Security
 
-Every action follows the **4-step pattern**: authenticate → validate → execute → revalidate. See [AGENTS-PATTERNS.md § Server Action Hardening](./AGENTS-PATTERNS.md#2-server-action-hardening-strategy-like) for the template.
+Every action follows the **4-step pattern**: authenticate and authorize → validate → execute → revalidate. See [AGENTS-PATTERNS.md § Server Action Hardening](./AGENTS-PATTERNS.md#2-server-action-hardening-strategy-like) for the template.
 
 ### Rules
 
-- **Step 1 (Auth) is mandatory** — `getServerSession()` first, redirect if `null`
+- **Step 1 is mandatory** — `requireAdmin()` before validation, queries, or storage writes
 - **Step 2 uses Zod `.safeParse()`** — never trust `formData.get()` directly
 - **Step 3 uses Drizzle ORM** — never concatenate strings into SQL
 - **Never expose internal errors** — return user-friendly messages, log internals server-side
@@ -276,6 +309,7 @@ better-auth manages session cookies with flags: `httpOnly: true`, `secure: true`
 | Transport      | HSTS, TLS             | Security headers in `next.config.ts` |
 | Application    | CSP, headers          | `proxy.ts` + `next.config.ts`        |
 | Authentication | Session validation    | better-auth + `getServerSession()`   |
+| Authorization  | Explicit admin IDs    | Server-only `requireAdmin()`         |
 | Input          | Validation            | Zod schemas + Drizzle ORM            |
 | Data           | Parameterized queries | Drizzle ORM (automatic)              |
 | Dependencies   | Vulnerability audit   | `pnpm audit`                         |
@@ -284,12 +318,15 @@ better-auth manages session cookies with flags: `httpOnly: true`, `secure: true`
 
 ## Setup Checklist (TODO)
 
-- [ ] Add nonce-based CSP to `proxy.ts`
-- [ ] Add security headers to `next.config.ts`
+- [x] Add independent public/admin report-only CSP and preview-only nonce candidate
+- [ ] Complete protected Preview baseline and enforcement validation
+- [ ] Configure `ADMIN_USER_IDS` separately in each environment
+- [ ] Activate validated policies and record browser/caching evidence
+- [x] Add security headers to `next.config.ts`
 - [ ] Add `removeConsole` compiler option to `next.config.ts`
-- [ ] Create Zod schemas for all entities
-- [ ] Add `getServerSession()` to all Server Actions
+- [x] Add Zod validation for CMS mutations and safe link protocols
+- [x] Enforce administrator authorization on CMS reads, actions, and storage writes
 - [ ] Mark secrets as Sensitive in Vercel dashboard
 - [ ] Add WAF rate limit rules (`/api/auth/*` 20 req/min, `/api/*` 100 req/min)
 - [ ] Enable `rateLimit` in `lib/auth.ts`
-- [ ] Add audit scripts to `package.json`
+- [x] Add audit scripts to `package.json`
