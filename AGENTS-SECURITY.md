@@ -48,6 +48,15 @@ and the theme initialization script. **It is not a strict script-XSS policy.**
 `script-src-attr 'none'` blocks inline event handlers in supporting browsers but does
 not block injected inline script elements. Production never permits `unsafe-eval`.
 
+All application schemas import Zod through `lib/zod.ts`, which enables `jitless`
+before schemas are constructed. This avoids both runtime parser compilation and
+the `Function` availability probe that itself triggers browser CSP reports.
+Keep future schemas on this configured import; do not permit production evaluation
+to accommodate a validation dependency.
+
+`upgrade-insecure-requests` is included only under enforcement outside development.
+It is omitted from report-only policies because browsers ignore it in that mode.
+
 Styles permit inline declarations and style elements because React, Motion, Radix,
 the grid, and Sonner require them. Sonner injects a nonce-free stylesheet. These
 allowances have a security cost and must be reassessed when dependencies change.

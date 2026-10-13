@@ -41,7 +41,7 @@ Keep proxy and layout environment settings identical within a deployment.
 | `base-uri`                             | `'none'`                                        | `'none'`                                                     |
 | `form-action`                          | `'self'`                                        | `'self'`                                                     |
 | `frame-ancestors`                      | `'none'`                                        | `'none'`                                                     |
-| `upgrade-insecure-requests`            | Production only                                 | Production only                                              |
+| `upgrade-insecure-requests`            | Enforced (prod)                                 | Enforced (prod)                                              |
 
 Carto origins: `basemaps.cartocdn.com`, `tiles.basemaps.cartocdn.com`, and
 `tiles-a` through `tiles-d.basemaps.cartocdn.com`, all HTTPS. Stylesheet glyphs are
@@ -59,6 +59,19 @@ security headers are separate and remain present during CSP rollback. APIs and
 framework assets receive general headers, not a public document CSP.
 Multiple enforced CSP headers intersect; they do not override one another. Inspect
 Vercel/project/infrastructure configuration before adding or activating a header.
+
+### Validation dependencies and eval reports
+
+Application schemas import `z` from `@/lib/zod`, which calls
+`z.config({ jitless: true })` before constructing schemas. The installed Zod
+validator normally probes `Function` availability and can compile object parsers
+at runtime. Even a caught probe triggers a browser CSP report. Schema modules can
+reach admin client components through shared constants and file validation.
+
+The configured import avoids that evaluation while retaining validation rules.
+It disables runtime parser compilation on the server too. Keep the production
+script policy free of `unsafe-eval`; investigate any remaining report using its
+source file/line and distinguish application code from extensions or Preview tools.
 
 ### Nonce compatibility and limitations
 
@@ -127,7 +140,7 @@ adding Vercel Live script origins to the production policy.
 
 There is no `report-uri`, `report-to`, permanent collector, or third-party reporting
 provider. Reporting API telemetry is unavailable; manual/browser evidence is the
-supported initial workflow. Report-only upgrades/frame restrictions may be ignored
+supported initial workflow. Report-only frame restrictions may be ignored
 by browsers; document expected diagnostics separately from application breakage.
 Do not include script samples, credentials, full query strings, or private content.
 
