@@ -3,6 +3,7 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { db } from '@/db';
 import * as authSchema from '@/db/schema/better-auth';
 import { nextCookies } from 'better-auth/next-js';
+import { getTrustedOrigins } from '@/lib/security/trusted-origins';
 
 export const auth = betterAuth({
 	database: drizzleAdapter(db, {
@@ -14,7 +15,7 @@ export const auth = betterAuth({
 		enabled: true,
 		disableSignUp: true, // Only allow sign-in, no registration
 	},
-	trustedOrigins: ['https://www.gonzalopozo.dev', 'https://gonzalopozo.dev'],
+	trustedOrigins: getTrustedOrigins(process.env.BETTER_AUTH_TRUSTED_ORIGINS),
 	session: {
 		cookieCache: {
 			enabled: true,

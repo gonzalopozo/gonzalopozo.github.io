@@ -1,5 +1,7 @@
 'use client';
 
+import { safeWebUrl } from '@/lib/security/urls';
+
 import Image from 'next/image';
 import { File } from 'lucide-react';
 import { GridItemShowMoreButton } from '@/components/public/grid-item-show-more-button';
@@ -63,12 +65,12 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 				<div
 					className={cn(
 						'grid gap-2',
-						infoAboutMe.resumeUrl ? 'grid-cols-2' : 'grid-cols-1',
+						safeWebUrl(infoAboutMe.resumeUrl) ? 'grid-cols-2' : 'grid-cols-1',
 					)}
 				>
-					{infoAboutMe.resumeUrl ? (
+					{safeWebUrl(infoAboutMe.resumeUrl) ? (
 						<a
-							href={infoAboutMe.resumeUrl}
+							href={safeWebUrl(infoAboutMe.resumeUrl)}
 							target="_blank"
 							rel="noopener noreferrer"
 							className="inline-flex min-h-11 min-w-0 touch-manipulation items-center justify-center gap-2 rounded-full border border-border bg-secondary px-3 text-xs font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring active:bg-primary/10"
@@ -112,7 +114,7 @@ export function InfoGridItemContent({ infoAboutMe }: InfoGridItemContentProps) {
 
 					{infoAboutMe.resumeUrl && (
 						<a
-							href={infoAboutMe.resumeUrl}
+							href={safeWebUrl(infoAboutMe.resumeUrl)}
 							target="_blank"
 							rel="noopener noreferrer"
 							className="group/download -mr-2 inline-flex h-11 w-34.5 shrink-0 touch-manipulation items-center justify-center gap-2 rounded-full border border-border/80 bg-secondary/40 px-2.5 text-xs font-semibold tracking-wide whitespace-nowrap text-muted-foreground [-webkit-tap-highlight-color:transparent] hover:border-primary/50 hover:bg-primary/10 hover:text-foreground focus-visible:border-primary/50 focus-visible:bg-primary/10 focus-visible:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card focus-visible:outline-none active:border-primary/70 active:bg-primary/15 active:shadow-inner motion-safe:transition-[background-color,border-color,color,box-shadow] motion-safe:duration-200 motion-safe:ease-out forced-colors:focus-visible:outline-2 forced-colors:focus-visible:outline-offset-2"

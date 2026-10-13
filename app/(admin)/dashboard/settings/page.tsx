@@ -1,3 +1,4 @@
+import { requireAdminPage } from '@/lib/admin';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -11,6 +12,7 @@ import { type Settings } from '@/lib/types';
 import { Save, Settings as SettingsIcon, Briefcase, FileText } from 'lucide-react';
 
 export default async function SettingsDashboardPage() {
+	await requireAdminPage();
 	const settings: Settings | undefined = await getSiteSettings();
 
 	if (!settings) {

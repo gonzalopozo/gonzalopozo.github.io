@@ -1,8 +1,10 @@
 import 'server-only';
+import { requireAdminPage } from '@/lib/admin';
 import { cacheLife, cacheTag } from 'next/cache';
 import { db } from '@/db';
 import { PUBLIC_EXPERIENCES_CACHE_TAG } from '@/lib/cache-tags';
 import { type ExperienceData } from '@/lib/types';
+import { entityIdSchema } from '@/lib/schemas/common';
 
 async function findExperiences(): Promise<ExperienceData[]> {
 	return await db.query.experiences.findMany({
@@ -26,6 +28,7 @@ async function findExperiences(): Promise<ExperienceData[]> {
 }
 
 export async function getExperiences(): Promise<ExperienceData[]> {
+	await requireAdminPage();
 	return await findExperiences();
 }
 
@@ -38,6 +41,8 @@ export async function getPublicExperiences(): Promise<ExperienceData[]> {
 }
 
 export async function getExperienceById(id: number): Promise<ExperienceData | undefined> {
+	await requireAdminPage();
+	if (!entityIdSchema.safeParse(id).success) return undefined;
 	return await db.query.experiences.findFirst({
 		where: (experiences, { eq }) => eq(experiences.id, id),
 		with: {

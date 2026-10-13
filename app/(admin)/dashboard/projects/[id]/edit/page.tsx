@@ -1,3 +1,4 @@
+import { requireAdminPage } from '@/lib/admin';
 import { SkillsMultiSelect } from '@/components/skills-multi-select';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -14,6 +15,7 @@ import { ArrowLeft, Save } from 'lucide-react';
 export default async function UpdateProjectDashboardPage(props: {
 	params: Promise<{ id: string }>;
 }) {
+	await requireAdminPage();
 	const params = await props.params;
 	const id = Number(params.id);
 

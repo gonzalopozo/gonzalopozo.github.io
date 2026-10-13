@@ -2,12 +2,13 @@
 
 import { db } from '@/db';
 import { socialLinks } from '@/db/schema/portfolio';
-import { getServerSession } from '@/lib/server-session';
+import { requireAdmin } from '@/lib/admin';
 import { asc, eq, sql } from 'drizzle-orm';
 import { PUBLIC_SOCIAL_LINKS_CACHE_TAG } from '@/lib/cache-tags';
 import { revalidatePath, updateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { socialLinkSchema } from '@/lib/schemas/social-links';
+import { entityIdSchema } from '@/lib/schemas/common';
 
 export type SocialLinkActionState = { error: string | null };
 
@@ -24,8 +25,7 @@ export async function createSocialLink(
 	_previousState: SocialLinkActionState,
 	formData: FormData,
 ): Promise<SocialLinkActionState> {
-	const session = await getServerSession();
-	if (!session) redirect('/login');
+	await requireAdmin();
 
 	const parsed = parseSocialLink(formData);
 	if (!parsed.success)
@@ -55,8 +55,8 @@ export async function updateSocialLink(
 	_previousState: SocialLinkActionState,
 	formData: FormData,
 ): Promise<SocialLinkActionState> {
-	const session = await getServerSession();
-	if (!session) redirect('/login');
+	await requireAdmin();
+	if (!entityIdSchema.safeParse(id).success) return { error: 'El enlace no es válido.' };
 
 	const parsed = parseSocialLink(formData);
 	if (!parsed.success)
@@ -76,8 +76,8 @@ export async function updateSocialLink(
 }
 
 export async function deleteSocialLink(id: number) {
-	const session = await getServerSession();
-	if (!session) redirect('/login');
+	await requireAdmin();
+	if (!entityIdSchema.safeParse(id).success) throw new Error('Invalid social link.');
 
 	await db.delete(socialLinks).where(eq(socialLinks.id, id));
 
@@ -96,8 +96,7 @@ export async function updateSocialLinkOrder(
 	socialLinkId: number,
 	newOrder: number,
 ): Promise<string> {
-	const session = await getServerSession();
-	if (!session) redirect('/login');
+	await requireAdmin();
 
 	if (
 		!Number.isSafeInteger(socialLinkId) ||

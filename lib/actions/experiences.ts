@@ -2,7 +2,9 @@
 
 import { db } from '@/db';
 import { experiences, experienceSkills } from '@/db/schema/portfolio';
-import { getServerSession } from '@/lib/server-session';
+import { requireAdmin } from '@/lib/admin';
+import { experienceSchema } from '@/lib/schemas/experiences';
+import { entityIdSchema } from '@/lib/schemas/common';
 import { and, eq, inArray, sql } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 import { revalidatePath, updateTag } from 'next/cache';
@@ -13,39 +15,55 @@ interface ExperienceSkill {
 	skillId: number;
 }
 
-export async function createExperience(formData: FormData) {
-	const session = await getServerSession();
-	if (!session) redirect('/login');
+function validateExperienceId(id: number) {
+	if (!entityIdSchema.safeParse(id).success) throw new Error('Invalid experience.');
+}
 
-	const role = formData.get('role') as string;
-	const company = formData.get('company') as string;
-	const companyUrl = formData.get('companyUrl')
-		? (formData.get('companyUrl') as string)
-		: undefined;
-	const companyLogo = formData.get('companyLogo')
-		? (formData.get('companyLogo') as string)
-		: undefined;
-	const description = formData.get('description') as string;
-	const startDateStr = formData.get('startDate') as string | null;
-	const endDateStr = formData.get('endDate') as string | null;
-	const startDate = startDateStr ? new Date(startDateStr) : undefined;
-	const endDate = endDateStr ? new Date(endDateStr) : undefined;
-	const location = formData.get('location') as string;
+function parseExperience(formData: FormData) {
+	const result = experienceSchema.safeParse({
+		role: formData.get('role'),
+		company: formData.get('company'),
+		companyUrl: formData.get('companyUrl') ?? '',
+		companyLogo: formData.get('companyLogo') ?? '',
+		description: formData.get('description'),
+		startDate: formData.get('startDate') ?? '',
+		endDate: formData.get('endDate') ?? '',
+		location: formData.get('location') ?? '',
+		skillIds: formData.getAll('skillIds'),
+	});
+	if (!result.success) throw new Error('Invalid experience data.');
+	return result.data;
+}
+
+export async function createExperience(formData: FormData) {
+	await requireAdmin();
+
+	const {
+		role,
+		company,
+		companyUrl,
+		companyLogo,
+		description,
+		startDate,
+		endDate,
+		location,
+		skillIds,
+	} = parseExperience(formData);
 
 	const result = await db
 		.select({ maxOrder: sql<number>`COALESCE(MAX(${experiences.order}), 0)` })
 		.from(experiences);
 	const newOrder = result[0].maxOrder + 1;
 
-	const experienceSkillsData = formData.getAll('skillIds').map(Number);
+	const experienceSkillsData = skillIds;
 
 	const experienceIdData = await db
 		.insert(experiences)
 		.values({
 			role,
 			company,
-			companyUrl,
-			companyLogo,
+			companyUrl: companyUrl || null,
+			companyLogo: companyLogo || null,
 			description,
 			startDate,
 			endDate,
@@ -58,38 +76,37 @@ export async function createExperience(formData: FormData) {
 		return { experienceId: experienceIdData[0].insertedId, skillId: skill };
 	});
 
-	await db.insert(experienceSkills).values(experienceSkillsInsert);
+	if (experienceSkillsInsert.length) {
+		await db.insert(experienceSkills).values(experienceSkillsInsert);
+	}
 
 	updateTag(PUBLIC_EXPERIENCES_CACHE_TAG);
 	redirect('/dashboard/experiences');
 }
 
 export async function updateExperience(id: number, formData: FormData) {
-	const session = await getServerSession();
-	if (!session) redirect('/login');
+	await requireAdmin();
 
-	const role = formData.get('role') as string;
-	const company = formData.get('company') as string;
-	const companyUrl = formData.get('companyUrl')
-		? (formData.get('companyUrl') as string)
-		: undefined;
-	const companyLogo = formData.get('companyLogo')
-		? (formData.get('companyLogo') as string)
-		: undefined;
-	const description = formData.get('description') as string;
-	const startDateStr = formData.get('startDate') as string | null;
-	const endDateStr = formData.get('endDate') as string | null;
-	const startDate = startDateStr ? new Date(startDateStr) : undefined;
-	const endDate = endDateStr ? new Date(endDateStr) : undefined;
-	const location = formData.get('location') as string;
+	validateExperienceId(id);
+	const {
+		role,
+		company,
+		companyUrl,
+		companyLogo,
+		description,
+		startDate,
+		endDate,
+		location,
+		skillIds,
+	} = parseExperience(formData);
 
 	const experienceIdData = await db
 		.update(experiences)
 		.set({
 			role,
 			company,
-			companyUrl,
-			companyLogo,
+			companyUrl: companyUrl || null,
+			companyLogo: companyLogo || null,
 			description,
 			startDate,
 			endDate,
@@ -98,7 +115,8 @@ export async function updateExperience(id: number, formData: FormData) {
 		.where(eq(experiences.id, id))
 		.returning({ insertedId: experiences.id });
 
-	const experienceSkillsData = formData.getAll('skillIds').map(Number);
+	if (!experienceIdData[0]) throw new Error('Experience not found.');
+	const experienceSkillsData = skillIds;
 
 	const experienceSkillsToReview: ExperienceSkill[] = experienceSkillsData.map((skill) => {
 		return { experienceId: experienceIdData[0].insertedId, skillId: skill };
@@ -149,8 +167,8 @@ export async function updateExperience(id: number, formData: FormData) {
 }
 
 export async function deleteExperience(id: number) {
-	const session = await getServerSession();
-	if (!session) redirect('/login');
+	await requireAdmin();
+	validateExperienceId(id);
 
 	await db.delete(experiences).where(eq(experiences.id, id));
 

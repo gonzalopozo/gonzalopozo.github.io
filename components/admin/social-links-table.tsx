@@ -1,5 +1,7 @@
 'use client';
 
+import { safeWebUrl } from '@/lib/security/urls';
+
 import { DragDropProvider } from '@dnd-kit/react';
 import { Pencil, ExternalLink, Trash } from 'lucide-react';
 import Link from 'next/link';
@@ -69,7 +71,7 @@ export function SocialLinksTable({
 							<TableCell>
 								{socialLink.url ? (
 									<a
-										href={socialLink.url}
+										href={safeWebUrl(socialLink.url)}
 										target="_blank"
 										rel="noopener noreferrer"
 										className="inline-flex max-w-50 items-center gap-1 truncate text-sm text-primary hover:underline"

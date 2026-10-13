@@ -1,5 +1,7 @@
 'use client';
 
+import { safeWebUrl } from '@/lib/security/urls';
+
 import { Button } from '@/components/ui/button';
 import { Table, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
@@ -126,7 +128,7 @@ export function ProjectsTable({
 								<div className="flex items-center gap-2">
 									{project.url && (
 										<a
-											href={project.url}
+											href={safeWebUrl(project.url)}
 											target="_blank"
 											rel="noopener noreferrer"
 											className="inline-flex items-center text-primary hover:text-primary-hover"
@@ -137,7 +139,7 @@ export function ProjectsTable({
 									)}
 									{project.repoUrl && (
 										<a
-											href={project.repoUrl}
+											href={safeWebUrl(project.repoUrl)}
 											target="_blank"
 											rel="noopener noreferrer"
 											className="inline-flex items-center text-muted-foreground hover:text-foreground"

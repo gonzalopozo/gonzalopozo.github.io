@@ -1,3 +1,4 @@
+import { requireAdminPage } from '@/lib/admin';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ProjectsTable } from '@/components/admin/projects-table';
@@ -7,6 +8,7 @@ import Link from 'next/link';
 import { getProjects } from '@/lib/queries/projects';
 
 export default async function ProjectsDashboardPage() {
+	await requireAdminPage();
 	const projectsData = await getProjects();
 
 	return (

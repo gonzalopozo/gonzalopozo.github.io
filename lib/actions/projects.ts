@@ -4,10 +4,11 @@ import { db } from '@/db';
 import { projects, projectSkills } from '@/db/schema/portfolio';
 import { and, eq, gte, inArray, lte, ne, sql } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
-import { type ProjectStatus } from '@/lib/types';
+import { projectSchema } from '@/lib/schemas/projects';
+import { entityIdSchema } from '@/lib/schemas/common';
 import { revalidatePath, updateTag } from 'next/cache';
 import { PUBLIC_PROJECTS_CACHE_TAG } from '@/lib/cache-tags';
-import { getServerSession } from '@/lib/server-session';
+import { requireAdmin } from '@/lib/admin';
 import { deleteOldImageInVercelBlob, saveImageInVercelBlob } from '@/lib/og-image';
 
 interface ProjectSkill {
@@ -15,30 +16,42 @@ interface ProjectSkill {
 	skillId: number;
 }
 
-export async function createProject(formData: FormData) {
-	const session = await getServerSession();
-	if (!session) redirect('/login');
+function validateProjectId(id: number) {
+	if (!entityIdSchema.safeParse(id).success) throw new Error('Invalid project.');
+}
 
-	const title = formData.get('title') as string;
-	const description = formData.get('description') as string;
-	const url = formData.get('url') ? (formData.get('url') as string) : undefined;
-	const repoUrl = formData.get('repoUrl') ? (formData.get('repoUrl') as string) : undefined;
-	const status = formData.get('status') as ProjectStatus;
+function parseProject(formData: FormData) {
+	const result = projectSchema.safeParse({
+		title: formData.get('title'),
+		description: formData.get('description'),
+		url: formData.get('url') ?? '',
+		repoUrl: formData.get('repoUrl') ?? '',
+		status: formData.get('status'),
+		skillIds: formData.getAll('skillIds'),
+	});
+	if (!result.success) throw new Error('Invalid project data.');
+	return result.data;
+}
+
+export async function createProject(formData: FormData) {
+	await requireAdmin();
+
+	const { title, description, url, repoUrl, status, skillIds } = parseProject(formData);
 
 	const result = await db
 		.select({ maxOrder: sql<number>`COALESCE(MAX(${projects.order}), 0)` })
 		.from(projects);
 	const newOrder = result[0].maxOrder + 1;
 
-	const projectSkillsData = formData.getAll('skillIds').map(Number);
+	const projectSkillsData = skillIds;
 
 	const projectIdData = await db
 		.insert(projects)
 		.values({
 			title,
 			description,
-			url,
-			repoUrl,
+			url: url || null,
+			repoUrl: repoUrl || null,
 			status,
 			order: newOrder,
 		})
@@ -50,7 +63,7 @@ export async function createProject(formData: FormData) {
 		return { projectId: newProjectId, skillId: skill };
 	});
 
-	await db.insert(projectSkills).values(projectSkillsInsert);
+	if (projectSkillsInsert.length) await db.insert(projectSkills).values(projectSkillsInsert);
 
 	if (url) {
 		try {
@@ -76,20 +89,17 @@ export async function createProject(formData: FormData) {
 }
 
 export async function updateProject(id: number, formData: FormData) {
-	const session = await getServerSession();
-	if (!session) redirect('/login');
+	await requireAdmin();
 
-	const title = formData.get('title') as string;
-	const description = formData.get('description') as string;
-	const url = formData.get('url') ? (formData.get('url') as string) : undefined;
-	const repoUrl = formData.get('repoUrl') ? (formData.get('repoUrl') as string) : undefined;
-	const status = formData.get('status') as ProjectStatus;
+	validateProjectId(id);
+	const { title, description, url, repoUrl, status, skillIds } = parseProject(formData);
 
 	const oldUrls = await db
 		.select({ url: projects.url, ogImageUrl: projects.ogImageUrl })
 		.from(projects)
 		.where(eq(projects.id, id));
 
+	if (!oldUrls[0]) throw new Error('Project not found.');
 	const oldOpenGraphImageUrl = oldUrls[0].ogImageUrl;
 
 	await db
@@ -97,13 +107,13 @@ export async function updateProject(id: number, formData: FormData) {
 		.set({
 			title,
 			description,
-			url,
-			repoUrl,
+			url: url || null,
+			repoUrl: repoUrl || null,
 			status,
 		})
 		.where(eq(projects.id, id));
 
-	const projectSkillsData = formData.getAll('skillIds').map(Number);
+	const projectSkillsData = skillIds;
 
 	const projectSkillsToReview: ProjectSkill[] = projectSkillsData.map((skill) => {
 		return { projectId: id, skillId: skill };
@@ -187,8 +197,8 @@ export async function updateProject(id: number, formData: FormData) {
 }
 
 export async function deleteProject(id: number) {
-	const session = await getServerSession();
-	if (!session) redirect('/login');
+	await requireAdmin();
+	validateProjectId(id);
 
 	const [oldUrl] = await db
 		.select({ ogImageUrl: projects.ogImageUrl })
@@ -206,14 +216,18 @@ export async function deleteProject(id: number) {
 }
 
 export async function updateProjectOrder(projectId: number, newOrder: number): Promise<string> {
-	const session = await getServerSession();
-	if (!session) redirect('/login');
+	await requireAdmin();
+	validateProjectId(projectId);
+	if (!entityIdSchema.safeParse(newOrder).success) throw new Error('Invalid project position.');
+	const [{ total }] = await db.select({ total: sql<number>`COUNT(*)` }).from(projects);
+	if (newOrder > total) throw new Error('Invalid project position.');
 
 	const [project] = await db
 		.select({ order: projects.order, title: projects.title })
 		.from(projects)
 		.where(eq(projects.id, projectId));
 
+	if (!project) throw new Error('Project not found.');
 	const oldOrder = project.order;
 	if (oldOrder === newOrder) return '';
 
@@ -239,15 +253,15 @@ export async function updateProjectOrder(projectId: number, newOrder: number): P
 }
 
 export async function refreshProjectOgImage(projectId: number): Promise<void | null> {
-	const session = await getServerSession();
-	if (!session) return null;
+	await requireAdmin();
+	validateProjectId(projectId);
 
 	const [project] = await db
 		.select({ url: projects.url, ogImageUrl: projects.ogImageUrl })
 		.from(projects)
 		.where(eq(projects.id, projectId));
 
-	if (!project.url) throw Error("Can't fetch OG image from nothing");
+	if (!project?.url) throw new Error('Project has no image source.');
 
 	const uploadedImageUrl = await saveImageInVercelBlob(project.url, projectId);
 

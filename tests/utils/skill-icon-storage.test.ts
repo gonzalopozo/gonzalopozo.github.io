@@ -1,8 +1,14 @@
 // @vitest-environment node
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-const mocks = vi.hoisted(() => ({ put: vi.fn(), del: vi.fn(), cacheLife: vi.fn() }));
+const mocks = vi.hoisted(() => ({
+	put: vi.fn(),
+	del: vi.fn(),
+	cacheLife: vi.fn(),
+	requireAdmin: vi.fn(),
+}));
 vi.mock('server-only', () => ({}));
+vi.mock('@/lib/admin', () => ({ requireAdmin: mocks.requireAdmin }));
 vi.mock('@vercel/blob', () => ({ put: mocks.put, del: mocks.del }));
 vi.mock('next/cache', () => ({ cacheLife: mocks.cacheLife, cacheTag: vi.fn() }));
 
@@ -15,6 +21,7 @@ const fetchMock = vi.fn();
 
 beforeEach(() => {
 	vi.clearAllMocks();
+	mocks.requireAdmin.mockResolvedValue(undefined);
 	vi.stubEnv('BLOB_PUBLIC_HOSTNAME', origin);
 	vi.stubGlobal('fetch', fetchMock);
 	mocks.put.mockResolvedValue({ url });
@@ -133,5 +140,17 @@ describe('skill icon storage', () => {
 		await expect(deleteSkillIcon(url)).resolves.toBeUndefined();
 		expect(log).toHaveBeenCalledOnce();
 		log.mockRestore();
+	});
+});
+
+describe('skill icon write authorization', () => {
+	it('rejects unauthorized uploads and deletions before calling Blob', async () => {
+		mocks.requireAdmin.mockRejectedValue(new Error('Access denied.'));
+		await expect(
+			uploadSkillIcon(new File([svg], 'icon.svg', { type: 'image/svg+xml' })),
+		).rejects.toThrow('Access denied.');
+		await expect(deleteSkillIcon(url)).rejects.toThrow('Access denied.');
+		expect(mocks.put).not.toHaveBeenCalled();
+		expect(mocks.del).not.toHaveBeenCalled();
 	});
 });

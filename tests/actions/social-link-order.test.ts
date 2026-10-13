@@ -71,6 +71,7 @@ beforeAll(async () => {
 
 beforeEach(async () => {
 	vi.clearAllMocks();
+	vi.stubEnv('ADMIN_USER_IDS', 'admin');
 	mocks.getServerSession.mockResolvedValue({ user: { id: 'admin' } });
 	mocks.redirect.mockImplementation(() => {
 		throw new Error('redirect');
@@ -89,7 +90,10 @@ beforeEach(async () => {
 	);
 });
 
-afterEach(() => vi.restoreAllMocks());
+afterEach(() => {
+	vi.restoreAllMocks();
+	vi.unstubAllEnvs();
+});
 afterAll(() => db.$client.close());
 
 describe('social link order persistence', () => {

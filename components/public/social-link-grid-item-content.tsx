@@ -1,3 +1,4 @@
+import { safeWebUrl } from '@/lib/security/urls';
 import type { CSSProperties, ReactNode } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { getColorVariants } from '@/lib/social-link-colors';
@@ -46,7 +47,7 @@ export function SocialLinkGridItemContent({
 		>
 			{children}
 			<a
-				href={url}
+				href={safeWebUrl(url)}
 				target="_blank"
 				rel="noopener noreferrer"
 				aria-label={ariaLabel}

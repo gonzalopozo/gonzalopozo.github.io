@@ -4,7 +4,7 @@ import { db } from '@/db';
 import { skills } from '@/db/schema/portfolio';
 import { PUBLIC_EXPERIENCES_CACHE_TAG, PUBLIC_PROJECTS_CACHE_TAG } from '@/lib/cache-tags';
 import { skillSchema } from '@/lib/schemas/skills';
-import { getServerSession } from '@/lib/server-session';
+import { requireAdmin } from '@/lib/admin';
 import { deleteSkillIcon, uploadSkillIcon } from '@/lib/skill-icons/storage';
 import { SkillIconValidationError } from '@/lib/skill-icons/svg';
 import { and, eq, isNull } from 'drizzle-orm';
@@ -50,8 +50,7 @@ export async function createSkill(
 	_previousState: SkillActionState,
 	formData: FormData,
 ): Promise<SkillActionState> {
-	const session = await getServerSession();
-	if (!session) redirect('/login');
+	await requireAdmin();
 
 	const parsed = parseSkill(formData);
 	if (!parsed.success) return { error: 'Revisa los datos de la habilidad y el color.' };
@@ -81,8 +80,7 @@ export async function updateSkill(
 	_previousState: SkillActionState,
 	formData: FormData,
 ): Promise<SkillActionState> {
-	const session = await getServerSession();
-	if (!session) redirect('/login');
+	await requireAdmin();
 
 	const parsed = parseSkill(formData);
 	if (!parsed.success) return { error: 'Revisa los datos de la habilidad y el color.' };
@@ -134,8 +132,7 @@ export async function updateSkill(
 }
 
 export async function deleteSkill(id: number) {
-	const session = await getServerSession();
-	if (!session) redirect('/login');
+	await requireAdmin();
 	if (!Number.isSafeInteger(id) || id <= 0) return;
 
 	const deleted = await db

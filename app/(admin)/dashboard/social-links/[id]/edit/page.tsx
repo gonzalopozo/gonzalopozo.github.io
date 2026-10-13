@@ -1,3 +1,4 @@
+import { requireAdminPage } from '@/lib/admin';
 import { getSocialLinkById } from '@/lib/queries/social-links';
 import { updateSocialLink } from '@/lib/actions/social-links';
 import { DEFAULT_SOCIAL_LINK_COLOR } from '@/lib/schemas/social-links';
@@ -10,6 +11,7 @@ import { ArrowLeft } from 'lucide-react';
 export default async function UpdateSocialLinkDashboardPage(props: {
 	params: Promise<{ id: string }>;
 }) {
+	await requireAdminPage();
 	const { id } = await props.params;
 	const socialLinkResult = await getSocialLinkById(Number(id));
 	if (!socialLinkResult) return <p>Enlace social no encontrado</p>;

@@ -33,7 +33,7 @@ describe('experience card content', () => {
 		);
 		expect(screen.getByRole('heading', { name: 'Frontend Engineer' })).toBeTruthy();
 		expect(screen.getByRole('link', { name: 'Example Studio' }).getAttribute('href')).toBe(
-			'https://example.com',
+			'https://example.com/',
 		);
 		expect(screen.getByText('Jan 2023 – Present · Madrid')).toBeTruthy();
 		expect(screen.getByText('React')).toBeTruthy();

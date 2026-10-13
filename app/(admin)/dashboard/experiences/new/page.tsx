@@ -1,3 +1,4 @@
+import { requireAdminPage } from '@/lib/admin';
 import { SkillsMultiSelect } from '@/components/skills-multi-select';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,6 +11,7 @@ import Link from 'next/link';
 import { ArrowLeft, Plus } from 'lucide-react';
 
 export default async function NewExperienceDashboardPage() {
+	await requireAdminPage();
 	const skillsList = await getSkillOptions();
 
 	return (

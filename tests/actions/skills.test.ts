@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mocks = vi.hoisted(() => ({
 	getServerSession: vi.fn(),
@@ -39,6 +39,7 @@ function skillFormData(useColor: boolean, customColor?: string) {
 
 beforeEach(() => {
 	vi.clearAllMocks();
+	vi.stubEnv('ADMIN_USER_IDS', 'admin');
 	mocks.getServerSession.mockResolvedValue({ user: { id: 'admin' } });
 	mocks.select.mockReturnValue({
 		from: () => ({ where: async () => [{ customIconUrl: null }] }),
@@ -244,3 +245,5 @@ describe('custom skill icon lifecycle', () => {
 		expect(mocks.updateTag).toHaveBeenCalledWith(PUBLIC_EXPERIENCES_CACHE_TAG);
 	});
 });
+
+afterEach(() => vi.unstubAllEnvs());

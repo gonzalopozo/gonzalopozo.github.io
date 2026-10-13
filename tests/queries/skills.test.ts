@@ -2,6 +2,7 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { sql } from 'drizzle-orm';
 
 vi.mock('server-only', () => ({}));
+vi.mock('@/lib/admin', () => ({ requireAdminPage: vi.fn() }));
 vi.mock('next/cache', () => ({ cacheLife: vi.fn(), cacheTag: vi.fn() }));
 vi.mock('@/db', async () => {
 	const { createClient } = await import('@libsql/client');

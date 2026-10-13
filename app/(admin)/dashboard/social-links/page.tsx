@@ -1,16 +1,14 @@
+import { requireAdminPage } from '@/lib/admin';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SocialLinksTable } from '@/components/admin/social-links-table';
 import { getSocialLinks } from '@/lib/queries/social-links';
-import { getServerSession } from '@/lib/server-session';
-import { redirect } from 'next/navigation';
 import { deleteSocialLink } from '@/lib/actions/social-links';
 import { Plus, Link2 } from 'lucide-react';
 import Link from 'next/link';
 
 export default async function SocialLinksDashboardPage() {
-	const session = await getServerSession();
-	if (!session) redirect('/login');
+	await requireAdminPage();
 
 	const socialLinksData = await getSocialLinks();
 

@@ -1,4 +1,5 @@
 import 'server-only';
+import { requireAdmin } from '@/lib/admin';
 import { URL } from 'url';
 import { resolve4, resolve6 } from 'dns/promises';
 import * as cheerio from 'cheerio';
@@ -221,6 +222,7 @@ export async function saveImageInVercelBlob(
 	url: string,
 	projectId: number,
 ): Promise<string | null> {
+	await requireAdmin();
 	console.log('URL original:', url);
 	if (!URL.canParse(url)) return null;
 
@@ -407,6 +409,7 @@ export async function saveImageInVercelBlob(
 }
 
 export async function deleteOldImageInVercelBlob(oldImage: string) {
+	await requireAdmin();
 	if (oldImage) {
 		try {
 			await del(oldImage);

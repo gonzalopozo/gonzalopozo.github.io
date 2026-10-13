@@ -44,6 +44,16 @@ Unclustered
 # Node / DNS
 ESOCKETNODATA
 
+# CSP / Next.js rendering terminology
+basemaps
+cartocdn
+nonced
+prerendered
+prerendering
+
+# Legacy conversation filename
+configur
+
 # npm / UI libraries
 cmdk
 dnd

@@ -1,3 +1,4 @@
+import { requireAdminPage } from '@/lib/admin';
 import { createSocialLink } from '@/lib/actions/social-links';
 import { DEFAULT_SOCIAL_LINK_COLOR } from '@/lib/schemas/social-links';
 import { SocialLinkForm } from '@/components/admin/social-link-form';
@@ -6,7 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 
-export default function NewSocialLinkDashboardPage() {
+export default async function NewSocialLinkDashboardPage() {
+	await requireAdminPage();
 	return (
 		<div className="space-y-6">
 			<div className="flex items-center gap-4">

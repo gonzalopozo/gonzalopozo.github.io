@@ -1,3 +1,4 @@
+import { safeWebUrl } from '@/lib/security/urls';
 import type { CSSProperties } from 'react';
 import { DynamicIcon } from '@/components/public/dynamic-icon';
 import { GridItemShowMoreButton } from '@/components/public/grid-item-show-more-button';
@@ -6,16 +7,6 @@ import type { getPublicUsedSkills } from '@/lib/queries/skills';
 import { cn } from '@/lib/utils';
 
 type UsedSkill = Awaited<ReturnType<typeof getPublicUsedSkills>>[number];
-
-function getSkillWebsiteUrl(value: string | null) {
-	if (!value) return null;
-	try {
-		const url = new URL(value);
-		return url.protocol === 'https:' || url.protocol === 'http:' ? url.href : null;
-	} catch {
-		return null;
-	}
-}
 
 function TechMarquee({ skills }: { skills: UsedSkill[] }) {
 	if (skills.length === 0) return null;
@@ -38,7 +29,7 @@ function TechMarquee({ skills }: { skills: UsedSkill[] }) {
 					{[...visibleLoop, ...visibleLoop].map((skill, index) => {
 						const hasColor =
 							skill.useColor && /^#[0-9a-f]{6}$/i.test(skill.customColor ?? '');
-						const url = getSkillWebsiteUrl(skill.url);
+						const url = safeWebUrl(skill.url);
 						const linkLabel = `Explore ${skill.name}`;
 						const isRepeatedCopy = index >= skills.length;
 						const itemClassName =

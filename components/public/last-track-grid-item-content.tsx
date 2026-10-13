@@ -1,3 +1,4 @@
+import { safeWebUrl } from '@/lib/security/urls';
 import Image from 'next/image';
 import { Clock, Music } from 'lucide-react';
 import type { Track } from '@/lib/types';
@@ -66,7 +67,7 @@ export function LastTrackGridItemContent({
 	if (sourceUrl && !isDesktop) {
 		return (
 			<a
-				href={sourceUrl}
+				href={safeWebUrl(sourceUrl)}
 				target="_blank"
 				rel="noopener noreferrer"
 				aria-label={ariaLabel}
@@ -185,7 +186,7 @@ function SpotifyTextLink({ url, onArtwork, ariaLabel, children }: SpotifyTextLin
 
 	return (
 		<a
-			href={url}
+			href={safeWebUrl(url)}
 			target="_blank"
 			rel="noopener noreferrer"
 			draggable={false}

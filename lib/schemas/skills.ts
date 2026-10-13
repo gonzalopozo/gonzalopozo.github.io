@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { optionalWebUrlSchema } from './common';
 
 export const DEFAULT_SKILL_COLOR = '#66696d';
 
@@ -22,7 +23,7 @@ export const skillSchema = z
 		]),
 		icon: z.string().trim().max(160),
 		useCustomIcon: z.boolean().default(false),
-		url: z.union([z.url(), z.literal('')]),
+		url: optionalWebUrlSchema,
 		useColor: z.boolean(),
 		customColor: z.union([hexColor, z.null()]),
 	})

@@ -1,3 +1,4 @@
+import { safeWebUrl } from '@/lib/security/urls';
 import Image from 'next/image';
 import { ArrowUpRight, Github, type LucideIcon } from 'lucide-react';
 import { GridItemShowMoreButton } from '@/components/public/grid-item-show-more-button';
@@ -94,11 +95,12 @@ const projectLinkButtonClassName =
 const projectShowMoreButtonClassName = 'min-h-11 w-full justify-center rounded-full';
 
 function ProjectActionButton({ href, icon: Icon, label }: ProjectActionButtonProps) {
-	if (!href) return null;
+	const safeHref = safeWebUrl(href);
+	if (!safeHref) return null;
 
 	return (
 		<Button asChild variant="ghost" size="icon" className={projectLinkButtonClassName}>
-			<a href={href} target="_blank" rel="noopener noreferrer" aria-label={label}>
+			<a href={safeHref} target="_blank" rel="noopener noreferrer" aria-label={label}>
 				<Icon data-icon="inline-start" aria-hidden="true" />
 				<span className="sr-only">{label}</span>
 			</a>
@@ -273,7 +275,8 @@ export function ProjectGridItemContent({
 	variant = 'vertical',
 }: ProjectGridItemContentProps) {
 	const skills = project.projectSkills.map(({ skill }) => skill);
-	const actionCount = Number(Boolean(project.repoUrl)) + Number(Boolean(project.url));
+	const actionCount =
+		Number(Boolean(safeWebUrl(project.repoUrl))) + Number(Boolean(safeWebUrl(project.url)));
 
 	if (variant === 'horizontal') {
 		return (

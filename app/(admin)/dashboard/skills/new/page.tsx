@@ -1,3 +1,4 @@
+import { requireAdminPage } from '@/lib/admin';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { SkillForm } from '@/components/admin/skill-form';
@@ -5,7 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { createSkill } from '@/lib/actions/skills';
 
-export default function NewSkillDashboardPage() {
+export default async function NewSkillDashboardPage() {
+	await requireAdminPage();
 	return (
 		<div className="flex flex-col gap-6">
 			<div className="flex items-center gap-4">

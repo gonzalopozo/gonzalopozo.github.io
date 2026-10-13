@@ -1,3 +1,5 @@
+import { safeWebUrl } from '@/lib/security/urls';
+import { requireAdminPage } from '@/lib/admin';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -17,6 +19,7 @@ import { DynamicIcon } from '@/components/public/dynamic-icon';
 import { SkillColorCell } from '@/components/admin/skill-color-cell';
 
 export default async function SkillsDashboardPage() {
+	await requireAdminPage();
 	const skillsData = await getAllSkills();
 
 	const formatDate = (date: Date) =>
@@ -125,7 +128,7 @@ export default async function SkillsDashboardPage() {
 										<TableCell>
 											{skill.url ? (
 												<a
-													href={skill.url}
+													href={safeWebUrl(skill.url)}
 													target="_blank"
 													rel="noopener noreferrer"
 													className="inline-flex items-center gap-1 text-sm text-primary hover:underline"

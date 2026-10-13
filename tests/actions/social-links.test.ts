@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mocks = vi.hoisted(() => ({
 	getServerSession: vi.fn(),
@@ -9,6 +9,7 @@ const mocks = vi.hoisted(() => ({
 	redirect: vi.fn(),
 }));
 
+vi.mock('server-only', () => ({}));
 vi.mock('@/db', () => ({ db: mocks }));
 vi.mock('@/lib/server-session', () => ({ getServerSession: mocks.getServerSession }));
 vi.mock('next/cache', () => ({ updateTag: mocks.updateTag, revalidatePath: vi.fn() }));
@@ -27,6 +28,7 @@ function socialLinkFormData(color: string) {
 
 beforeEach(() => {
 	vi.clearAllMocks();
+	vi.stubEnv('ADMIN_USER_IDS', 'admin');
 	mocks.getServerSession.mockResolvedValue({ user: { id: 'admin' } });
 	mocks.redirect.mockImplementation(() => {
 		throw new Error('redirect');
@@ -67,3 +69,5 @@ describe('social link color persistence', () => {
 		expect(where).toHaveBeenCalled();
 	});
 });
+
+afterEach(() => vi.unstubAllEnvs());

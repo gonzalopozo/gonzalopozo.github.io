@@ -1,4 +1,5 @@
 import 'server-only';
+import { requireAdmin } from '@/lib/admin';
 import { randomUUID } from 'node:crypto';
 import { del, put } from '@vercel/blob';
 import { cacheLife, cacheTag } from 'next/cache';
@@ -30,6 +31,7 @@ function isSkillIconUrl(value: string): boolean {
 }
 
 export async function uploadSkillIcon(file: File): Promise<string> {
+	await requireAdmin();
 	const error = getSkillIconFileError(file);
 	if (error) throw new SkillIconValidationError(error);
 	const source = new TextDecoder('utf-8', { fatal: true }).decode(await file.arrayBuffer());
@@ -48,6 +50,7 @@ export async function uploadSkillIcon(file: File): Promise<string> {
 }
 
 export async function deleteSkillIcon(url: string | null): Promise<void> {
+	await requireAdmin();
 	if (!url || !isSkillIconUrl(url)) return;
 	try {
 		await del(url);

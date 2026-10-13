@@ -1,3 +1,4 @@
+import { safeWebUrl } from '@/lib/security/urls';
 import { GridItemShowMoreButton } from '@/components/public/grid-item-show-more-button';
 import { SkillsPills } from '@/components/public/skills-pills';
 import type { ExperienceData } from '@/lib/types';
@@ -27,9 +28,9 @@ export function ExperienceGridItemContent({ experience }: { experience: Experien
 					{experience.role}
 				</h3>
 				<p className="text-sm font-semibold wrap-break-word">
-					{experience.companyUrl ? (
+					{safeWebUrl(experience.companyUrl) ? (
 						<a
-							href={experience.companyUrl}
+							href={safeWebUrl(experience.companyUrl)}
 							target="_blank"
 							rel="noopener noreferrer"
 							className="rounded-sm underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-ring"

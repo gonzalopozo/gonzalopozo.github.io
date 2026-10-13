@@ -1,3 +1,4 @@
+import { requireAdminPage } from '@/lib/admin';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { notFound } from 'next/navigation';
@@ -9,6 +10,7 @@ import { updateSkill } from '@/lib/actions/skills';
 import { DynamicIcon } from '@/components/public/dynamic-icon';
 
 export default async function UpdateSkillDashboardPage(props: { params: Promise<{ id: string }> }) {
+	await requireAdminPage();
 	const { id } = await props.params;
 	const skill = await getSkillById(Number(id));
 	if (!skill) notFound();

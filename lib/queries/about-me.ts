@@ -1,4 +1,5 @@
 import 'server-only';
+import { requireAdminPage } from '@/lib/admin';
 import { cacheLife, cacheTag } from 'next/cache';
 import { db } from '@/db';
 import { PUBLIC_SETTINGS_CACHE_TAG } from '@/lib/cache-tags';
@@ -17,6 +18,7 @@ async function findInfoAboutMe(): Promise<InformationAboutMe | undefined> {
 }
 
 export async function getInfoAboutMe(): Promise<InformationAboutMe | undefined> {
+	await requireAdminPage();
 	return await findInfoAboutMe();
 }
 

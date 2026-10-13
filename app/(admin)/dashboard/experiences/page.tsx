@@ -1,3 +1,5 @@
+import { safeWebUrl } from '@/lib/security/urls';
+import { requireAdminPage } from '@/lib/admin';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -16,6 +18,7 @@ import { Plus, Pencil, Trash, Briefcase, ExternalLink, MapPin, Calendar } from '
 import Link from 'next/link';
 
 export default async function ExperiencesDashboardPage() {
+	await requireAdminPage();
 	const experiencesData: ExperienceData[] = await getExperiences();
 
 	const formatDate = (date: Date | null) => {
@@ -115,7 +118,7 @@ export default async function ExperiencesDashboardPage() {
 												</span>
 												{experience.companyUrl && (
 													<a
-														href={experience.companyUrl}
+														href={safeWebUrl(experience.companyUrl)}
 														target="_blank"
 														rel="noopener noreferrer"
 														className="text-primary hover:text-primary/80"

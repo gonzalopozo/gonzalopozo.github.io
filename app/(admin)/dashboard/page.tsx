@@ -1,12 +1,22 @@
 import { ClearInvalidSessionForm } from '@/components/auth/clear-invalid-session-form';
 import { LogOutButton } from '@/components/auth/logout';
 import { getServerSession } from '@/lib/server-session';
+import { getAdminSession } from '@/lib/admin';
 
 export default async function AdminDashboard() {
 	const session = await getServerSession();
 
 	if (!session) {
 		return <ClearInvalidSessionForm />;
+	}
+	if (!(await getAdminSession())) {
+		return (
+			<div className="space-y-4 p-6">
+				<h1 className="text-2xl font-semibold">Access denied</h1>
+				<p>This account cannot access the dashboard.</p>
+				<LogOutButton />
+			</div>
+		);
 	}
 
 	const user = session.user;

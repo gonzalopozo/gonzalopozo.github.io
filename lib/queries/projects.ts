@@ -1,8 +1,10 @@
 import 'server-only';
+import { requireAdminPage } from '@/lib/admin';
 import { cacheLife, cacheTag } from 'next/cache';
 import { db } from '@/db';
 import { PUBLIC_PROJECTS_CACHE_TAG } from '@/lib/cache-tags';
 import { type ProjectInfo } from '@/lib/types';
+import { entityIdSchema } from '@/lib/schemas/common';
 
 async function findProjects(): Promise<ProjectInfo[]> {
 	return await db.query.projects.findMany({
@@ -26,6 +28,7 @@ async function findProjects(): Promise<ProjectInfo[]> {
 }
 
 export async function getProjects(): Promise<ProjectInfo[]> {
+	await requireAdminPage();
 	return await findProjects();
 }
 
@@ -38,6 +41,8 @@ export async function getPublicProjects(): Promise<ProjectInfo[]> {
 }
 
 export async function getProjectById(id: number): Promise<ProjectInfo | undefined> {
+	await requireAdminPage();
+	if (!entityIdSchema.safeParse(id).success) return undefined;
 	return await db.query.projects.findFirst({
 		where: (projects, { eq }) => eq(projects.id, id),
 		with: {

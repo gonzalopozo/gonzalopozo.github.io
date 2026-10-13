@@ -3,25 +3,25 @@
 import { db } from '@/db';
 import { employmentHistory, siteSettings } from '@/db/schema/portfolio';
 import { PUBLIC_SETTINGS_CACHE_TAG } from '@/lib/cache-tags';
-import { getServerSession } from '@/lib/server-session';
+import { requireAdmin } from '@/lib/admin';
 import { eq } from 'drizzle-orm/sql';
 import { revalidatePath, updateTag } from 'next/cache';
-import { redirect } from 'next/navigation';
+import { settingsSchema } from '@/lib/schemas/settings';
 
 export async function updateSiteSettings(formData: FormData) {
-	const session = await getServerSession();
-	if (!session) redirect('/login');
+	await requireAdmin();
 
-	const isEmployed = formData.get('isEmployed')
-		? (formData.get('isEmployed') as string)
-		: undefined;
-	const resumeUrl = formData.get('resumeUrl') as string;
-	const statusMessage = formData.get('statusMessage')
-		? (formData.get('statusMessage') as string)
-		: undefined;
+	const result = settingsSchema.safeParse({
+		isEmployed: formData.get('isEmployed') === 'on',
+		resumeUrl: formData.get('resumeUrl') ?? '',
+		statusMessage: formData.get('statusMessage') ?? '',
+	});
+	if (!result.success) throw new Error('Invalid settings data.');
+	const { isEmployed, resumeUrl, statusMessage } = result.data;
 
 	const [existingSettings] = await db.select().from(siteSettings).limit(1);
 
+	if (!existingSettings) throw new Error('Settings not found.');
 	if (existingSettings.isEmployed !== Boolean(isEmployed)) {
 		await db.insert(employmentHistory).values({
 			isEmployed: Boolean(isEmployed),
