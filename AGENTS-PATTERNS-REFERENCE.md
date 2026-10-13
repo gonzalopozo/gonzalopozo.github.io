@@ -345,7 +345,7 @@ export async function GET(request: NextRequest) {
 
 **File**: `proxy.ts` — Runs on every matching request before the route is rendered. Used for redirects, rewrites, header modifications, and CSP nonce generation.
 
-**Used in project**: Yes — root `proxy.ts` handles optimistic auth redirects and administrative CSP; `next.config.ts` owns the static public CSP. Nonces are a Preview-only candidate, not validated production behavior.
+**Used in project**: Yes — root `proxy.ts` handles optimistic auth redirects and administrative CSP; `next.config.ts` owns the static public CSP. Administrative nonces are supported in Preview and Production after protected Preview validation; see the rollout status in `AGENTS-SECURITY-REFERENCE.md`.
 
 **Documented in**: `AGENTS-SECURITY.md` > Content Security Policy, Auth Protection Pattern.
 

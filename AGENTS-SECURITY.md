@@ -22,8 +22,9 @@ Security guidelines for the portfolio project — all security layers for a Next
 ## Content Security Policy (CSP)
 
 CSP is configured with independent public and administrative policies. Both default to
-**report-only**. Browser enforcement and deployed rendering/caching compatibility
-still require protected Preview validation; automated commit checks do not establish them.
+**report-only**. Validate browser enforcement and deployed rendering/caching
+compatibility in protected Preview before production activation; automated commit
+checks do not establish them.
 Use the protected Preview procedure in [the reference](./AGENTS-SECURITY-REFERENCE.md#csp-rollout-and-verification).
 
 ### Policy ownership and rendering
@@ -36,8 +37,9 @@ Use the protected Preview procedure in [the reference](./AGENTS-SECURITY-REFEREN
 - `lib/security/csp.ts` constructs policies and validates configuration.
 - `CSP_PUBLIC_MODE` and `CSP_ADMIN_MODE` accept `report-only` (default) or `enforce`.
   Unknown values fail configuration rather than silently disabling the policy.
-- `CSP_ADMIN_POLICY=static` is the default and safe fallback. `nonce` is an
-  **unverified candidate restricted to `VERCEL_ENV=preview`**; Production rejects it.
+- `CSP_ADMIN_POLICY=static` is the default and safe fallback. `nonce` is supported
+  when `VERCEL_ENV` is `preview` or `production`, after protected Preview validation.
+  Unknown policies and unsupported nonce environments fail configuration.
 - Public and administrative routes use separate root layouts and shared document
   providers. Crossing roots loads a new document; CSP on an RSC navigation response
   does not replace the current document policy. Use document navigation for policy
@@ -68,24 +70,27 @@ Remote image optimizer patterns are separate from browser CSP: optimized remote
 images arrive through same-origin `/_next/image`. Server-side Last.fm, Spotify,
 Turso, and OG-image fetches do not require browser `connect-src` allowances.
 
-### Nonce candidate
+### Administrative nonces
 
 The existing shared root could not receive an administrative nonce without adding
 request dependencies to the public layout or leaving the theme script unapproved.
-Separate roots avoid that conflict. The candidate administrative root waits for
+Separate roots avoid that conflict. The administrative root waits for
 headers inside Suspense **above the document**, producing an empty static shell.
-Installed Next.js 16.2.6 source explicitly accommodates this arrangement. Whether
-all generated scripts are correctly nonced remains a production-build/browser gate.
+Installed Next.js 16.2.6 source explicitly accommodates this arrangement. Verify
+generated script nonces in a production build/browser after framework changes.
 
-Preview nonces use 32 cryptographically random bytes per matched request. The CSP
-request header and `x-nonce` reach Next.js; the theme provider receives that nonce.
+Administrative nonces use 32 cryptographically random bytes per matched request.
+The CSP request header and `x-nonce` reach Next.js; the theme provider receives that nonce.
 Script policy uses `nonce` plus `strict-dynamic`, without production inline-script
 allowances. Styles retain their documented compatibility allowance.
 
-Do not promote this candidate based only on report-only observation. Test actual
+Do not activate nonces based only on report-only observation. Test actual
 enforcement, streaming, errors, navigation, actions, and hydration in an isolated,
-protected Preview. If any gate fails, keep the static administrative policy. Do not
-add a production nonce bypass or disable Cache Components to silence failures.
+protected Preview. The project owner reports these rollout gates completed; see
+the dated status in the reference. Production activation still requires verifying
+the promotion change and checking the deployed headers and flows.
+If any gate fails, restore the static administrative policy. Do not weaken nonce
+directives or disable Cache Components to silence failures.
 
 ### Shared-origin threat model
 
@@ -327,8 +332,8 @@ better-auth manages session cookies with flags: `httpOnly: true`, `secure: true`
 
 ## Setup Checklist (TODO)
 
-- [x] Add independent public/admin report-only CSP and preview-only nonce candidate
-- [ ] Complete protected Preview baseline and enforcement validation
+- [x] Add independent public/admin CSP and support administrative nonces in Preview/Production
+- [x] Complete protected Preview baseline and enforcement validation (owner-reported)
 - [ ] Configure `ADMIN_USER_IDS` separately in each environment
 - [ ] Activate validated policies and record browser/caching evidence
 - [x] Add security headers to `next.config.ts`

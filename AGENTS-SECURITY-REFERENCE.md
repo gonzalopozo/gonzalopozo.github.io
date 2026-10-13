@@ -13,13 +13,13 @@ Read the actual sources rather than copying a second policy implementation:
 Public layout rendering never reads request headers. Shared fonts/providers live in
 `components/app-document.tsx`; `app/layout.tsx` is replaced by separate route roots.
 
-| Setting                       | Default                  | Supported use                                        |
-| ----------------------------- | ------------------------ | ---------------------------------------------------- |
-| `CSP_PUBLIC_MODE`             | `report-only`            | `enforce` after public acceptance gates              |
-| `CSP_ADMIN_MODE`              | `report-only`            | `enforce` after admin acceptance gates               |
-| `CSP_ADMIN_POLICY`            | `static`                 | `nonce` only when `VERCEL_ENV=preview`               |
-| `ADMIN_USER_IDS`              | No privileges            | Comma-separated manually provisioned stable user IDs |
-| `BETTER_AUTH_TRUSTED_ORIGINS` | Fixed production origins | Explicit development/Preview origin extensions       |
+| Setting                       | Default                  | Supported use                                          |
+| ----------------------------- | ------------------------ | ------------------------------------------------------ |
+| `CSP_PUBLIC_MODE`             | `report-only`            | `enforce` after public acceptance gates                |
+| `CSP_ADMIN_MODE`              | `report-only`            | `enforce` after admin acceptance gates                 |
+| `CSP_ADMIN_POLICY`            | `static`                 | `nonce` when `VERCEL_ENV` is `preview` or `production` |
+| `ADMIN_USER_IDS`              | No privileges            | Comma-separated manually provisioned stable user IDs   |
+| `BETTER_AUTH_TRUSTED_ORIGINS` | Fixed production origins | Explicit development/Preview origin extensions         |
 
 CSP modes in `next.config.ts` are build configuration. Redeploy/rebuild for a mode
 change rather than assuming a runtime environment edit changes built header rules.
@@ -27,21 +27,21 @@ Keep proxy and layout environment settings identical within a deployment.
 
 ### Production policy inventory
 
-| Directive                              | Public                                          | Administrative static / nonce candidate                      |
-| -------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------ |
-| `default-src`                          | `'self'`                                        | `'self'`                                                     |
-| `script-src`                           | `'self' 'unsafe-inline'`                        | Static: same; candidate: `'self' 'nonce-…' 'strict-dynamic'` |
-| `script-src-attr`                      | `'none'`                                        | `'none'`                                                     |
-| `style-src`                            | `'self' 'unsafe-inline'`                        | Same; required for existing styles and Sonner                |
-| `img-src`                              | `'self' data: blob:` and configured Blob origin | `'self' data:` and configured Blob origin                    |
-| `font-src`                             | `'self'`                                        | `'self'`                                                     |
-| `connect-src`                          | `'self'` and exact Carto origins                | `'self'`                                                     |
-| `worker-src`, `child-src`              | `'self' blob:`                                  | `'none'`                                                     |
-| `media-src`, `frame-src`, `object-src` | `'none'`                                        | `'none'`                                                     |
-| `base-uri`                             | `'none'`                                        | `'none'`                                                     |
-| `form-action`                          | `'self'`                                        | `'self'`                                                     |
-| `frame-ancestors`                      | `'none'`                                        | `'none'`                                                     |
-| `upgrade-insecure-requests`            | Enforced (prod)                                 | Enforced (prod)                                              |
+| Directive                              | Public                                          | Administrative static / nonce                            |
+| -------------------------------------- | ----------------------------------------------- | -------------------------------------------------------- |
+| `default-src`                          | `'self'`                                        | `'self'`                                                 |
+| `script-src`                           | `'self' 'unsafe-inline'`                        | Static: same; nonce: `'self' 'nonce-…' 'strict-dynamic'` |
+| `script-src-attr`                      | `'none'`                                        | `'none'`                                                 |
+| `style-src`                            | `'self' 'unsafe-inline'`                        | Same; required for existing styles and Sonner            |
+| `img-src`                              | `'self' data: blob:` and configured Blob origin | `'self' data:` and configured Blob origin                |
+| `font-src`                             | `'self'`                                        | `'self'`                                                 |
+| `connect-src`                          | `'self'` and exact Carto origins                | `'self'`                                                 |
+| `worker-src`, `child-src`              | `'self' blob:`                                  | `'none'`                                                 |
+| `media-src`, `frame-src`, `object-src` | `'none'`                                        | `'none'`                                                 |
+| `base-uri`                             | `'none'`                                        | `'none'`                                                 |
+| `form-action`                          | `'self'`                                        | `'self'`                                                 |
+| `frame-ancestors`                      | `'none'`                                        | `'none'`                                                 |
+| `upgrade-insecure-requests`            | Enforced (prod)                                 | Enforced (prod)                                          |
 
 Carto origins: `basemaps.cartocdn.com`, `tiles.basemaps.cartocdn.com`, and
 `tiles-a` through `tiles-d.basemaps.cartocdn.com`, all HTTPS. Stylesheet glyphs are
@@ -86,20 +86,24 @@ for nonce extraction even when the **response** is report-only. This request hea
 does not enforce anything in the browser. `x-nonce` is overwritten with 32 random
 bytes encoded as base64. Incoming policy/nonce headers cannot select the nonce.
 
-The preview admin root places its asynchronous document behind Suspense above
+The administrative root places its asynchronous document behind Suspense above
 `html`/`body`. Installed `dynamic-rendering.js` explicitly permits this empty-shell
 case. This is source-level feasibility evidence, **not proof of nonce injection or
-browser compatibility**. No administrative nonce switch is accepted in Production.
-Do not remove that gate until the production-build and isolated enforcement tests
-below pass and production activation is separately authorized.
+browser compatibility**. Administrative nonces are supported in Preview and
+Production. Continue validating nonce injection, streaming, and browser behavior
+after framework changes, and retain the static fallback for compatibility failures.
 
 ---
 
 ## CSP Rollout and Verification
 
-**Current status: implementation prepared; protected Preview, browser enforcement,
-deployed rendering/cache behavior, and CDN validation remain pending. Record
-automated pre-commit check results separately; they do not satisfy these release gates.**
+**Status reported by the project owner on 2026-10-13:** implementation verification,
+protected report-only Preview, public/admin static enforcement, production static
+activation, and enforced administrative nonce Preview validation are completed.
+Detailed browser/cache captures are not recorded here. This promotion change permits
+production nonces; its pre-commit verification and production nonce deployment/header
+checks remain pending. Record automated check results separately; they do not satisfy
+browser or deployment gates.
 
 Follow `AGENTS.md`: checks, including formatting, lint, types, tests, and builds,
 run only after the user requests a commit. The mandated pre-commit subagent performs
@@ -146,15 +150,17 @@ Do not include script samples, credentials, full query strings, or private conte
 
 ### 3. Validate actual enforcement in isolated Preview
 
-First enable public enforcement with static admin observation. Then use the
-administrative candidate with `CSP_ADMIN_POLICY=nonce` and `CSP_ADMIN_MODE=enforce`
-on another protected Preview. `VERCEL_ENV=preview` is supplied by Vercel. A local
-production-mode candidate server requires explicitly setting that preview environment.
+First enable public enforcement with static admin observation, then enforce static
+administration. Evaluate administrative nonces separately with
+`CSP_ADMIN_POLICY=nonce` and `CSP_ADMIN_MODE=enforce` on another protected Preview.
+Vercel supplies `VERCEL_ENV=preview` for Preview and `production` for Production.
+A local production-mode nonce validation server requires explicitly setting
+`VERCEL_ENV=preview`.
 
 After the commit request permits the build phase, the dedicated pre-commit agent
 runs `pnpm build`. For authorized local production-mode browser validation, start
 that build using `pnpm start`. Never use a development server as production evidence.
-The candidate build and runtime must use identical environment configuration.
+The validation build and runtime must use identical environment configuration.
 
 The opt-in browser suite targets an existing server and does not start/build one:
 
@@ -205,9 +211,17 @@ Verify that dashboard/session data is absent from public artifacts/shared caches
 Private data leakage, missing authorization, blocked essential scripts, hydration
 failure, or lost eligible public prerendering is a release blocker.
 
-The static fallback can be activated after its own validation. The nonce candidate
-cannot enter Production in this implementation. If proven reliable, a separately
-reviewed change removes its Preview-only gate before staged authorized activation.
+The static fallback can be activated after its own validation. After enforced nonce
+Preview validation and the promotion commit checks pass, redeploy Production with:
+
+```env
+CSP_PUBLIC_MODE=enforce
+CSP_ADMIN_MODE=enforce
+CSP_ADMIN_POLICY=nonce
+```
+
+Keep public rendering/caching static. Inspect deployed public/admin document headers,
+matching script nonces, login/logout, navigation, CMS operations, and revalidation.
 If unproven or incompatible, retain static administration and document its inline-XSS
 limitation. Never relax production evaluation or disable public Cache Components.
 
@@ -215,7 +229,7 @@ limitation. Never relax production evaluation or disable public Cache Components
 
 Redeploy with the affected mode set to `report-only`; leave the other policy,
 allowlist, Origin checks, general headers, and public cache behavior intact.
-For a failing nonce Preview, restore `CSP_ADMIN_POLICY=static` as well. No database
+For a failing nonce deployment, restore `CSP_ADMIN_POLICY=static` as well. No database
 rollback is needed. Do not solve an admin failure by disabling the public policy.
 
 After activation, inspect public and admin flows after deployment and after dependency

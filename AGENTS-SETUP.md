@@ -10,8 +10,22 @@ and Production; never use a `NEXT_PUBLIC_` variable.
 
 `CSP_PUBLIC_MODE` and `CSP_ADMIN_MODE` default to `report-only`. Set either to
 `enforce` only after its protected Preview validation gates pass. `CSP_ADMIN_POLICY`
-defaults to `static`; the `nonce` candidate is permitted only in Vercel Preview and
-is not verified or enabled in Production.
+defaults to `static`; `nonce` is supported when `VERCEL_ENV` is `preview` or
+`production`. Vercel supplies that environment value. Keep `static` for local
+development, or explicitly set `VERCEL_ENV=preview` for a local production-mode
+nonce validation server.
+
+After the protected Preview acceptance gates pass, the production configuration is:
+
+```env
+CSP_PUBLIC_MODE=enforce
+CSP_ADMIN_MODE=enforce
+CSP_ADMIN_POLICY=nonce
+```
+
+Redeploy after changing these settings. Nonces apply only to administrative
+documents; the public policy remains static to preserve public rendering/caching.
+Restore `CSP_ADMIN_POLICY=static` and redeploy if administrative compatibility fails.
 
 `BETTER_AUTH_TRUSTED_ORIGINS` can contain comma-separated explicit Preview HTTPS
 origins or HTTP local development origins such as `http://localhost:3000`. Configure
@@ -25,7 +39,7 @@ Malformed entries stop authentication initialization with an error naming the
 variable and entry number. Restart the development server after editing its env file.
 
 See [security configuration and rollout](./AGENTS-SECURITY-REFERENCE.md) for policy
-ownership, resource allowances, pending validation, and rollback procedures.
+ownership, resource allowances, validation status, and rollback procedures.
 
 First-time setup, environment configuration, and development prerequisites.
 

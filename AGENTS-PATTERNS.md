@@ -17,7 +17,7 @@ Design patterns and architecture guidelines for the portfolio project.
 
 **Related coverage in other AGENTS files (do not duplicate):**
 
-- `AGENTS-SECURITY.md` — Server Action auth/validation rules, public static CSP and administrative Preview nonce candidate
+- `AGENTS-SECURITY.md` — Server Action auth/validation rules, public static CSP and administrative nonces in Preview/Production
 - `AGENTS-TESTING.md` — TDD for Zod schemas, Server Action test patterns
 - `AGENTS-PERFORMANCE.md` — Server vs Client decision tree, loading/streaming
 - `AGENTS-ACCESSIBILITY.md` — Semantic layout landmarks, heading hierarchy
