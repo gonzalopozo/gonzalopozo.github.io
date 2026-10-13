@@ -99,10 +99,10 @@ export function AdminHeader() {
 
 			<div className="flex items-center gap-2">
 				<Button variant="outline" size="sm" asChild>
-					<Link href="/" target="_blank">
+					<a href="/" target="_blank" rel="noopener noreferrer">
 						<ExternalLink className="mr-2 size-4" />
 						View Site
-					</Link>
+					</a>
 				</Button>
 
 				{/* <DropdownMenu>

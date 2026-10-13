@@ -3,12 +3,10 @@
 import React, { useState } from 'react';
 import { Spinner } from '@/components/ui/spinner';
 import { authClient } from '@/lib/auth-client';
-import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 export function LogOutButton() {
 	const [loading, setLoading] = useState(false);
-	const { push } = useRouter();
 
 	const signOutUser = async (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault();
@@ -18,7 +16,7 @@ export function LogOutButton() {
 			fetchOptions: {
 				onSuccess: () => {
 					toast.success('Signed out successfully');
-					push('/login');
+					window.location.assign('/login');
 				},
 				onError: (error) => {
 					toast.error(`Failed to sign out: ${error.error.message}`);

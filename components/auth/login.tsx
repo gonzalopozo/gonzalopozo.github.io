@@ -1,7 +1,6 @@
 'use client';
 
 import { authClient } from '@/lib/auth-client';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Spinner } from '@/components/ui/spinner';
 import { toast } from 'sonner';
@@ -9,7 +8,6 @@ import { toast } from 'sonner';
 export function LoginForm() {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
-	const { push } = useRouter();
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -26,7 +24,7 @@ export function LoginForm() {
 			{
 				onSuccess: () => {
 					toast.success('Signed in successfully');
-					push('/dashboard');
+					window.location.assign('/dashboard');
 				},
 				onError: (ctx) => {
 					toast.error(`Failed to sign in: ${ctx.error.message}`);
