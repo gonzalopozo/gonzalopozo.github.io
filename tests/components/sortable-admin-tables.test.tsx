@@ -184,3 +184,25 @@ describe.each([
 		});
 	},
 );
+
+describe('project image controls', () => {
+	it('names the refresh action and connects pending controls to inline feedback', () => {
+		render(
+			<ProjectsTable
+				projects={projects}
+				onDelete={mocks.onDelete}
+				refreshOgImage={mocks.refreshOgImage}
+				pendingProjectId={1}
+				feedbackProjectId={1}
+				feedbackId="image-feedback"
+			/>,
+		);
+		const refresh = screen.getByRole<HTMLButtonElement>('button', {
+			name: 'Actualizar imagen Open Graph de Portfolio',
+		});
+		expect(refresh.disabled).toBe(true);
+		expect(refresh.getAttribute('aria-busy')).toBe('true');
+		expect(refresh.getAttribute('aria-describedby')).toBe('image-feedback');
+		expect(screen.getByRole('table').getAttribute('aria-busy')).toBe('true');
+	});
+});

@@ -19,7 +19,10 @@ import { toast } from 'sonner';
 interface ProjectsTableProps {
 	projects: ProjectInfo[];
 	onDelete: (id: number) => void;
-	refreshOgImage: (id: number) => Promise<void | null>;
+	refreshOgImage: (id: number) => Promise<void>;
+	pendingProjectId?: number;
+	feedbackProjectId?: number;
+	feedbackId?: string;
 }
 
 function getStatusVariant(status: string): 'default' | 'secondary' | 'outline' {
@@ -44,6 +47,9 @@ export function ProjectsTable({
 	projects: serverProjects,
 	onDelete,
 	refreshOgImage,
+	pendingProjectId,
+	feedbackProjectId,
+	feedbackId,
 }: ProjectsTableProps) {
 	const {
 		items: projects,
@@ -59,7 +65,7 @@ export function ProjectsTable({
 
 	return (
 		<DragDropProvider onDragEnd={handleDragEnd}>
-			<Table aria-busy={isSaving}>
+			<Table aria-busy={isSaving || pendingProjectId !== undefined}>
 				<TableHeader>
 					<TableRow>
 						<TableHead className="w-16">
@@ -159,29 +165,20 @@ export function ProjectsTable({
 							<TableCell className="text-right">
 								<div className="flex items-center justify-end gap-1">
 									<Button
-										onClick={async () => {
-											try {
-												const result = await refreshOgImage(project.id);
-												if (result === null) {
-													toast.error(
-														'No se pudo actualizar la imagen Open Graph',
-													);
-													return;
-												}
-												toast.success('Imagen Open Graph actualizada');
-											} catch (e: unknown) {
-												toast.error(
-													e instanceof Error
-														? e.message
-														: 'No se pudo actualizar la imagen Open Graph',
-												);
-											}
-										}}
+										onClick={() => void refreshOgImage(project.id)}
+										disabled={pendingProjectId !== undefined || isSaving}
+										aria-busy={pendingProjectId === project.id}
+										aria-label={`Actualizar imagen Open Graph de ${project.title}`}
+										aria-describedby={
+											feedbackProjectId === project.id
+												? feedbackId
+												: undefined
+										}
 										variant="ghost"
 										size="sm"
-										className="cursor-pointer gap-1.5"
+										className="min-h-11 min-w-11 cursor-pointer gap-1.5"
 									>
-										<RxUpdate className="size-3.5" />
+										<RxUpdate aria-hidden="true" />
 									</Button>
 									<Button variant="ghost" size="sm" asChild>
 										<Link
@@ -194,6 +191,12 @@ export function ProjectsTable({
 									</Button>
 									<Button
 										onClick={() => onDelete(project.id)}
+										disabled={pendingProjectId !== undefined || isSaving}
+										aria-describedby={
+											feedbackProjectId === project.id
+												? feedbackId
+												: undefined
+										}
 										variant="destructive"
 										size="sm"
 										className="gap-1.5"

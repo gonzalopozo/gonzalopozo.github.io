@@ -2,7 +2,7 @@
 
 import { db } from '@/db';
 import { projects, projectSkills } from '@/db/schema/portfolio';
-import { and, eq, gte, inArray, lte, ne, sql } from 'drizzle-orm';
+import { and, eq, gte, inArray, isNull, lte, ne, sql } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 import { projectSchema } from '@/lib/schemas/projects';
 import { entityIdSchema } from '@/lib/schemas/common';
@@ -10,6 +10,12 @@ import { revalidatePath, updateTag } from 'next/cache';
 import { PUBLIC_PROJECTS_CACHE_TAG } from '@/lib/cache-tags';
 import { requireAdmin } from '@/lib/admin';
 import { deleteOldImageInVercelBlob, saveImageInVercelBlob } from '@/lib/og-image';
+import { reportOgImageError } from '@/lib/og-image-errors';
+import {
+	getOgImageWarningRedirect,
+	type OgImageError,
+	type ProjectImageActionResult,
+} from '@/lib/og-image-feedback';
 
 interface ProjectSkill {
 	projectId: number;
@@ -31,6 +37,46 @@ function parseProject(formData: FormData) {
 	});
 	if (!result.success) throw new Error('Invalid project data.');
 	return result.data;
+}
+
+/** Store the new reference before deleting the previous image; clean unused uploads on failure. */
+async function replaceProjectImage(
+	projectId: number,
+	url: string,
+	previousImage: string | null,
+): Promise<ProjectImageActionResult> {
+	const uploaded = await saveImageInVercelBlob(url, projectId);
+	if (!uploaded.ok) return uploaded;
+	try {
+		const saved = await db
+			.update(projects)
+			.set({ ogImageUrl: uploaded.url })
+			.where(
+				and(
+					eq(projects.id, projectId),
+					eq(projects.url, url),
+					previousImage
+						? eq(projects.ogImageUrl, previousImage)
+						: isNull(projects.ogImageUrl),
+				),
+			)
+			.returning({ id: projects.id });
+		if (saved.length === 0) throw new Error('Project image state changed');
+	} catch {
+		const error = reportOgImageError('persist-failed', 'persistence', projectId);
+		// The deletion helper independently logs any secondary cleanup failure.
+		await deleteOldImageInVercelBlob(uploaded.url, projectId);
+		return { ok: false, error };
+	}
+	if (previousImage && previousImage !== uploaded.url) {
+		const cleanup = await deleteOldImageInVercelBlob(previousImage, projectId);
+		if (!cleanup.ok) return { ok: true, warning: cleanup.error };
+	}
+	return { ok: true };
+}
+
+function getImageIssue(result: ProjectImageActionResult): OgImageError | undefined {
+	return result.ok ? result.warning : result.error;
 }
 
 export async function createProject(formData: FormData) {
@@ -65,27 +111,18 @@ export async function createProject(formData: FormData) {
 
 	if (projectSkillsInsert.length) await db.insert(projectSkills).values(projectSkillsInsert);
 
-	if (url) {
-		try {
-			const uploadedImageUrl = await saveImageInVercelBlob(url, newProjectId);
-
-			if (uploadedImageUrl) {
-				try {
-					await db
-						.update(projects)
-						.set({ ogImageUrl: uploadedImageUrl })
-						.where(eq(projects.id, newProjectId));
-				} catch (e) {
-					console.error(e);
-				}
-			}
-		} catch (e) {
-			console.error(e);
-		}
-	}
+	const imageIssue = url
+		? getImageIssue(await replaceProjectImage(newProjectId, url, null))
+		: undefined;
 
 	updateTag(PUBLIC_PROJECTS_CACHE_TAG);
-	redirect('/dashboard/projects');
+	redirect(
+		getOgImageWarningRedirect(
+			imageIssue
+				? { projectId: newProjectId, operation: 'create', error: imageIssue }
+				: undefined,
+		),
+	);
 }
 
 export async function updateProject(id: number, formData: FormData) {
@@ -159,60 +196,63 @@ export async function updateProject(id: number, formData: FormData) {
 			);
 	}
 
+	let imageIssue: OgImageError | undefined;
 	if (url && url !== oldUrls[0].url) {
+		imageIssue = getImageIssue(await replaceProjectImage(id, url, oldOpenGraphImageUrl));
+	} else if (!url && oldOpenGraphImageUrl) {
+		let cleared = false;
 		try {
-			const uploadedImageUrl = await saveImageInVercelBlob(url, id);
-
-			if (uploadedImageUrl) {
-				try {
-					await db
-						.update(projects)
-						.set({ ogImageUrl: uploadedImageUrl })
-						.where(eq(projects.id, id));
-
-					if (oldOpenGraphImageUrl) {
-						await deleteOldImageInVercelBlob(oldOpenGraphImageUrl);
-					}
-				} catch (e) {
-					console.error(e);
-				}
-			}
-		} catch (e) {
-			console.error(e);
+			const saved = await db
+				.update(projects)
+				.set({ ogImageUrl: null })
+				.where(
+					and(
+						eq(projects.id, id),
+						isNull(projects.url),
+						eq(projects.ogImageUrl, oldOpenGraphImageUrl),
+					),
+				)
+				.returning({ id: projects.id });
+			if (saved.length === 0) throw new Error('Project image state changed');
+			cleared = true;
+		} catch {
+			imageIssue = reportOgImageError('persist-failed', 'persistence', id);
 		}
-	} else if (!url) {
-		if (oldOpenGraphImageUrl) {
-			await deleteOldImageInVercelBlob(oldOpenGraphImageUrl);
-
-			try {
-				await db.update(projects).set({ ogImageUrl: null }).where(eq(projects.id, id));
-			} catch (e) {
-				console.error(e);
-			}
+		if (cleared) {
+			const cleanup = await deleteOldImageInVercelBlob(oldOpenGraphImageUrl, id);
+			if (!cleanup.ok) imageIssue = cleanup.error;
 		}
 	}
 
 	updateTag(PUBLIC_PROJECTS_CACHE_TAG);
-	redirect('/dashboard/projects');
+	redirect(
+		getOgImageWarningRedirect(
+			imageIssue ? { projectId: id, operation: 'update', error: imageIssue } : undefined,
+		),
+	);
 }
 
-export async function deleteProject(id: number) {
+export async function deleteProject(id: number): Promise<ProjectImageActionResult> {
 	await requireAdmin();
 	validateProjectId(id);
 
-	const [oldUrl] = await db
-		.select({ ogImageUrl: projects.ogImageUrl })
-		.from(projects)
-		.where(eq(projects.id, id));
-
-	if (oldUrl && oldUrl.ogImageUrl) {
-		await deleteOldImageInVercelBlob(oldUrl.ogImageUrl);
+	let deleted;
+	try {
+		[deleted] = await db.delete(projects).where(eq(projects.id, id)).returning({
+			ogImageUrl: projects.ogImageUrl,
+		});
+	} catch {
+		return { ok: false, error: reportOgImageError('project-delete-failed', 'persistence', id) };
 	}
 
-	await db.delete(projects).where(eq(projects.id, id));
+	// Delete only the image owned by the row that was actually removed.
+	const cleanup = deleted?.ogImageUrl
+		? await deleteOldImageInVercelBlob(deleted.ogImageUrl, id)
+		: ({ ok: true } as const);
 
 	updateTag(PUBLIC_PROJECTS_CACHE_TAG);
 	revalidatePath('/dashboard/projects');
+	return cleanup.ok ? { ok: true } : { ok: true, warning: cleanup.error };
 }
 
 export async function updateProjectOrder(projectId: number, newOrder: number): Promise<string> {
@@ -252,36 +292,32 @@ export async function updateProjectOrder(projectId: number, newOrder: number): P
 	return project.title;
 }
 
-export async function refreshProjectOgImage(projectId: number): Promise<void | null> {
+export async function refreshProjectOgImage(projectId: number): Promise<ProjectImageActionResult> {
 	await requireAdmin();
-	validateProjectId(projectId);
+	if (!entityIdSchema.safeParse(projectId).success) {
+		return { ok: false, error: reportOgImageError('invalid-project', 'persistence') };
+	}
 
-	const [project] = await db
-		.select({ url: projects.url, ogImageUrl: projects.ogImageUrl })
-		.from(projects)
-		.where(eq(projects.id, projectId));
-
-	if (!project?.url) throw new Error('Project has no image source.');
-
-	const uploadedImageUrl = await saveImageInVercelBlob(project.url, projectId);
-
-	if (!uploadedImageUrl) return null;
-
+	let project;
 	try {
-		await db
-			.update(projects)
-			.set({ ogImageUrl: uploadedImageUrl })
+		[project] = await db
+			.select({ url: projects.url, ogImageUrl: projects.ogImageUrl })
+			.from(projects)
 			.where(eq(projects.id, projectId));
-	} catch (e) {
-		console.error(e);
-		return null;
+	} catch {
+		return { ok: false, error: reportOgImageError('unexpected', 'persistence', projectId) };
+	}
+	if (!project) {
+		return { ok: false, error: reportOgImageError('not-found', 'persistence', projectId) };
+	}
+	if (!project.url) {
+		return { ok: false, error: reportOgImageError('no-source', 'page-url', projectId) };
 	}
 
-	const previousOgUrl = project.ogImageUrl;
-	if (previousOgUrl && previousOgUrl !== uploadedImageUrl) {
-		await deleteOldImageInVercelBlob(previousOgUrl);
-	}
+	const result = await replaceProjectImage(projectId, project.url, project.ogImageUrl);
+	if (!result.ok) return result;
 
 	updateTag(PUBLIC_PROJECTS_CACHE_TAG);
 	revalidatePath('/dashboard/projects');
+	return result;
 }

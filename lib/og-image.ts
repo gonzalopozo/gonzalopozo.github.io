@@ -3,7 +3,24 @@ import { requireAdmin } from '@/lib/admin';
 import { URL } from 'url';
 import { resolve4, resolve6 } from 'dns/promises';
 import * as cheerio from 'cheerio';
-import { type PutBlobResult, del, put } from '@vercel/blob';
+import { del, put } from '@vercel/blob';
+import { entityIdSchema } from '@/lib/schemas/common';
+import { reportOgImageError } from '@/lib/og-image-errors';
+import type {
+	OgImageErrorCode,
+	OgImageResult,
+	OgImageStage,
+	OgImageUploadResult,
+} from '@/lib/og-image-feedback';
+
+class OgImageOperationError extends Error {
+	constructor(
+		readonly code: OgImageErrorCode,
+		readonly httpStatus?: number,
+	) {
+		super(code);
+	}
+}
 
 /**
  * Retorna true/false dependiendo de si la dirección IP es invalida o valida respectivamente.
@@ -121,30 +138,30 @@ function isDnsMissingRecordsError(err: unknown): boolean {
  * Resuelve A y AAAA; falla si el DNS falla de forma irrecuperable o si alguna IP es privada.
  * Hosts solo IPv4 o solo IPv6: el otro resolve puede rechazar con ENODATA/ENOTFOUND — es normal.
  */
-async function assertHostnameHasOnlyPublicIps(hostname: string): Promise<boolean> {
+async function assertHostnameHasOnlyPublicIps(hostname: string): Promise<void> {
 	let v4: string[] = [];
 	try {
 		v4 = await resolve4(hostname);
 	} catch (e) {
-		if (!isDnsMissingRecordsError(e)) return false;
+		if (!isDnsMissingRecordsError(e)) throw new OgImageOperationError('dns-failed');
 	}
 
 	for (const ip of v4) {
-		if (isInvalidIpV4(ip)) return false;
+		if (isInvalidIpV4(ip)) throw new OgImageOperationError('blocked-url');
 	}
 
 	let v6: string[] = [];
 	try {
 		v6 = await resolve6(hostname);
 	} catch (e) {
-		if (!isDnsMissingRecordsError(e)) return false;
+		if (!isDnsMissingRecordsError(e)) throw new OgImageOperationError('dns-failed');
 	}
 
 	for (const ip of v6) {
-		if (isInvalidIpV6(ip)) return false;
+		if (isInvalidIpV6(ip)) throw new OgImageOperationError('blocked-url');
 	}
 
-	return v4.length > 0 || v6.length > 0;
+	if (v4.length === 0 && v6.length === 0) throw new OgImageOperationError('dns-failed');
 }
 
 function isPng(uInt8Array: Uint8Array): boolean {
@@ -213,208 +230,171 @@ function isAvif(uInt8Array: Uint8Array): boolean {
 	return false;
 }
 
-/**
- * Guarda la imagen en el storage (Vercel Blob)
- * @param url El url de la página la cual queremos obtener su open-graph image
- * @returns El string con la dirección de la imagen guarda en nuestro storage (Vercel Blob) o null si falla
- */
+const MAX_RESPONSE_BYTES = 5 * 1024 * 1024;
+
+function parseSourceUrl(value: string, base?: URL): URL {
+	let url: URL;
+	try {
+		if (value.length > 2048) throw new Error('Invalid URL');
+		url = new URL(value, base);
+	} catch {
+		throw new OgImageOperationError('invalid-url');
+	}
+	if (url.protocol !== 'https:' || url.username || url.password) {
+		throw new OgImageOperationError('blocked-url');
+	}
+	return url;
+}
+
+function isTimeout(error: unknown): boolean {
+	return error instanceof Error && (error.name === 'TimeoutError' || error.name === 'AbortError');
+}
+
+async function fetchSource(url: URL): Promise<Response> {
+	let response: Response;
+	try {
+		response = await fetch(url.toString(), {
+			redirect: 'error',
+			signal: AbortSignal.timeout(5_000),
+		});
+	} catch (error) {
+		throw new OgImageOperationError(isTimeout(error) ? 'timeout' : 'request-failed');
+	}
+	if (!response.ok) {
+		void response.body?.cancel().catch(() => {});
+		throw new OgImageOperationError('http-failed', response.status);
+	}
+	return response;
+}
+
+/** Enforce the limit on bytes as they arrive, including responses without Content-Length. */
+async function readLimitedBody(response: Response): Promise<Buffer> {
+	const contentLength = Number(response.headers.get('content-length'));
+	if (Number.isFinite(contentLength) && contentLength > MAX_RESPONSE_BYTES) {
+		void response.body?.cancel().catch(() => {});
+		throw new OgImageOperationError('too-large');
+	}
+	if (!response.body) return Buffer.alloc(0);
+	const reader = response.body.getReader();
+	const chunks: Uint8Array[] = [];
+	let size = 0;
+	try {
+		while (true) {
+			const { done, value } = await reader.read();
+			if (done) break;
+			size += value.byteLength;
+			if (size > MAX_RESPONSE_BYTES) {
+				void reader.cancel().catch(() => {});
+				throw new OgImageOperationError('too-large');
+			}
+			chunks.push(value);
+		}
+		return Buffer.concat(chunks, size);
+	} catch (error) {
+		if (error instanceof OgImageOperationError) throw error;
+		throw new OgImageOperationError(isTimeout(error) ? 'timeout' : 'request-failed');
+	} finally {
+		reader.releaseLock();
+	}
+}
+
+function assertContentType(response: Response, allowed: readonly string[]): void {
+	const contentType = response.headers.get('content-type')?.split(';')[0].trim().toLowerCase();
+	if (!contentType || !allowed.includes(contentType)) {
+		void response.body?.cancel().catch(() => {});
+		throw new OgImageOperationError('invalid-content-type');
+	}
+}
+
+const imageFormats = [
+	{ test: isPng, extension: 'png', contentType: 'image/png' },
+	{ test: isJpeg, extension: 'jpeg', contentType: 'image/jpeg' },
+	{ test: isWebP, extension: 'webp', contentType: 'image/webp' },
+	{ test: isGif, extension: 'gif', contentType: 'image/gif' },
+	{ test: isAvif, extension: 'avif', contentType: 'image/avif' },
+];
+
+/** Download and store an OG image, returning safe failure details for the administrator. */
 export async function saveImageInVercelBlob(
 	url: string,
 	projectId: number,
-): Promise<string | null> {
+): Promise<OgImageUploadResult> {
 	await requireAdmin();
-	console.log('URL original:', url);
-	if (!URL.canParse(url)) return null;
-
-	console.log('El url es parseable');
-
-	let webUrl: URL;
+	let stage: OgImageStage = 'page-url';
 	try {
-		webUrl = new URL(url);
-	} catch {
-		return null;
-	}
-
-	console.log('Se ha creado correctamente el objeto URL');
-
-	if (webUrl.protocol !== 'https:') return null;
-
-	console.log('El protocolo es https');
-
-	if (!(await assertHostnameHasOnlyPublicIps(webUrl.hostname))) return null;
-
-	console.log('El hostname de la página resuelve solo a IPs públicas (A y/o AAAA)');
-
-	let response: Response;
-
-	console.log('Haciendo fetch de la web...');
-
-	try {
-		response = await fetch(webUrl.toString(), {
-			redirect: 'error',
-			signal: AbortSignal.timeout(5_000),
-		});
-	} catch {
-		return null;
-	}
-
-	console.log('La web no nos intenta redireccionar ni ha superado el timeout de 5 segundos');
-
-	if (!response.ok) return null;
-
-	console.log('La respuesta del fetch fue exitosa');
-
-	const responseContentType = response.headers.get('content-type');
-	if (!responseContentType?.toLowerCase().includes('text/html')) return null;
-
-	console.log('El content-type de la respuesta es text/html');
-
-	const responseContentLength = response.headers.get('content-length');
-	if (responseContentLength !== null) {
-		const n = Number(responseContentLength);
-		if (Number.isFinite(n) && n > 5 * 1024 * 1024) return null;
-		console.log('El content-length de la respuesta es menor que 5 MB');
-	}
-
-	const html = await response.text();
-	if (html.length > 5 * 1024 * 1024) return null;
-	console.log('El contenido (html) de la respuesta es menor que 5 MB');
-
-	const htmlPage = cheerio.load(html);
-	const htmlMetaTag =
-		htmlPage(`meta[property="og:image"]`).length > 0
-			? htmlPage(`meta[property="og:image"]`)
-			: htmlPage(`meta[name="og:image"]`).length > 0
-				? htmlPage(`meta[name="og:image"]`)
-				: null;
-	if (!htmlMetaTag) return null;
-
-	console.log(`Cargamos la web y tiene un tag meta con property/name "og:image"`);
-
-	const ogImageUrl = htmlMetaTag.attr('content');
-	if (!ogImageUrl) return null;
-
-	console.log('El tag meta contiene un atributo content');
-
-	let ogImageNormalizedUrl: URL;
-	try {
-		ogImageNormalizedUrl = new URL(ogImageUrl, webUrl);
-	} catch {
-		return null;
-	}
-
-	console.log('Se ha creado correctamente el objeto URL para el link de la open-graph image');
-
-	if (ogImageNormalizedUrl.protocol !== 'https:') return null;
-
-	console.log('El protocolo del link de la open-graph image es https');
-
-	if (!(await assertHostnameHasOnlyPublicIps(ogImageNormalizedUrl.hostname))) return null;
-
-	console.log('El hostname de la og:image resuelve solo a IPs públicas (A y/o AAAA)');
-
-	let imageResponse: Response;
-
-	console.log('Haciendo fetch de la imagen...');
-
-	try {
-		imageResponse = await fetch(ogImageNormalizedUrl.toString(), {
-			redirect: 'error',
-			signal: AbortSignal.timeout(5_000),
-		});
-	} catch {
-		return null;
-	}
-
-	console.log(
-		'El fetch de la imagen no nos intenta redireccionar ni ha superado el timeout de 5 segundos',
-	);
-
-	if (!imageResponse.ok) return null;
-
-	console.log('La respuesta del fetch de la imagen fue exitosa');
-
-	let imageResponseContentType = imageResponse.headers.get('content-type');
-	if (imageResponseContentType && imageResponseContentType.includes(';'))
-		imageResponseContentType = imageResponseContentType.split(';')[0].trim().toLowerCase();
-	if (!imageResponseContentType) return null;
-	const validImageContentTypes = [
-		'image/png',
-		'image/jpg',
-		'image/jpeg',
-		'image/webp',
-		'image/gif',
-		'image/avif',
-	];
-	if (!validImageContentTypes.includes(imageResponseContentType.toLowerCase())) return null;
-
-	console.log('El content-type de la respuesta de la imagen es un tipo valido de imagen');
-
-	const imageAsBuffer = await imageResponse.arrayBuffer();
-	if (imageAsBuffer.byteLength > 5 * 1024 * 1024) return null;
-
-	console.log('La imagen no supera las 5MB');
-
-	const imageAsUint8Array = new Uint8Array(imageAsBuffer);
-
-	if (
-		!isPng(imageAsUint8Array) &&
-		!isJpeg(imageAsUint8Array) &&
-		!isWebP(imageAsUint8Array) &&
-		!isGif(imageAsUint8Array) &&
-		!isAvif(imageAsUint8Array)
-	)
-		return null;
-
-	const formatByMagicBytes: Array<{ test: (b: Uint8Array) => boolean; ext: string }> = [
-		{ test: isPng, ext: 'png' },
-		{ test: isJpeg, ext: 'jpeg' },
-		{ test: isWebP, ext: 'webp' },
-		{ test: isGif, ext: 'gif' },
-		{ test: isAvif, ext: 'avif' },
-	];
-
-	let imageExtension: string | undefined;
-	for (const { test, ext } of formatByMagicBytes) {
-		if (test(imageAsUint8Array)) {
-			imageExtension = ext;
-			break;
+		if (!entityIdSchema.safeParse(projectId).success) {
+			throw new OgImageOperationError('invalid-project');
 		}
+		const webUrl = parseSourceUrl(url);
+		stage = 'page-dns';
+		await assertHostnameHasOnlyPublicIps(webUrl.hostname);
+		stage = 'page-fetch';
+		const response = await fetchSource(webUrl);
+		assertContentType(response, ['text/html']);
+		stage = 'page-body';
+		const html = await readLimitedBody(response);
+		stage = 'metadata';
+		const page = cheerio.load(html.toString('utf8'));
+		const meta =
+			page('meta[property="og:image"]').length > 0
+				? page('meta[property="og:image"]')
+				: page('meta[name="og:image"]');
+		const imageUrl = meta.attr('content')?.trim();
+		if (!imageUrl) throw new OgImageOperationError('missing-image');
+		stage = 'image-url';
+		const normalizedImageUrl = parseSourceUrl(imageUrl, webUrl);
+		stage = 'image-dns';
+		await assertHostnameHasOnlyPublicIps(normalizedImageUrl.hostname);
+		stage = 'image-fetch';
+		const imageResponse = await fetchSource(normalizedImageUrl);
+		assertContentType(imageResponse, [
+			'image/png',
+			'image/jpg',
+			'image/jpeg',
+			'image/webp',
+			'image/gif',
+			'image/avif',
+		]);
+		stage = 'image-body';
+		const image = await readLimitedBody(imageResponse);
+		const format = imageFormats.find(({ test }) => test(image));
+		if (!format) throw new OgImageOperationError('invalid-image');
+		stage = 'upload';
+		let uploadedImage;
+		try {
+			uploadedImage = await put(
+				`og-images/${projectId}-${Date.now()}.${format.extension}`,
+				image,
+				{
+					access: 'public',
+					contentType: format.contentType,
+					cacheControlMaxAge: 31536000,
+					// Concurrent attempts must not share a blob that a failed save might delete.
+					addRandomSuffix: true,
+				},
+			);
+		} catch {
+			throw new OgImageOperationError('upload-failed');
+		}
+		return { ok: true, url: uploadedImage.url };
+	} catch (error) {
+		const code = error instanceof OgImageOperationError ? error.code : 'unexpected';
+		const status = error instanceof OgImageOperationError ? error.httpStatus : undefined;
+		return { ok: false, error: reportOgImageError(code, stage, projectId, status) };
 	}
-
-	if (!imageExtension) return null;
-
-	console.log('La imagen es comprobando con los magic bytes de un tipo valido de imagen');
-
-	const timestamp = Date.now();
-	let imageUploaded: PutBlobResult;
-	try {
-		imageUploaded = await put(
-			`og-images/${projectId}-${timestamp}.${imageExtension}`,
-			imageAsBuffer,
-			{
-				access: 'public',
-				contentType: imageResponseContentType!,
-				cacheControlMaxAge: 31536000,
-				addRandomSuffix: false,
-			},
-		);
-	} catch {
-		return null;
-	}
-
-	console.log('La imagen se ha subido correctamente a Vercel Blob');
-
-	return imageUploaded.url;
 }
 
-export async function deleteOldImageInVercelBlob(oldImage: string) {
+/** A cleanup failure must not hide the success of the project save or image refresh. */
+export async function deleteOldImageInVercelBlob(
+	oldImage: string,
+	projectId?: number,
+): Promise<OgImageResult> {
 	await requireAdmin();
-	if (oldImage) {
-		try {
-			await del(oldImage);
-		} catch (e) {
-			console.log('Borrado de la imagen antigua fallido', e);
-		}
+	if (!oldImage) return { ok: true };
+	try {
+		await del(oldImage);
+		return { ok: true };
+	} catch {
+		return { ok: false, error: reportOgImageError('delete-failed', 'cleanup', projectId) };
 	}
 }
