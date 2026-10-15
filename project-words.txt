@@ -37,12 +37,14 @@ gideon
 Arroyomolinos
 Carto
 redireccionar
+redirecciones
 styledata
 unclustered
 Unclustered
 
 # Node / DNS
 ESOCKETNODATA
+ETIMEOUT
 
 # CSP / Next.js rendering terminology
 basemaps
