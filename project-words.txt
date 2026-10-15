@@ -115,11 +115,13 @@ wcag
 
 # Lastfm / Spotify / external images
 domcontentloaded
+getrecenttracks
 lastfm
 mzstatic
 nowplaying
 oembed
 recenttracks
+scdn
 spotify
 spotifycdn
 unsplash
