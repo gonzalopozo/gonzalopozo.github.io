@@ -14,6 +14,7 @@ import {
 	Wrench,
 	Settings,
 	Link2,
+	Music,
 	ExternalLink,
 	Boxes,
 } from 'lucide-react';
@@ -32,6 +33,7 @@ const navigation = [
 	{ name: 'Experiences', href: '/dashboard/experiences', icon: Briefcase },
 	{ name: 'Skills', href: '/dashboard/skills', icon: Wrench },
 	{ name: 'Social Links', href: '/dashboard/social-links', icon: Link2 },
+	{ name: 'Music Status', href: '/dashboard/music-status', icon: Music },
 	{ name: 'Settings', href: '/dashboard/settings', icon: Settings },
 ];
 
