@@ -7,15 +7,15 @@ vi.mock('next/cache', () => ({
 }));
 
 vi.mock('@/lib/spotify-oembed', () => ({
-	getSpotifyOEmbedThumbnailUrl: vi.fn(),
+	getSpotifyOEmbedResult: vi.fn(),
 }));
 vi.mock('@/lib/spotify-search-scraper', () => ({
-	findExactSpotifyTrackUrlFromSearch: vi.fn(),
+	findExactSpotifyTrackResult: vi.fn(),
 }));
 
-import { getTrack } from '@/lib/queries/last-fm';
-import { getSpotifyOEmbedThumbnailUrl } from '@/lib/spotify-oembed';
-import { findExactSpotifyTrackUrlFromSearch } from '@/lib/spotify-search-scraper';
+import { getTrack, getMusicSnapshot } from '@/lib/queries/last-fm';
+import { getSpotifyOEmbedResult } from '@/lib/spotify-oembed';
+import { findExactSpotifyTrackResult } from '@/lib/spotify-search-scraper';
 
 interface LastFmTrackJSON {
 	'@attr'?: { nowplaying?: string };
@@ -56,23 +56,35 @@ function stubLastFmResponse(track: LastFmTrackJSON | LastFmTrackJSON[], status =
 
 describe('getTrack', () => {
 	beforeEach(() => {
+		vi.spyOn(console, 'error').mockImplementation(() => undefined);
+		vi.spyOn(console, 'warn').mockImplementation(() => undefined);
 		vi.stubEnv('LASTFM_USERNAME', 'demo');
 		vi.stubEnv('LASTFM_API_KEY', 'secret');
-		vi.mocked(getSpotifyOEmbedThumbnailUrl).mockResolvedValue(null);
-		vi.mocked(findExactSpotifyTrackUrlFromSearch).mockResolvedValue(null);
+		vi.mocked(getSpotifyOEmbedResult).mockResolvedValue({
+			status: 'skipped',
+			data: null,
+			issues: [],
+		});
+		vi.mocked(findExactSpotifyTrackResult).mockResolvedValue({
+			status: 'empty',
+			data: null,
+			issues: [],
+		});
 	});
 
 	afterEach(() => {
 		vi.unstubAllGlobals();
 		vi.clearAllMocks();
+		vi.restoreAllMocks();
+		vi.unstubAllEnvs();
 	});
 
 	it('returns null when the Last.fm API responds with an error status', async () => {
 		stubLastFmResponse(buildTrack(), 500);
 
 		await expect(getTrack()).resolves.toBeNull();
-		expect(findExactSpotifyTrackUrlFromSearch).not.toHaveBeenCalled();
-		expect(getSpotifyOEmbedThumbnailUrl).not.toHaveBeenCalled();
+		expect(findExactSpotifyTrackResult).not.toHaveBeenCalled();
+		expect(getSpotifyOEmbedResult).not.toHaveBeenCalled();
 	});
 
 	it('returns null when there are no recent tracks in the response', async () => {
@@ -127,8 +139,16 @@ describe('getTrack', () => {
 	});
 
 	it('uses Spotify oEmbed artwork when the scraper finds an exact track URL', async () => {
-		vi.mocked(findExactSpotifyTrackUrlFromSearch).mockResolvedValue(SPOTIFY_TRACK_URL);
-		vi.mocked(getSpotifyOEmbedThumbnailUrl).mockResolvedValue(SPOTIFY_THUMBNAIL_URL);
+		vi.mocked(findExactSpotifyTrackResult).mockResolvedValue({
+			status: 'success',
+			data: SPOTIFY_TRACK_URL,
+			issues: [],
+		});
+		vi.mocked(getSpotifyOEmbedResult).mockResolvedValue({
+			status: 'success',
+			data: SPOTIFY_THUMBNAIL_URL,
+			issues: [],
+		});
 		stubLastFmResponse(buildTrack());
 
 		const result = await getTrack();
@@ -137,7 +157,7 @@ describe('getTrack', () => {
 		expect(result?.spotifyArtworkUrl).toBe(SPOTIFY_THUMBNAIL_URL);
 		expect(result?.spotifyUrl).toBe(SPOTIFY_TRACK_URL);
 		expect(result?.spotifyTrackId).toBeNull();
-		expect(getSpotifyOEmbedThumbnailUrl).toHaveBeenCalledWith(SPOTIFY_TRACK_URL);
+		expect(getSpotifyOEmbedResult).toHaveBeenCalledWith(SPOTIFY_TRACK_URL);
 	});
 
 	it('falls back to a Spotify search URL when no exact match is found', async () => {
@@ -148,8 +168,8 @@ describe('getTrack', () => {
 		expect(result?.spotifyUrl).toBe(SPOTIFY_SEARCH_FALLBACK_URL);
 		expect(result?.artworkUrl).toBeNull();
 		expect(result?.spotifyArtworkUrl).toBeNull();
-		expect(findExactSpotifyTrackUrlFromSearch).toHaveBeenCalledOnce();
-		expect(getSpotifyOEmbedThumbnailUrl).not.toHaveBeenCalled();
+		expect(findExactSpotifyTrackResult).toHaveBeenCalledOnce();
+		expect(getSpotifyOEmbedResult).not.toHaveBeenCalled();
 	});
 
 	it('handles missing artist and album fields gracefully', async () => {
@@ -187,10 +207,183 @@ describe('getTrack', () => {
 
 		await getTrack();
 
-		expect(findExactSpotifyTrackUrlFromSearch).toHaveBeenCalledWith({
+		expect(findExactSpotifyTrackResult).toHaveBeenCalledWith({
 			trackName: 'Come Together',
 			artistName: 'The Beatles',
 			albumName: 'Abbey Road',
 		});
+	});
+});
+
+// These cases assert the observable diagnostics alongside the public fallback.
+describe('music failure diagnostics', () => {
+	beforeEach(() => {
+		vi.stubEnv('LASTFM_USERNAME', 'demo');
+		vi.stubEnv('LASTFM_API_KEY', 'secret');
+		vi.spyOn(console, 'error').mockImplementation(() => undefined);
+		vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+		vi.mocked(findExactSpotifyTrackResult).mockResolvedValue({
+			status: 'empty',
+			data: null,
+			issues: [],
+		});
+		vi.mocked(getSpotifyOEmbedResult).mockResolvedValue({
+			status: 'skipped',
+			data: null,
+			issues: [],
+		});
+	});
+
+	afterEach(() => {
+		vi.unstubAllGlobals();
+		vi.unstubAllEnvs();
+		vi.clearAllMocks();
+		vi.restoreAllMocks();
+	});
+
+	it.each(['LASTFM_USERNAME', 'LASTFM_API_KEY'])(
+		'reports missing %s without making a request',
+		async (name) => {
+			vi.stubEnv(name, ' ');
+			const fetchMock = vi.fn();
+			vi.stubGlobal('fetch', fetchMock);
+			const result = await getMusicSnapshot();
+			expect(result.status).toBe('unavailable');
+			expect(result.track).toBeNull();
+			expect(result.integrations[0].issues[0].code).toBe('missing-configuration');
+			expect(fetchMock).not.toHaveBeenCalled();
+			expect(findExactSpotifyTrackResult).not.toHaveBeenCalled();
+		},
+	);
+
+	it('handles rejected requests without exposing provider credentials or exception text', async () => {
+		vi.stubGlobal(
+			'fetch',
+			vi.fn().mockRejectedValue(new Error('https://provider/?api_key=secret')),
+		);
+		const result = await getMusicSnapshot();
+		expect(result.status).toBe('unavailable');
+		expect(result.track).toBeNull();
+		expect(result.integrations[0].issues[0].code).toBe('network-error');
+		expect(console.error).toHaveBeenCalledExactlyOnceWith(
+			expect.objectContaining({
+				correlationId: result.correlationId,
+				code: 'network-error',
+				integration: 'lastfm',
+			}),
+		);
+		expect(JSON.stringify(result)).not.toContain('secret');
+		expect(JSON.stringify(vi.mocked(console.error).mock.calls)).not.toContain('secret');
+	});
+
+	it.each([
+		{ body: null, code: 'invalid-response' },
+		{ body: {}, code: 'invalid-response' },
+		{ body: { recenttracks: { track: [{ name: 42 }] } }, code: 'invalid-response' },
+		{ body: { error: 10, message: 'secret provider details' }, code: 'api-error' },
+	])('reports $code for unusable Last.fm responses', async ({ body, code }) => {
+		vi.stubGlobal(
+			'fetch',
+			vi.fn(async () => jsonResponse(body)),
+		);
+		const result = await getMusicSnapshot();
+		expect(result.status).toBe('unavailable');
+		expect(result.integrations[0].issues[0].code).toBe(code);
+		expect(findExactSpotifyTrackResult).not.toHaveBeenCalled();
+		expect(JSON.stringify(result)).not.toContain('secret provider details');
+	});
+
+	it('reports malformed JSON as a parse failure', async () => {
+		vi.stubGlobal(
+			'fetch',
+			vi.fn(async () => new Response('invalid json')),
+		);
+		const result = await getMusicSnapshot();
+		expect(result.track).toBeNull();
+		expect(result.integrations[0].issues[0].code).toBe('invalid-json');
+	});
+
+	it('distinguishes empty recent tracks from a failed service without emitting errors', async () => {
+		vi.stubGlobal(
+			'fetch',
+			vi.fn(async () => jsonResponse({ recenttracks: { track: [] } })),
+		);
+		const result = await getMusicSnapshot();
+		expect(result.status).toBe('empty');
+		expect(result.integrations.map(({ status }) => status)).toEqual([
+			'empty',
+			'skipped',
+			'skipped',
+		]);
+		expect(console.error).not.toHaveBeenCalled();
+		expect(console.warn).not.toHaveBeenCalled();
+	});
+
+	it('keeps the track and search fallback after a failed Spotify scrape', async () => {
+		stubLastFmResponse(buildTrack());
+		vi.mocked(findExactSpotifyTrackResult).mockResolvedValue({
+			status: 'failed',
+			data: null,
+			issues: [
+				{
+					integration: 'spotify-search',
+					operation: 'launch',
+					code: 'browser-launch-failed',
+				},
+			],
+		});
+		const result = await getMusicSnapshot();
+		expect(result.status).toBe('degraded');
+		expect(result.track?.trackName).toBe('Come Together');
+		expect(result.track?.spotifyUrl).toBe(SPOTIFY_SEARCH_FALLBACK_URL);
+		expect(getSpotifyOEmbedResult).not.toHaveBeenCalled();
+		expect(console.warn).toHaveBeenCalledOnce();
+	});
+
+	it('keeps the exact Spotify link when artwork fails', async () => {
+		stubLastFmResponse(buildTrack());
+		vi.mocked(findExactSpotifyTrackResult).mockResolvedValue({
+			status: 'success',
+			data: SPOTIFY_TRACK_URL,
+			issues: [],
+		});
+		vi.mocked(getSpotifyOEmbedResult).mockResolvedValue({
+			status: 'failed',
+			data: null,
+			issues: [
+				{
+					integration: 'spotify-artwork',
+					operation: 'request',
+					code: 'http-error',
+					httpStatus: 429,
+				},
+			],
+		});
+		const result = await getMusicSnapshot();
+		expect(result.status).toBe('degraded');
+		expect(result.track?.spotifyUrl).toBe(SPOTIFY_TRACK_URL);
+		expect(result.track?.artworkUrl).toBeNull();
+		expect(console.warn).toHaveBeenCalledWith(
+			expect.objectContaining({ correlationId: result.correlationId, httpStatus: 429 }),
+		);
+	});
+
+	it('drops unsafe Last.fm links without dropping the song', async () => {
+		stubLastFmResponse(buildTrack({ url: 'javascript:alert(1)' }));
+		const result = await getMusicSnapshot();
+		expect(result.track?.lastFmUrl).toBeNull();
+		expect(result.track?.trackName).toBe('Come Together');
+		expect(result.status).toBe('degraded');
+	});
+
+	it('encodes configured credentials as individual query parameters', async () => {
+		vi.stubEnv('LASTFM_USERNAME', 'a&user=b');
+		vi.stubEnv('LASTFM_API_KEY', 'key&limit=100');
+		const fetchMock = stubLastFmResponse(buildTrack());
+		await getTrack();
+		const url = new URL(String(fetchMock.mock.calls[0][0]));
+		expect(url.searchParams.get('user')).toBe('a&user=b');
+		expect(url.searchParams.get('api_key')).toBe('key&limit=100');
+		expect(url.searchParams.get('limit')).toBe('1');
 	});
 });

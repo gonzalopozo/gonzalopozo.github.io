@@ -24,3 +24,31 @@ describe('buildSpotifyTrackSearchUrl', () => {
 		).toBeNull();
 	});
 });
+
+// Invalid external metadata must not throw before a fallback can be built.
+describe('search input resilience', () => {
+	it('repairs unpaired Unicode surrogates before URL encoding', () => {
+		expect(
+			buildSpotifyTrackSearchUrl({
+				trackName: 'Song\ud800',
+				artistName: 'Artist',
+				albumName: null,
+			}),
+		).toBe('https://open.spotify.com/search/Song%EF%BF%BD%20Artist');
+	});
+
+	it('rejects invalid runtime metadata without throwing', () => {
+		expect(
+			buildSpotifyTrackSearchUrl({
+				trackName: 42 as unknown as string,
+				artistName: 'Artist',
+				albumName: null,
+			}),
+		).toBeNull();
+		expect(
+			buildSpotifyTrackSearchUrl(
+				null as unknown as Parameters<typeof buildSpotifyTrackSearchUrl>[0],
+			),
+		).toBeNull();
+	});
+});

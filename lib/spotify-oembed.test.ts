@@ -1,8 +1,8 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('server-only', () => ({}));
 
-import { getSpotifyOEmbedThumbnailUrl } from '@/lib/spotify-oembed';
+import { getSpotifyOEmbedThumbnailUrl, getSpotifyOEmbedResult } from '@/lib/spotify-oembed';
 
 const SPOTIFY_TRACK_URL = 'https://open.spotify.com/track/3qovVqQWqHRZ8B';
 const SPOTIFY_THUMBNAIL_URL =
@@ -13,6 +13,10 @@ function jsonResponse(body: unknown, status = 200): Response {
 }
 
 describe('getSpotifyOEmbedThumbnailUrl', () => {
+	beforeEach(() => {
+		vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+	});
+	afterEach(() => vi.restoreAllMocks());
 	it('returns the Spotify oEmbed thumbnail URL', async () => {
 		const fetcher = vi.fn(async (input: string | URL) => {
 			void input;
@@ -59,5 +63,34 @@ describe('getSpotifyOEmbedThumbnailUrl', () => {
 				}),
 			}),
 		).resolves.toBeNull();
+	});
+});
+
+describe('oEmbed diagnostics', () => {
+	it('reports HTTP errors separately from malformed data', async () => {
+		const result = await getSpotifyOEmbedResult(SPOTIFY_TRACK_URL, {
+			fetcher: async () => jsonResponse({}, 503),
+		});
+		expect(result.status).toBe('failed');
+		expect(result.issues[0]).toMatchObject({ code: 'http-error', httpStatus: 503 });
+	});
+
+	it('rejects unsafe input before making a request', async () => {
+		const fetcher = vi.fn();
+		const result = await getSpotifyOEmbedResult('https://evil.test/track/a', { fetcher });
+		expect(result.issues[0].code).toBe('invalid-url');
+		expect(fetcher).not.toHaveBeenCalled();
+	});
+
+	it('drops artwork that does not match the configured image hosts', async () => {
+		const result = await getSpotifyOEmbedResult(SPOTIFY_TRACK_URL, {
+			fetcher: async () =>
+				jsonResponse({
+					provider_name: 'Spotify',
+					thumbnail_url: 'https://evil.test/image/a',
+				}),
+		});
+		expect(result.data).toBeNull();
+		expect(result.issues[0].code).toBe('invalid-url');
 	});
 });
