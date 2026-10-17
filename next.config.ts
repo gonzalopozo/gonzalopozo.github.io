@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
 	/* config options here */
 	reactCompiler: true,
 	cacheComponents: true,
+	// Valid in Next.js 16, not yet in the published types.
+	// @ts-expect-error - remove when NextConfig includes partialPrefetching
+	partialPrefetching: true,
 	async headers() {
 		const mode = getCspMode(process.env.CSP_PUBLIC_MODE);
 		const policy = buildCsp({
